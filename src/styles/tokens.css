@@ -1,0 +1,185 @@
+/* Variables y tokens globales de diseño */
+
+:root {
+  /* Marca Principal (Teal #0F766E) */
+  --c-primario-50: #f0fdfa;
+  --c-primario-100: #ccfbf1;
+  --c-primario-200: #99f6e4;
+  --c-primario-300: #5eead4;
+  --c-primario-400: #2dd4bf;
+  --c-primario-500: #14b8a6;
+  --c-primario-600: #0d9488;
+  --c-primario: #0f766e;
+  /* Color institucional */
+  --c-primario-hover: #115e59;
+  --c-primario-active: #134e4a;
+  --c-primario-suave: #e6f7f5;
+  --c-primario-border: #99f6e4;
+
+  /* Superficies y Fondos */
+  --c-fondo: #f8fafc;
+  --c-fondo-subtle: #f1f5f9;
+  --c-superficie: #ffffff;
+  --c-superficie-alt: #f8fafc;
+  --c-superficie-elevada: #ffffff;
+
+  /* Textos y Contraste (WCAG 2.1 AA) */
+  --c-texto: #0f172a;
+  /* Slate 900 */
+  --c-texto-suave: #475569;
+  /* Slate 600 */
+  --c-texto-mutado: #64748b;
+  /* Slate 500 */
+  --c-texto-invertido: #ffffff;
+
+  /* Bordes y Separadores */
+  --c-borde: #cbd5e1;
+  /* Slate 300 */
+  --c-borde-suave: #e2e8f0;
+  /* Slate 200 */
+  --c-borde-fuerte: #94a3b8;
+  /* Slate 400 */
+
+  /* Colores por Rol (Identidad Visual RBAC Contextual) */
+  --c-rol-agente: #0f766e;
+  /* Teal */
+  --c-rol-agente-bg: #f0fdfa;
+  --c-rol-agente-border: #99f6e4;
+
+  --c-rol-supervisor: #2563eb;
+  /* Azul Cobalto */
+  --c-rol-supervisor-bg: #eff6ff;
+  --c-rol-supervisor-border: #bfdbfe;
+
+  --c-rol-sst: #7c3aed;
+  /* Violeta */
+  --c-rol-sst-bg: #f5f3ff;
+  --c-rol-sst-border: #ddd6fe;
+
+  --c-rol-auditor: #475569;
+  /* Gris Pizarra */
+  --c-rol-auditor-bg: #f1f5f9;
+  --c-rol-auditor-border: #cbd5e1;
+
+  --c-rol-admin: #d97706;
+  /* Ámbar */
+  --c-rol-admin-bg: #fffbeb;
+  --c-rol-admin-border: #fde68a;
+
+  /* Estados Semánticos */
+  --c-exito: #059669;
+  --c-exito-bg: #ecfdf5;
+  --c-exito-border: #a7f3d0;
+
+  --c-alerta: #d97706;
+  --c-alerta-bg: #fffbeb;
+  --c-alerta-border: #fde68a;
+
+  --c-critico: #dc2626;
+  --c-critico-bg: #fef2f2;
+  --c-critico-border: #fecaca;
+
+  --c-info: #0284c7;
+  --c-info-bg: #f0f9ff;
+  --c-info-border: #bae6fd;
+
+  --c-privado: #475569;
+  --c-privado-bg: #f8fafc;
+  --c-privado-border: #cbd5e1;
+
+  /* Escala Mapa de Calor (Riesgo Psicosocial) */
+  --hm-bajo: #10b981;
+  --hm-medio-bajo: #84cc16;
+  --hm-medio: #eab308;
+  --hm-alto: #f97316;
+  --hm-critico: #ef4444;
+
+  /* Tipografía del Sistema */
+  --font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-family-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+  /* Escala de Espaciado */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* Radios de Borde */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
+  --radius-2xl: 24px;
+  --radius-full: 9999px;
+
+  /* Sombras Suaves (Layered Elevations) */
+  --shadow-xs: 0 1px 2px 0 rgba(15, 23, 42, 0.04);
+  --shadow-sm: 0 1px 3px 0 rgba(15, 23, 42, 0.06), 0 1px 2px -1px rgba(15, 23, 42, 0.04);
+  --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.07), 0 2px 4px -2px rgba(15, 23, 42, 0.04);
+  --shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.03);
+  --shadow-xl: 0 20px 25px -5px rgba(15, 23, 42, 0.10), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
+  --shadow-focus: 0 0 0 3px rgba(15, 118, 110, 0.22);
+
+  /* Transiciones Micro-interactivas */
+  --transition-fast: 140ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Reset y Base Global */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  height: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100%;
+  font-family: var(--font-family);
+  background-color: var(--c-fondo);
+  color: var(--c-texto);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Enlaces y foco visible accesible */
+a {
+  color: var(--c-primario);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--c-primario-hover);
+}
+
+:focus-visible {
+  outline: 2px solid var(--c-primario);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

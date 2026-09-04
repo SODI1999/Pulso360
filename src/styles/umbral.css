@@ -1,0 +1,154 @@
+/* Estilos para el umbral de privacidad y mapas de calor */
+
+/* Tarjeta Bloqueada Deliberada por Umbral (N < 5) */
+.umbral-blocked-card {
+  background-color: var(--c-superficie);
+  border: 1.5px dashed var(--c-borde);
+  border-radius: var(--radius-xl);
+  padding: var(--space-8) var(--space-6);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 240px;
+  box-shadow: var(--shadow-xs);
+}
+
+.umbral-blocked-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-full);
+  background-color: var(--c-fondo);
+  color: var(--c-primario);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  margin-bottom: var(--space-3);
+  border: 1px solid var(--c-borde-suave);
+  box-shadow: var(--shadow-xs);
+}
+
+.umbral-blocked-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--c-texto);
+  letter-spacing: -0.01em;
+  margin-bottom: var(--space-1);
+}
+
+.umbral-blocked-message {
+  font-size: 13.5px;
+  color: var(--c-texto-suave);
+  max-width: 440px;
+  line-height: 1.55;
+  margin: 0 auto;
+}
+
+.umbral-sample-count {
+  margin-top: var(--space-3);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--c-alerta);
+  background: var(--c-alerta-bg);
+  border: 1px solid var(--c-alerta-border);
+  padding: 2px 10px;
+  border-radius: var(--radius-full);
+}
+
+/* Badge de Privacidad / N Válido */
+.privacy-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  font-size: 11.5px;
+  font-weight: 600;
+  background-color: var(--c-primario-suave);
+  color: var(--c-primario);
+  border: 1px solid var(--c-primario-border);
+}
+
+/* Grilla del Mapa de Calor (8 Dimensiones Ocupacionales) */
+.heatmap-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.heatmap-cell {
+  background-color: var(--c-superficie);
+  border: 1px solid var(--c-borde-suave);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.heatmap-cell:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+  border-color: var(--c-borde);
+}
+
+.heatmap-dim-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--c-texto);
+  margin-bottom: var(--space-2);
+  line-height: 1.35;
+}
+
+.heatmap-score-bar {
+  height: 7px;
+  border-radius: var(--radius-full);
+  background-color: var(--c-borde-suave);
+  overflow: hidden;
+  margin-bottom: var(--space-2);
+}
+
+.heatmap-score-fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  transition: width 0.3s ease;
+}
+
+.heatmap-score-fill.bajo { background-color: var(--hm-bajo); }
+.heatmap-score-fill.medio-bajo { background-color: var(--hm-medio-bajo); }
+.heatmap-score-fill.medio { background-color: var(--hm-medio); }
+.heatmap-score-fill.alto { background-color: var(--hm-alto); }
+.heatmap-score-fill.critico { background-color: var(--hm-critico); }
+
+.heatmap-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--c-texto-mutado);
+}
+
+@media (max-width: 640px) {
+  .heatmap-grid {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: var(--space-2);
+  }
+
+  .heatmap-cell {
+    padding: var(--space-3);
+  }
+
+  .umbral-blocked-card {
+    padding: var(--space-5) var(--space-4);
+    min-height: 180px;
+  }
+}
+
+@media (max-width: 480px) {
+  .heatmap-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+

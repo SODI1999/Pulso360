@@ -1,0 +1,425 @@
+/* Estilos de estructura y distribucion general */
+
+/* Layout Principal */
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  background-color: var(--c-fondo);
+}
+
+/* Barra Lateral de Navegación */
+.app-sidebar {
+  width: 268px;
+  background-color: var(--c-superficie);
+  border-right: 1px solid var(--c-borde-suave);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  z-index: 100;
+  box-shadow: var(--shadow-xs);
+  transition: transform var(--transition-normal);
+}
+
+.sidebar-header {
+  padding: var(--space-5) var(--space-6);
+  border-bottom: 1px solid var(--c-borde-suave);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  background: var(--c-superficie);
+}
+
+.sidebar-brand-link {
+  display: flex;
+  align-items: center;
+}
+
+.user-avatar.role-agente,
+.user-role-badge.role-agente {
+  background: var(--c-rol-agente-bg);
+  color: var(--c-rol-agente);
+}
+
+.user-avatar.role-supervisor,
+.user-role-badge.role-supervisor {
+  background: var(--c-rol-supervisor-bg);
+  color: var(--c-rol-supervisor);
+}
+
+.user-avatar.role-sst,
+.user-role-badge.role-sst {
+  background: var(--c-rol-sst-bg);
+  color: var(--c-rol-sst);
+}
+
+.user-avatar.role-auditor,
+.user-role-badge.role-auditor {
+  background: var(--c-rol-auditor-bg);
+  color: var(--c-rol-auditor);
+}
+
+.user-avatar.role-admin,
+.user-role-badge.role-admin {
+  background: var(--c-rol-admin-bg);
+  color: var(--c-rol-admin);
+}
+
+.sidebar-logo {
+  height: 38px;
+  width: auto;
+  display: block;
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: var(--space-4) var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--c-borde-suave) transparent;
+}
+
+.sidebar-nav-heading {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--c-texto-mutado);
+  padding: var(--space-3) var(--space-3) var(--space-1);
+  margin-top: var(--space-2);
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  color: var(--c-texto-suave);
+  text-decoration: none;
+  font-size: 13.5px;
+  font-weight: 500;
+  transition: all var(--transition-fast);
+  position: relative;
+}
+
+.nav-item:hover {
+  background-color: var(--c-fondo);
+  color: var(--c-texto);
+}
+
+.nav-item.active {
+  background-color: var(--c-primario-suave);
+  color: var(--c-primario);
+  font-weight: 600;
+}
+
+.nav-item.active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 8px;
+  bottom: 8px;
+  width: 3.5px;
+  border-radius: 0 var(--radius-xs) var(--radius-xs) 0;
+  background-color: var(--c-primario);
+}
+
+/* Apoyo Inmediato — acción de emergencia en sidebar */
+.nav-item.nav-crisis {
+  background-color: var(--c-critico);
+  color: var(--c-texto-invertido);
+  font-weight: 700;
+  border-radius: var(--radius-md);
+}
+
+.nav-item.nav-crisis:hover {
+  background-color: #b91c1c;
+  color: var(--c-texto-invertido);
+}
+
+.nav-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  color: currentColor;
+}
+
+.sidebar-footer {
+  padding: var(--space-4) var(--space-4);
+  border-top: 1px solid var(--c-borde-suave);
+  background-color: var(--c-superficie);
+}
+
+/* Tarjeta del Usuario en Barra Lateral */
+.user-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2);
+  border-radius: var(--radius-md);
+  background: var(--c-fondo);
+  border: 1px solid var(--c-borde-suave);
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 13px;
+  flex-shrink: 0;
+  box-shadow: var(--shadow-xs);
+  border: 1.5px solid currentColor;
+}
+
+.user-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.user-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--c-texto);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-role-badge {
+  display: inline-block;
+  font-size: 10.5px;
+  font-weight: 600;
+  padding: 1px 8px;
+  border-radius: var(--radius-full);
+  line-height: 1.4;
+  margin-top: 2px;
+}
+
+/* Área Principal */
+.app-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background-color: var(--c-fondo);
+}
+
+/* Barra Superior (Topbar) */
+.app-topbar {
+  height: 64px;
+  background-color: var(--c-superficie);
+  border-bottom: 1px solid var(--c-borde-suave);
+  padding: 0 var(--space-8);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 90;
+  box-shadow: var(--shadow-xs);
+}
+
+.topbar-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--c-texto-suave);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+/* Contenedor de Página */
+.page-container {
+  flex: 1;
+  padding: var(--space-8);
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.page-header {
+  margin-bottom: var(--space-6);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+
+.page-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--c-texto);
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+}
+
+.page-subtitle {
+  font-size: 13.5px;
+  color: var(--c-texto-suave);
+  margin-top: var(--space-1);
+  line-height: 1.5;
+}
+
+/* Responsive & Mobile Layout */
+@media (max-width: 900px) {
+  .app-layout {
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  .app-sidebar {
+    width: 100%;
+    height: auto;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: var(--shadow-sm);
+    border-right: none;
+    border-bottom: 1px solid var(--c-borde-suave);
+    background-color: var(--c-superficie);
+  }
+
+  .sidebar-header {
+    padding: var(--space-3) var(--space-4);
+    justify-content: space-between;
+  }
+
+  .sidebar-logo {
+    height: 30px;
+  }
+
+  .sidebar-nav {
+    flex-direction: row;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: var(--space-2) var(--space-4);
+    gap: var(--space-2);
+    scrollbar-width: none;
+  }
+
+  .sidebar-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .sidebar-nav-heading {
+    display: none;
+  }
+
+  .nav-item {
+    white-space: nowrap;
+    padding: 7px 12px;
+    font-size: 12.5px;
+    border-radius: var(--radius-md);
+    flex-shrink: 0;
+  }
+
+  .nav-item.active::before {
+    display: none;
+  }
+
+  .nav-item.nav-crisis {
+    margin-left: auto;
+  }
+
+  .sidebar-footer {
+    display: none;
+  }
+
+  .app-topbar {
+    padding: 0 var(--space-4);
+    height: 52px;
+    top: auto;
+    position: relative;
+    z-index: 90;
+  }
+
+  .topbar-title {
+    font-size: 13.5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+  }
+
+  .page-container {
+    padding: var(--space-5) var(--space-4);
+  }
+
+  .page-title {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 640px) {
+  .app-topbar {
+    padding: 0 var(--space-3);
+    height: 48px;
+  }
+
+  .topbar-actions {
+    gap: var(--space-2);
+  }
+
+  .page-container {
+    padding: var(--space-4) var(--space-3);
+  }
+}
+
+@media (max-width: 480px) {
+  .page-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+  }
+
+  .page-header > div:first-child {
+    min-width: 0;
+  }
+
+  .page-title {
+    font-size: 18px;
+    word-break: break-word;
+  }
+
+  .page-subtitle {
+    font-size: 12.5px;
+  }
+
+  .sidebar-nav {
+    padding: 6px var(--space-3);
+    gap: 4px;
+  }
+
+  .nav-item {
+    padding: 6px 9px;
+    font-size: 12px;
+    gap: 6px;
+  }
+
+  .nav-icon {
+    width: 16px;
+    height: 16px;
+  }
+}

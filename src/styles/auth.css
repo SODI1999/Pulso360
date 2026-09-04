@@ -1,0 +1,495 @@
+/* Estilos para las vistas de autenticacion */
+
+@import url('tokens.css');
+@import url('components.css');
+
+/* Contenedor Principal Split-Screen */
+.login-wrapper {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+  background-color: var(--c-fondo);
+}
+
+/* Panel lateral de presentacion */
+.branding-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 50%;
+  background: linear-gradient(145deg, #f0fdfa 0%, #e6f7f5 50%, #f8fafc 100%);
+  border-right: 1px solid var(--c-borde-suave);
+  position: relative;
+  overflow: hidden;
+  padding: var(--space-10) var(--space-8);
+}
+
+.branding-decoration-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0.45;
+  background-image:
+    radial-gradient(circle at 15% 20%, #99f6e4 0%, transparent 40%),
+    radial-gradient(circle at 85% 80%, #cbd5e1 0%, transparent 45%);
+}
+
+.branding-content {
+  position: relative;
+  z-index: 10;
+  max-width: 480px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.branding-badge {
+  background: var(--c-superficie);
+  width: 58px;
+  height: 58px;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--c-primario-border);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--space-5);
+  color: var(--c-primario);
+  transition: transform var(--transition-normal);
+}
+
+.branding-title {
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1.25;
+  color: var(--c-texto);
+  letter-spacing: -0.02em;
+  margin-bottom: var(--space-3);
+}
+
+.branding-description {
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: var(--c-texto-suave);
+  margin-bottom: var(--space-6);
+  max-width: 440px;
+}
+
+.illustration-card {
+  background: var(--c-superficie);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--c-borde-suave);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-3);
+  width: 100%;
+  max-width: 380px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.illustration-img {
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-lg);
+  object-fit: contain;
+  display: block;
+}
+
+.branding-feature-list {
+  margin-top: var(--space-5);
+  display: grid;
+  gap: var(--space-2);
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--c-texto-suave);
+  text-align: left;
+  list-style: none;
+  width: 100%;
+  max-width: 400px;
+}
+
+.branding-feature-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+}
+
+.branding-feature-icon {
+  color: var(--c-primario);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* Formulario de acceso */
+.auth-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 50%;
+  background-color: var(--c-superficie);
+  padding: var(--space-8) var(--space-6);
+  overflow-y: auto;
+}
+
+.auth-container {
+  max-width: 400px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.auth-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: var(--space-6);
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--space-2);
+}
+
+.brand-logo {
+  height: 64px;
+  width: auto;
+  object-fit: contain;
+}
+
+.auth-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--c-texto);
+  letter-spacing: -0.01em;
+  margin-bottom: 2px;
+}
+
+.auth-subtitle {
+  font-size: 13.5px;
+  color: var(--c-texto-suave);
+}
+
+/* Formulario */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.form-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-1);
+}
+
+.forgot-link {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--c-primario);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.forgot-link:hover {
+  color: var(--c-primario-hover);
+  text-decoration: underline;
+}
+
+/* Input Wrappers con Iconos */
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.input-icon {
+  position: absolute;
+  left: 12px;
+  font-size: 16px;
+  color: var(--c-texto-mutado);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color var(--transition-fast);
+}
+
+.form-input.has-icon,
+.form-input.password-input {
+  padding-left: 40px !important;
+}
+
+.form-input.password-input {
+  padding-right: 42px !important;
+}
+
+.input-wrapper:focus-within .input-icon {
+  color: var(--c-primario);
+}
+
+.toggle-password-btn {
+  position: absolute;
+  right: 8px;
+  background: none;
+  border: none;
+  color: var(--c-texto-mutado);
+  cursor: pointer;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  transition: color var(--transition-fast), background-color var(--transition-fast);
+}
+
+.toggle-password-btn:hover {
+  color: var(--c-texto);
+  background-color: var(--c-fondo);
+}
+
+/* Botón de Envío */
+.submit-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  width: 100%;
+  height: 44px;
+  margin-top: var(--space-2);
+  background-color: var(--c-primario);
+  color: var(--c-texto-invertido);
+  border: 1px solid var(--c-primario);
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(15, 118, 110, 0.2);
+  transition: all var(--transition-fast);
+}
+
+.submit-btn:hover:not(:disabled) {
+  background-color: var(--c-primario-hover);
+  border-color: var(--c-primario-hover);
+  box-shadow: 0 4px 10px rgba(15, 118, 110, 0.25);
+  transform: translateY(-1px);
+}
+
+.submit-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.spinner {
+  display: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.submit-btn.loading .submit-text,
+.submit-btn.loading .submit-icon {
+  display: none;
+}
+
+.submit-btn.loading .spinner {
+  display: block;
+}
+
+/* Mensajes de Feedback */
+.form-feedback {
+  display: none;
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 500;
+  margin-top: var(--space-2);
+  animation: fadeIn 0.2s ease-out;
+}
+
+.form-feedback.success {
+  display: block;
+  background-color: var(--c-exito-bg);
+  color: var(--c-exito);
+  border: 1px solid var(--c-exito-border);
+}
+
+.form-feedback.error {
+  display: block;
+  background-color: var(--c-critico-bg);
+  color: var(--c-critico);
+  border: 1px solid var(--c-critico-border);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Pie Legal */
+.auth-footer {
+  margin-top: var(--space-6);
+}
+
+.footer-divider {
+  border: none;
+  border-top: 1px solid var(--c-borde-suave);
+  margin-bottom: var(--space-3);
+}
+
+.footer-legal {
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: var(--c-texto-mutado);
+  text-align: center;
+}
+
+/* Tarjeta de credenciales demo para sustentación y evaluación */
+.demo-credentials-card {
+  margin-top: var(--space-5);
+  background: var(--c-fondo);
+  border: 1px dashed var(--c-borde);
+  border-radius: var(--radius-lg);
+  padding: var(--space-3) var(--space-4);
+  font-size: 12px;
+}
+
+.demo-title {
+  font-weight: 700;
+  color: var(--c-texto);
+  margin-bottom: var(--space-2);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.demo-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 0;
+  border-bottom: 1px solid var(--c-borde-suave);
+  color: var(--c-texto-suave);
+}
+
+.demo-item:last-child {
+  border-bottom: none;
+}
+
+.demo-email {
+  font-family: var(--font-family-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--c-primario);
+  background: var(--c-primario-suave);
+  border: 1px solid var(--c-primario-border);
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.demo-email:hover {
+  background-color: var(--c-primario);
+  color: #ffffff;
+}
+
+/* Vista de recuperación de contraseña */
+.recovery-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--c-fondo);
+  padding: var(--space-5);
+}
+
+.recovery-card {
+  background: var(--c-superficie);
+  border: 1px solid var(--c-borde-suave);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-lg);
+  max-width: 440px;
+  width: 100%;
+  padding: var(--space-8) var(--space-6);
+  text-align: center;
+}
+
+.recovery-icon-badge {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-full);
+  background-color: var(--c-primario-suave);
+  color: var(--c-primario);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto var(--space-4) auto;
+  border: 1px solid var(--c-primario-border);
+}
+
+/* Responsive */
+@media (max-width: 960px) {
+  .login-wrapper {
+    flex-direction: column;
+  }
+  .branding-panel {
+    display: none;
+  }
+  .auth-panel {
+    width: 100%;
+    min-height: 100vh;
+    padding: var(--space-8) var(--space-4);
+  }
+  .auth-container {
+    max-width: 400px;
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-panel {
+    padding: var(--space-6) var(--space-3);
+  }
+  .auth-container {
+    max-width: 100%;
+  }
+  .brand-logo {
+    height: 52px;
+  }
+  .auth-title {
+    font-size: 20px;
+  }
+  .auth-subtitle {
+    font-size: 12.5px;
+  }
+  .auth-header {
+    margin-bottom: var(--space-4);
+  }
+  .login-form {
+    gap: var(--space-3);
+  }
+}
+
