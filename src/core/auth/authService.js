@@ -33,7 +33,7 @@ export const roleMenus = {
         { label: 'Mi análisis', icon: 'insights', href: '/agente/mi-analisis' },
         { label: 'Mi bienestar', icon: 'monitoring', href: '/agente/mi-bienestar' },
         { label: 'Acompañamiento', icon: 'support_agent', href: '/agente/apoyo' },
-        { label: 'Mis datos', icon: 'shield', href: '/agente/mis-datos' }
+        { label: 'Mis datos', icon: 'fileShield', href: '/agente/mis-datos' }
     ],
     supervisor: [
         { label: 'Panel de Equipo', icon: 'group', href: '/supervisor/panel' },
@@ -52,11 +52,11 @@ export const roleMenus = {
         { label: 'Registro de Auditoría', icon: 'audit', href: '/auditor/auditoria' }
     ],
     admin: [
-        { label: 'Organización', icon: 'domain', href: '/admin/organizacion' },
-        { label: 'Usuarios y Roles', icon: 'manage_accounts', href: '/admin/usuarios-roles' },
+        { label: 'Organización', icon: 'hierarchy', href: '/admin/organizacion' },
+        { label: 'Usuarios y Roles', icon: 'users', href: '/admin/usuarios-roles' },
         { label: 'Parámetros', icon: 'tune', href: '/admin/parametros' },
         { label: 'Importar CSV', icon: 'upload_file', href: '/admin/importar' },
-        { label: 'Habeas Data', icon: 'shield', href: '/admin/solicitudes' },
+        { label: 'Habeas Data', icon: 'fileShield', href: '/admin/solicitudes' },
         { label: 'Reportes', icon: 'summarize', href: '/reportes' }
     ]
 };

@@ -2,6 +2,7 @@
 // Módulo de Administración de Estructura Organizacional y K-Anonimato (RF-15)
 
 import { useState, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import { authService } from '../../../core/auth/authService';
 import { pulsoStore } from '../../../core/storage/pulsoStore';
 import { Icon } from '../../../core/components/Icon';
@@ -227,19 +228,23 @@ export function OrganizationPage() {
         <div style={{ display: 'flex', gap: 'var(--space-2)', flexWrap: 'wrap' }}>
           <button
             type="button"
-            className="btn btn-secondary"
-            onClick={handleResetDemo}
-          >
-            <Icon name="refresh" size={16} />
-            <span>Restablecer demo</span>
-          </button>
-          <button
-            type="button"
             className="btn btn-primary"
             onClick={() => setCampaignModalState({ isOpen: true, campaign: null })}
           >
             <Icon name="plus" size={16} />
             <span>Crear campaña</span>
+          </button>
+          <Link to="/admin/parametros" className="btn btn-secondary">
+            <Icon name="tune" size={16} />
+            <span>Parámetros y SLAs</span>
+          </Link>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={handleResetDemo}
+          >
+            <Icon name="refresh" size={16} />
+            <span>Restablecer demo</span>
           </button>
         </div>
       </div>

@@ -211,13 +211,31 @@ export function Icon({ name, className = '', size, ...props }) {
       <>
         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
         <polyline points="14 2 14 8 20 8" />
-        <path d="m9 15 2 2 4-4" />
+        <circle cx="11" cy="14" r="3" />
+        <line x1="13.2" y1="16.2" x2="16.5" y2="19.5" />
       </>
     ),
     shieldCheck: (
       <>
         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
         <path d="m9 12 2 2 4-4" />
+      </>
+    ),
+    hierarchy: (
+      <>
+        <rect x="9" y="3" width="6" height="4" rx="1" />
+        <rect x="3" y="17" width="6" height="4" rx="1" />
+        <rect x="15" y="17" width="6" height="4" rx="1" />
+        <path d="M12 7v4" />
+        <path d="M6 17v-3a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v3" />
+      </>
+    ),
+    users: (
+      <>
+        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+        <circle cx="9" cy="7" r="4" />
+        <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
       </>
     ),
     domain: (
@@ -237,6 +255,14 @@ export function Icon({ name, className = '', size, ...props }) {
         <circle cx="9" cy="7" r="4" />
         <path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
         <circle cx="19" cy="11" r="2" />
+      </>
+    ),
+    userPlus: (
+      <>
+        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+        <circle cx="9" cy="7" r="4" />
+        <line x1="19" y1="8" x2="19" y2="14" />
+        <line x1="22" y1="11" x2="16" y2="11" />
       </>
     ),
     upload_file: (
@@ -285,6 +311,13 @@ export function Icon({ name, className = '', size, ...props }) {
         <line x1="16" y1="13" x2="8" y2="13" />
         <line x1="16" y1="17" x2="8" y2="17" />
         <polyline points="10 9 9 9 8 9" />
+      </>
+    ),
+    fileShield: (
+      <>
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+        <polyline points="14 2 14 8 20 8" />
+        <path d="M12 18.5c-2.4-1-4-2.5-4-4.5V11l4-1.5 4 1.5v3c0 2-1.6 3.5-4 4.5z" />
       </>
     )
   };

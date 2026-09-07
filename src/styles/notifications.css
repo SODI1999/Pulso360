@@ -1,0 +1,92 @@
+/* src/styles/notifications.css */
+/* Estilos específicos para el Centro de Notificaciones Operativas (RF-17) */
+
+.notif-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.notif-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.notif-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--c-superficie);
+  border: 1px solid var(--c-borde-suave);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  color: var(--c-texto);
+  transition: all var(--transition-fast);
+  cursor: pointer;
+}
+
+.notif-item:hover {
+  border-color: var(--c-primario);
+  background: var(--c-fondo-alt, rgba(0, 0, 0, 0.02));
+}
+
+.notif-item.unread {
+  background: rgba(13, 103, 94, 0.03);
+  border-left: 3px solid var(--c-primario);
+}
+
+.notif-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--c-primario);
+  flex-shrink: 0;
+  margin-top: 6px;
+}
+
+.notif-dot.read {
+  background: transparent;
+}
+
+.notif-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.notif-title {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--c-texto);
+}
+
+.notif-context {
+  font-size: 13px;
+  color: var(--c-texto-suave);
+  line-height: 1.4;
+}
+
+.notif-date {
+  font-size: 11.5px;
+  color: var(--c-texto-suave);
+  margin-top: 4px;
+}
+
+.notif-preferences-card {
+  margin-top: var(--space-4);
+  padding: var(--space-4);
+  background: var(--c-fondo-alt, rgba(0, 0, 0, 0.02));
+  border: 1px solid var(--c-borde-suave);
+  border-radius: var(--radius-md);
+}
+
+.notif-toggle-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}

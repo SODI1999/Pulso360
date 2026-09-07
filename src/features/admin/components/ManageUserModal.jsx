@@ -77,11 +77,14 @@ export function ManageUserModal({
   };
 
   return (
-    <div className="modal-overlay" onClick={onClose} role="dialog" aria-modal="true">
+    <div className="modal-overlay active" onClick={onClose} role="dialog" aria-modal="true">
       <div className="modal-card" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <div>
-            <h2 className="modal-title">Gestionar Usuario</h2>
+            <h2 className="modal-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Icon name="manage_accounts" size={20} />
+              <span>Gestionar usuario</span>
+            </h2>
             <div className="modal-subtitle">
               <strong>{user.name}</strong> · <code>{user.email}</code>
             </div>

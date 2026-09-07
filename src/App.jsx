@@ -5,7 +5,6 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { authService, roleHomePaths } from './core/auth/authService';
 import { ProtectedRoute } from './core/auth/ProtectedRoute';
 import { AppLayout } from './core/layout/AppLayout';
-import { PlaceholderView } from './core/components/PlaceholderView';
 
 // Páginas de Autenticación (Hito 1)
 import { LoginPage } from './features/auth/pages/LoginPage';
@@ -44,6 +43,11 @@ import { UsersRolesPage } from './features/admin/pages/UsersRolesPage';
 import { SystemParamsPage } from './features/admin/pages/SystemParamsPage';
 import { CsvImportPage } from './features/admin/pages/CsvImportPage';
 import { HabeasDataPage } from './features/admin/pages/HabeasDataPage';
+
+// Páginas Compartidas y Cierre (Hito 7)
+import { ReportsPage } from './features/reports/pages/ReportsPage';
+import { NotificationsPage } from './features/notifications/pages/NotificationsPage';
+import { LandingPage } from './features/landing/pages/LandingPage';
 
 // Componente para resolver la ruta raíz según el rol del usuario conectado
 function RootRedirect() {
@@ -250,12 +254,12 @@ function App() {
                         }
                     />
 
-                    {/* --- RUTAS COMPARTIDAS ENTRE ROLES --- */}
+                    {/* --- RUTAS COMPARTIDAS ENTRE ROLES (Hito 7) --- */}
                     <Route
                         path="/reportes"
                         element={
                             <ProtectedRoute allowedRoles={['supervisor', 'sst', 'admin']}>
-                                <PlaceholderView title="Centro de Reportes" subtitle="Exportación de métricas consolidadas en PDF, CSV y JSON" icon="summarize" milestone="Hito 7" />
+                                <ReportsPage />
                             </ProtectedRoute>
                         }
                     />
@@ -263,7 +267,7 @@ function App() {
                         path="/notificaciones"
                         element={
                             <ProtectedRoute allowedRoles={['agente', 'supervisor', 'sst', 'auditor', 'admin']}>
-                                <PlaceholderView title="Centro de Notificaciones" subtitle="Avisos del sistema y confirmaciones operativas" icon="notifications" milestone="Hito 7" />
+                                <NotificationsPage />
                             </ProtectedRoute>
                         }
                     />
@@ -277,8 +281,9 @@ function App() {
                     />
                 </Route>
 
-                {/* 4. Enrutamiento Raíz y Comodín */}
-                <Route path="/" element={<RootRedirect />} />
+                {/* 4. Enrutamiento Raíz, Atajo a Panel y Comodín */}
+                <Route path="/panel" element={<RootRedirect />} />
+                <Route path="/" element={<LandingPage />} />
                 <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
         </BrowserRouter>

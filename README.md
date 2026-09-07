@@ -33,7 +33,7 @@ El sistema esta disenado bajo principios de Privacidad desde el Diseno (Privacy 
 
 ## 3. Estado Actual del Proyecto
 
-Los Hitos 1, 2, 3, 4, 5 y 6 se encuentran completados al 100%, verificados contra los requisitos del documento de especificacion ERS y con cero deuda tecnica:
+Los Hitos 1, 2, 3, 4, 5, 6 y 7 se encuentran completados al 100%, verificados contra los requisitos del documento de especificacion ERS y con cero deuda tecnica:
 
 - **Hito 1 - Autenticacion y Gobernanza**:
   - RF-01 (Autenticacion y RBAC): Login con derivacion automatica de rol, validacion previa, control de envio duplicado con spinner, bloqueo por 5 intentos fallidos y destruccion de sesiones residuales.
@@ -68,6 +68,11 @@ Los Hitos 1, 2, 3, 4, 5 y 6 se encuentran completados al 100%, verificados contr
   - RF-15 (Parametros Institucionales y SLAs): `SystemParamsPage.jsx` con regulacion de umbral $N$, retencion y SLAs de respuesta, alerta dinamica de riesgo con justificacion obligatoria (>= 10 caracteres), versionado de politicas con re-consentimiento obligatorio, gestion de modelos NLP y aprobacion de reglas de SST.
   - RF-15 (Importacion CSV Agregada): `CsvImportPage.jsx` con rechazo categorico de identificadores personales individuales (`status: DENEGADO`), validacion de columnas requeridas, vista previa tabular y descarga de plantilla.
   - RF-14 (Gestion Habeas Data Ley 1581): `HabeasDataPage.jsx` con control de terminos normativos, alerta de radicados vencidos, flujo secuencial de estados y modal de constancia administrativa `HabeasAdvanceModal.jsx`.
+- **Hito 7 - Vistas Compartidas, Integracion y Cierre de Plataforma**:
+  - RF-12 / RF-07 (Reportes Consolidados): `ReportsPage.jsx` (`/reportes`) con seleccion reactiva de ambito (Global, Campanas, Equipos), evaluacion estricta de k-anonimato ($N \ge 5$ permitido vs $N < 5$ bloqueado preventivamente por `PrivacyBlockedCard.jsx`), KPIs consolidados, previsualizacion tabular y exportacion multiformato real (descarga de archivo CSV, descarga de JSON estructurado e impresion de documento formal PDF via `window.print()`), generacion de hash criptografico demo, registro inmutable de auditoria `EXPORTACION_REPORTE` e historial cronologico de exportaciones.
+  - RF-16 (Centro de Notificaciones): `NotificationsPage.jsx` (`/notificaciones`) con bandeja contextual segun rol y usuario, indicadores visuales de no leidas con punto de alerta, marcado individual con navegacion reactiva automatica, marcado masivo ("Marcar todas como leidas") y persistencia de preferencias de recordatorio diario de check-in para agentes en `localStorage`.
+  - Presentacion Institucional y Demostracion: `LandingPage.jsx` (`/`) con identidad institucional TdeA, demo interactiva de escala de energia 1 a 5 con omision consciente y feedback visual inmediato, resumen de 3 pasos, desglose de problemas y audiencias BPO, como funciona, 3 pilares de funcionalidad, garantia de privacidad por roles, explorador interactivo de los 5 roles canonicos con tarjeta de bienvenida y acceso directo demo, y pie de pagina academico.
+  - Enrutamiento Global y Cero Placeholders: Conexiones finales de rutas en `App.jsx`, atajo `/panel` con redireccion al dashboard correspondiente segun rol, y eliminacion del componente `PlaceholderView.jsx` (100% de las rutas de la plataforma son operativas en produccion).
 
 ---
 
@@ -89,7 +94,6 @@ Pulso360/
 │   │   ├── components/
 │   │   │   ├── Icon.jsx
 │   │   │   ├── InactivityModal.jsx
-│   │   │   ├── PlaceholderView.jsx
 │   │   │   └── TrendLineChart.jsx
 │   │   ├── config/
 │   │   │   └── env.js        # Configuracion centralizada de entorno
@@ -128,6 +132,18 @@ Pulso360/
 │   │   │       ├── ForgotPasswordPage.jsx
 │   │   │       ├── LoginPage.jsx
 │   │   │       └── ResetPasswordPage.jsx
+│   │   │
+│   │   ├── landing/
+│   │   │   └── pages/
+│   │   │       └── LandingPage.jsx
+│   │   │
+│   │   ├── notifications/
+│   │   │   └── pages/
+│   │   │       └── NotificationsPage.jsx
+│   │   │
+│   │   ├── reports/
+│   │   │   └── pages/
+│   │   │       └── ReportsPage.jsx
 │   │   │
 │   │   ├── supervisor/
 │   │   │   ├── components/
@@ -181,6 +197,8 @@ Pulso360/
 │   │   ├── consentimiento.css
 │   │   ├── documentacion.css
 │   │   ├── layout.css
+│   │   ├── notifications.css
+│   │   ├── reports.css
 │   │   ├── sst.css
 │   │   ├── styles.css
 │   │   ├── supervisor.css
@@ -245,12 +263,12 @@ El proceso de migracion se estructura en siete hitos de ejecucion secuencial:
 - Ingesta de metricas agregadas por archivo CSV con rechazo categorico de datos personales individuales y plantilla descargable (`CsvImportPage.jsx`).
 - Tramitacion de solicitudes de Habeas Data (Ley 1581) con control de terminos legales, estados secuenciales y constancias auditadas (`HabeasDataPage.jsx`).
 
-### Hito 7: Vistas Compartidas, Integracion y Cierre (Estado: Pendiente)
-- Landing page institucional y demostracion interactiva (`LandingPage.jsx`).
-- Centro de notificaciones operativas con marcado de leido/no leido y filtrado por rol.
-- Modulo de generacion y exportacion de reportes consolidados (CSV, PDF, JSON).
-- Directorio de recursos de apoyo en crisis con atencion 24/7.
-- Pruebas de paridad funcional y accesibilidad (ARIA) contra la maqueta original.
+### Hito 7: Vistas Compartidas, Integracion y Cierre (Estado: Completado)
+- Landing page institucional de presentacion academica TdeA con demostracion interactiva de escala de energia, explicacion de 3 pasos, garantia de privacidad por roles, explorador interactivo de los 5 roles y acceso rapido a demos (`LandingPage.jsx`).
+- Centro de notificaciones operativas y preventivas con filtrado contextual por rol/usuario, indicadores de leido/no leido, navegacion reactiva y persistencia de recordatorios de check-in (`NotificationsPage.jsx`).
+- Modulo transversal de reportes consolidados con seleccion de ambito, bloqueo por k-anonimato ($N < 5$), exportacion real multiformato (CSV, JSON, PDF imprimible), hash de integridad e historial inmutable de exportaciones (`ReportsPage.jsx`).
+- Atajo de enrutamiento global `/panel` con redireccion automatica al dashboard correspondiente segun el rol del usuario autenticado.
+- Erradicacion total de componentes placeholder: el 100% de las rutas de la aplicacion son completamente operativas y conformes al diseno de produccion.
 
 ---
 

@@ -217,8 +217,8 @@ export function UsersRolesPage() {
           className="btn btn-primary"
           onClick={() => setIsCreateOpen(true)}
         >
-          <Icon name="plus" size={16} />
-          <span>Nuevo usuario</span>
+          <Icon name="userPlus" size={16} />
+          <span>Crear usuario</span>
         </button>
       </div>
 

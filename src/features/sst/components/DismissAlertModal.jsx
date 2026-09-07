@@ -20,30 +20,22 @@ export function DismissAlertModal({ alertItem, onClose, onConfirm }) {
   return (
     <div className="modal-overlay active" role="dialog" aria-modal="true" aria-labelledby="modalDismissTitle">
       <div className="modal-box" style={{ maxWidth: '500px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
+        <div className="modal-header">
           <div>
-            <h2 id="modalDismissTitle" style={{ fontSize: '18px', fontWeight: '700', color: 'var(--c-texto)', margin: '0 0 4px 0' }}>
+            <h2 id="modalDismissTitle" className="modal-title">
               Descartar alerta preventiva
             </h2>
-            <p style={{ fontSize: '13px', color: 'var(--c-texto-suave)', margin: 0 }}>
+            <div className="modal-subtitle">
               {alertItem.rule} · {alertItem.campaign}
-            </p>
+            </div>
           </div>
           <button
             type="button"
+            className="modal-close-btn"
             onClick={onClose}
             aria-label="Cerrar modal"
-            style={{
-              background: 'transparent',
-              border: 'none',
-              cursor: 'pointer',
-              color: 'var(--c-texto-suave)',
-              padding: '4px',
-              display: 'flex',
-              alignItems: 'center'
-            }}
           >
-            <Icon name="x" size={20} />
+            <Icon name="close" size={18} />
           </button>
         </div>
 

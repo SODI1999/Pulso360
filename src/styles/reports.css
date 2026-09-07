@@ -1,0 +1,154 @@
+/* src/styles/reports.css */
+/* Estilos específicos para el Centro de Reportes Agregados (RF-12) */
+
+.reports-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.reports-controls-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.reports-checkbox-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
+.reports-checkbox-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  cursor: pointer;
+  background: var(--c-fondo-alt, rgba(0, 0, 0, 0.02));
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--c-borde-suave);
+  transition: all var(--transition-fast);
+}
+
+.reports-checkbox-item:hover {
+  border-color: var(--c-primario);
+}
+
+.reports-format-radios {
+  display: flex;
+  gap: var(--space-4);
+  margin-top: var(--space-2);
+}
+
+.reports-radio-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13.5px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.reports-preview-card {
+  border: 1px solid var(--c-borde-suave);
+  background: var(--c-superficie);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  margin-top: var(--space-4);
+}
+
+.reports-preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--c-borde-suave);
+  margin-bottom: var(--space-4);
+}
+
+.reports-kpis-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--space-3);
+  margin: var(--space-4) 0;
+}
+
+.reports-kpi-item {
+  background: var(--c-fondo-alt, rgba(0, 0, 0, 0.02));
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  border-left: 3px solid var(--c-primario);
+}
+
+.reports-kpi-label {
+  font-size: 12px;
+  color: var(--c-texto-suave);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+}
+
+.reports-kpi-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--c-texto);
+  margin-top: 2px;
+}
+
+.reports-meta-footer {
+  font-size: 12px;
+  color: var(--c-texto-suave);
+  line-height: 1.5;
+  border-top: 1px dashed var(--c-borde-suave);
+  padding-top: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.reports-result-box {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  margin-top: var(--space-4);
+}
+
+.reports-result-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-bottom: var(--space-2);
+}
+
+.reports-actions-row {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  margin-top: var(--space-3);
+}
+
+/* Optimización para impresión (PDF) */
+@media print {
+  .app-sidebar,
+  .app-topbar,
+  .page-header,
+  .reports-controls-grid,
+  .reports-actions-row,
+  .btn,
+  .alert-banner {
+    display: none !important;
+  }
+
+  .reports-preview-card {
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+}

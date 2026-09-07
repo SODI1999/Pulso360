@@ -1,6 +1,8 @@
 // src/features/agent/components/NlpCorrectionModal.jsx
 // Modal de intervención humana (Human-in-the-loop) para corregir clasificaciones NLP
 
+import { Icon } from '../../../core/components/Icon';
+
 export function NlpCorrectionModal({
     isOpen,
     allCategories,
@@ -16,12 +18,19 @@ export function NlpCorrectionModal({
     return (
         <div className="modal-overlay active" role="dialog" aria-modal="true">
             <div className="modal-box" style={{ maxWidth: '540px' }}>
-                <h2 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '8px', color: 'var(--c-texto)' }}>
-                    Corregir clasificación orientativa
-                </h2>
-                <p style={{ fontSize: '13px', color: 'var(--c-texto-suave)', marginBottom: '16px' }}>
-                    Tu corrección humana tiene prioridad absoluta y quedará registrada en tu historial de intervenciones.
-                </p>
+                <div className="modal-header">
+                    <div>
+                        <h2 className="modal-title">
+                            Corregir clasificación orientativa
+                        </h2>
+                        <p className="modal-subtitle">
+                            Tu corrección humana tiene prioridad absoluta y quedará registrada en tu historial de intervenciones.
+                        </p>
+                    </div>
+                    <button type="button" className="modal-close-btn" onClick={onClose} aria-label="Cerrar">
+                        <Icon name="close" size={18} />
+                    </button>
+                </div>
 
                 <div className="category-grid" style={{ marginBottom: '16px', maxHeight: '240px', overflowY: 'auto' }}>
                     {allCategories.map(categoryName => {
@@ -76,12 +85,19 @@ export function NlpHistoryModal({ isOpen, history = [], onClose }) {
     return (
         <div className="modal-overlay active" role="dialog" aria-modal="true">
             <div className="modal-box" style={{ maxWidth: '580px' }}>
-                <h2 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '6px', color: 'var(--c-texto)' }}>
-                    Historial de correcciones NLP
-                </h2>
-                <p style={{ fontSize: '13px', color: 'var(--c-texto-suave)', marginBottom: '16px' }}>
-                    Trazabilidad cronológica de todas las intervenciones humanas sobre esta entrada.
-                </p>
+                <div className="modal-header">
+                    <div>
+                        <h2 className="modal-title">
+                            Historial de correcciones NLP
+                        </h2>
+                        <p className="modal-subtitle">
+                            Trazabilidad cronológica de todas las intervenciones humanas sobre esta entrada.
+                        </p>
+                    </div>
+                    <button type="button" className="modal-close-btn" onClick={onClose} aria-label="Cerrar">
+                        <Icon name="close" size={18} />
+                    </button>
+                </div>
 
                 <div style={{ maxHeight: '300px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '10px' }}>
                     {history.map((h, idx) => {

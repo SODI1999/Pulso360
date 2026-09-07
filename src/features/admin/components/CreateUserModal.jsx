@@ -65,11 +65,14 @@ export function CreateUserModal({
   };
 
   return (
-    <div className="modal-overlay" onClick={onClose} role="dialog" aria-modal="true">
+    <div className="modal-overlay active" onClick={onClose} role="dialog" aria-modal="true">
       <div className="modal-card" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <div>
-            <h2 className="modal-title">Registrar Nuevo Usuario</h2>
+            <h2 className="modal-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Icon name="userPlus" size={20} />
+              <span>Crear nuevo usuario</span>
+            </h2>
             <div className="modal-subtitle">Control de accesos y asignación de rol canónico (RF-15)</div>
           </div>
           <button type="button" className="btn btn-ghost btn-sm" onClick={onClose} aria-label="Cerrar modal">

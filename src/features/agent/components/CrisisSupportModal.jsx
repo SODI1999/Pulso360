@@ -22,13 +22,20 @@ export function CrisisSupportModal({
             <div className="modal-box" style={{ maxWidth: '520px' }}>
                 {!priorityStep ? (
                     <div>
-                        <h2 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '8px', color: 'var(--c-texto)' }}>
-                            Estás a tiempo de pedir ayuda
-                        </h2>
-                        <p style={{ fontSize: '13.5px', color: 'var(--c-texto-suave)', lineHeight: '1.5', marginBottom: '20px' }}>
-                            Lo que escribiste sugiere que podrías estar pasando por un momento muy difícil o de alta carga emocional. Pulso360 no es un servicio de salud y no reemplaza la orientación profesional. Nada se enviará a terceros sin tu decisión explícita.
-                        </p>
-                        <div className="modal-footer" style={{ gap: '8px', flexWrap: 'wrap' }}>
+                        <div className="modal-header">
+                            <div>
+                                <h2 className="modal-title">
+                                    Estás a tiempo de pedir ayuda
+                                </h2>
+                                <p className="modal-subtitle">
+                                    Lo que escribiste sugiere que podrías estar pasando por un momento muy difícil o de alta carga emocional. Pulso360 no es un servicio de salud y no reemplaza la orientación profesional. Nada se enviará a terceros sin tu decisión explícita.
+                                </p>
+                            </div>
+                            <button type="button" className="modal-close-btn" onClick={onClose} aria-label="Cerrar">
+                                <Icon name="close" size={18} />
+                            </button>
+                        </div>
+                        <div className="modal-footer" style={{ gap: '8px', flexWrap: 'wrap', marginTop: '20px' }}>
                             <Link to="/apoyo-crisis" className="btn btn-primary" onClick={onClose}>
                                 Ver líneas de atención oficiales
                             </Link>
@@ -42,9 +49,19 @@ export function CrisisSupportModal({
                     </div>
                 ) : (
                     <div>
-                        <h2 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '8px', color: 'var(--c-texto)' }}>
-                            Contacto prioritario con SST
-                        </h2>
+                        <div className="modal-header">
+                            <div>
+                                <h2 className="modal-title">
+                                    Contacto prioritario con SST
+                                </h2>
+                                <p className="modal-subtitle">
+                                    Elige la modalidad para la atención de tu caso. Ningún texto de tu bitácora será enviado.
+                                </p>
+                            </div>
+                            <button type="button" className="modal-close-btn" onClick={onClose} aria-label="Cerrar">
+                                <Icon name="close" size={18} />
+                            </button>
+                        </div>
 
                         {!hasC5Consent ? (
                             <div className="alert-banner warn" style={{ margin: '16px 0' }}>
@@ -59,10 +76,7 @@ export function CrisisSupportModal({
                                 </div>
                             </div>
                         ) : (
-                            <div>
-                                <p style={{ fontSize: '13.5px', color: 'var(--c-texto-suave)', marginBottom: '14px' }}>
-                                    Elige la modalidad para la atención de tu caso. Ningún texto de tu bitácora será enviado.
-                                </p>
+                            <div style={{ marginTop: '16px' }}>
 
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>
                                     <label style={{ display: 'flex', gap: '10px', padding: '10px', border: '1px solid var(--c-borde-suave)', borderRadius: 'var(--radius-md)', cursor: 'pointer' }}>
