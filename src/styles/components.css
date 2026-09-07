@@ -279,7 +279,8 @@
   color: var(--c-info);
   border: 1px solid var(--c-info-border);
 }
-.badge-neutral {
+.badge-neutral,
+.badge-muted {
   background-color: var(--c-fondo);
   color: var(--c-texto-suave);
   border: 1px solid var(--c-borde-suave);

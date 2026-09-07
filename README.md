@@ -33,7 +33,7 @@ El sistema esta disenado bajo principios de Privacidad desde el Diseno (Privacy 
 
 ## 3. Estado Actual del Proyecto
 
-Los Hitos 1, 2 y 3 se encuentran completados al 100%, verificados contra los requisitos del documento de especificacion ERS y con cero deuda tecnica:
+Los Hitos 1, 2, 3 y 4 se encuentran completados al 100%, verificados contra los requisitos del documento de especificacion ERS y con cero deuda tecnica:
 
 - **Hito 1 - Autenticacion y Gobernanza**:
   - RF-01 (Autenticacion y RBAC): Login con derivacion automatica de rol, validacion previa, control de envio duplicado con spinner, bloqueo por 5 intentos fallidos y destruccion de sesiones residuales.
@@ -51,6 +51,10 @@ Los Hitos 1, 2 y 3 se encuentran completados al 100%, verificados contra los req
   - RF-10 (Canal de Acompanamiento): Formulario de contacto voluntario con SST (`SupportRequestForm.jsx`) en modalidades anonima y confidencial.
   - RF-14 (Apoyo en Crisis): Directorio de lineas de ayuda 24/7 y derivacion prioritaria a SST (`CrisisSupportPage.jsx` y `CrisisSupportModal.jsx`).
   - RF-20 (Habeas Data): Inventario de datos almacenados, portabilidad en JSON y flujo de supresion bajo confirmacion explicativa.
+- **Hito 4 - Modulo Supervisor (Monitoreo Operativo y Privacidad)**:
+  - RF-07 (k-Anonimato N >= 5): Bloqueo visual deliberado con `PrivacyBlockedCard.jsx` ante subgrupos de tamano muestral insuficiente y limite rigido de 2 filtros simultaneos.
+  - RF-09 (Gestion de Intervenciones): Seguimiento de planes coordinados con SST (`ActionsPage.jsx`), avance porcentual y registro de notas de seguimiento (`ActionFollowupModal.jsx`) con auditoria inmutable.
+  - RF-11 (Panel de Supervision): Dashboard colectivo con indicadores agregados de energia, sobrecarga y participacion, evolucion semanal Canvas 2D y tabla de factores clave (`TeamDashboardPage.jsx`).
 
 ---
 
@@ -101,16 +105,26 @@ Pulso360/
 │   │   │       ├── MyWellbeingPage.jsx
 │   │   │       └── SupportChannelPage.jsx
 │   │   │
-│   │   └── auth/
+│   │   ├── auth/
+│   │   │   ├── components/
+│   │   │   │   ├── DemoAccountsCard.jsx
+│   │   │   │   └── LoginForm.jsx
+│   │   │   └── pages/
+│   │   │       ├── ConsentPage.jsx
+│   │   │       ├── ForbiddenPage.jsx
+│   │   │       ├── ForgotPasswordPage.jsx
+│   │   │       ├── LoginPage.jsx
+│   │   │       └── ResetPasswordPage.jsx
+│   │   │
+│   │   └── supervisor/
 │   │       ├── components/
-│   │       │   ├── DemoAccountsCard.jsx
-│   │       │   └── LoginForm.jsx
+│   │       │   ├── ActionFollowupModal.jsx
+│   │       │   ├── PrivacyBlockedCard.jsx
+│   │       │   ├── TeamFactorsTable.jsx
+│   │       │   └── TeamKpiGrid.jsx
 │   │       └── pages/
-│   │           ├── ConsentPage.jsx
-│   │           ├── ForbiddenPage.jsx
-│   │           ├── ForgotPasswordPage.jsx
-│   │           ├── LoginPage.jsx
-│   │           └── ResetPasswordPage.jsx
+│   │           ├── ActionsPage.jsx
+│   │           └── TeamDashboardPage.jsx
 │   │
 │   ├── styles/
 │   │   ├── auth.css
@@ -120,6 +134,7 @@ Pulso360/
 │   │   ├── documentacion.css
 │   │   ├── layout.css
 │   │   ├── styles.css
+│   │   ├── supervisor.css
 │   │   ├── tokens.css
 │   │   └── umbral.css
 │   │
@@ -160,7 +175,7 @@ El proceso de migracion se estructura en siete hitos de ejecucion secuencial:
 - Bitacora privada con advertencia de datos de terceros, analisis NLP y modal de correccion manual (`JournalPage.jsx`).
 - Vistas de bienestar personal (`MyWellbeingPage.jsx`), desglose analitico (`MyAnalysisPage.jsx`), solicitudes de acompanamiento (`SupportChannelPage.jsx`) y modulo de Habeas Data (`MyDataPrivacyPage.jsx`).
 
-### Hito 4: Modulo Supervisor - Monitoreo Operativo (Estado: Pendiente)
+### Hito 4: Modulo Supervisor - Monitoreo Operativo (Estado: Completado)
 - Panel de indicadores de equipo (`TeamDashboardPage.jsx`).
 - Aplicacion estricta de umbral de privacidad (k-anonimato N >= 5) con bloqueo visual si el equipo no cumple la cuota.
 - Registro y seguimiento de acciones operativas de apoyo (`ActionsPage.jsx`).

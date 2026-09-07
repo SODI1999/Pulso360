@@ -24,6 +24,10 @@ import { SupportChannelPage } from './features/agent/pages/SupportChannelPage';
 import { MyDataPrivacyPage } from './features/agent/pages/MyDataPrivacyPage';
 import { CrisisSupportPage } from './features/agent/pages/CrisisSupportPage';
 
+// Páginas del Módulo Supervisor (Hito 4)
+import { TeamDashboardPage } from './features/supervisor/pages/TeamDashboardPage';
+import { ActionsPage } from './features/supervisor/pages/ActionsPage';
+
 // Componente para resolver la ruta raíz según el rol del usuario conectado
 function RootRedirect() {
     const user = authService.getCurrentUser();
@@ -117,12 +121,12 @@ function App() {
                         }
                     />
 
-                    {/* --- MÓDULO SUPERVISOR --- */}
+                    {/* --- MÓDULO SUPERVISOR (HITO 4) --- */}
                     <Route
                         path="/supervisor/panel"
                         element={
                             <ProtectedRoute allowedRoles={['supervisor']}>
-                                <PlaceholderView title="Panel de Equipo" subtitle="Indicadores agregados con regla de k-anonimato (N >= 5)" icon="group" milestone="Hito 4" />
+                                <TeamDashboardPage />
                             </ProtectedRoute>
                         }
                     />
@@ -130,7 +134,7 @@ function App() {
                         path="/supervisor/acciones"
                         element={
                             <ProtectedRoute allowedRoles={['supervisor']}>
-                                <PlaceholderView title="Intervenciones" subtitle="Registro de acciones de apoyo y seguimiento operativo" icon="task_alt" milestone="Hito 4" />
+                                <ActionsPage />
                             </ProtectedRoute>
                         }
                     />

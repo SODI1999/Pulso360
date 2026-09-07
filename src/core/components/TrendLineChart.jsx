@@ -6,11 +6,15 @@ import { useEffect, useRef } from 'react';
 export function TrendLineChart({
     labels = [],
     values = [],
+    dataPoints,
     strokeColor = '#006a61',
+    color,
     height = 180,
     className = ''
 }) {
     const canvasRef = useRef(null);
+    const chartValues = dataPoints && dataPoints.length > 0 ? dataPoints : values;
+    const activeColor = color || strokeColor;
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -24,13 +28,13 @@ export function TrendLineChart({
         canvas.height = height;
         ctx.clearRect(0, 0, width, height);
 
-        if (!values.length) return;
+        if (!chartValues.length) return;
 
         const padding = 30;
         const chartWidth = Math.max(1, width - (padding * 2));
         const chartHeight = Math.max(1, height - (padding * 2));
 
-        const maxValue = Math.max(...values, 5);
+        const maxValue = Math.max(...chartValues, 5);
         const minValue = 0;
 
         // 1. Línea base del eje X
@@ -42,15 +46,15 @@ export function TrendLineChart({
         ctx.stroke();
 
         // 2. Calcular coordenadas (x, y) para cada punto de datos
-        const points = values.map((value, index) => {
-            const denominator = values.length > 1 ? values.length - 1 : 1;
+        const points = chartValues.map((value, index) => {
+            const denominator = chartValues.length > 1 ? chartValues.length - 1 : 1;
             const x = padding + (index / denominator) * chartWidth;
             const y = height - padding - ((value - minValue) / (maxValue - minValue)) * chartHeight;
             return { x, y, value };
         });
 
         // 3. Dibujar la línea de tendencia
-        ctx.strokeStyle = strokeColor;
+        ctx.strokeStyle = activeColor;
         ctx.lineWidth = 2.5;
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
@@ -67,7 +71,7 @@ export function TrendLineChart({
         // 4. Dibujar puntos circulares y etiquetas numéricas
         points.forEach((point, index) => {
             // Punto exterior
-            ctx.fillStyle = strokeColor;
+            ctx.fillStyle = activeColor;
             ctx.beginPath();
             ctx.arc(point.x, point.y, 4, 0, Math.PI * 2);
             ctx.fill();
@@ -84,7 +88,7 @@ export function TrendLineChart({
             ctx.fillText(String(point.value), point.x, point.y - 8);
         });
 
-    }, [labels, values, strokeColor, height]);
+    }, [labels, chartValues, activeColor, height]);
 
     return (
         <div style={{ width: '100%', position: 'relative' }} className={className}>
