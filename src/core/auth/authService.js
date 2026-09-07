@@ -15,6 +15,15 @@ export const roleLabels = {
     admin: 'Administrador'
 };
 
+// Rutas base o paneles de bienvenida para cada rol
+export const roleHomePaths = {
+    agente: '/agente/panel',
+    supervisor: '/supervisor/panel',
+    sst: '/sst/panel',
+    auditor: '/auditor/auditoria',
+    admin: '/admin/organizacion'
+};
+
 // Menús de navegación por rol
 export const roleMenus = {
     agente: [

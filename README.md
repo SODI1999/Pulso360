@@ -53,22 +53,16 @@ Pulso360/
 ├── src/
 │   ├── core/
 │   │   ├── auth/
-│   │   │   └── authService.js
+│   │   │   ├── authService.js
+│   │   │   └── ProtectedRoute.jsx
 │   │   ├── components/
-│   │   │   └── Icon.jsx
-│   │   ├── storage/
-│   │   │   └── pulsoStore.js
-│   │   └── styles/
-│   │       ├── auth.css
-│   │       ├── bitacora.css
-│   │       ├── components.css
-│   │       ├── consentimiento.css
-│   │       ├── documentacion.css
-│   │       ├── generated-utilities.css
-│   │       ├── layout.css
-│   │       ├── styles.css
-│   │       ├── tokens.css
-│   │       └── umbral.css
+│   │   │   ├── Icon.jsx
+│   │   │   ├── InactivityModal.jsx
+│   │   │   └── PlaceholderView.jsx
+│   │   ├── layout/
+│   │   │   └── AppLayout.jsx
+│   │   └── storage/
+│   │       └── pulsoStore.js
 │   │
 │   ├── features/
 │   │   └── auth/
@@ -77,12 +71,24 @@ Pulso360/
 │   │       │   └── LoginForm.jsx
 │   │       └── pages/
 │   │           ├── ConsentPage.jsx
+│   │           ├── ForbiddenPage.jsx
 │   │           ├── ForgotPasswordPage.jsx
 │   │           ├── LoginPage.jsx
 │   │           └── ResetPasswordPage.jsx
 │   │
+│   ├── styles/
+│   │   ├── auth.css
+│   │   ├── bitacora.css
+│   │   ├── components.css
+│   │   ├── consentimiento.css
+│   │   ├── documentacion.css
+│   │   ├── generated-utilities.css
+│   │   ├── layout.css
+│   │   ├── styles.css
+│   │   ├── tokens.css
+│   │   └── umbral.css
+│   │
 │   ├── App.jsx
-│   ├── index.css
 │   └── main.jsx
 │
 ├── index.html
@@ -105,12 +111,12 @@ El proceso de migracion se estructura en siete hitos de ejecucion secuencial:
 - Vistas `LoginPage.jsx`, `ConsentPage.jsx`, `ForgotPasswordPage.jsx` y `ResetPasswordPage.jsx`.
 - Blindaje de seguridad contra sesiones residuales.
 
-### Hito 2: Nucleo de Layout, Navegacion y Seguridad (Estado: Pendiente)
-- Implementacion de `ProtectedRoute.jsx` para control de acceso por roles (RBAC).
-- Implementacion de `AppLayout.jsx` con sidebar dinamico segun rol y topbar con contador de avisos.
+### Hito 2: Nucleo de Layout, Navegacion y Seguridad (Estado: Completado)
+- Implementacion de `ProtectedRoute.jsx` para control de acceso por roles (RBAC) y auditoria inmutable.
+- Implementacion de `AppLayout.jsx` con sidebar dinamico segun rol/consentimientos y topbar con contador de avisos.
 - Temporizador de inactividad de 30 minutos con modal de advertencia de 60 segundos (`InactivityModal.jsx`).
 - Vista de acceso denegado (`ForbiddenPage.jsx` / 403).
-- Configuracion del arbol de rutas maestras en `App.jsx`.
+- Configuracion del arbol de rutas maestras en `App.jsx` y vista provisional `PlaceholderView.jsx`.
 
 ### Hito 3: Modulo Agente - Experiencia Individual (Estado: Pendiente)
 - Motor lexico determinista en JavaScript puro (`nlpEngine.js`) con 8 categorias, negaciones e intensificadores.
