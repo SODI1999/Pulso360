@@ -33,7 +33,7 @@ El sistema esta disenado bajo principios de Privacidad desde el Diseno (Privacy 
 
 ## 3. Estado Actual del Proyecto
 
-Los Hitos 1, 2, 3, 4 y 5 se encuentran completados al 100%, verificados contra los requisitos del documento de especificacion ERS y con cero deuda tecnica:
+Los Hitos 1, 2, 3, 4, 5 y 6 se encuentran completados al 100%, verificados contra los requisitos del documento de especificacion ERS y con cero deuda tecnica:
 
 - **Hito 1 - Autenticacion y Gobernanza**:
   - RF-01 (Autenticacion y RBAC): Login con derivacion automatica de rol, validacion previa, control de envio duplicado con spinner, bloqueo por 5 intentos fallidos y destruccion de sesiones residuales.
@@ -61,6 +61,13 @@ Los Hitos 1, 2, 3, 4 y 5 se encuentran completados al 100%, verificados contra l
   - RF-08 (Motor de Reglas Preventivas): `AlertRulesPage.jsx` con constructor reactivo en lenguaje natural (`RuleFormCard.jsx`), simulacion retrospectiva de 90 dias y propuesta formal al Administrador con separacion de funciones.
   - RF-09 (Planes de Intervencion Colectiva): `InterventionsPage.jsx` con formulacion de planes (`NewInterventionForm.jsx`), calculo automatico de linea base y bloqueo preventivo si el ambito seleccionado vulnera el k-anonimato (N < 5).
   - RF-10 (Buzon de Acompanamiento): `SupportInboxPage.jsx` con atencion confidencial de solicitudes voluntarias, proteccion rigurosa de identidad para casos anonimos y reserva de uso exclusivo para SST en casos confidenciales.
+- **Hito 6 - Modulos Administrador y Auditor (Gobierno, Organizacion y Cadena Inmutable de Auditoria)**:
+  - RF-13 (Registro Inmutable de Auditoria): `AuditLogPage.jsx` con registro append-only de metadatos no sensibles, algoritmo de verificacion de integridad de hash chain y exportacion criptografica JSON auditada.
+  - RF-15 (Estructura Organizacional y k-Anonimato): `OrganizationPage.jsx` con arbol de campanas y equipos, distincion visual de k-anonimato ($N < 5$ vs $N \ge 5$), modales `CampaignModal.jsx`, `TeamModal.jsx`, `AssignSupervisorModal.jsx` y restablecimiento demo seguro.
+  - RF-15 (Usuarios y Roles RBAC): `UsersRolesPage.jsx` con tabla de cuentas, catalogo estricto de 5 roles canonicos, modales `CreateUserModal.jsx` y `ManageUserModal.jsx` con proteccion contra auto-suspension del administrador activo.
+  - RF-15 (Parametros Institucionales y SLAs): `SystemParamsPage.jsx` con regulacion de umbral $N$, retencion y SLAs de respuesta, alerta dinamica de riesgo con justificacion obligatoria (>= 10 caracteres), versionado de politicas con re-consentimiento obligatorio, gestion de modelos NLP y aprobacion de reglas de SST.
+  - RF-15 (Importacion CSV Agregada): `CsvImportPage.jsx` con rechazo categorico de identificadores personales individuales (`status: DENEGADO`), validacion de columnas requeridas, vista previa tabular y descarga de plantilla.
+  - RF-14 (Gestion Habeas Data Ley 1581): `HabeasDataPage.jsx` con control de terminos normativos, alerta de radicados vencidos, flujo secuencial de estados y modal de constancia administrativa `HabeasAdvanceModal.jsx`.
 
 ---
 
@@ -146,7 +153,28 @@ Pulso360/
 │   │           ├── SstDashboardPage.jsx
 │   │           └── SupportInboxPage.jsx
 │   │
+│   │   ├── auditor/
+│   │   │   └── pages/
+│   │   │       └── AuditLogPage.jsx
+│   │   │
+│   │   └── admin/
+│   │       ├── components/
+│   │       │   ├── AssignSupervisorModal.jsx
+│   │       │   ├── CampaignModal.jsx
+│   │       │   ├── CreateUserModal.jsx
+│   │       │   ├── HabeasAdvanceModal.jsx
+│   │       │   ├── ManageUserModal.jsx
+│   │       │   └── TeamModal.jsx
+│   │       └── pages/
+│   │           ├── CsvImportPage.jsx
+│   │           ├── HabeasDataPage.jsx
+│   │           ├── OrganizationPage.jsx
+│   │           ├── SystemParamsPage.jsx
+│   │           └── UsersRolesPage.jsx
+│   │
 │   ├── styles/
+│   │   ├── admin.css
+│   │   ├── auditor.css
 │   │   ├── auth.css
 │   │   ├── bitacora.css
 │   │   ├── components.css
@@ -209,13 +237,13 @@ El proceso de migracion se estructura en siete hitos de ejecucion secuencial:
 - Formulacion y seguimiento macro de intervenciones colectivas (`InterventionsPage.jsx`).
 - Buzon confidencial de atencion y acompanamiento para solicitudes voluntarias (`SupportInboxPage.jsx`).
 
-### Hito 6: Modulos Administrador y Auditor - Gobierno y Trazabilidad (Estado: Pendiente)
-- Gestion de sedes, campanas y equipos organizacionales.
-- Administracion de usuarios y asignacion de roles.
-- Parametrizacion de umbrales, SLAs y versiones de politicas.
-- Importacion masiva de datos simulada mediante archivos CSV.
-- Atencion de solicitudes legales de privacidad (Habeas Data).
-- Registro inmutable de auditoria con verificacion de cadena de hashes criptograficos simulados.
+### Hito 6: Modulos Administrador y Auditor - Gobierno y Trazabilidad (Estado: Completado)
+- Registro inmutable de auditoria con verificacion de integridad de hash chain y exportacion de metadatos (`AuditLogPage.jsx`).
+- Jerarquia organizacional de campanas y equipos con visualizacion de k-anonimato ($N < 5$ vs $N \ge 5$) y modales de campanas, equipos y supervisores (`OrganizationPage.jsx`).
+- Administracion de cuentas y asignacion de los 5 roles canonicos con modales desacoplados y proteccion contra auto-suspension (`UsersRolesPage.jsx`).
+- Parametrizacion global de umbrales, retencion y SLAs de servicio con alerta de riesgo y justificacion obligatoria, versionado de politicas y lexico NLP (`SystemParamsPage.jsx`).
+- Ingesta de metricas agregadas por archivo CSV con rechazo categorico de datos personales individuales y plantilla descargable (`CsvImportPage.jsx`).
+- Tramitacion de solicitudes de Habeas Data (Ley 1581) con control de terminos legales, estados secuenciales y constancias auditadas (`HabeasDataPage.jsx`).
 
 ### Hito 7: Vistas Compartidas, Integracion y Cierre (Estado: Pendiente)
 - Landing page institucional y demostracion interactiva (`LandingPage.jsx`).

@@ -49,7 +49,7 @@ export const roleMenus = {
         { label: 'Reportes Agregados', icon: 'summarize', href: '/reportes' }
     ],
     auditor: [
-        { label: 'Registro de Auditoría', icon: 'policy', href: '/auditor/auditoria' }
+        { label: 'Registro de Auditoría', icon: 'audit', href: '/auditor/auditoria' }
     ],
     admin: [
         { label: 'Organización', icon: 'domain', href: '/admin/organizacion' },

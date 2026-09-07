@@ -35,6 +35,16 @@ import { AlertRulesPage } from './features/sst/pages/AlertRulesPage';
 import { InterventionsPage } from './features/sst/pages/InterventionsPage';
 import { SupportInboxPage } from './features/sst/pages/SupportInboxPage';
 
+// Páginas del Módulo Auditor (Hito 6)
+import { AuditLogPage } from './features/auditor/pages/AuditLogPage';
+
+// Páginas del Módulo Administrador (Hito 6)
+import { OrganizationPage } from './features/admin/pages/OrganizationPage';
+import { UsersRolesPage } from './features/admin/pages/UsersRolesPage';
+import { SystemParamsPage } from './features/admin/pages/SystemParamsPage';
+import { CsvImportPage } from './features/admin/pages/CsvImportPage';
+import { HabeasDataPage } from './features/admin/pages/HabeasDataPage';
+
 // Componente para resolver la ruta raíz según el rol del usuario conectado
 function RootRedirect() {
     const user = authService.getCurrentUser();
@@ -188,22 +198,22 @@ function App() {
                         }
                     />
 
-                    {/* --- MÓDULO AUDITOR --- */}
+                    {/* --- MÓDULO AUDITOR (Hito 6) --- */}
                     <Route
                         path="/auditor/auditoria"
                         element={
                             <ProtectedRoute allowedRoles={['auditor']}>
-                                <PlaceholderView title="Registro de Auditoría" subtitle="Trazabilidad inmutable con verificación de hash chain" icon="policy" milestone="Hito 6" />
+                                <AuditLogPage />
                             </ProtectedRoute>
                         }
                     />
 
-                    {/* --- MÓDULO ADMINISTRADOR --- */}
+                    {/* --- MÓDULO ADMINISTRADOR (Hito 6) --- */}
                     <Route
                         path="/admin/organizacion"
                         element={
                             <ProtectedRoute allowedRoles={['admin']}>
-                                <PlaceholderView title="Estructura Organizacional" subtitle="Gestión de sedes, campañas y equipos" icon="domain" milestone="Hito 6" />
+                                <OrganizationPage />
                             </ProtectedRoute>
                         }
                     />
@@ -211,7 +221,7 @@ function App() {
                         path="/admin/usuarios-roles"
                         element={
                             <ProtectedRoute allowedRoles={['admin']}>
-                                <PlaceholderView title="Usuarios y Roles" subtitle="Control de accesos y estados de cuenta" icon="manage_accounts" milestone="Hito 6" />
+                                <UsersRolesPage />
                             </ProtectedRoute>
                         }
                     />
@@ -219,7 +229,7 @@ function App() {
                         path="/admin/parametros"
                         element={
                             <ProtectedRoute allowedRoles={['admin']}>
-                                <PlaceholderView title="Parámetros del Sistema" subtitle="Versiones de póliza y variables globales" icon="tune" milestone="Hito 6" />
+                                <SystemParamsPage />
                             </ProtectedRoute>
                         }
                     />
@@ -227,7 +237,7 @@ function App() {
                         path="/admin/importar"
                         element={
                             <ProtectedRoute allowedRoles={['admin']}>
-                                <PlaceholderView title="Importación CSV" subtitle="Carga masiva de datos organizacionales" icon="upload_file" milestone="Hito 6" />
+                                <CsvImportPage />
                             </ProtectedRoute>
                         }
                     />
@@ -235,7 +245,7 @@ function App() {
                         path="/admin/solicitudes"
                         element={
                             <ProtectedRoute allowedRoles={['admin']}>
-                                <PlaceholderView title="Habeas Data" subtitle="Atención de derechos de cancelación y oposición" icon="shield" milestone="Hito 6" />
+                                <HabeasDataPage />
                             </ProtectedRoute>
                         }
                     />
