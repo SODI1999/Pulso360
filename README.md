@@ -33,7 +33,7 @@ El sistema esta disenado bajo principios de Privacidad desde el Diseno (Privacy 
 
 ## 3. Estado Actual del Proyecto
 
-Los Hitos 1, 2, 3 y 4 se encuentran completados al 100%, verificados contra los requisitos del documento de especificacion ERS y con cero deuda tecnica:
+Los Hitos 1, 2, 3, 4 y 5 se encuentran completados al 100%, verificados contra los requisitos del documento de especificacion ERS y con cero deuda tecnica:
 
 - **Hito 1 - Autenticacion y Gobernanza**:
   - RF-01 (Autenticacion y RBAC): Login con derivacion automatica de rol, validacion previa, control de envio duplicado con spinner, bloqueo por 5 intentos fallidos y destruccion de sesiones residuales.
@@ -55,6 +55,12 @@ Los Hitos 1, 2, 3 y 4 se encuentran completados al 100%, verificados contra los 
   - RF-07 (k-Anonimato N >= 5): Bloqueo visual deliberado con `PrivacyBlockedCard.jsx` ante subgrupos de tamano muestral insuficiente y limite rigido de 2 filtros simultaneos.
   - RF-09 (Gestion de Intervenciones): Seguimiento de planes coordinados con SST (`ActionsPage.jsx`), avance porcentual y registro de notas de seguimiento (`ActionFollowupModal.jsx`) con auditoria inmutable.
   - RF-11 (Panel de Supervision): Dashboard colectivo con indicadores agregados de energia, sobrecarga y participacion, evolucion semanal Canvas 2D y tabla de factores clave (`TeamDashboardPage.jsx`).
+- **Hito 5 - Modulo SST (Vigilancia Epidemiologica y Alertas Preventivas)**:
+  - RF-07 / RF-11 (Vigilancia Epidemiologica y Mapa de Calor): `SstDashboardPage.jsx` con KPIs agregados, mapa de distribucion de 8 categorias NLP (`HeatmapGrid.jsx`) con supresion primaria (N < 5) y secundaria (menor visible) y tabla de dimensiones ocupacionales.
+  - RF-08 (Bandeja de Alertas Tempranas): `AlertsInboxPage.jsx` con ciclo de vida interactivo (`GENERADA`, `EN_REVISION`, `VALIDADA`, `INTERVENCION_CREADA`, `EN_SEGUIMIENTO`, `CERRADA`), descarte con justificacion obligatoria (>= 20 caracteres) en `DismissAlertModal.jsx` y creacion automatica de intervenciones.
+  - RF-08 (Motor de Reglas Preventivas): `AlertRulesPage.jsx` con constructor reactivo en lenguaje natural (`RuleFormCard.jsx`), simulacion retrospectiva de 90 dias y propuesta formal al Administrador con separacion de funciones.
+  - RF-09 (Planes de Intervencion Colectiva): `InterventionsPage.jsx` con formulacion de planes (`NewInterventionForm.jsx`), calculo automatico de linea base y bloqueo preventivo si el ambito seleccionado vulnera el k-anonimato (N < 5).
+  - RF-10 (Buzon de Acompanamiento): `SupportInboxPage.jsx` con atencion confidencial de solicitudes voluntarias, proteccion rigurosa de identidad para casos anonimos y reserva de uso exclusivo para SST en casos confidenciales.
 
 ---
 
@@ -116,15 +122,29 @@ Pulso360/
 │   │   │       ├── LoginPage.jsx
 │   │   │       └── ResetPasswordPage.jsx
 │   │   │
-│   │   └── supervisor/
+│   │   ├── supervisor/
+│   │   │   ├── components/
+│   │   │   │   ├── ActionFollowupModal.jsx
+│   │   │   │   ├── PrivacyBlockedCard.jsx
+│   │   │   │   ├── TeamFactorsTable.jsx
+│   │   │   │   └── TeamKpiGrid.jsx
+│   │   │   └── pages/
+│   │   │       ├── ActionsPage.jsx
+│   │   │       └── TeamDashboardPage.jsx
+│   │   │
+│   │   └── sst/
 │   │       ├── components/
-│   │       │   ├── ActionFollowupModal.jsx
-│   │       │   ├── PrivacyBlockedCard.jsx
-│   │       │   ├── TeamFactorsTable.jsx
-│   │       │   └── TeamKpiGrid.jsx
+│   │       │   ├── AlertCard.jsx
+│   │       │   ├── DismissAlertModal.jsx
+│   │       │   ├── HeatmapGrid.jsx
+│   │       │   ├── NewInterventionForm.jsx
+│   │       │   └── RuleFormCard.jsx
 │   │       └── pages/
-│   │           ├── ActionsPage.jsx
-│   │           └── TeamDashboardPage.jsx
+│   │           ├── AlertRulesPage.jsx
+│   │           ├── AlertsInboxPage.jsx
+│   │           ├── InterventionsPage.jsx
+│   │           ├── SstDashboardPage.jsx
+│   │           └── SupportInboxPage.jsx
 │   │
 │   ├── styles/
 │   │   ├── auth.css
@@ -133,6 +153,7 @@ Pulso360/
 │   │   ├── consentimiento.css
 │   │   ├── documentacion.css
 │   │   ├── layout.css
+│   │   ├── sst.css
 │   │   ├── styles.css
 │   │   ├── supervisor.css
 │   │   ├── tokens.css
@@ -180,12 +201,13 @@ El proceso de migracion se estructura en siete hitos de ejecucion secuencial:
 - Aplicacion estricta de umbral de privacidad (k-anonimato N >= 5) con bloqueo visual si el equipo no cumple la cuota.
 - Registro y seguimiento de acciones operativas de apoyo (`ActionsPage.jsx`).
 
-### Hito 5: Modulo SST - Vigilancia Epidemiologica y Alertas (Estado: Pendiente)
-- Servicio de umbrales y supresion secundaria (`thresholdService.js`).
-- Mapa de calor organizacional por dimensiones de desgaste (`HeatmapGrid.jsx`).
-- Bandeja de alertas operativas con transicion de estados (Generada, En revision, Atendida).
-- Parametrizacion de reglas de disparo de alertas preventivas.
-- Formulacion de planes de intervencion colectiva y buzon de solicitudes de acompanamiento.
+### Hito 5: Modulo SST - Vigilancia Epidemiologica y Alertas (Estado: Completado)
+- Panel de vigilancia epidemiologica y analitica agregada (`SstDashboardPage.jsx`).
+- Mapa de calor de 8 categorias NLP con supresion primaria (N < 5), supresion secundaria y redondeo (`HeatmapGrid.jsx`).
+- Bandeja de alertas tempranas con transicion de estados, descarte justificado en modal y creacion automatica de intervenciones (`AlertsInboxPage.jsx`).
+- Parametrizacion, simulacion de 90 dias y propuesta formal de reglas de alerta (`AlertRulesPage.jsx`).
+- Formulacion y seguimiento macro de intervenciones colectivas (`InterventionsPage.jsx`).
+- Buzon confidencial de atencion y acompanamiento para solicitudes voluntarias (`SupportInboxPage.jsx`).
 
 ### Hito 6: Modulos Administrador y Auditor - Gobierno y Trazabilidad (Estado: Pendiente)
 - Gestion de sedes, campanas y equipos organizacionales.

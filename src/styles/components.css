@@ -213,6 +213,8 @@
 
 .form-input, .form-select, .form-textarea {
   width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
   padding: 9px 13px;
   border: 1px solid var(--c-borde);
   border-radius: var(--radius-md);
@@ -240,8 +242,12 @@
   cursor: not-allowed;
 }
 
+textarea,
+textarea.form-input,
 .form-textarea {
-  min-height: 100px;
+  min-height: 90px;
+  max-width: 100%;
+  box-sizing: border-box;
   resize: vertical;
   line-height: 1.5;
 }

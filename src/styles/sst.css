@@ -1,0 +1,186 @@
+/* src/styles/sst.css */
+/* Estilos semánticos para el Módulo SST (Vigilancia, Alertas, Reglas e Intervenciones) */
+
+/* 1. Alertas Tempranas */
+.alert-card {
+  background-color: var(--c-superficie);
+  border: 1px solid var(--c-borde-suave);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  margin-bottom: var(--space-4);
+  box-shadow: var(--shadow-xs);
+  transition: box-shadow var(--transition-fast), border-color var(--transition-fast);
+}
+
+.alert-card:hover {
+  box-shadow: var(--shadow-sm);
+  border-color: var(--c-borde);
+}
+
+.alert-card.severity-alta {
+  border-left: 4px solid var(--c-critico);
+}
+
+.alert-card.severity-media {
+  border-left: 4px solid var(--c-alerta);
+}
+
+.alert-card.severity-baja {
+  border-left: 4px solid var(--c-primario);
+}
+
+.alert-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.alert-card-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--c-texto);
+  margin: 0 0 4px 0;
+}
+
+.alert-card-meta {
+  font-size: 12.5px;
+  color: var(--c-texto-suave);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.alert-card-desc {
+  font-size: 13.5px;
+  color: var(--c-texto);
+  line-height: 1.5;
+  margin-bottom: var(--space-3);
+}
+
+.alert-evidence-box {
+  background-color: var(--c-fondo);
+  border: 1px solid var(--c-borde-suave);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  font-size: 12.5px;
+  color: var(--c-texto-suave);
+  margin-bottom: var(--space-4);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.evidence-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  font-size: 11.5px;
+  background-color: var(--c-superficie);
+  border: 1px solid var(--c-borde-suave);
+  color: var(--c-texto);
+}
+
+.alert-actions-toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--c-borde-suave);
+}
+
+/* 2. Reglas de Alertas y Constructor */
+.rule-grid-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+  gap: var(--space-5);
+  align-items: flex-start;
+}
+
+.rule-sentence-box {
+  background: linear-gradient(135deg, rgba(0, 106, 97, 0.05) 0%, rgba(29, 78, 216, 0.05) 100%);
+  border: 1px solid var(--c-primario-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  margin: var(--space-4) 0;
+  font-size: 13.5px;
+  color: var(--c-texto);
+  line-height: 1.55;
+  font-style: italic;
+}
+
+.rule-list-item {
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--c-borde-suave);
+  border-radius: var(--radius-md);
+  background-color: var(--c-superficie);
+  margin-bottom: var(--space-3);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.rule-list-item:hover {
+  border-color: var(--c-borde);
+}
+
+.rule-list-info {
+  flex: 1;
+}
+
+.rule-list-title {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--c-texto);
+  margin-bottom: 3px;
+}
+
+.rule-list-meta {
+  font-size: 12px;
+  color: var(--c-texto-suave);
+}
+
+/* 3. Intervenciones SST */
+.intervention-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.baseline-preview-box {
+  background-color: var(--c-fondo);
+  border: 1px solid var(--c-borde-suave);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.baseline-score {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--c-primario);
+}
+
+.baseline-note {
+  font-size: 11.5px;
+  color: var(--c-texto-mutado);
+  margin-top: 2px;
+}
+
+/* Responsive */
+@media (max-width: 960px) {
+  .rule-grid-layout {
+    grid-template-columns: 1fr;
+  }
+}

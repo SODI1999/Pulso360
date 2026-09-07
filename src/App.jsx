@@ -28,6 +28,13 @@ import { CrisisSupportPage } from './features/agent/pages/CrisisSupportPage';
 import { TeamDashboardPage } from './features/supervisor/pages/TeamDashboardPage';
 import { ActionsPage } from './features/supervisor/pages/ActionsPage';
 
+// Páginas del Módulo SST (Hito 5)
+import { SstDashboardPage } from './features/sst/pages/SstDashboardPage';
+import { AlertsInboxPage } from './features/sst/pages/AlertsInboxPage';
+import { AlertRulesPage } from './features/sst/pages/AlertRulesPage';
+import { InterventionsPage } from './features/sst/pages/InterventionsPage';
+import { SupportInboxPage } from './features/sst/pages/SupportInboxPage';
+
 // Componente para resolver la ruta raíz según el rol del usuario conectado
 function RootRedirect() {
     const user = authService.getCurrentUser();
@@ -139,12 +146,12 @@ function App() {
                         }
                     />
 
-                    {/* --- MÓDULO SST --- */}
+                    {/* --- MÓDULO SST (HITO 5) --- */}
                     <Route
                         path="/sst/panel"
                         element={
                             <ProtectedRoute allowedRoles={['sst']}>
-                                <PlaceholderView title="Panel Agregado SST" subtitle="Vigilancia epidemiológica y mapa de calor organizacional" icon="analytics" milestone="Hito 5" />
+                                <SstDashboardPage />
                             </ProtectedRoute>
                         }
                     />
@@ -152,7 +159,7 @@ function App() {
                         path="/sst/alertas"
                         element={
                             <ProtectedRoute allowedRoles={['sst']}>
-                                <PlaceholderView title="Bandeja de Alertas" subtitle="Alertas tempranas de riesgo de agotamiento" icon="notifications_active" milestone="Hito 5" />
+                                <AlertsInboxPage />
                             </ProtectedRoute>
                         }
                     />
@@ -160,7 +167,7 @@ function App() {
                         path="/sst/reglas-alertas"
                         element={
                             <ProtectedRoute allowedRoles={['sst']}>
-                                <PlaceholderView title="Reglas de Alertas" subtitle="Parametrización de umbrales preventivos" icon="tune" milestone="Hito 5" />
+                                <AlertRulesPage />
                             </ProtectedRoute>
                         }
                     />
@@ -168,7 +175,7 @@ function App() {
                         path="/sst/intervenciones"
                         element={
                             <ProtectedRoute allowedRoles={['sst']}>
-                                <PlaceholderView title="Intervenciones Colectivas" subtitle="Planes de mitigación y seguimiento organizacional" icon="healing" milestone="Hito 5" />
+                                <InterventionsPage />
                             </ProtectedRoute>
                         }
                     />
@@ -176,7 +183,7 @@ function App() {
                         path="/sst/buzon"
                         element={
                             <ProtectedRoute allowedRoles={['sst']}>
-                                <PlaceholderView title="Buzón de Acompañamiento" subtitle="Gestión confidencial de solicitudes de agentes" icon="mark_email_unread" milestone="Hito 5" />
+                                <SupportInboxPage />
                             </ProtectedRoute>
                         }
                     />

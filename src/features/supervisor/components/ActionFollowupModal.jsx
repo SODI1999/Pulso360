@@ -101,8 +101,10 @@ export function ActionFollowupModal({ intervention, onClose, onSave }) {
                         </label>
                         <textarea
                             id="followupNotes"
-                            className="form-input"
+                            className="form-input form-textarea"
                             rows={3}
+                            maxLength={500}
+                            style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box', resize: 'vertical' }}
                             placeholder="Describe la acción coordinada con el equipo..."
                             value={notes}
                             onChange={(e) => setNotes(e.target.value)}
