@@ -133,3 +133,37 @@
   }
 }
 
+/* ==========================================================================
+   Bitacora Split-View & Semantic Layout
+   ========================================================================== */
+
+.journal-layout {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: var(--space-5);
+  align-items: start;
+}
+
+@media (max-width: 960px) {
+  .journal-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.journal-sidebar-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+  max-height: 540px;
+  overflow-y: auto;
+}
+
+.journal-editor-actions {
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+  margin-top: var(--space-4);
+  flex-wrap: wrap;
+}
+

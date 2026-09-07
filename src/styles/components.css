@@ -648,3 +648,126 @@
   }
 }
 
+/* ==========================================================================
+   Check-in Diario Wizard & Progress
+   ========================================================================== */
+
+.wizard-card {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: var(--space-6) var(--space-5);
+}
+
+.wizard-header-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.wizard-step-indicator {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--c-primario);
+}
+
+.wizard-draft-notice {
+  font-size: 12px;
+  color: var(--c-texto-mutado);
+}
+
+.progress-track {
+  height: 8px;
+  background-color: var(--c-borde-suave);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  margin-bottom: var(--space-6);
+}
+
+.progress-fill {
+  height: 100%;
+  background-color: var(--c-primario);
+  border-radius: var(--radius-full);
+  transition: width 0.25s ease;
+}
+
+.check-step {
+  display: block;
+  text-align: center;
+  margin-bottom: var(--space-6);
+}
+
+.check-step-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--c-texto);
+  margin-bottom: var(--space-5);
+}
+
+.skip-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 8px 18px;
+  background-color: var(--c-fondo);
+  border: 1px solid var(--c-borde-suave);
+  border-radius: var(--radius-full);
+  color: var(--c-texto-mutado);
+  font-size: 13px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all var(--transition-fast);
+}
+
+.skip-btn:hover {
+  background-color: var(--c-fondo-subtle);
+  color: var(--c-texto);
+  border-color: var(--c-borde-fuerte);
+}
+
+.skip-btn.active {
+  background-color: var(--c-primario-suave);
+  color: var(--c-primario);
+  border-color: var(--c-primario-border);
+  font-weight: 600;
+}
+
+.wizard-footer-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: var(--space-6);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--c-borde-suave);
+}
+
+.privacy-notice-box {
+  margin-top: var(--space-5);
+  padding: var(--space-3) var(--space-4);
+  background-color: var(--c-fondo-subtle);
+  border-radius: var(--radius-md);
+  font-size: 12px;
+  color: var(--c-texto-mutado);
+  line-height: 1.5;
+}
+
+.center-card {
+  text-align: center;
+  padding: 48px 24px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.center-icon-badge {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto var(--space-4);
+}
+

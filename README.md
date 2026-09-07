@@ -33,11 +33,24 @@ El sistema esta disenado bajo principios de Privacidad desde el Diseno (Privacy 
 
 ## 3. Estado Actual del Proyecto
 
-El Hito 1 se encuentra completado al 100%, verificado contra los requisitos del documento de especificacion ERS:
+Los Hitos 1, 2 y 3 se encuentran completados al 100%, verificados contra los requisitos del documento de especificacion ERS y con cero deuda tecnica:
 
-- RF-01 (Autenticacion y RBAC): Login con derivacion automatica de rol, validacion previa, control de envio duplicado con spinner, bloqueo por 5 intentos fallidos y destruccion de sesiones residuales.
-- RF-02 (Consentimiento Informado Granular): Presentacion de version vigente (v2.4), matriz C1 a C5 voluntaria e independiente, aceptacion de politica separada, explicacion de consecuencias, reconsentimiento e historial inmutable.
-- RF-18 (Seguridad y Recuperacion): Solicitud de recuperacion con mensaje neutro, tokens demo con vigencia de 30 minutos, formulario con contrasena minima de 12 caracteres, medidor de fortaleza en tiempo real y cierre forzoso de sesiones.
+- **Hito 1 - Autenticacion y Gobernanza**:
+  - RF-01 (Autenticacion y RBAC): Login con derivacion automatica de rol, validacion previa, control de envio duplicado con spinner, bloqueo por 5 intentos fallidos y destruccion de sesiones residuales.
+  - RF-02 (Consentimiento Informado Granular): Presentacion de version vigente (v2.4), matriz C1 a C5 voluntaria e independiente, aceptacion de politica separada, explicacion de consecuencias, reconsentimiento e historial inmutable.
+  - RF-18 (Seguridad y Recuperacion): Solicitud de recuperacion con mensaje neutro, tokens demo con vigencia de 30 minutos, formulario con contrasena minima de 12 caracteres, medidor de fortaleza en tiempo real y cierre forzoso de sesiones.
+- **Hito 2 - Shell, Navegacion y Control de Sesion**:
+  - `AppLayout.jsx` con sidebar reactivo segun rol y permisos C1-C5.
+  - `ProtectedRoute.jsx` con RBAC estricto y auditoria inmutable.
+  - `InactivityModal.jsx` para cierre seguro de sesion por inactividad tras 30 minutos.
+- **Hito 3 - Modulo Agente (Experiencia Individual y Bienestar)**:
+  - RF-03 (Check-in Diario): Wizard de 6 pasos con ScaleSelector (1-5), atajos de teclado, omision consciente ("Prefiero no responder") y persistencia de borradores.
+  - RF-04 (Visualizacion Individual): KPIs dinamicos de energia, carga y racha, acompanados de grafico de tendencias Canvas 2D (`TrendLineChart.jsx`).
+  - RF-05 (Bitacora Privada): Espacio personal con split-view, advertencia de datos de terceros y confirmacion estricta para eliminacion segura.
+  - RF-06 (Analisis NLP Explicable): Motor lexico determinista (`nlpEngine.js`), extraccion de evidencias, chips de factores con porcentaje de confianza y correccion humana auditada (`NlpCorrectionModal.jsx`).
+  - RF-10 (Canal de Acompanamiento): Formulario de contacto voluntario con SST (`SupportRequestForm.jsx`) en modalidades anonima y confidencial.
+  - RF-14 (Apoyo en Crisis): Directorio de lineas de ayuda 24/7 y derivacion prioritaria a SST (`CrisisSupportPage.jsx` y `CrisisSupportModal.jsx`).
+  - RF-20 (Habeas Data): Inventario de datos almacenados, portabilidad en JSON y flujo de supresion bajo confirmacion explicativa.
 
 ---
 
@@ -45,10 +58,11 @@ El Hito 1 se encuentra completado al 100%, verificado contra los requisitos del 
 
 ```text
 Pulso360/
+├── .env.example              # Plantilla de variables de entorno (Vite / React)
 ├── public/
 │   └── assets/
-│       ├── evidencias/
-│       └── imágenes/
+│       ├── evidencias/       # Capturas de pantalla y evidencias visuales
+│       └── imágenes/         # Ilustraciones y recursos graficos
 │
 ├── src/
 │   ├── core/
@@ -58,13 +72,35 @@ Pulso360/
 │   │   ├── components/
 │   │   │   ├── Icon.jsx
 │   │   │   ├── InactivityModal.jsx
-│   │   │   └── PlaceholderView.jsx
+│   │   │   ├── PlaceholderView.jsx
+│   │   │   └── TrendLineChart.jsx
+│   │   ├── config/
+│   │   │   └── env.js        # Configuracion centralizada de entorno
 │   │   ├── layout/
 │   │   │   └── AppLayout.jsx
+│   │   ├── nlp/
+│   │   │   └── nlpEngine.js  # Motor lexico determinista
 │   │   └── storage/
-│   │       └── pulsoStore.js
+│   │       └── pulsoStore.js # Repositorio local preparado para PostgreSQL
 │   │
 │   ├── features/
+│   │   ├── agent/
+│   │   │   ├── components/
+│   │   │   │   ├── CrisisSupportModal.jsx
+│   │   │   │   ├── NlpAnalysisPanel.jsx
+│   │   │   │   ├── NlpCorrectionModal.jsx
+│   │   │   │   ├── ScaleSelector.jsx
+│   │   │   │   └── SupportRequestForm.jsx
+│   │   │   └── pages/
+│   │   │       ├── AgentDashboardPage.jsx
+│   │   │       ├── CheckinWizardPage.jsx
+│   │   │       ├── CrisisSupportPage.jsx
+│   │   │       ├── JournalPage.jsx
+│   │   │       ├── MyAnalysisPage.jsx
+│   │   │       ├── MyDataPrivacyPage.jsx
+│   │   │       ├── MyWellbeingPage.jsx
+│   │   │       └── SupportChannelPage.jsx
+│   │   │
 │   │   └── auth/
 │   │       ├── components/
 │   │       │   ├── DemoAccountsCard.jsx
@@ -82,7 +118,6 @@ Pulso360/
 │   │   ├── components.css
 │   │   ├── consentimiento.css
 │   │   ├── documentacion.css
-│   │   ├── generated-utilities.css
 │   │   ├── layout.css
 │   │   ├── styles.css
 │   │   ├── tokens.css
@@ -118,12 +153,12 @@ El proceso de migracion se estructura en siete hitos de ejecucion secuencial:
 - Vista de acceso denegado (`ForbiddenPage.jsx` / 403).
 - Configuracion del arbol de rutas maestras en `App.jsx` y vista provisional `PlaceholderView.jsx`.
 
-### Hito 3: Modulo Agente - Experiencia Individual (Estado: Pendiente)
+### Hito 3: Modulo Agente - Experiencia Individual (Estado: Completado)
 - Motor lexico determinista en JavaScript puro (`nlpEngine.js`) con 8 categorias, negaciones e intensificadores.
 - Componente de graficas nativas en Canvas 2D (`TrendLineChart.jsx`).
 - Formulario de Check-in diario por pasos con escala 1 a 5, atajos de teclado y opcion de no respuesta (`CheckinWizardPage.jsx`).
 - Bitacora privada con advertencia de datos de terceros, analisis NLP y modal de correccion manual (`JournalPage.jsx`).
-- Vistas de bienestar personal, desglose analitico, solicitudes de acompanamiento y modulo de Habeas Data.
+- Vistas de bienestar personal (`MyWellbeingPage.jsx`), desglose analitico (`MyAnalysisPage.jsx`), solicitudes de acompanamiento (`SupportChannelPage.jsx`) y modulo de Habeas Data (`MyDataPrivacyPage.jsx`).
 
 ### Hito 4: Modulo Supervisor - Monitoreo Operativo (Estado: Pendiente)
 - Panel de indicadores de equipo (`TeamDashboardPage.jsx`).
@@ -166,12 +201,19 @@ El proceso de migracion se estructura en siete hitos de ejecucion secuencial:
    npm install
    ```
 
-3. Iniciar el servidor de desarrollo local:
+3. Configurar variables de entorno copiando la plantilla:
+   ```bash
+   cp .env.example .env
+   # En Windows PowerShell:
+   Copy-Item .env.example .env
+   ```
+
+4. Iniciar el servidor de desarrollo local:
    ```bash
    npm run dev
    ```
 
-4. Abrir en el navegador la direccion provista por Vite (habitualmente `http://localhost:5173`).
+5. Abrir en el navegador la direccion provista por Vite (habitualmente `http://localhost:5173`).
 
 ---
 

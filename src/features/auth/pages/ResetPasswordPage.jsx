@@ -8,7 +8,6 @@ import { Icon } from '../../../core/components/Icon';
 
 // Estilos del módulo de autenticación
 import '../../../styles/auth.css';
-import '../../../styles/generated-utilities.css';
 
 export function ResetPasswordPage() {
   const navigate = useNavigate();
@@ -87,14 +86,14 @@ export function ResetPasswordPage() {
     <div className="recovery-wrapper">
       <div className="recovery-card">
         <div className="recovery-icon-badge" aria-hidden="true">
-          <Icon name="lock" className="u-inline-012" />
+          <Icon name="lock" size={28} />
         </div>
 
         <h1 className="auth-title">Crear nueva contraseña</h1>
-        <p className="auth-subtitle u-inline-020">Simulación RF-18 · Requiere mínimo 12 caracteres.</p>
+        <p className="auth-subtitle">Simulación RF-18 · Requiere mínimo 12 caracteres.</p>
 
         <form id="newPasswordForm" className="login-form" onSubmit={handleSubmit}>
-          <div className="form-group u-inline-145">
+          <div className="form-group">
             <label className="form-label" htmlFor="newPassword">Nueva contraseña</label>
             <input
               id="newPassword"
@@ -112,7 +111,7 @@ export function ResetPasswordPage() {
             />
           </div>
 
-          <div className="form-group u-inline-145">
+          <div className="form-group">
             <label className="form-label" htmlFor="confirmPassword">Confirmar contraseña</label>
             <input
               id="confirmPassword"
@@ -130,7 +129,7 @@ export function ResetPasswordPage() {
             />
           </div>
 
-          <div id="strengthText" className="u-inline-146">
+          <div id="strengthText" className="password-strength-indicator">
             Fortaleza: <strong>{strengthLabel}</strong>
           </div>
 
@@ -145,8 +144,8 @@ export function ResetPasswordPage() {
           )}
         </form>
 
-        <div className="u-inline-147">
-          <Link to="/login" className="forgot-link">← Volver al inicio de sesión</Link>
+        <div className="recovery-footer">
+          <Link to="/login" className="forgot-link recovery-back-link">← Volver al inicio de sesión</Link>
         </div>
       </div>
     </div>

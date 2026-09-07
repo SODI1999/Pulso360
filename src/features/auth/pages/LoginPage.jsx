@@ -10,7 +10,6 @@ import { Icon } from '../../../core/components/Icon';
 
 // Estilos del módulo de autenticación
 import '../../../styles/auth.css';
-import '../../../styles/generated-utilities.css';
 
 export function LoginPage() {
   const navigate = useNavigate();
@@ -113,7 +112,7 @@ export function LoginPage() {
         <div className="branding-decoration-bg"></div>
         <div className="branding-content">
           <div className="branding-badge" aria-hidden="true">
-            <Icon name="shield" className="u-inline-012" />
+            <Icon name="shield" size={28} />
           </div>
           <h1 className="branding-title">Bienestar preventivo<br />con privacidad por diseño</h1>
           <p className="branding-description">Pulso360 apoya la observación de tendencias colectivas de bienestar. No realiza diagnósticos ni comparte respuestas individuales con líderes.</p>

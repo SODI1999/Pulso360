@@ -451,6 +451,42 @@
   border: 1px solid var(--c-primario-border);
 }
 
+.recovery-card .form-group {
+  text-align: left;
+}
+
+.recovery-card .auth-subtitle {
+  margin-bottom: var(--space-6);
+}
+
+.recovery-footer {
+  margin-top: var(--space-6);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--c-borde-suave);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.recovery-back-link {
+  color: var(--c-texto-suave);
+  display: inline-block;
+  font-size: 13px;
+  transition: color var(--transition-fast);
+}
+
+.recovery-back-link:hover {
+  color: var(--c-primario);
+}
+
+.password-strength-indicator {
+  font-size: 12.5px;
+  font-weight: 600;
+  text-align: left;
+  margin-bottom: var(--space-3);
+  color: var(--c-texto-suave);
+}
+
 /* Responsive */
 @media (max-width: 960px) {
   .login-wrapper {

@@ -8,7 +8,6 @@ import { Icon } from '../../../core/components/Icon';
 
 // Estilos del módulo de autenticación
 import '../../../styles/auth.css';
-import '../../../styles/generated-utilities.css';
 
 export function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
@@ -49,14 +48,14 @@ export function ForgotPasswordPage() {
     <div className="recovery-wrapper">
       <div className="recovery-card">
         <div className="recovery-icon-badge" aria-hidden="true">
-          <Icon name="mail" className="u-inline-012" />
+          <Icon name="mail" size={28} />
         </div>
 
         <h1 className="auth-title">Recuperar acceso</h1>
-        <p className="auth-subtitle u-inline-009">Ingresa tu correo institucional registrado para recibir las instrucciones de recuperación.</p>
+        <p className="auth-subtitle">Ingresa tu correo institucional registrado para recibir las instrucciones de recuperación.</p>
 
         <form id="recoveryForm" className="login-form" onSubmit={handleSubmit}>
-          <div className="form-group u-inline-145">
+          <div className="form-group">
             <label htmlFor="recoveryEmail" className="form-label">Correo institucional</label>
             <div className="input-wrapper">
               <span className="input-icon" aria-hidden="true">
@@ -88,9 +87,9 @@ export function ForgotPasswordPage() {
           )}
         </form>
 
-        <div className="u-inline-148">
+        <div className="recovery-footer">
           <Link to="/nueva-clave?token=demo-valid" className="forgot-link">Abrir enlace válido de demostración (Token Demo)</Link>
-          <Link to="/login" className="forgot-link u-inline-149">← Volver a iniciar sesión</Link>
+          <Link to="/login" className="forgot-link recovery-back-link">← Volver a iniciar sesión</Link>
         </div>
       </div>
     </div>

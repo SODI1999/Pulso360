@@ -9,7 +9,6 @@ import { Icon } from '../../../core/components/Icon';
 
 // Estilos de la vista de consentimiento
 import '../../../styles/consentimiento.css';
-import '../../../styles/generated-utilities.css';
 
 export function ConsentPage() {
   const navigate = useNavigate();
@@ -110,9 +109,9 @@ export function ConsentPage() {
   const formatBoolean = (val) => (val ? 'Sí' : 'No');
 
   return (
-    <main className="page-container u-inline-127">
+    <main className="page-container consent-container">
       {!comesFromLogin && (
-        <div id="backNav" className="u-inline-128">
+        <div id="backNav" className="consent-back-nav">
           <button type="button" className="btn btn-secondary" onClick={() => navigate('/agente/panel')}>
             <Icon name="arrowLeft" />
             <span>Volver a mi panel</span>
@@ -123,14 +122,14 @@ export function ConsentPage() {
       <div className="card">
         <div className="card-header">
           <div>
-            <h1 className="card-title u-inline-129">Política de tratamiento y preferencias (RF-02)</h1>
+            <h1 className="card-title">Política de tratamiento y preferencias (RF-02)</h1>
             <p className="card-subtitle">Política vigente desde {settings.policyEffectiveDate}</p>
           </div>
           <span className="badge badge-ok">{settings.policyVersion}</span>
         </div>
 
         <div className="alert-banner info">
-          <Icon name="info" className="u-inline-021" />
+          <Icon name="info" size={18} />
           <div>
             <strong>Participación voluntaria y libre.</strong> Estos datos son de carácter sensible. No estás obligado a
             autorizar las finalidades C1–C5 y rechazarlas no afecta tu evaluación de desempeño, estabilidad ni condiciones
@@ -138,17 +137,17 @@ export function ConsentPage() {
           </div>
         </div>
 
-        <div className="u-inline-130">
+        <div className="consent-split-grid">
           {/* Resumen de la Política */}
-          <section className="u-inline-131">
-            <h2 className="u-inline-132">Aviso de privacidad · Resumen normativo</h2>
-            <p className="u-inline-133">Pulso360 recopila únicamente la información asociada con las finalidades que decidas activar voluntariamente. La información individual sensible jamás se comparte con supervisores ni líderes operativos.</p>
+          <section className="consent-policy-box">
+            <h2 className="consent-policy-title">Aviso de privacidad · Resumen normativo</h2>
+            <p className="consent-policy-text">Pulso360 recopila únicamente la información asociada con las finalidades que decidas activar voluntariamente. La información individual sensible jamás se comparte con supervisores ni líderes operativos.</p>
 
-            <h3 className="u-inline-134">Control total del titular</h3>
-            <p className="u-inline-133">Puedes modificar tus preferencias en cualquier momento y ejercer tus derechos de consulta, rectificación, portabilidad y supresión desde el módulo “Mis datos”.</p>
+            <h3 className="consent-policy-subtitle">Control total del titular</h3>
+            <p className="consent-policy-text">Puedes modificar tus preferencias en cualquier momento y ejercer tus derechos de consulta, rectificación, portabilidad y supresión desde el módulo “Mis datos”.</p>
 
-            <h3 className="u-inline-134">Enfoque estrictamente preventivo</h3>
-            <p className="u-inline-135">Pulso360 no realiza diagnósticos clínicos, no sustituye la Batería oficial de Riesgo Psicosocial y no utiliza información individual para decisiones disciplinarias ni de productividad.</p>
+            <h3 className="consent-policy-subtitle">Enfoque estrictamente preventivo</h3>
+            <p className="consent-policy-text">Pulso360 no realiza diagnósticos clínicos, no sustituye la Batería oficial de Riesgo Psicosocial y no utiliza información individual para decisiones disciplinarias ni de productividad.</p>
           </section>
 
           {/* Matriz C1 a C5 */}
@@ -233,23 +232,23 @@ export function ConsentPage() {
               />
             </div>
 
-            <label className="u-inline-136">
+            <label className="consent-terms-label">
               <input
                 type="checkbox"
                 id="policyAccepted"
-                className="u-inline-137"
+                className="consent-terms-checkbox"
                 checked={policyAccepted}
                 onChange={(e) => setPolicyAccepted(e.target.checked)}
               />
               <span>He leído y acepto la política de tratamiento de datos y el aviso de privacidad de Pulso360.</span>
             </label>
 
-            <button type="submit" className="btn btn-primary u-inline-138" disabled={!policyAccepted}>
+            <button type="submit" className="btn btn-primary consent-submit-btn" disabled={!policyAccepted}>
               <span>Guardar mis preferencias</span>
             </button>
 
             {statusMessage && (
-              <div role="status" className="u-inline-139">
+              <div role="status" className="consent-feedback-msg">
                 {statusMessage}
               </div>
             )}
@@ -258,7 +257,7 @@ export function ConsentPage() {
       </div>
 
       {/* Historial de Consentimientos */}
-      <div className="card u-inline-140">
+      <div className="card consent-history-card">
         <div className="card-header">
           <div>
             <div className="card-title">Historial de consentimientos registrados</div>

@@ -1,7 +1,8 @@
 //core/storage/pulsoStore.js
 //Almacén central de datos en localStorage y simulación de auditoría
+import { env } from '../config/env';
 
-const STORAGE_KEY = 'pulso360_data_v2';
+const STORAGE_KEY = env.storageKey;
 
 // 1. Semilla inicial de datos de prueba con la misma estructura para PostgreSQL
 
@@ -116,8 +117,8 @@ const initialSeed = {
         slaMediaHoras: 48,
         slaBajaHoras: 72,
         slaSolicitudesHoras: 24,
-        policyVersion: 'v2.4',
-        policyEffectiveDate: '15/08/2026',
+        policyVersion: env.policyVersion,
+        policyEffectiveDate: env.policyEffectiveDate,
         policyVersions: ['v2.2', 'v2.3', 'v2.4'],
         nlpVersion: 'lexico-v1.2',
         nlpVersions: ['lexico-v1.1', 'lexico-v1.2']

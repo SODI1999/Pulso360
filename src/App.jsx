@@ -14,6 +14,16 @@ import { ForgotPasswordPage } from './features/auth/pages/ForgotPasswordPage';
 import { ResetPasswordPage } from './features/auth/pages/ResetPasswordPage';
 import { ForbiddenPage } from './features/auth/pages/ForbiddenPage';
 
+// Páginas del Módulo Agente (Hito 3)
+import { AgentDashboardPage } from './features/agent/pages/AgentDashboardPage';
+import { CheckinWizardPage } from './features/agent/pages/CheckinWizardPage';
+import { JournalPage } from './features/agent/pages/JournalPage';
+import { MyAnalysisPage } from './features/agent/pages/MyAnalysisPage';
+import { MyWellbeingPage } from './features/agent/pages/MyWellbeingPage';
+import { SupportChannelPage } from './features/agent/pages/SupportChannelPage';
+import { MyDataPrivacyPage } from './features/agent/pages/MyDataPrivacyPage';
+import { CrisisSupportPage } from './features/agent/pages/CrisisSupportPage';
+
 // Componente para resolver la ruta raíz según el rol del usuario conectado
 function RootRedirect() {
     const user = authService.getCurrentUser();
@@ -41,7 +51,7 @@ function App() {
                     }
                 />
 
-                {/* 3. Rutas Autenticadas bajo AppLayout (Hito 2) */}
+                {/* 3. Rutas Autenticadas bajo AppLayout (Hito 2 y 3) */}
                 <Route
                     element={
                         <ProtectedRoute>
@@ -49,12 +59,12 @@ function App() {
                         </ProtectedRoute>
                     }
                 >
-                    {/* --- MÓDULO AGENTE --- */}
+                    {/* --- MÓDULO AGENTE (HITO 3 COMPLETO) --- */}
                     <Route
                         path="/agente/panel"
                         element={
                             <ProtectedRoute allowedRoles={['agente']}>
-                                <PlaceholderView title="Mi Panel" subtitle="Resumen de bienestar individual y atajos operativos" icon="dashboard" milestone="Hito 3" />
+                                <AgentDashboardPage />
                             </ProtectedRoute>
                         }
                     />
@@ -62,7 +72,7 @@ function App() {
                         path="/agente/checkin"
                         element={
                             <ProtectedRoute allowedRoles={['agente']}>
-                                <PlaceholderView title="Check-in Diario" subtitle="Registro de estado anímico y factores de jornada" icon="favorite" milestone="Hito 3" />
+                                <CheckinWizardPage />
                             </ProtectedRoute>
                         }
                     />
@@ -70,7 +80,7 @@ function App() {
                         path="/agente/bitacora"
                         element={
                             <ProtectedRoute allowedRoles={['agente']}>
-                                <PlaceholderView title="Bitácora Personal & NLP" subtitle="Reflexión privada con procesamiento de lenguaje natural" icon="edit_note" milestone="Hito 3" />
+                                <JournalPage />
                             </ProtectedRoute>
                         }
                     />
@@ -78,7 +88,7 @@ function App() {
                         path="/agente/mi-analisis"
                         element={
                             <ProtectedRoute allowedRoles={['agente']}>
-                                <PlaceholderView title="Mi Análisis" subtitle="Tendencias de factores detectados por el motor léxico" icon="insights" milestone="Hito 3" />
+                                <MyAnalysisPage />
                             </ProtectedRoute>
                         }
                     />
@@ -86,7 +96,7 @@ function App() {
                         path="/agente/mi-bienestar"
                         element={
                             <ProtectedRoute allowedRoles={['agente']}>
-                                <PlaceholderView title="Mi Bienestar" subtitle="Evolución histórica y comparativas personales" icon="monitoring" milestone="Hito 3" />
+                                <MyWellbeingPage />
                             </ProtectedRoute>
                         }
                     />
@@ -94,7 +104,7 @@ function App() {
                         path="/agente/apoyo"
                         element={
                             <ProtectedRoute allowedRoles={['agente']}>
-                                <PlaceholderView title="Acompañamiento" subtitle="Solicitudes confidenciales de apoyo psicosocial" icon="support_agent" milestone="Hito 3" />
+                                <SupportChannelPage />
                             </ProtectedRoute>
                         }
                     />
@@ -102,7 +112,7 @@ function App() {
                         path="/agente/mis-datos"
                         element={
                             <ProtectedRoute allowedRoles={['agente']}>
-                                <PlaceholderView title="Mis Datos & Privacidad" subtitle="Gestión de consentimientos y solicitudes Habeas Data" icon="shield" milestone="Hito 3" />
+                                <MyDataPrivacyPage />
                             </ProtectedRoute>
                         }
                     />
@@ -240,7 +250,7 @@ function App() {
                         path="/apoyo-crisis"
                         element={
                             <ProtectedRoute allowedRoles={['agente']}>
-                                <PlaceholderView title="Recursos de Apoyo en Crisis" subtitle="Líneas de atención psicológica 24/7 y asistencia inmediata" icon="support" milestone="Hito 7" />
+                                <CrisisSupportPage />
                             </ProtectedRoute>
                         }
                     />
