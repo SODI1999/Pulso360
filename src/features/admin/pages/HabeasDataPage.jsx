@@ -21,7 +21,10 @@ export function HabeasDataPage() {
     nextStatus: ''
   });
 
-  const storeData = useMemo(() => pulsoStore.get(), [version]);
+  const storeData = useMemo(() => {
+    void version;
+    return pulsoStore.get();
+  }, [version]);
   const requests = storeData.habeasRequests || [];
   const users = storeData.users || [];
 

@@ -126,7 +126,7 @@ export function NlpHistoryModal({ isOpen, history = [], onClose }) {
                                 )}
                                 {h.note && (
                                     <div style={{ color: 'var(--c-texto-suave)', fontStyle: 'italic', marginTop: '6px', background: 'var(--c-superficie)', padding: '6px 10px', borderRadius: 'var(--radius-xs)' }}>
-                                        "{h.note}"
+                                        &ldquo;{h.note}&rdquo;
                                     </div>
                                 )}
                             </div>

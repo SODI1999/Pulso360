@@ -150,7 +150,7 @@ export function RuleFormCard({ onSaveRule }) {
           <strong style={{ display: 'block', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.04em', color: 'var(--c-primario)', marginBottom: '4px' }}>
             Vista previa de la regla:
           </strong>
-          "{ruleSentence}"
+          &ldquo;{ruleSentence}&rdquo;
         </div>
 
         {simulationResult && (

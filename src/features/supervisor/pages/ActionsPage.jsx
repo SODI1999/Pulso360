@@ -17,6 +17,7 @@ export function ActionsPage() {
 
     // Cargar intervenciones asignadas al supervisor
     const interventions = useMemo(() => {
+        void version;
         const data = pulsoStore.get();
         return (data.interventions || []).filter(item => item.assignedTo === user?.id || item.assignedTo === 'usr-2');
     }, [user?.id, version]);

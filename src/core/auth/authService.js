@@ -5,7 +5,6 @@ import { pulsoStore } from '../storage/pulsoStore';
 
 const SESSION_KEY = 'pulso360_current_session';
 const GUARD_KEY = 'pulso360_login_guard';
-const CONTEXT_403 = 'pulso360_403_context';
 
 export const roleLabels = {
     agente: 'Agente',

@@ -18,6 +18,7 @@ export function AlertsInboxPage() {
   const [feedback, setFeedback] = useState('');
 
   const alerts = useMemo(() => {
+    void version;
     return pulsoStore.get().alerts || [];
   }, [version]);
 

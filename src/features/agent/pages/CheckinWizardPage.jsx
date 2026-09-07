@@ -217,7 +217,7 @@ export function CheckinWizardPage() {
                         ¡Listo! Gracias por tu registro diario
                     </h2>
                     <p style={{ color: 'var(--c-texto-suave)', marginBottom: '24px', maxWidth: '520px', margin: '0 auto 24px', lineHeight: '1.5' }}>
-                        Las respuestas marcadas como "Prefiero no responder" se almacenan como ausencia de dato, nunca como cero.
+                        Las respuestas marcadas como &ldquo;Prefiero no responder&rdquo; se almacenan como ausencia de dato, nunca como cero.
                     </p>
                     <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
                         <Link to="/agente/mi-bienestar" className="btn btn-primary">
@@ -282,7 +282,6 @@ export function CheckinWizardPage() {
     const safeStep = Math.min(5, Math.max(0, currentStep));
     const currentQ = QUESTIONS[safeStep] || QUESTIONS[0];
     const currentValue = draft[currentQ.key];
-    const isSkipped = currentValue === null;
 
     return (
         <div>

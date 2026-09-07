@@ -26,6 +26,7 @@ export function SupportChannelPage() {
     const [requestsVersion, setRequestsVersion] = useState(0);
 
     const userRequests = useMemo(() => {
+        void requestsVersion;
         const storeData = pulsoStore.get();
         return (storeData.supportRequests || []).filter(r => r.ownerUserId === currentUser?.id);
     }, [currentUser?.id, requestsVersion]);

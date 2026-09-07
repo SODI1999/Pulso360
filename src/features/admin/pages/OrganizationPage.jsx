@@ -23,8 +23,11 @@ export function OrganizationPage() {
   const [assignModalState, setAssignModalState] = useState({ isOpen: false, campaign: null, team: null });
 
   // Cargar datos reactivos del almacén
-  const storeData = useMemo(() => pulsoStore.get(), [version]);
-  const campaigns = storeData.organization?.campaigns || [];
+  const storeData = useMemo(() => {
+    void version;
+    return pulsoStore.get();
+  }, [version]);
+  const campaigns = useMemo(() => storeData.organization?.campaigns || [], [storeData]);
   const minThreshold = storeData.settings?.umbralMinimo || 5;
 
   // Lista combinada de supervisores disponibles

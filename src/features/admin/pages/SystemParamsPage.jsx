@@ -13,7 +13,10 @@ export function SystemParamsPage() {
   const [version, setVersion] = useState(0);
 
   // Almacén
-  const storeData = useMemo(() => pulsoStore.get(), [version]);
+  const storeData = useMemo(() => {
+    void version;
+    return pulsoStore.get();
+  }, [version]);
   const settings = storeData.settings || {};
 
   // Estados locales de formularios

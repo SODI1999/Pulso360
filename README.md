@@ -138,10 +138,16 @@ Pulso360/
 │   │   │       └── LandingPage.jsx
 │   │   │
 │   │   ├── notifications/
+│   │   │   ├── components/
+│   │   │   │   ├── NotificationItem.jsx
+│   │   │   │   └── ReminderPreferencesCard.jsx
 │   │   │   └── pages/
 │   │   │       └── NotificationsPage.jsx
 │   │   │
 │   │   ├── reports/
+│   │   │   ├── components/
+│   │   │   │   ├── ReportHistoryTable.jsx
+│   │   │   │   └── ReportPreviewCard.jsx
 │   │   │   └── pages/
 │   │   │       └── ReportsPage.jsx
 │   │   │
@@ -170,6 +176,8 @@ Pulso360/
 │   │           └── SupportInboxPage.jsx
 │   │
 │   │   ├── auditor/
+│   │   │   ├── components/
+│   │   │   │   └── AuditLogTable.jsx
 │   │   │   └── pages/
 │   │   │       └── AuditLogPage.jsx
 │   │   │
@@ -334,4 +342,56 @@ El proyecto adopta la convencion de Conventional Commits para mantener un histor
 - fix(auth): corregir padding de icono en contrasena y destruir sesion residual
 - docs(readme): incorporar roadmap formal y estandar de commits
 - feat(layout): implementar estructura de shell con sidebar dinamico y topbar
+
+---
+
+## 9. Guía para Desarrolladores: Arquitectura Modular, Clean Code y Buenas Prácticas
+
+Esta sección orienta a nuevos ingenieros y desarrolladores sobre cómo mantener, extender y escalar la plataforma Pulso360 bajo estándares enterprise.
+
+### 9.1 Principios Fundamentales de Diseño
+
+1. **Arquitectura Dirigida por Características (Feature-Driven)**:
+   - Cada dominio de negocio se encuentra aislado en `src/features/<modulo>/`.
+   - Cada módulo contiene dos subdirectorios principales:
+     - `components/`: Componentes específicos de presentación y modales del dominio.
+     - `pages/`: Vistas completas asociadas a rutas específicas en `App.jsx`.
+
+2. **Componentes Globales vs. Específicos**:
+   - **Globales (`src/core/components/`)**: Únicamente componentes de uso transversal en toda la plataforma (`Icon.jsx`, `InactivityModal.jsx`, `TrendLineChart.jsx`).
+   - **Específicos (`src/features/<modulo>/components/`)**: Elementos visuales, tarjetas y modales propios del rol o flujo de negocio (`AlertCard.jsx`, `HeatmapGrid.jsx`, `AuditLogTable.jsx`, `ReportPreviewCard.jsx`).
+
+3. **Flujo de Datos y Adaptadores Asíncronos**:
+   - La vista (`pages`) consume datos mediante `pulsoStore.get()` y `pulsoStore.save()`.
+   - Todas las funciones de mutación y consulta están diseñadas de forma modular para que la transición a un backend en Node.js/Express con PostgreSQL solo requiera sustituir el adaptador en `src/core/storage/` sin alterar los componentes JSX.
+
+4. **Trazabilidad Inmutable**:
+   - Cualquier acción crítica (cambio de roles, modificación de parámetros, descarte de alertas, exportación de reportes, revocación de consentimientos) **debe** disparar `pulsoStore.audit({ actor, action, target })`.
+
+### 9.2 Reglas de Clean Code y Estilo
+
+- **Nombres de Símbolos en Inglés**: Clases, funciones, hooks, variables y nombres de archivos se redactan en inglés (`userNotifications`, `handleConfirmPriority`, `isAllowedByPrivacy`).
+- **Textos de Usuario y Comentarios en Español**: Mensajes de interfaz, etiquetas, alertas y documentación de funciones se redactan en español formal.
+- **Pureza Vectorial e Iconografía**:
+  - Prohibido el uso de emojis en código o vistas.
+  - Toda iconografía se obtiene de `<Icon name="..." size={...} />` centralizado en `src/core/components/Icon.jsx`.
+- **Estandarización de Modales**:
+  - Todo modal debe emplear `<div className="modal-overlay active">` con `<div className="modal-header">`, `<h2 className="modal-title">`, `<p className="modal-subtitle">` y `<button className="modal-close-btn" onClick={onClose}><Icon name="close" size={18} /></button>`.
+- **Diseño con Tokens CSS**:
+  - No crear clases utilitarias ad-hoc o inline no estructuradas (`u-inline`). Utilizar las variables semánticas de `tokens.css` (`var(--c-primario)`, `var(--space-4)`, `var(--radius-md)`) y las clases de `components.css`.
+
+### 9.3 Flujo Paso a Paso para Crear una Nueva Funcionalidad
+
+1. **Definir el Alcance y Módulo**: Identificar si pertenece a un módulo existente o requiere una nueva carpeta bajo `src/features/`.
+2. **Crear Componentes Específicos**: Implementar piezas reutilizables dentro de `src/features/<modulo>/components/` con tipado de `propTypes` o contratos claros.
+3. **Componer la Vista (`Page`)**: Crear la vista en `src/features/<modulo>/pages/` conectando estado, validaciones y lógica de negocio.
+4. **Registrar Navegación y Permisos**:
+   - Si la vista aparece en el menú lateral, agregar el ítem y roles permitidos en `src/core/auth/authService.js` (`getMenuItems`).
+   - Declarar la ruta en `src/App.jsx` envuelta en `<ProtectedRoute allowedRoles={[...]}>`.
+5. **Asegurar Auditoría y Privacidad**:
+   - Si procesa datos colectivos, aplicar `PrivacyBlockedCard` ante grupos con $N < 5$ (k-anonimato).
+   - Si realiza mutaciones sensibles, registrar el evento en `pulsoStore.audit`.
+6. **Verificar Compilación y Linter**:
+   - Ejecutar `npm run build` para asegurar 0 advertencias y 0 errores.
+
 

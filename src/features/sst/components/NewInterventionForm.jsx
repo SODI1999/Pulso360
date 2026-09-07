@@ -1,7 +1,7 @@
 // src/features/sst/components/NewInterventionForm.jsx
 // Formulario para registro de planes de acción e intervenciones colectivas (RF-09)
 
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { pulsoStore } from '../../../core/storage/pulsoStore';
 import { Icon } from '../../../core/components/Icon';
 

@@ -30,8 +30,11 @@ export function UsersRolesPage() {
   const [selectedUser, setSelectedUser] = useState(null);
 
   // Obtener datos del almacén
-  const storeData = useMemo(() => pulsoStore.get(), [version]);
-  const users = storeData.users || [];
+  const storeData = useMemo(() => {
+    void version;
+    return pulsoStore.get();
+  }, [version]);
+  const users = useMemo(() => storeData.users || [], [storeData]);
 
   // Obtener ámbitos organizacionales válidos (Equipos + Áreas Centrales)
   const orgScopes = useMemo(() => {

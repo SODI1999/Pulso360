@@ -15,6 +15,7 @@ export function AlertRulesPage() {
   const [feedback, setFeedback] = useState('');
 
   const rules = useMemo(() => {
+    void version;
     return pulsoStore.get().rules || [];
   }, [version]);
 

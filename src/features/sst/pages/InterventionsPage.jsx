@@ -15,6 +15,7 @@ export function InterventionsPage() {
   const [feedback, setFeedback] = useState('');
 
   const interventions = useMemo(() => {
+    void version;
     return pulsoStore.get().interventions || [];
   }, [version]);
 

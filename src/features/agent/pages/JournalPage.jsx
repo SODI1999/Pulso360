@@ -1,7 +1,7 @@
 // src/features/agent/pages/JournalPage.jsx
 // Bitácora privada con análisis NLP explicable, corrección humana y protocolo de crisis
 
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { authService, roleLabels } from '../../../core/auth/authService';
 import { pulsoStore } from '../../../core/storage/pulsoStore';
@@ -39,16 +39,16 @@ export function JournalPage() {
     const pendingAnalysisRef = useRef(null);
 
     // Cargar bitácoras del agente
-    const loadJournals = () => {
+    const loadJournals = useCallback(() => {
         const storeData = pulsoStore.get();
         const myJournals = (storeData.journals || []).filter(j => j.userId === currentUser?.id);
         setJournals(myJournals);
         return myJournals;
-    };
+    }, [currentUser?.id]);
 
     useEffect(() => {
         loadJournals();
-    }, [currentUser?.id]);
+    }, [loadJournals]);
 
     // Detección de posibles nombres propios o identificaciones (regex RF-04)
     const hasThirdPartyData = useMemo(() => {

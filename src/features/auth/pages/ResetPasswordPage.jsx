@@ -40,7 +40,7 @@ export function ResetPasswordPage() {
   }, [tokenParam]);
 
   // 2. Evaluar fortaleza de la contraseña
-  const handlePasswordChange = (newVal, confirmVal) => {
+  const handlePasswordChange = (newVal) => {
     let score = 0;
     if (newVal.length >= 12) score++;
     if (/[A-Z]/.test(newVal) && /[a-z]/.test(newVal)) score++;
@@ -104,7 +104,7 @@ export function ResetPasswordPage() {
               value={password}
               onChange={(e) => {
                 setPassword(e.target.value);
-                handlePasswordChange(e.target.value, confirmPassword);
+                handlePasswordChange(e.target.value);
               }}
               disabled={!tokenInfo.valid}
               required
@@ -122,7 +122,6 @@ export function ResetPasswordPage() {
               value={confirmPassword}
               onChange={(e) => {
                 setConfirmPassword(e.target.value);
-                handlePasswordChange(password, e.target.value);
               }}
               disabled={!tokenInfo.valid}
               required

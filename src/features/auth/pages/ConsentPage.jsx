@@ -1,7 +1,7 @@
 // src/features/auth/pages/ConsentPage.jsx
 // Gestión del consentimiento informado del agente y preferencias C1 a C5
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { authService, roleLabels } from '../../../core/auth/authService';
 import { pulsoStore } from '../../../core/storage/pulsoStore';
@@ -30,7 +30,15 @@ export function ConsentPage() {
   const [statusMessage, setStatusMessage] = useState('');
   const [settings, setSettings] = useState({ policyVersion: 'v2.4', policyEffectiveDate: '15/08/2026' });
 
-  // 1. Verificar sesión y rol de agente
+  // 1. Cargar historial inmutable de consentimientos
+  const loadConsentHistory = useCallback(() => {
+    if (!currentUser) return;
+    const data = pulsoStore.get();
+    const rows = (data.consentHistory || []).filter(item => item.userId === currentUser.id);
+    setHistory(rows);
+  }, [currentUser]);
+
+  // 2. Verificar sesión y rol de agente
   useEffect(() => {
     if (!currentUser || currentUser.role !== 'agente') {
       navigate('/login');
@@ -51,15 +59,7 @@ export function ConsentPage() {
 
     setPolicyAccepted(Boolean(userConsent.policyAccepted && userConsent.policyVersion === data.settings.policyVersion));
     loadConsentHistory();
-  }, []);
-
-  // 2. Cargar historial inmutable de consentimientos
-  const loadConsentHistory = () => {
-    if (!currentUser) return;
-    const data = pulsoStore.get();
-    const rows = (data.consentHistory || []).filter(item => item.userId === currentUser.id);
-    setHistory(rows);
-  };
+  }, [currentUser, navigate, loadConsentHistory]);
 
   const handleCheckboxChange = (key) => {
     setConsents(prev => ({ ...prev, [key]: !prev[key] }));

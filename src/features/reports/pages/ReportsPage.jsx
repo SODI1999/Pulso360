@@ -6,6 +6,8 @@ import { authService } from '../../../core/auth/authService';
 import { pulsoStore } from '../../../core/storage/pulsoStore';
 import { Icon } from '../../../core/components/Icon';
 import { PrivacyBlockedCard } from '../../supervisor/components/PrivacyBlockedCard';
+import { ReportPreviewCard } from '../components/ReportPreviewCard';
+import { ReportHistoryTable } from '../components/ReportHistoryTable';
 
 import '../../../styles/reports.css';
 
@@ -21,7 +23,10 @@ export function ReportsPage() {
   const currentUser = authService.getCurrentUser();
   const [version, setVersion] = useState(0);
 
-  const storeData = useMemo(() => pulsoStore.get(), [version]);
+  const storeData = useMemo(() => {
+    void version;
+    return pulsoStore.get();
+  }, [version]);
   const minThreshold = storeData.settings?.umbralMinimo || 5;
 
   // Filtrar alcances según el rol del usuario
@@ -379,54 +384,14 @@ export function ReportsPage() {
           customMessage="Este corte organizacional no cumple el umbral mínimo institucional de confidencialidad (N ≥ 5). Para proteger el anonimato de los agentes, la previsualización y exportación de reportes están deshabilitadas."
         />
       ) : (
-        <div className="reports-preview-card">
-          <div className="reports-preview-header">
-            <div>
-              <div style={{ fontSize: '13px', color: 'var(--c-primario)', fontWeight: 600, textTransform: 'uppercase' }}>
-                Previsualización en tiempo real
-              </div>
-              <h3 style={{ fontSize: '18px', margin: '2px 0 0', color: 'var(--c-texto)' }}>
-                Pulso360 · Reporte consolidado
-              </h3>
-              <div style={{ fontSize: '13px', color: 'var(--c-texto-suave)', marginTop: '2px' }}>
-                {currentScope?.label} · {selectedPeriod}
-              </div>
-            </div>
-            <span className="badge badge-ok">Umbral vigente N &ge; {minThreshold}</span>
-          </div>
-
-          {/* Grid de Indicadores Previsualizados */}
-          <div className="reports-kpis-container">
-            {sections.energia && (
-              <div className="reports-kpi-item">
-                <div className="reports-kpi-label">Energía agregada</div>
-                <div className="reports-kpi-value">76</div>
-              </div>
-            )}
-            {sections.carga && (
-              <div className="reports-kpi-item">
-                <div className="reports-kpi-label">Carga emocional agregada</div>
-                <div className="reports-kpi-value">68</div>
-              </div>
-            )}
-            {sections.recuperacion && (
-              <div className="reports-kpi-item">
-                <div className="reports-kpi-label">Recuperación agregada</div>
-                <div className="reports-kpi-value">58</div>
-              </div>
-            )}
-            {sections.participacion && (
-              <div className="reports-kpi-item">
-                <div className="reports-kpi-label">Participación promedio</div>
-                <div className="reports-kpi-value">92%</div>
-              </div>
-            )}
-          </div>
-
-          <div className="reports-meta-footer">
-            Documento institucional confidencial · Indicadores agregados · Solicitado por: <strong>{currentUser?.name}</strong> · Modelo de análisis: {storeData.settings?.nlpVersion}. No contiene bitácoras privadas, check-ins individuales ni solicitudes de acompañamiento.
-          </div>
-        </div>
+        <ReportPreviewCard
+          scopeLabel={currentScope?.label}
+          period={selectedPeriod}
+          minThreshold={minThreshold}
+          sections={sections}
+          requesterName={currentUser?.name}
+          nlpVersion={storeData.settings?.nlpVersion}
+        />
       )}
 
       {/* Resultado de Generación con Descarga Inmediata */}
@@ -483,61 +448,8 @@ export function ReportsPage() {
         </div>
       )}
 
-      {/* Historial de Reportes Generados */}
-      <div className="card">
-        <div className="card-header">
-          <div>
-            <h2 className="card-title">Historial de exportaciones realizadas</h2>
-            <div className="card-subtitle">Registro de reportes generados con trazabilidad de hash demo (RF-12).</div>
-          </div>
-        </div>
-
-        <div className="table-responsive">
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Fecha y Hora</th>
-                <th>Solicitante</th>
-                <th>Alcance / Corte</th>
-                <th>Formato</th>
-                <th>Hash de Verificación</th>
-              </tr>
-            </thead>
-            <tbody>
-              {reportHistory.length === 0 ? (
-                <tr>
-                  <td colSpan="5" style={{ textAlign: 'center', padding: 'var(--space-6)', color: 'var(--c-texto-suave)' }}>
-                    Aún no se han generado exportaciones de reportes en esta sesión.
-                  </td>
-                </tr>
-              ) : (
-                reportHistory.map((rep) => {
-                  const dateFormatted = new Intl.DateTimeFormat('es-CO', {
-                    dateStyle: 'short',
-                    timeStyle: 'short'
-                  }).format(new Date(rep.date));
-
-                  return (
-                    <tr key={rep.id}>
-                      <td>{dateFormatted}</td>
-                      <td>
-                        <strong>{rep.user}</strong>
-                      </td>
-                      <td>{rep.scope}</td>
-                      <td>
-                        <span className="badge badge-neutral">{rep.format}</span>
-                      </td>
-                      <td>
-                        <span className="audit-code-cell">{rep.hash}</span>
-                      </td>
-                    </tr>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      {/* Historial Modular de Reportes Generados */}
+      <ReportHistoryTable reportHistory={reportHistory} />
     </div>
   );
 }

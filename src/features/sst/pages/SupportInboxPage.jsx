@@ -18,6 +18,7 @@ export function SupportInboxPage() {
   const storeData = pulsoStore.get();
 
   const requests = useMemo(() => {
+    void version;
     return pulsoStore.get().supportRequests || [];
   }, [version]);
 

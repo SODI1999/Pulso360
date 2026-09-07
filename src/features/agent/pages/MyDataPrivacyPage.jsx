@@ -51,6 +51,7 @@ export function MyDataPrivacyPage() {
 
     // Resumen de datos propios
     const summary = useMemo(() => {
+        void requestsVersion;
         const storeData = pulsoStore.get();
         return {
             checkins: (storeData.checkins || []).filter(c => c.userId === currentUser?.id),
