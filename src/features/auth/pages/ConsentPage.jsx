@@ -1,7 +1,7 @@
 // src/features/auth/pages/ConsentPage.jsx
 // Gestión del consentimiento informado del agente y preferencias C1 a C5
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { authService, roleLabels } from '../../../core/auth/authService';
 import { pulsoStore } from '../../../core/storage/pulsoStore';
@@ -15,7 +15,8 @@ export function ConsentPage() {
   const [searchParams] = useSearchParams();
   const comesFromLogin = searchParams.get('origin') === 'login';
 
-  const currentUser = authService.getCurrentUser();
+  const currentUser = useMemo(() => authService.getCurrentUser(), []);
+  const currentUserId = currentUser?.id;
 
   // Estados de los consentimientos C1 - C5 y de la política general
   const [consents, setConsents] = useState({
@@ -32,11 +33,11 @@ export function ConsentPage() {
 
   // 1. Cargar historial inmutable de consentimientos
   const loadConsentHistory = useCallback(() => {
-    if (!currentUser) return;
+    if (!currentUserId) return;
     const data = pulsoStore.get();
-    const rows = (data.consentHistory || []).filter(item => item.userId === currentUser.id);
+    const rows = (data.consentHistory || []).filter(item => item.userId === currentUserId);
     setHistory(rows);
-  }, [currentUser]);
+  }, [currentUserId]);
 
   // 2. Verificar sesión y rol de agente
   useEffect(() => {
@@ -46,9 +47,11 @@ export function ConsentPage() {
     }
 
     const data = pulsoStore.get();
-    setSettings(data.settings);
+    if (data.settings) {
+      setSettings(data.settings);
+    }
 
-    const userConsent = data.consents?.[currentUser.id] || {};
+    const userConsent = data.consents?.[currentUserId] || {};
     setConsents({
       c1: Boolean(userConsent.c1),
       c2: Boolean(userConsent.c2),
@@ -57,9 +60,10 @@ export function ConsentPage() {
       c5: Boolean(userConsent.c5)
     });
 
-    setPolicyAccepted(Boolean(userConsent.policyAccepted && userConsent.policyVersion === data.settings.policyVersion));
+    const activePolicyVersion = data.settings?.policyVersion || 'v2.4';
+    setPolicyAccepted(Boolean(userConsent.policyAccepted && userConsent.policyVersion === activePolicyVersion));
     loadConsentHistory();
-  }, [currentUser, navigate, loadConsentHistory]);
+  }, [currentUserId, currentUser, navigate, loadConsentHistory]);
 
   const handleCheckboxChange = (key) => {
     setConsents(prev => ({ ...prev, [key]: !prev[key] }));
@@ -152,7 +156,7 @@ export function ConsentPage() {
 
           {/* Matriz C1 a C5 */}
           <form id="consentForm" onSubmit={handleSubmit}>
-            <div className="consent-item">
+            <label className="consent-item" htmlFor="c1" style={{ cursor: 'pointer' }}>
               <div className="consent-info">
                 <div className="consent-title">C1 · Check-in diario</div>
                 <div className="consent-desc">Permite registrar seis ítems de bienestar (energía, carga, recuperación, apoyo, distanciamiento e ineficacia).</div>
@@ -166,9 +170,9 @@ export function ConsentPage() {
                 onChange={() => handleCheckboxChange('c1')}
                 aria-label="Autorizar C1 Check-in diario"
               />
-            </div>
+            </label>
 
-            <div className="consent-item">
+            <label className="consent-item" htmlFor="c2" style={{ cursor: 'pointer' }}>
               <div className="consent-info">
                 <div className="consent-title">C2 · Bitácora privada</div>
                 <div className="consent-desc">Permite guardar notas de texto libre en tu espacio personal cifrado.</div>
@@ -182,9 +186,9 @@ export function ConsentPage() {
                 onChange={() => handleCheckboxChange('c2')}
                 aria-label="Autorizar C2 Bitácora privada"
               />
-            </div>
+            </label>
 
-            <div className="consent-item">
+            <label className="consent-item" htmlFor="c3" style={{ cursor: 'pointer' }}>
               <div className="consent-info">
                 <div className="consent-title">C3 · Procesamiento NLP</div>
                 <div className="consent-desc">Permite analizar tus notas de bitácora mediante léxico y reglas explicables.</div>
@@ -198,9 +202,9 @@ export function ConsentPage() {
                 onChange={() => handleCheckboxChange('c3')}
                 aria-label="Autorizar C3 Procesamiento NLP"
               />
-            </div>
+            </label>
 
-            <div className="consent-item">
+            <label className="consent-item" htmlFor="c4" style={{ cursor: 'pointer' }}>
               <div className="consent-info">
                 <div className="consent-title">C4 · Métricas agregadas</div>
                 <div className="consent-desc">Permite que tus respuestas contribuyan a indicadores colectivos protegidos por el umbral RF-07.</div>
@@ -214,9 +218,9 @@ export function ConsentPage() {
                 onChange={() => handleCheckboxChange('c4')}
                 aria-label="Autorizar C4 Métricas agregadas"
               />
-            </div>
+            </label>
 
-            <div className="consent-item">
+            <label className="consent-item" htmlFor="c5" style={{ cursor: 'pointer' }}>
               <div className="consent-info">
                 <div className="consent-title">C5 · Acompañamiento</div>
                 <div className="consent-desc">Habilita el canal voluntario de solicitudes de orientación a SST.</div>
@@ -230,9 +234,9 @@ export function ConsentPage() {
                 onChange={() => handleCheckboxChange('c5')}
                 aria-label="Autorizar C5 Acompañamiento"
               />
-            </div>
+            </label>
 
-            <label className="consent-terms-label">
+            <label className="consent-terms-label" htmlFor="policyAccepted" style={{ cursor: 'pointer' }}>
               <input
                 type="checkbox"
                 id="policyAccepted"

@@ -3,7 +3,7 @@
 
 /* --- 1. Estructura Organizacional (/admin/organizacion) --- */
 .org-campaign-card {
-  margin-bottom: var(--space-6);
+  margin-bottom: var(--space-4);
   border: 1px solid var(--c-borde-suave);
 }
 
@@ -115,7 +115,7 @@
 
 /* --- 3. Parámetros del Sistema (/admin/parametros) --- */
 .params-section {
-  margin-bottom: var(--space-6);
+  margin-bottom: var(--space-4);
 }
 
 .params-grid-2 {

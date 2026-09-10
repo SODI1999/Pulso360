@@ -16,7 +16,24 @@ El sistema esta disenado bajo principios de Privacidad desde el Diseno (Privacy 
 
 ---
 
-## 2. Decisiones Arquitectonicas
+## 2. Guía de Evaluación: Entregable de Desarrollo Web (React SPA)
+
+Este proyecto adapta la especificación técnica del **Entregable de Desarrollo Web** al sistema **Pulso360** (monitoreo de bienestar y burnout en operaciones BPO). A continuación se relacionan los criterios de evaluación solicitados por el docente y los archivos exactos donde se evidencian:
+
+| Criterio del Entregable | Puntaje | Implementación adaptada a Pulso360 | Archivos de Evidencia |
+| :--- | :---: | :--- | :--- |
+| **1. Componentización** | 30% | Toda la interfaz está construida con componentes funcionales reutilizables bajo el principio de responsabilidad única (SRP). La Landing Page está desacoplada en secciones atómicas independientes. | • `src/features/landing/components/Navbar.jsx`<br>• `src/features/landing/components/HeroSection.jsx`<br>• `src/features/landing/components/SurveyDemoCard.jsx`<br>• `src/features/landing/components/ProblemSection.jsx`<br>• `src/features/landing/components/HowItWorksSection.jsx`<br>• `src/features/landing/components/FeaturesSection.jsx`<br>• `src/features/landing/components/RolesVisibilitySection.jsx`<br>• `src/features/landing/components/Contactenos.jsx`<br>• `src/features/landing/components/Footer.jsx`<br>• `src/core/layout/AppLayout.jsx`, `Icon.jsx` |
+| **2. Uso de Hooks** | 20% | • `useState`: Control de estados en formularios controlados, simulación interactiva de escala y feedback dinámico.<br>• `useEffect`: Carga reactiva de persistencia local, control de inactividad de sesión y scroll suave entre secciones.<br>• `useMemo`: Cálculos de agregación y k-anonimato. | • `Contactenos.jsx` (inputs y errores controlados)<br>• `SurveyDemoCard.jsx` (escala 1-5 interactiva)<br>• `AlertsInboxPage.jsx`, `NotificationsPage.jsx`<br>• `InactivityModal.jsx`, `TrendLineChart.jsx` |
+| **3. Formulario Funcional** | 15% | Formulario controlado en `/contactenos` con validación estricta en tiempo real y submit (nombre, correo con regex, empresa, motivo, mensaje), evento `onSubmit` con prevención de recargas nativas (`e.preventDefault()`) y renderizado dinámico del radicado confirmado. | • `src/features/landing/components/Contactenos.jsx`<br>• `src/features/landing/pages/ContactenosPage.jsx` |
+| **4. SPA y Rutas** | 15% | Aplicación Single Page Application (SPA) 100% fluida mediante `react-router-dom`. **Cero recargas de página y cero etiquetas `href` tradicionales**: navegación interna pura con `<Link>`, `<NavLink>` y botones accesibles con scroll programático. | • `src/App.jsx`<br>• `src/features/landing/components/Navbar.jsx`<br>• `src/features/landing/components/Footer.jsx`<br>• `src/core/layout/AppLayout.jsx` |
+| **5. Lógica, Listas y Funcionamiento** | 10% | Listas dinámicas generadas con `.map()` y keys únicas, renderizado condicional, manejo estricto de roles (RBAC) y persistencia relacional en `localStorage`. | • `HowItWorksSection.jsx`, `RolesVisibilitySection.jsx`<br>• `/sst/alertas` (Bandeja de alertas con filtros)<br>• `/admin/usuarios-roles` (Gestión de usuarios)<br>• `/notificaciones` (Avisos dinámicos leídos/no leídos) |
+| **6. Interfaz y Estilos** | 10% | Arquitectura CSS modular y desacoplada con Design Tokens propios (`tokens.css`), estilos de layout (`layout.css`), componentes globales (`components.css`), formulario desacoplado (`contactenos.css`) y estilos específicos de la landing (`styles.css`), con accesibilidad y diseño responsivo completo. | • `src/styles/tokens.css`<br>• `src/styles/components.css`<br>• `src/styles/contactenos.css`<br>• `src/styles/styles.css` |
+
+> **Nota para la revisión de Listas Dinámicas:** Para evaluar las vistas con listas dinámicas de datos sin necesidad de crearlos manualmente, ingresar a la plataforma haciendo clic en **"Abrir plataforma"** y seleccionar cualquiera de los botones de **Cuentas Demo** (por ejemplo, **Profesional SST** para ver la lista de alertas en `/sst/alertas`, o **Administrador** para ver la lista de usuarios en `/admin/usuarios-roles`).
+
+---
+
+## 3. Decisiones Arquitectonicas
 
 1. Enfoque Modular por Caracteristicas (Feature-Driven): Cada contexto de negocio (Autenticacion, Agente, Supervisor, SST, Auditoria, Administracion) reside en su propia carpeta bajo `src/features/`.
 2. Principio de Responsabilidad Unica (SRP): Separacion clara entre la vista (componentes JSX), la gestion del estado y los servicios/adaptadores de persistencia.
@@ -31,7 +48,7 @@ El sistema esta disenado bajo principios de Privacidad desde el Diseno (Privacy 
 
 ---
 
-## 3. Estado Actual del Proyecto
+## 4. Estado Actual del Proyecto
 
 Los Hitos 1, 2, 3, 4, 5, 6 y 7 se encuentran completados al 100%, verificados contra los requisitos del documento de especificacion ERS y con cero deuda tecnica:
 
@@ -76,11 +93,12 @@ Los Hitos 1, 2, 3, 4, 5, 6 y 7 se encuentran completados al 100%, verificados co
 
 ---
 
-## 4. Estructura de Directorios
+## 5. Estructura de Directorios
 
 ```text
 Pulso360/
 ├── .env.example              # Plantilla de variables de entorno (Vite / React)
+├── .gitignore                # Reglas de exclusión para Git
 ├── public/
 │   └── assets/
 │       ├── evidencias/       # Capturas de pantalla y evidencias visuales
@@ -105,6 +123,21 @@ Pulso360/
 │   │       └── pulsoStore.js # Repositorio local preparado para PostgreSQL
 │   │
 │   ├── features/
+│   │   ├── admin/
+│   │   │   ├── components/
+│   │   │   │   ├── AssignSupervisorModal.jsx
+│   │   │   │   ├── CampaignModal.jsx
+│   │   │   │   ├── CreateUserModal.jsx
+│   │   │   │   ├── HabeasAdvanceModal.jsx
+│   │   │   │   ├── ManageUserModal.jsx
+│   │   │   │   └── TeamModal.jsx
+│   │   │   └── pages/
+│   │   │       ├── CsvImportPage.jsx
+│   │   │       ├── HabeasDataPage.jsx
+│   │   │       ├── OrganizationPage.jsx
+│   │   │       ├── SystemParamsPage.jsx
+│   │   │       └── UsersRolesPage.jsx
+│   │   │
 │   │   ├── agent/
 │   │   │   ├── components/
 │   │   │   │   ├── CrisisSupportModal.jsx
@@ -122,6 +155,12 @@ Pulso360/
 │   │   │       ├── MyWellbeingPage.jsx
 │   │   │       └── SupportChannelPage.jsx
 │   │   │
+│   │   ├── auditor/
+│   │   │   ├── components/
+│   │   │   │   └── AuditLogTable.jsx
+│   │   │   └── pages/
+│   │   │       └── AuditLogPage.jsx
+│   │   │
 │   │   ├── auth/
 │   │   │   ├── components/
 │   │   │   │   ├── DemoAccountsCard.jsx
@@ -134,7 +173,18 @@ Pulso360/
 │   │   │       └── ResetPasswordPage.jsx
 │   │   │
 │   │   ├── landing/
+│   │   │   ├── components/
+│   │   │   │   ├── Contactenos.jsx
+│   │   │   │   ├── FeaturesSection.jsx
+│   │   │   │   ├── Footer.jsx
+│   │   │   │   ├── HeroSection.jsx
+│   │   │   │   ├── HowItWorksSection.jsx
+│   │   │   │   ├── Navbar.jsx
+│   │   │   │   ├── ProblemSection.jsx
+│   │   │   │   ├── RolesVisibilitySection.jsx
+│   │   │   │   └── SurveyDemoCard.jsx
 │   │   │   └── pages/
+│   │   │       ├── ContactenosPage.jsx
 │   │   │       └── LandingPage.jsx
 │   │   │
 │   │   ├── notifications/
@@ -151,50 +201,29 @@ Pulso360/
 │   │   │   └── pages/
 │   │   │       └── ReportsPage.jsx
 │   │   │
-│   │   ├── supervisor/
+│   │   ├── sst/
 │   │   │   ├── components/
-│   │   │   │   ├── ActionFollowupModal.jsx
-│   │   │   │   ├── PrivacyBlockedCard.jsx
-│   │   │   │   ├── TeamFactorsTable.jsx
-│   │   │   │   └── TeamKpiGrid.jsx
+│   │   │   │   ├── AlertCard.jsx
+│   │   │   │   ├── DismissAlertModal.jsx
+│   │   │   │   ├── HeatmapGrid.jsx
+│   │   │   │   ├── NewInterventionForm.jsx
+│   │   │   │   └── RuleFormCard.jsx
 │   │   │   └── pages/
-│   │   │       ├── ActionsPage.jsx
-│   │   │       └── TeamDashboardPage.jsx
+│   │   │       ├── AlertRulesPage.jsx
+│   │   │       ├── AlertsInboxPage.jsx
+│   │   │       ├── InterventionsPage.jsx
+│   │   │       ├── SstDashboardPage.jsx
+│   │   │       └── SupportInboxPage.jsx
 │   │   │
-│   │   └── sst/
+│   │   └── supervisor/
 │   │       ├── components/
-│   │       │   ├── AlertCard.jsx
-│   │       │   ├── DismissAlertModal.jsx
-│   │       │   ├── HeatmapGrid.jsx
-│   │       │   ├── NewInterventionForm.jsx
-│   │       │   └── RuleFormCard.jsx
+│   │       │   ├── ActionFollowupModal.jsx
+│   │       │   ├── PrivacyBlockedCard.jsx
+│   │       │   ├── TeamFactorsTable.jsx
+│   │       │   └── TeamKpiGrid.jsx
 │   │       └── pages/
-│   │           ├── AlertRulesPage.jsx
-│   │           ├── AlertsInboxPage.jsx
-│   │           ├── InterventionsPage.jsx
-│   │           ├── SstDashboardPage.jsx
-│   │           └── SupportInboxPage.jsx
-│   │
-│   │   ├── auditor/
-│   │   │   ├── components/
-│   │   │   │   └── AuditLogTable.jsx
-│   │   │   └── pages/
-│   │   │       └── AuditLogPage.jsx
-│   │   │
-│   │   └── admin/
-│   │       ├── components/
-│   │       │   ├── AssignSupervisorModal.jsx
-│   │       │   ├── CampaignModal.jsx
-│   │       │   ├── CreateUserModal.jsx
-│   │       │   ├── HabeasAdvanceModal.jsx
-│   │       │   ├── ManageUserModal.jsx
-│   │       │   └── TeamModal.jsx
-│   │       └── pages/
-│   │           ├── CsvImportPage.jsx
-│   │           ├── HabeasDataPage.jsx
-│   │           ├── OrganizationPage.jsx
-│   │           ├── SystemParamsPage.jsx
-│   │           └── UsersRolesPage.jsx
+│   │           ├── ActionsPage.jsx
+│   │           └── TeamDashboardPage.jsx
 │   │
 │   ├── styles/
 │   │   ├── admin.css
@@ -203,6 +232,7 @@ Pulso360/
 │   │   ├── bitacora.css
 │   │   ├── components.css
 │   │   ├── consentimiento.css
+│   │   ├── contactenos.css
 │   │   ├── documentacion.css
 │   │   ├── layout.css
 │   │   ├── notifications.css
@@ -224,7 +254,7 @@ Pulso360/
 
 ---
 
-## 5. Roadmap de Migracion
+## 6. Roadmap de Migracion
 
 El proceso de migracion se estructura en siete hitos de ejecucion secuencial:
 
@@ -280,7 +310,7 @@ El proceso de migracion se estructura en siete hitos de ejecucion secuencial:
 
 ---
 
-## 6. Instalacion y Ejecucion Local
+## 7. Instalacion y Ejecucion Local
 
 1. Clonar el repositorio y ubicarse en la carpeta del proyecto:
    ```bash
@@ -308,7 +338,7 @@ El proceso de migracion se estructura en siete hitos de ejecucion secuencial:
 
 ---
 
-## 7. Credenciales de Prueba
+## 8. Credenciales de Prueba
 
 | Perfil | Correo Electronico | Contrasena | Destino Inicial |
 | :--- | :--- | :--- | :--- |
@@ -320,7 +350,7 @@ El proceso de migracion se estructura en siete hitos de ejecucion secuencial:
 
 ---
 
-## 8. Estandar de Commits (Conventional Commits)
+## 9. Estandar de Commits (Conventional Commits)
 
 El proyecto adopta la convencion de Conventional Commits para mantener un historial de cambios claro, trazable y legible:
 
@@ -345,11 +375,11 @@ El proyecto adopta la convencion de Conventional Commits para mantener un histor
 
 ---
 
-## 9. Guía para Desarrolladores: Arquitectura Modular, Clean Code y Buenas Prácticas
+## 10. Guía para Desarrolladores: Arquitectura Modular, Clean Code y Buenas Prácticas
 
 Esta sección orienta a nuevos ingenieros y desarrolladores sobre cómo mantener, extender y escalar la plataforma Pulso360 bajo estándares enterprise.
 
-### 9.1 Principios Fundamentales de Diseño
+### 10.1 Principios Fundamentales de Diseño
 
 1. **Arquitectura Dirigida por Características (Feature-Driven)**:
    - Cada dominio de negocio se encuentra aislado en `src/features/<modulo>/`.
@@ -368,7 +398,7 @@ Esta sección orienta a nuevos ingenieros y desarrolladores sobre cómo mantener
 4. **Trazabilidad Inmutable**:
    - Cualquier acción crítica (cambio de roles, modificación de parámetros, descarte de alertas, exportación de reportes, revocación de consentimientos) **debe** disparar `pulsoStore.audit({ actor, action, target })`.
 
-### 9.2 Reglas de Clean Code y Estilo
+### 10.2 Reglas de Clean Code y Estilo
 
 - **Nombres de Símbolos en Inglés**: Clases, funciones, hooks, variables y nombres de archivos se redactan en inglés (`userNotifications`, `handleConfirmPriority`, `isAllowedByPrivacy`).
 - **Textos de Usuario y Comentarios en Español**: Mensajes de interfaz, etiquetas, alertas y documentación de funciones se redactan en español formal.
@@ -380,7 +410,7 @@ Esta sección orienta a nuevos ingenieros y desarrolladores sobre cómo mantener
 - **Diseño con Tokens CSS**:
   - No crear clases utilitarias ad-hoc o inline no estructuradas (`u-inline`). Utilizar las variables semánticas de `tokens.css` (`var(--c-primario)`, `var(--space-4)`, `var(--radius-md)`) y las clases de `components.css`.
 
-### 9.3 Flujo Paso a Paso para Crear una Nueva Funcionalidad
+### 10.3 Flujo Paso a Paso para Crear una Nueva Funcionalidad
 
 1. **Definir el Alcance y Módulo**: Identificar si pertenece a un módulo existente o requiere una nueva carpeta bajo `src/features/`.
 2. **Crear Componentes Específicos**: Implementar piezas reutilizables dentro de `src/features/<modulo>/components/` con tipado de `propTypes` o contratos claros.

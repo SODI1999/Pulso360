@@ -1,0 +1,294 @@
+/* src/styles/contactenos.css */
+/* Estilos modulares del Formulario de Contáctenos y Tarjeta Dinámica de Confirmación */
+
+.form-panel {
+  overflow: hidden;
+  border: 1px solid var(--landing-line);
+  border-radius: 16px;
+  background: var(--landing-white);
+  box-shadow: 0 12px 30px rgba(26, 63, 59, 0.07);
+}
+
+.form-panel-header {
+  display: grid;
+  gap: 4px;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--landing-line);
+  background: #f8fbfa;
+}
+
+.form-panel-header span {
+  color: var(--landing-green);
+  font-size: 0.64rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.form-panel-header strong {
+  font-size: 1.02rem;
+  letter-spacing: -0.015em;
+}
+
+.landing-form {
+  display: grid;
+  gap: 18px;
+  padding: 24px;
+}
+
+.form-grid-two {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  align-items: start;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  justify-content: flex-start;
+}
+
+.form-field label {
+  color: #283e3b;
+  font-size: 0.74rem;
+  font-weight: 750;
+}
+
+.form-field label > span:not(.optional) {
+  color: #bd4c36;
+}
+
+.optional {
+  float: right;
+  color: #7a8b89;
+  font-size: 0.64rem;
+  font-weight: 500;
+}
+
+.form-field input,
+.form-field select,
+.form-field textarea {
+  width: 100%;
+  border: 1px solid #cddbd8;
+  border-radius: 8px;
+  background: var(--landing-white);
+  color: var(--landing-ink);
+  outline: none;
+  font-size: 0.84rem;
+  box-sizing: border-box;
+  transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+}
+
+.form-field input,
+.form-field select {
+  height: 42px;
+  min-height: 42px;
+  max-height: 42px;
+  padding: 0 12px;
+}
+
+.form-field textarea {
+  min-height: 84px;
+  padding: 10px 12px;
+  resize: vertical;
+}
+
+.form-field input:focus,
+.form-field select:focus,
+.form-field textarea:focus {
+  border-color: var(--landing-green);
+  box-shadow: 0 0 0 3px rgba(13, 103, 94, 0.12);
+}
+
+.form-field input.has-error,
+.form-field select.has-error,
+.form-field textarea.has-error {
+  border-color: #c95d47 !important;
+  background: #fff9f7 !important;
+  box-shadow: 0 0 0 3px rgba(201, 93, 71, 0.15) !important;
+}
+
+.field-error {
+  display: flex !important;
+  align-items: center;
+  gap: 5px;
+  min-height: 18px;
+  margin-top: 4px;
+  color: #c95d47;
+  font-size: 0.72rem;
+  font-weight: 700;
+  animation: field-error-in 180ms ease;
+}
+
+.field-error.visible {
+  display: flex !important;
+}
+
+@keyframes field-error-in {
+  from {
+    opacity: 0;
+    transform: translateY(-3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.contact-alert-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: #fff0eb;
+  border: 1px solid #f5c4b8;
+  color: #9c2e1b;
+  font-size: 0.82rem;
+  font-weight: 700;
+  margin-bottom: 14px;
+  animation: field-error-in 200ms ease;
+}
+
+.contact-alert-banner svg {
+  flex: 0 0 auto;
+}
+
+.form-submit {
+  min-height: 42px;
+  border: 0;
+  border-radius: 9px;
+  background: var(--landing-green);
+  color: var(--landing-white);
+  font-size: 0.85rem;
+  font-weight: 750;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(13, 103, 94, 0.16);
+  transition: transform 180ms ease, background 180ms ease, box-shadow 180ms ease;
+}
+
+.form-submit:hover {
+  background: var(--landing-green-dark);
+  box-shadow: 0 8px 20px rgba(13, 103, 94, 0.22);
+  transform: translateY(-1px);
+}
+
+.dynamic-feedback {
+  padding: 0 24px 24px;
+}
+
+.dynamic-feedback:empty {
+  display: none;
+}
+
+.welcome-card {
+  overflow: hidden;
+  border: 1px solid #acd8ce;
+  border-radius: 12px;
+  background: #edf9f5;
+  animation: welcome-in 280ms ease both;
+}
+
+.welcome-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  border-bottom: 1px solid #c5e4dd;
+}
+
+.welcome-check {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--landing-green);
+  color: var(--landing-white);
+  font-weight: 800;
+  font-size: 0.8rem;
+}
+
+.welcome-card-header div {
+  display: grid;
+  gap: 1px;
+}
+
+.welcome-card-header strong {
+  font-size: 0.78rem;
+}
+
+.welcome-card-header span {
+  color: #58706c;
+  font-size: 0.64rem;
+}
+
+.welcome-message {
+  padding: 16px 16px 10px;
+  color: var(--landing-green-dark);
+  font-size: 0.95rem;
+  font-weight: 750;
+  line-height: 1.45;
+}
+
+.welcome-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  padding: 0 16px 14px;
+  color: #607572;
+  font-size: 0.66rem;
+}
+
+.welcome-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
+  border-top: 1px solid #c5e4dd;
+}
+
+.welcome-actions a,
+.welcome-actions button {
+  border: 0;
+  background: transparent;
+  color: var(--landing-green-dark);
+  font-size: 0.7rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.welcome-actions a:hover,
+.welcome-actions button:hover {
+  text-decoration: underline;
+}
+
+@keyframes welcome-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 700px) {
+  .form-grid-two {
+    grid-template-columns: 1fr;
+  }
+
+  .landing-form,
+  .form-panel-header {
+    padding: 18px;
+  }
+
+  .dynamic-feedback {
+    padding: 0 18px 18px;
+  }
+}

@@ -99,22 +99,22 @@ export function AgentDashboardPage() {
             </div>
 
             {/* Banner / Widget de Check-in Rápido Diario (RF-03) */}
-            <div className="card" style={{ marginBottom: '24px' }}>
+            <div className="card" style={{ marginBottom: '14px' }}>
                 {consent.c1 ? (
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '14px', flexWrap: 'wrap' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
                             <div style={{
-                                width: '48px', height: '48px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                                width: '42px', height: '42px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
                                 background: todayCheckin ? 'var(--c-ok-bg)' : 'var(--c-primario-suave)',
                                 color: todayCheckin ? 'var(--c-ok)' : 'var(--c-primario)'
                             }}>
-                                <Icon name={todayCheckin ? 'check' : 'favorite'} size={24} />
+                                <Icon name={todayCheckin ? 'check' : 'favorite'} size={22} />
                             </div>
                             <div>
-                                <h3 style={{ fontSize: '16px', fontWeight: '700', color: 'var(--c-texto)', margin: '0 0 4px' }}>
+                                <h3 style={{ fontSize: '15px', fontWeight: '700', color: 'var(--c-texto)', margin: '0 0 2px' }}>
                                     {todayCheckin ? 'Check-in registrado para esta jornada' : 'Check-in diario de bienestar'}
                                 </h3>
-                                <p style={{ fontSize: '13px', color: 'var(--c-texto-suave)', margin: 0 }}>
+                                <p style={{ fontSize: '12.5px', color: 'var(--c-texto-suave)', margin: 0 }}>
                                     {todayCheckin
                                         ? `Tu registro de la jornada (${journeyKey}) está guardado. Tus respuestas son 100% confidenciales.`
                                         : 'Registra seis dimensiones de percepción. Tus respuestas individuales jamás se muestran a tu líder.'}
@@ -140,7 +140,7 @@ export function AgentDashboardPage() {
             </div>
 
             {/* Tarjetas Resumen KPI */}
-            <div className="kpi-grid" style={{ marginBottom: '24px' }}>
+            <div className="kpi-grid" style={{ marginBottom: '14px' }}>
                 <div className="kpi-card">
                     <div className="kpi-label">Mi Nivel de Energía</div>
                     <div className="kpi-value">{energyValue} <span style={{ fontSize: '14px', color: 'var(--c-texto-mutado)', fontWeight: '400' }}>/ 5</span></div>
@@ -170,7 +170,7 @@ export function AgentDashboardPage() {
             </div>
 
             {/* Gráfico de Tendencia Personal y Acceso Rápido a Bitácora */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '20px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '14px' }}>
                 <div className="card">
                     <div className="card-header">
                         <div>
@@ -179,7 +179,7 @@ export function AgentDashboardPage() {
                         </div>
                         <span className="badge badge-info">Solo visible para ti</span>
                     </div>
-                    <div style={{ marginTop: '16px' }}>
+                    <div style={{ marginTop: '12px' }}>
                         <TrendLineChart
                             labels={trendData.labels}
                             values={trendData.values}
@@ -188,16 +188,16 @@ export function AgentDashboardPage() {
                     </div>
                 </div>
 
-                <div className="card">
+                <div className="card" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                     {consent.c2 ? (
                         <>
                             <div>
                                 <div className="card-title">Bitácora Personal Cifrada</div>
-                                <p style={{ fontSize: '13.5px', color: 'var(--c-texto-suave)', lineHeight: '1.5', margin: '8px 0 20px' }}>
+                                <p style={{ fontSize: '13px', color: 'var(--c-texto-suave)', lineHeight: '1.5', margin: '8px 0 16px' }}>
                                     Registra cómo te sentiste en el turno. Si autorizaste C3, el NLP explicable puede mostrarte categorías orientativas y evidencia léxica. No constituye diagnóstico.
                                 </p>
                             </div>
-                            <Link className="btn btn-secondary" to="/agente/bitacora">
+                            <Link className="btn btn-secondary" to="/agente/bitacora" style={{ alignSelf: 'flex-start' }}>
                                 <Icon name="edit_note" size={18} />
                                 <span>Escribir en mi Bitácora</span>
                             </Link>
@@ -205,10 +205,10 @@ export function AgentDashboardPage() {
                     ) : (
                         <div>
                             <div className="card-title">Bitácora desactivada por tu preferencia C2</div>
-                            <p style={{ margin: '8px 0 16px', fontSize: '13.5px', color: 'var(--c-texto-suave)' }}>
+                            <p style={{ margin: '8px 0 16px', fontSize: '13px', color: 'var(--c-texto-suave)' }}>
                                 Puedes mantenerla desactivada o habilitarla desde tus preferencias.
                             </p>
-                            <Link to="/consentimiento" className="btn btn-secondary">
+                            <Link to="/consentimiento" className="btn btn-secondary" style={{ alignSelf: 'flex-start' }}>
                                 Gestionar preferencias
                             </Link>
                         </div>

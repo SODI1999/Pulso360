@@ -48,6 +48,8 @@ import { HabeasDataPage } from './features/admin/pages/HabeasDataPage';
 import { ReportsPage } from './features/reports/pages/ReportsPage';
 import { NotificationsPage } from './features/notifications/pages/NotificationsPage';
 import { LandingPage } from './features/landing/pages/LandingPage';
+import { ContactenosPage as Contactenos } from './features/landing/pages/ContactenosPage';
+
 
 // Componente para resolver la ruta raíz según el rol del usuario conectado
 function RootRedirect() {
@@ -60,11 +62,13 @@ function App() {
     return (
         <BrowserRouter>
             <Routes>
-                {/* 1. Rutas Públicas de Autenticación */}
+                {/* 1. Rutas Públicas de Autenticación y Demostración */}
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/recuperar-clave" element={<ForgotPasswordPage />} />
                 <Route path="/nueva-clave" element={<ResetPasswordPage />} />
                 <Route path="/403" element={<ForbiddenPage />} />
+                <Route path="/contactenos" element={<Contactenos />} />
+                <Route path="/formulario" element={<Contactenos />} />
 
                 {/* 2. Ruta de Consentimiento (Agente) */}
                 <Route

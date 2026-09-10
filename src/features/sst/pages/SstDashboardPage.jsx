@@ -68,7 +68,7 @@ export function SstDashboardPage() {
       </div>
 
       {/* Banner Preventivo */}
-      <div className="alert-banner info" style={{ marginBottom: 'var(--space-6)' }}>
+      <div className="alert-banner info" style={{ marginBottom: 'var(--space-4)' }}>
         <Icon name="info" size={20} />
         <div>
           <strong>Vigilancia epidemiológica preventiva:</strong> La información agregada permite a SST coordinar acciones de apoyo colectivo sin exponer la identidad ni respuestas individuales de ningún colaborador.
@@ -76,7 +76,7 @@ export function SstDashboardPage() {
       </div>
 
       {/* KPIs Generales de SST */}
-      <div className="kpi-grid" style={{ marginBottom: 'var(--space-6)' }}>
+      <div className="kpi-grid" style={{ marginBottom: 'var(--space-4)' }}>
         <div className="kpi-card">
           <div className="kpi-label">Índice agregado de bienestar</div>
           <div className="kpi-value" style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>

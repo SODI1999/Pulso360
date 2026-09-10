@@ -220,10 +220,10 @@
 
 /* Barra Superior (Topbar) */
 .app-topbar {
-  height: 64px;
+  height: 58px;
   background-color: var(--c-superficie);
   border-bottom: 1px solid var(--c-borde-suave);
-  padding: 0 var(--space-8);
+  padding: 0 var(--space-6);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -234,7 +234,7 @@
 }
 
 .topbar-title {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--c-texto-suave);
   display: flex;
@@ -251,23 +251,23 @@
 /* Contenedor de Página */
 .page-container {
   flex: 1;
-  padding: var(--space-8);
-  max-width: 1200px;
+  padding: var(--space-5) var(--space-6);
+  max-width: 1440px;
   width: 100%;
   margin: 0 auto;
 }
 
 .page-header {
-  margin-bottom: var(--space-6);
+  margin-bottom: var(--space-4);
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   flex-wrap: wrap;
-  gap: var(--space-4);
+  gap: var(--space-3);
 }
 
 .page-title {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 700;
   color: var(--c-texto);
   letter-spacing: -0.02em;
@@ -275,10 +275,10 @@
 }
 
 .page-subtitle {
-  font-size: 13.5px;
+  font-size: 13px;
   color: var(--c-texto-suave);
-  margin-top: var(--space-1);
-  line-height: 1.5;
+  margin-top: 2px;
+  line-height: 1.45;
 }
 
 /* Responsive & Mobile Layout */
@@ -394,7 +394,7 @@
     margin-bottom: var(--space-4);
   }
 
-  .page-header > div:first-child {
+  .page-header>div:first-child {
     min-width: 0;
   }
 

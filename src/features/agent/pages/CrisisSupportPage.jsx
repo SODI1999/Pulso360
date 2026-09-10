@@ -25,7 +25,7 @@ export function CrisisSupportPage() {
             action: 'RUTA_APOYO_MOSTRADA',
             target: 'Ruta de apoyo prioritario'
         });
-    }, [currentUser]);
+    }, [currentUser?.id]);
 
     const handleConfirmPriority = () => {
         const storeData = pulsoStore.get();

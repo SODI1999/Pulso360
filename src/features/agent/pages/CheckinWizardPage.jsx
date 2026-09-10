@@ -169,6 +169,7 @@ export function CheckinWizardPage() {
         setSubmittedSuccess(true);
     };
 
+
     // 1. Caso: Bloqueo por falta de consentimiento C1
     if (!consent?.c1) {
         return (
@@ -285,7 +286,7 @@ export function CheckinWizardPage() {
 
     return (
         <div>
-            <div className="page-header" style={{ maxWidth: '800px', margin: '0 auto 24px' }}>
+            <div className="page-header" style={{ maxWidth: '600px', margin: '0 auto 16px' }}>
                 <div>
                     <h1 className="page-title">Check-in de bienestar</h1>
                     <p className="page-subtitle">
