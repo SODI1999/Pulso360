@@ -1,15 +1,16 @@
 // src/features/landing/pages/LandingPage.jsx
-// Página de Bienvenida y Presentación Institucional (Composición Declarativa por Componentes)
+// Página de aterrizaje institucional de Pulso360 (Diseño Editorial Contemporáneo Humano)
 
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Navbar } from '../components/Navbar';
 import { HeroSection } from '../components/HeroSection';
+import { ShowcaseSection } from '../components/ShowcaseSection';
 import { ProblemSection } from '../components/ProblemSection';
-import { HowItWorksSection } from '../components/HowItWorksSection';
-import { FeaturesSection } from '../components/FeaturesSection';
+import { ThreeActsSection } from '../components/ThreeActsSection';
 import { RolesVisibilitySection } from '../components/RolesVisibilitySection';
 import { Footer } from '../components/Footer';
+import { ScrollToTopButton } from '../components/ScrollToTopButton';
 
 export function LandingPage() {
   const location = useLocation();
@@ -41,14 +42,17 @@ export function LandingPage() {
       {/* Secciones Modulares Ensambladas */}
       <main id="contenido">
         <HeroSection />
+        <ShowcaseSection />
         <ProblemSection />
-        <HowItWorksSection />
-        <FeaturesSection />
+        <ThreeActsSection />
         <RolesVisibilitySection />
       </main>
 
       {/* Pie de Página Institucional */}
       <Footer />
+
+      {/* Botón Flotante Accesible para Volver al Inicio */}
+      <ScrollToTopButton />
     </div>
   );
 }

@@ -129,10 +129,11 @@ export function Contactenos() {
   };
 
   return (
-    <div className="form-panel" style={{ background: '#ffffff', boxShadow: '0 4px 20px rgba(0,0,0,0.06)' }}>
-      <div className="form-panel-header" style={{ borderBottom: '1px solid var(--c-borde-suave)', padding: 'var(--space-4) var(--space-6)' }}>
-        <span>Atención Institucional · Pulso360</span>
-        <strong>Contáctenos</strong>
+    <div className="form-panel">
+      <div className="form-panel-header">
+        <span className="panel-kicker">Solicitud Institucional</span>
+        <h2 className="panel-title">Envíanos tu requerimiento</h2>
+        <p className="panel-sub">Un especialista en BPO & SST responderá en menos de 24 horas.</p>
       </div>
 
       {!submittedData ? (
@@ -161,10 +162,12 @@ export function Contactenos() {
                 value={formData.name}
                 onChange={handleChange}
                 disabled={isSubmitting}
+                aria-required="true"
                 aria-invalid={!!formErrors.name}
+                aria-describedby={formErrors.name ? 'name-error' : undefined}
               />
               {formErrors.name && (
-                <span className="field-error visible" role="alert">
+                <span id="name-error" className="field-error visible" role="alert">
                   <Icon name="alertTriangle" size={13} />
                   <span>{formErrors.name}</span>
                 </span>
@@ -184,10 +187,12 @@ export function Contactenos() {
                 value={formData.email}
                 onChange={handleChange}
                 disabled={isSubmitting}
+                aria-required="true"
                 aria-invalid={!!formErrors.email}
+                aria-describedby={formErrors.email ? 'email-error' : undefined}
               />
               {formErrors.email && (
-                <span className="field-error visible" role="alert">
+                <span id="email-error" className="field-error visible" role="alert">
                   <Icon name="alertTriangle" size={13} />
                   <span>{formErrors.email}</span>
                 </span>
@@ -209,10 +214,12 @@ export function Contactenos() {
                 value={formData.company}
                 onChange={handleChange}
                 disabled={isSubmitting}
+                aria-required="true"
                 aria-invalid={!!formErrors.company}
+                aria-describedby={formErrors.company ? 'company-error' : undefined}
               />
               {formErrors.company && (
-                <span className="field-error visible" role="alert">
+                <span id="company-error" className="field-error visible" role="alert">
                   <Icon name="alertTriangle" size={13} />
                   <span>{formErrors.company}</span>
                 </span>
@@ -246,14 +253,16 @@ export function Contactenos() {
               value={formData.subject}
               onChange={handleChange}
               disabled={isSubmitting}
+              aria-required="true"
               aria-invalid={!!formErrors.subject}
+              aria-describedby={formErrors.subject ? 'subject-error' : undefined}
             >
               {CONTACT_SUBJECTS.map(subj => (
                 <option key={subj.value} value={subj.value}>{subj.label}</option>
               ))}
             </select>
             {formErrors.subject && (
-              <span className="field-error visible" role="alert">
+              <span id="subject-error" className="field-error visible" role="alert">
                 <Icon name="alertTriangle" size={13} />
                 <span>{formErrors.subject}</span>
               </span>
@@ -274,10 +283,12 @@ export function Contactenos() {
               value={formData.message}
               onChange={handleChange}
               disabled={isSubmitting}
+              aria-required="true"
               aria-invalid={!!formErrors.message}
+              aria-describedby={formErrors.message ? 'message-error' : undefined}
             />
             {formErrors.message && (
-              <span className="field-error visible" role="alert">
+              <span id="message-error" className="field-error visible" role="alert">
                 <Icon name="alertTriangle" size={13} />
                 <span>{formErrors.message}</span>
               </span>
@@ -290,8 +301,17 @@ export function Contactenos() {
             disabled={isSubmitting}
             style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 'var(--space-2)' }}
           >
-            <Icon name="check" size={18} />
-            <span>{isSubmitting ? 'Enviando solicitud...' : 'Enviar mensaje'}</span>
+            {isSubmitting ? (
+              <>
+                <Icon name="refresh" size={18} className="spin-animation" />
+                <span>Enviando solicitud...</span>
+              </>
+            ) : (
+              <>
+                <Icon name="check" size={18} />
+                <span>Enviar mensaje</span>
+              </>
+            )}
           </button>
         </form>
       ) : (

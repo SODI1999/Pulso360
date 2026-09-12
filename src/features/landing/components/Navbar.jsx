@@ -60,13 +60,13 @@ export function Navbar() {
               </button>
             </li>
             <li>
-              <button type="button" className="nav-link" onClick={() => handleNavClick('#como-funciona')}>
-                Cómo funciona
+              <button type="button" className="nav-link" onClick={() => handleNavClick('#los-tres-actos')}>
+                Los 3 Actos
               </button>
             </li>
             <li>
-              <button type="button" className="nav-link" onClick={() => handleNavClick('#funcionalidades')}>
-                Funcionalidades
+              <button type="button" className="nav-link" onClick={() => handleNavClick('#transparencia-roles')}>
+                Transparencia de Roles
               </button>
             </li>
             <li>
@@ -84,7 +84,7 @@ export function Navbar() {
                 to={currentUser ? roleHomePaths[currentUser.role] : '/login'}
                 onClick={() => setIsMenuOpen(false)}
               >
-                {currentUser ? 'Ir a mi Panel' : 'Ver plataforma'}
+                {currentUser ? 'Ir a mi Panel' : 'Iniciar sesión'}
               </Link>
             </li>
           </ul>
@@ -92,7 +92,7 @@ export function Navbar() {
 
         <div className="header-actions">
           <Link className="header-login" to={currentUser ? roleHomePaths[currentUser.role] : '/login'}>
-            {currentUser ? 'Ir a mi Panel' : 'Ver plataforma'}
+            {currentUser ? 'Ir a mi Panel' : 'Iniciar sesión'}
           </Link>
           <button
             className="mobile-toggle"

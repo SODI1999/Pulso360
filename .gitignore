@@ -36,3 +36,11 @@ Propuesta/
 [pP]ropuesta
 **/[pP]ropuesta/**
 **/[pP]ropuesta
+
+# Contratos de gobernanza para agentes de IA (invisibles para GitHub)
+AGENTS.md
+**/AGENTS.md
+GEMINI.md
+**/GEMINI.md
+.agents/
+

@@ -42,6 +42,12 @@ export function Icon({ name, className = '', size, ...props }) {
         <polyline points="12 19 5 12 12 5" />
       </>
     ),
+    arrowUp: (
+      <>
+        <line x1="12" y1="19" x2="12" y2="5" />
+        <polyline points="5 12 12 5 19 12" />
+      </>
+    ),
     check: (
       <polyline points="20 6 9 17 4 12" />
     ),
@@ -54,6 +60,12 @@ export function Icon({ name, className = '', size, ...props }) {
     ),
     shield: (
       <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+    ),
+    copy: (
+      <>
+        <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+        <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+      </>
     ),
     edit: (
       <>
@@ -319,7 +331,46 @@ export function Icon({ name, className = '', size, ...props }) {
         <polyline points="14 2 14 8 20 8" />
         <path d="M12 18.5c-2.4-1-4-2.5-4-4.5V11l4-1.5 4 1.5v3c0 2-1.6 3.5-4 4.5z" />
       </>
-    )
+    ),
+    clock: (
+      <>
+        <circle cx="12" cy="12" r="10" />
+        <polyline points="12 6 12 12 16 14" />
+      </>
+    ),
+    apartment: (
+      <>
+        <rect width="16" height="20" x="4" y="2" rx="2" ry="2" />
+        <path d="M9 22v-4h6v4" />
+        <path d="M8 6h.01" />
+        <path d="M16 6h.01" />
+        <path d="M12 6h.01" />
+        <path d="M12 10h.01" />
+        <path d="M12 14h.01" />
+        <path d="M16 10h.01" />
+        <path d="M16 14h.01" />
+        <path d="M8 10h.01" />
+        <path d="M8 14h.01" />
+      </>
+    ),
+    building: (
+      <>
+        <rect width="16" height="20" x="4" y="2" rx="2" ry="2" />
+        <path d="M9 22v-4h6v4" />
+        <path d="M8 6h.01" />
+        <path d="M16 6h.01" />
+        <path d="M12 6h.01" />
+        <path d="M12 10h.01" />
+        <path d="M12 14h.01" />
+        <path d="M16 10h.01" />
+        <path d="M16 14h.01" />
+        <path d="M8 10h.01" />
+        <path d="M8 14h.01" />
+      </>
+    ),
+    zap: (
+      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+    ),
   };
 
   const style = size ? { width: `${size}px`, height: `${size}px` } : undefined;

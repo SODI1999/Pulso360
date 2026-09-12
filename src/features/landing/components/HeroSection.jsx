@@ -1,57 +1,79 @@
 // src/features/landing/components/HeroSection.jsx
-// Sección principal Hero de la Landing con propuesta de valor y simulador de encuesta
+// Hero Editorial Principal de Pulso360 con marca de agua BPO y tooltip pedagógico de k-anonimato
 
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { SurveyDemoCard } from './SurveyDemoCard';
+import { Icon } from '../../../core/components/Icon';
 
 export function HeroSection() {
-  const scrollToDemo = () => {
-    document.getElementById('encuesta-demo')?.scrollIntoView({ behavior: 'smooth' });
+  const [showTooltip, setShowTooltip] = useState(false);
+
+  const scrollToSection = (id) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   return (
-    <section className="hero" id="inicio" aria-labelledby="hero-title">
-      <div className="hero-pattern" aria-hidden="true"></div>
-      <div className="landing-container hero-layout">
-        <div className="hero-copy">
-          <h1 id="hero-title">
-            <strong>Pulso360</strong> ayuda a detectar señales de desgaste laboral antes de que se conviertan en una crisis.
+    <section className="hero-editorial" id="inicio" aria-labelledby="hero-main-title">
+      {/* Capa de Marca de Agua Fotográfica BPO y Gradiente de Difuminado */}
+      <div className="hero-watermark-bg" aria-hidden="true" />
+      <div className="hero-watermark-gradient" aria-hidden="true" />
+
+      <div className="landing-container hero-editorial-inner">
+        {/* Cabecera Principal y Titular Editorial */}
+        <div className="hero-editorial-top">
+          <h1 id="hero-main-title" className="hero-editorial-title">
+            Detección temprana del agotamiento en Contact Centers. <br />
+            <em>Anticipa la rotación y la fatiga, sin invadir la privacidad.</em>
           </h1>
-          <p className="hero-lead">
-            Los agentes responden seis preguntas breves sobre su jornada. Pulso360 mantiene cada respuesta en privado y muestra a Seguridad y Salud en el Trabajo únicamente tendencias colectivas para orientar acciones de prevención.
+
+          <p className="hero-editorial-lead">
+            Desarrollado para centros de contacto y operaciones de alta presión: un sistema preventivo no médico que reemplaza encuestas anuales tardías por micro-pulsos de 60 segundos, bitácoras privadas y estricto{' '}
+            <span
+              className="kanonymity-tooltip-wrapper"
+              onMouseEnter={() => setShowTooltip(true)}
+              onMouseLeave={() => setShowTooltip(false)}
+              onClick={() => setShowTooltip(prev => !prev)}
+              tabIndex={0}
+              role="button"
+              aria-label="Explicación de qué significa k-anonimato k mayor o igual a 5"
+            >
+              <strong className="kanonymity-term">
+                k-anonimato (k &ge; 5)
+                <Icon name="info" size={14} className="kanonymity-info-icon" />
+              </strong>
+              {showTooltip && (
+                <span className="kanonymity-tooltip-popover" role="tooltip">
+                  <span className="tooltip-title">¿Qué significa k &ge; 5?</span>
+                  <span className="tooltip-desc">
+                    Garantiza que SST nunca ve datos individuales: las tendencias y métricas solo se calculan si al menos 5 personas del mismo equipo respondieron, haciendo matemáticamente imposible saber quién dijo qué.
+                  </span>
+                </span>
+              )}
+            </span>{' '}
+            para que Seguridad y Salud en el Trabajo (SST) intervenga antes de que el desgaste se transforme en ausentismo o rotación.
           </p>
 
-          <div className="hero-actions">
+          <div className="hero-editorial-cta-bar">
             <button
               type="button"
-              className="button button-primary"
-              onClick={scrollToDemo}
+              className="btn-editorial btn-editorial-primary"
+              onClick={() => scrollToSection('demostracion')}
             >
-              Probar encuesta
+              Ver demostración interactiva
+              <Icon name="arrowRight" size={16} />
             </button>
-            <Link className="button button-secondary" to="/login">
-              Abrir plataforma
+            <Link to="/login" className="btn-editorial btn-editorial-outline">
+              Acceder a la plataforma
             </Link>
+            <span className="hero-guarantee-note">
+              <Icon name="shieldCheck" size={16} />
+              Garantía Habeas Data: confidencialidad individual blindada
+            </span>
           </div>
-
-          <dl className="hero-facts" aria-label="Resumen de Pulso360">
-            <div>
-              <dt>6</dt>
-              <dd>preguntas por jornada</dd>
-            </div>
-            <div>
-              <dt>1 min</dt>
-              <dd>para responder</dd>
-            </div>
-            <div>
-              <dt>Privado</dt>
-              <dd>para cada agente</dd>
-            </div>
-          </dl>
         </div>
-
-        {/* Simulador Interactivo de Encuesta */}
-        <SurveyDemoCard />
       </div>
     </section>
   );
