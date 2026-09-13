@@ -1,21 +1,17 @@
-// src/features/landing/components/ShowcaseSection.jsx
+﻿// src/features/landing/components/ShowcaseSection.jsx
 // Sección dedicada a la demostración interactiva del software y puesto documental de operación BPO
 
 import { useState } from 'react';
 import { Icon } from '../../../core/components/Icon';
-
-const AGENT_FACTORS = [
-  { level: 1, label: 'Despejado' },
-  { level: 2, label: 'Moderado' },
-  { level: 3, label: 'Exigente' },
-  { level: 4, label: 'Saturado' },
-  { level: 5, label: 'Desbordado' }
-];
+import { AGENT_SCALE_FACTORS, AGENT_SCALE_SCENARIOS } from '../data/landingData';
 
 export function ShowcaseSection() {
   const [activeTab, setActiveTab] = useState('agente');
   const [selectedFactor, setSelectedFactor] = useState(4);
   const [showNlpDetail, setShowNlpDetail] = useState(false);
+
+  // Escenario reactivo dinámico según el factor Likert seleccionado
+  const currentScenario = AGENT_SCALE_SCENARIOS[selectedFactor] || AGENT_SCALE_SCENARIOS[4];
 
   return (
     <section className="showcase-editorial-section" id="demostracion" aria-labelledby="showcase-title">
@@ -52,7 +48,7 @@ export function ShowcaseSection() {
             </div>
 
             <div className="portrait-caption-box">
-              <p className="portrait-quote" style={{ fontStyle: 'normal' }}>
+              <p className="portrait-quote">
                 <strong>En pantalla:</strong> la agente responde la evaluación de carga emocional del micro-pulso diario (Paso 2 de 6). Un registro voluntario de 60 segundos en su estación que permite a SST detectar fatiga acumulada sin exponer su identidad ante supervisión.
               </p>
               <div className="portrait-footer-meta">
@@ -105,7 +101,7 @@ export function ShowcaseSection() {
                 </div>
 
                 <div className="factor-scale-interactive">
-                  {AGENT_FACTORS.map((f) => (
+                  {AGENT_SCALE_FACTORS.map((f) => (
                     <button
                       key={f.level}
                       type="button"
@@ -118,7 +114,7 @@ export function ShowcaseSection() {
                   ))}
                 </div>
 
-                {/* Sub-bloque de Bitácora Confidencial */}
+                {/* Sub-bloque de Bitácora Confidencial Reactiva */}
                 <div className="journal-micro-preview">
                   <div className="journal-micro-header">
                     <div className="journal-label">
@@ -129,16 +125,17 @@ export function ShowcaseSection() {
                   </div>
 
                   <div className="journal-sample-entry">
-                    <p>
-                      &ldquo;Tuve 3 llamadas consecutivas muy complejas por caídas en la plataforma. El AHT se disparó y sentí mucha tensión en el cuello...&rdquo;
-                    </p>
+                    <p>{currentScenario.quote}</p>
                   </div>
 
                   <div className="journal-nlp-return">
                     <div className="nlp-badge-row">
-                      <span className="nlp-tag warning">
-                        <Icon name="alertTriangle" size={12} />
-                        Sobrecarga situacional detectada
+                      <span className={`nlp-tag ${currentScenario.tagType}`}>
+                        <Icon
+                          name={currentScenario.tagType === 'success' ? 'checkCircle' : 'alertTriangle'}
+                          size={12}
+                        />
+                        {currentScenario.tagText}
                       </span>
                       <button
                         type="button"
@@ -150,7 +147,7 @@ export function ShowcaseSection() {
                     </div>
                     {showNlpDetail && (
                       <p className="nlp-text-advice">
-                        Orientación: La frustración por fallas tecnológicas es externa a tu competencia. Te sugerimos realizar ejercicios de estiramiento cervical de 3 minutos antes de salir. <em>Esta anotación no es visible para tu supervisor.</em>
+                        {currentScenario.advice} <em>Esta anotación no es visible para tu supervisor.</em>
                       </p>
                     )}
                   </div>

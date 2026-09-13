@@ -1,5 +1,5 @@
-// src/features/landing/components/ScrollToTopButton.jsx
-// Botón flotante accesible para volver al inicio de la página tras scrollear
+﻿// src/features/landing/components/ScrollToTopButton.jsx
+// Botón flotante accesible con transición de opacidad suave para volver al inicio
 
 import { useState, useEffect } from 'react';
 import { Icon } from '../../../core/components/Icon';
@@ -20,15 +20,15 @@ export function ScrollToTopButton() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  if (!isVisible) return null;
-
   return (
     <button
       type="button"
-      className="btn-scroll-top"
+      className={`btn-scroll-top ${isVisible ? 'visible' : ''}`}
       onClick={scrollToTop}
       aria-label="Volver al inicio de la página"
       title="Volver al inicio"
+      tabIndex={isVisible ? 0 : -1}
+      aria-hidden={!isVisible}
     >
       <Icon name="arrowUp" size={18} />
     </button>

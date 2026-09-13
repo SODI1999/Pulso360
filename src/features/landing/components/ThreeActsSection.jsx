@@ -1,41 +1,12 @@
-// src/features/landing/components/ThreeActsSection.jsx
+﻿// src/features/landing/components/ThreeActsSection.jsx
 // Unificación narrativa fluida de los 3 actos de Pulso360: Desahogo del Agente, Escudo k-anonimato y Acción SST
 
 import { useState } from 'react';
 import { Icon } from '../../../core/components/Icon';
-
-const BPO_SITUATIONS = [
-  {
-    id: 'llamada',
-    label: '1. Agresión verbal en llamada',
-    category: 'Tensión Emocional',
-    agentQuote: '«Atendí tres llamadas seguidas con clientes muy molestos gritando por cobros incorrectos. Siento los hombros agarrotados y una gran opresión en el pecho al cerrar el turno.»',
-    nlpTitle: 'Sobrecarga Emocional & Tensión Muscular',
-    nlpFeedback: 'Identificamos menciones de alta tensión por hostilidad externa y fatiga física. Te recomendamos ejercicios breves de relajación cervical y una pausa de hidratación.',
-    domainContext: 'La agresión verbal no controlada es el principal detonante de agotamiento emocional en agentes de primer contacto.'
-  },
-  {
-    id: 'falla',
-    label: '2. Falla de software y presión de AHT',
-    category: 'Estrés Tecnológico',
-    agentQuote: '«El CRM y la telefonía se colgaron a las 2:00 PM con 30 clientes en espera. El AHT se nos fue al piso y los clientes entraban enfurecidos por el retraso sin ser nuestra culpa.»',
-    nlpTitle: 'Frustración por Factores Fuera de Control',
-    nlpFeedback: 'Detectamos impotencia derivada de fallas de plataforma. Recuerda que las contingencias técnicas no son responsabilidad de tu gestión profesional.',
-    domainContext: 'La fricción tecnológica prolongada desmotiva al agente y distorsiona injustamente sus métricas operativas.'
-  },
-  {
-    id: 'cola',
-    label: '3. Turno rotativo continuo sin pausas',
-    category: 'Sobrecarga Cognitiva',
-    agentQuote: '«Turno de cierre de 2:00 PM a 10:00 PM con cola continua y sin respiro. No alcancé ni a pararme a tomar agua y siento un cansancio mental que no me deja ni pensar.»',
-    nlpTitle: 'Fatiga Cognitiva Sostenida',
-    nlpFeedback: 'Registramos fatiga mental prolongada. Esta señal colectiva se consolida anónimamente para que SST ajuste las pausas de tu campaña.',
-    domainContext: 'Los picos de atención sostenida sin micropausas degradan la salud auditiva y la estabilidad anímica en BPO.'
-  }
-];
+import { BPO_SIMULATION_SCENARIOS } from '../data/landingData';
 
 export function ThreeActsSection() {
-  const [selectedSituation, setSelectedSituation] = useState(BPO_SITUATIONS[0]);
+  const [selectedSituation, setSelectedSituation] = useState(BPO_SIMULATION_SCENARIOS[0]);
   const [agentCount, setAgentCount] = useState(6);
 
   return (
@@ -78,7 +49,7 @@ export function ThreeActsSection() {
                 </div>
 
                 <div className="situation-tab-row" role="tablist">
-                  {BPO_SITUATIONS.map((s) => (
+                  {BPO_SIMULATION_SCENARIOS.map((s) => (
                     <button
                       key={s.id}
                       type="button"
@@ -123,7 +94,7 @@ export function ThreeActsSection() {
           {/* ============================================================ */}
           {/* ACTO II: El Escudo Matemático de k-Anonimato */}
           {/* ============================================================ */}
-          <article className="act-spread act-spread-reverse" id="acto-2" aria-labelledby="act2-title">
+          <article className="act-spread" id="acto-2" aria-labelledby="act2-title">
             <div className="act-meta-column">
               <span className="act-roman-badge">Acto II</span>
               <span className="act-category-tag tag-shield">

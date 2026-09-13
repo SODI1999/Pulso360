@@ -1,4 +1,4 @@
-// src/features/landing/components/HeroSection.jsx
+﻿// src/features/landing/components/HeroSection.jsx
 // Hero Editorial Principal de Pulso360 con marca de agua BPO y tooltip pedagógico de k-anonimato
 
 import { useState } from 'react';
@@ -31,13 +31,17 @@ export function HeroSection() {
 
           <p className="hero-editorial-lead">
             Desarrollado para centros de contacto y operaciones de alta presión: un sistema preventivo no médico que reemplaza encuestas anuales tardías por micro-pulsos de 60 segundos, bitácoras privadas y estricto{' '}
-            <span
+            <button
+              type="button"
               className="kanonymity-tooltip-wrapper"
               onMouseEnter={() => setShowTooltip(true)}
               onMouseLeave={() => setShowTooltip(false)}
               onClick={() => setShowTooltip(prev => !prev)}
-              tabIndex={0}
-              role="button"
+              onKeyDown={(e) => {
+                if (e.key === 'Escape') setShowTooltip(false);
+              }}
+              aria-expanded={showTooltip}
+              aria-haspopup="dialog"
               aria-label="Explicación de qué significa k-anonimato k mayor o igual a 5"
             >
               <strong className="kanonymity-term">
@@ -45,14 +49,14 @@ export function HeroSection() {
                 <Icon name="info" size={14} className="kanonymity-info-icon" />
               </strong>
               {showTooltip && (
-                <span className="kanonymity-tooltip-popover" role="tooltip">
+                <span className="kanonymity-tooltip-popover" role="tooltip" id="kanonymity-tooltip-popover">
                   <span className="tooltip-title">¿Qué significa k &ge; 5?</span>
                   <span className="tooltip-desc">
                     Garantiza que SST nunca ve datos individuales: las tendencias y métricas solo se calculan si al menos 5 personas del mismo equipo respondieron, haciendo matemáticamente imposible saber quién dijo qué.
                   </span>
                 </span>
               )}
-            </span>{' '}
+            </button>{' '}
             para que Seguridad y Salud en el Trabajo (SST) intervenga antes de que el desgaste se transforme en ausentismo o rotación.
           </p>
 

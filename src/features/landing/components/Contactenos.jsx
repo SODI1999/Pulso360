@@ -1,18 +1,10 @@
-// src/features/landing/components/Contactenos.jsx
+﻿// src/features/landing/components/Contactenos.jsx
 // Formulario funcional de Contáctenos con campos controlados (useState), validaciones en tiempo real y confirmación interactiva
 
 import { useState } from 'react';
 import { Icon } from '../../../core/components/Icon';
+import { CONTACT_SUBJECTS } from '../data/landingData';
 import '../../../styles/contactenos.css';
-
-const CONTACT_SUBJECTS = [
-  { value: '', label: 'Selecciona el motivo de tu consulta...' },
-  { value: 'implementacion', label: 'Implementación en Operación de Contact Center' },
-  { value: 'demostracion', label: 'Solicitud de Demostración Institucional' },
-  { value: 'privacidad', label: 'Consultoría en Privacidad y k-Anonimato (N ≥ 5)' },
-  { value: 'sst', label: 'Vigilancia Epidemiológica y Prevención de Burnout' },
-  { value: 'otro', label: 'Otra consulta o requerimiento' }
-];
 
 export function Contactenos() {
   // 1. Estados controlados del formulario (useState)
@@ -299,7 +291,6 @@ export function Contactenos() {
             className="form-submit"
             type="submit"
             disabled={isSubmitting}
-            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 'var(--space-2)' }}
           >
             {isSubmitting ? (
               <>
@@ -315,63 +306,39 @@ export function Contactenos() {
           </button>
         </form>
       ) : (
-        /* 4. Tarjeta interactiva con datos ingresados */
-        <div style={{ padding: 'var(--space-6)' }}>
-          <div style={{
-            background: 'var(--c-superficie)',
-            border: '1px solid var(--c-exito)',
-            borderLeft: '5px solid var(--c-exito)',
-            borderRadius: 'var(--radius-md)',
-            padding: 'var(--space-5)',
-            marginBottom: 'var(--space-4)'
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', marginBottom: 'var(--space-3)' }}>
-              <span style={{
-                background: 'rgba(29, 155, 87, 0.12)',
-                color: 'var(--c-exito)',
-                width: '36px',
-                height: '36px',
-                borderRadius: '50%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}>
+        /* 4. Tarjeta interactiva con confirmación limpia y sin estilos inline */
+        <div className="contact-success-wrap">
+          <div className="contact-success-card">
+            <div className="contact-success-header">
+              <span className="contact-success-badge">
                 <Icon name="check" size={20} />
               </span>
               <div>
-                <strong style={{ fontSize: '17px', color: 'var(--c-texto)', display: 'block' }}>
+                <strong className="contact-success-title">
                   ¡Mensaje de contacto enviado con éxito!
                 </strong>
-                <span style={{ fontSize: '13px', color: 'var(--c-texto-suave)' }}>
+                <span className="contact-success-date">
                   Radicado recibido el {submittedData.date}
                 </span>
               </div>
             </div>
 
-            <p style={{ fontSize: '14px', color: 'var(--c-texto)', margin: '0 0 var(--space-4)', lineHeight: '1.5' }}>
+            <p className="contact-success-message">
               Estimado(a) <strong>{submittedData.name}</strong>, hemos registrado tu solicitud para la empresa <strong>{submittedData.company}</strong>. Un especialista de Pulso360 se pondrá en contacto contigo en el correo <strong>{submittedData.email}</strong>.
             </p>
 
-            <div style={{
-              background: '#ffffff',
-              border: '1px solid var(--c-borde-suave)',
-              borderRadius: 'var(--radius-sm)',
-              padding: 'var(--space-4)',
-              display: 'grid',
-              gap: 'var(--space-2)',
-              fontSize: '13.5px'
-            }}>
+            <div className="contact-success-details">
               <div>
-                <span style={{ color: 'var(--c-texto-suave)', fontWeight: '600' }}>Asunto: </span>
-                <span style={{ color: 'var(--c-texto)' }}>{submittedData.subject}</span>
+                <span className="detail-label">Asunto: </span>
+                <span className="detail-value">{submittedData.subject}</span>
               </div>
               <div>
-                <span style={{ color: 'var(--c-texto-suave)', fontWeight: '600' }}>Teléfono: </span>
-                <span style={{ color: 'var(--c-texto)' }}>{submittedData.phone}</span>
+                <span className="detail-label">Teléfono: </span>
+                <span className="detail-value">{submittedData.phone}</span>
               </div>
               <div>
-                <span style={{ color: 'var(--c-texto-suave)', fontWeight: '600' }}>Detalle del mensaje: </span>
-                <p style={{ color: 'var(--c-texto)', fontStyle: 'italic', margin: '4px 0 0', whiteSpace: 'pre-wrap' }}>
+                <span className="detail-label">Detalle del mensaje: </span>
+                <p className="detail-message-body">
                   &ldquo;{submittedData.message}&rdquo;
                 </p>
               </div>
@@ -380,9 +347,8 @@ export function Contactenos() {
 
           <button
             type="button"
-            className="btn btn-secondary btn-sm"
+            className="btn btn-secondary btn-sm contact-success-reset-btn"
             onClick={handleReset}
-            style={{ width: '100%', justifyContent: 'center' }}
           >
             <Icon name="edit" size={15} />
             <span>Enviar otro mensaje</span>

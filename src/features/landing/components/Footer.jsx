@@ -1,4 +1,4 @@
-// src/features/landing/components/Footer.jsx
+﻿// src/features/landing/components/Footer.jsx
 // Pie de página modular reutilizable para la Landing Page y páginas públicas
 
 import { Link, useLocation, useNavigate } from 'react-router-dom';
@@ -34,8 +34,9 @@ export function Footer() {
         <div className="footer-column">
           <h2>Explorar</h2>
           <button type="button" onClick={() => handleNavClick('#problema')}>El problema</button>
-          <button type="button" onClick={() => handleNavClick('#como-funciona')}>Cómo funciona</button>
-          <button type="button" onClick={() => handleNavClick('#funcionalidades')}>Funcionalidades</button>
+          <button type="button" onClick={() => handleNavClick('#demostracion')}>Demostración</button>
+          <button type="button" onClick={() => handleNavClick('#los-tres-actos')}>Los 3 Actos</button>
+          <button type="button" onClick={() => handleNavClick('#transparencia-roles')}>Transparencia de Roles</button>
           <Link to="/contactenos">Contáctenos</Link>
         </div>
 
@@ -44,7 +45,6 @@ export function Footer() {
           <p>Brahian Andrés Ospina Ríos</p>
           <p>Leonardo Otálvaro</p>
           <p>Andrés Felipe Trujillo</p>
-          <span className="footer-submeta">Ingeniería de Software</span>
         </div>
 
         <div className="footer-column footer-credits-col">
@@ -63,7 +63,7 @@ export function Footer() {
 
       <div className="landing-container footer-bottom">
         <p>© 2026 Pulso360 · Tecnológico de Antioquia (TdeA)</p>
-        <p>Inspirado en investigación empírica de Trabajo Social · Software preventivo no médico · Ley 23 de 1982</p>
+        <p>Software preventivo no médico · Ley 23 de 1982</p>
       </div>
     </footer>
   );

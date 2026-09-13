@@ -75,7 +75,7 @@ export function AcademicFoundationPage() {
                   onClick={handlePrint}
                   className='btn-print-dossier no-print'
                   title='Imprimir o guardar ficha en PDF'
-                  aria-label='Imprimir ficha metodologica'
+                  aria-label='Imprimir ficha metodológica'
                 >
                   <Icon name='fileText' size={14} />
                   <span>Guardar / Imprimir Ficha</span>
@@ -172,7 +172,7 @@ export function AcademicFoundationPage() {
                 <h2 id='sec-evidencia-titulo'>Radiografía del agotamiento en centros de contacto locales</h2>
               </div>
               <p className='section-prose'>
-                {EMPIRICAL_DATA.sampleContext} La evaluación aplico instrumentos psicométricos validados internacionalmente:
+                {EMPIRICAL_DATA.sampleContext} La evaluación aplicó instrumentos psicométricos validados internacionalmente:
               </p>
               <div className='instruments-row'>
                 {EMPIRICAL_DATA.instruments.map((inst) => (
@@ -256,7 +256,7 @@ export function AcademicFoundationPage() {
                 <h2 id='sec-transferencia-titulo'>De la problemática social a los requerimientos de software</h2>
               </div>
               <p className='section-prose'>
-                Pulso360 no pretendio digitalizar un formulario pasivo, sino responder a las fricciones reales del piso de operacion de los centros de contacto:
+                Pulso360 no pretendió digitalizar un formulario pasivo, sino responder a las fricciones reales del piso de operación de los centros de contacto:
               </p>
               <div className='transfer-cards-grid'>
                 {TRANSFER_CARDS.map((card) => (
@@ -275,7 +275,7 @@ export function AcademicFoundationPage() {
                           <span className='step-line' aria-hidden='true'></span>
                         </div>
                         <div className='step-text-wrap'>
-                          <span className='step-label'>Diagnostico Social (TdeA)</span>
+                          <span className='step-label'>Diagnóstico Social (TdeA)</span>
                           <p>{card.socialProblem}</p>
                         </div>
                       </div>
@@ -285,7 +285,7 @@ export function AcademicFoundationPage() {
                           <span className='step-line' aria-hidden='true'></span>
                         </div>
                         <div className='step-text-wrap'>
-                          <span className='step-label'>Friccion en Call Center</span>
+                          <span className='step-label'>Fricción en Call Center</span>
                           <p>{card.bpoBarrier}</p>
                         </div>
                       </div>
@@ -296,7 +296,7 @@ export function AcademicFoundationPage() {
                         <div className='step-text-wrap'>
                           <span className='step-label solution-label'>
                             <Icon name='checkCircle' size={13} />
-                            <span>Solucion en Pulso360</span>
+                            <span>Solución en Pulso360</span>
                           </span>
                           <p>{card.pulsoSolution}</p>
                         </div>
@@ -347,7 +347,7 @@ export function AcademicFoundationPage() {
                     <h2 id='sec-citacion-titulo' className='citation-card-title'>Referencia Académica Oficial</h2>
                   </div>
                   <div className='citation-actions-group'>
-                    <div className='citation-tabs' role='tablist' aria-label='Formato de citacion academica'>
+                    <div className='citation-tabs' role='tablist' aria-label='Formato de citación académica'>
                       <button
                         type='button'
                         role='tab'
@@ -403,7 +403,7 @@ export function AcademicFoundationPage() {
                 <h2 id='sec-legal-titulo'>Deslinde de Responsabilidad & Blindaje Legal Integral</h2>
               </div>
               <p className='section-prose'>
-                Pulso360 esta articulado bajo el ordenamiento jurídico colombiano en materia laboral, derechos de autor, reserva médica ocupacional y protección estricta de datos personales:
+                Pulso360 está articulado bajo el ordenamiento jurídico colombiano en materia laboral, derechos de autor, reserva médica ocupacional y protección estricta de datos personales:
               </p>
               <div className='legal-dossier-shell'>
                 {LEGAL_FRAMEWORK_DATA.map((item) => {

@@ -2258,12 +2258,6 @@ img {
   color: var(--landing-white) !important;
 }
 
-.footer-submeta {
-  color: #8eaaa5;
-  font-size: 0.7rem;
-  margin-top: 2px;
-  display: block;
-}
 
 .footer-bottom {
   display: flex;
@@ -2751,6 +2745,11 @@ img {
   align-items: center;
   cursor: help;
   outline: none;
+  background: transparent;
+  border: none;
+  padding: 0;
+  font: inherit;
+  vertical-align: baseline;
 }
 
 .kanonymity-term {
@@ -2929,8 +2928,16 @@ img {
   letter-spacing: 0.02em;
   box-shadow: 0 6px 20px rgba(8, 47, 40, 0.35);
   cursor: pointer;
-  transition: all 180ms ease;
-  animation: scrollTopFadeIn 200ms ease;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(12px);
+  transition: opacity 250ms ease, transform 250ms ease, background 180ms ease, box-shadow 180ms ease;
+}
+
+.btn-scroll-top.visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
 }
 
 .btn-scroll-top:hover {
@@ -3034,7 +3041,7 @@ img {
   color: var(--landing-ink);
   font-size: 0.9rem;
   line-height: 1.55;
-  font-style: italic;
+  font-style: normal;
   margin: 0 0 14px;
 }
 
@@ -5764,5 +5771,14 @@ img {
   .anti-surveillance-sub,
   .pillar-desc {
     color: #333333 !important;
+  }
+}
+
+
+@media (max-width: 640px) {
+  .screen-header.sst-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
   }
 }
