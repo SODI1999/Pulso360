@@ -8,11 +8,11 @@ const STORAGE_KEY = env.storageKey;
 
 const initialSeed = {
     users: [
-        { id: 'usr-1', email: 'agente@demo', name: 'Laura Gómez', role: 'agente', teamId: 'team-alpha-1', teamName: 'Equipo Alpha 1', campaign: 'Campaña Soporte Alpha', shiftStartHour: 8 },
-        { id: 'usr-2', email: 'supervisor@demo', name: 'Carlos Mendoza', role: 'supervisor', teamId: 'team-alpha-1', teamName: 'Equipo Alpha 1', campaign: 'Campaña Soporte Alpha' },
-        { id: 'usr-3', email: 'sst@demo', name: 'Patricia Silva', role: 'sst', teamId: null, teamName: 'Seguridad y Salud en el Trabajo' },
-        { id: 'usr-4', email: 'auditor@demo', name: 'Marcos Rivas', role: 'auditor', teamId: null, teamName: 'Auditoría' },
-        { id: 'usr-5', email: 'admin@demo', name: 'Admin Pulso360', role: 'admin', teamId: null, teamName: 'Administración' }
+        { id: 'usr-1', email: 'agente@pulso360.co', name: 'Laura Gómez', role: 'agente', teamId: 'team-alpha-1', teamName: 'Equipo Alpha 1', campaign: 'Campaña Soporte Alpha', shiftStartHour: 8 },
+        { id: 'usr-2', email: 'supervisor@pulso360.co', name: 'Carlos Mendoza', role: 'supervisor', teamId: 'team-alpha-1', teamName: 'Equipo Alpha 1', campaign: 'Campaña Soporte Alpha' },
+        { id: 'usr-3', email: 'sst@pulso360.co', name: 'Patricia Silva', role: 'sst', teamId: null, teamName: 'Seguridad y Salud en el Trabajo' },
+        { id: 'usr-4', email: 'auditor@pulso360.co', name: 'Marcos Rivas', role: 'auditor', teamId: null, teamName: 'Auditoría' },
+        { id: 'usr-5', email: 'admin@pulso360.co', name: 'Admin Pulso360', role: 'admin', teamId: null, teamName: 'Administración' }
     ],
 
     // Tabla: user_consents
@@ -137,13 +137,31 @@ export const pulsoStore = {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(seed));
             return seed;
         }
+        let data;
         try {
-            return JSON.parse(raw);
+            data = JSON.parse(raw);
         } catch {
             const seed = cloneSeed();
             localStorage.setItem(STORAGE_KEY, JSON.stringify(seed));
             return seed;
         }
+
+        // Rutina de migración reactiva: sanear correos con dominio @demo persistidos en versiones previas
+        if (Array.isArray(data?.users)) {
+            let hasDemoEmails = false;
+            data.users = data.users.map((user) => {
+                if (typeof user?.email === 'string' && /@demo$/i.test(user.email)) {
+                    hasDemoEmails = true;
+                    return { ...user, email: user.email.replace(/@demo$/i, '@pulso360.co') };
+                }
+                return user;
+            });
+            if (hasDemoEmails) {
+                pulsoStore.save(data);
+            }
+        }
+
+        return data;
     },
     // Guarda los datos actualizados
     save: (data) => {

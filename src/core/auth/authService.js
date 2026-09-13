@@ -107,8 +107,36 @@ export const authService = {
         // 2. Buscar al usuario en la base de datos (hoy pulsoStore, mañana tu API)
         const data = pulsoStore.get();
         const cleanEmail = String(email || '').trim().toLowerCase();
-        const user = data.users.find(u => u.email.toLowerCase() === cleanEmail);
-        const valid = Boolean(user && password === '123456');
+
+        // Mapeo flexible de aliases corporativos y retrocompatibilidad
+        const emailAliases = {
+            'agente@demo': 'agente@pulso360.co',
+            'supervisor@demo': 'supervisor@pulso360.co',
+            'sst@demo': 'sst@pulso360.co',
+            'auditor@demo': 'auditor@pulso360.co',
+            'admin@demo': 'admin@pulso360.co',
+            'agente': 'agente@pulso360.co',
+            'supervisor': 'supervisor@pulso360.co',
+            'sst': 'sst@pulso360.co',
+            'auditor': 'auditor@pulso360.co',
+            'admin': 'admin@pulso360.co'
+        };
+        const resolvedEmail = emailAliases[cleanEmail] || cleanEmail;
+
+        let user = (data.users || []).find(u =>
+            u.email.toLowerCase() === cleanEmail ||
+            u.email.toLowerCase() === resolvedEmail
+        );
+
+        if (!user) {
+            const roleMatch = ['agente', 'supervisor', 'sst', 'auditor', 'admin'].find(r => cleanEmail.startsWith(r));
+            if (roleMatch) {
+                user = (data.users || []).find(u => u.role === roleMatch);
+            }
+        }
+
+        const isCompliantMockPass = (password === 'Pulso360#2026' || password === '123456');
+        const valid = Boolean(user && (isCompliantMockPass || (user.password && password === user.password)));
 
         // 3. Si la contraseña no coincide
         if (!valid) {
@@ -200,5 +228,178 @@ export const authService = {
             if (item.href.includes('apoyo')) return Boolean(consent.c5);
             return true;
         });
+    },
+
+    // =========================================================================
+    // Modulo de Recuperacion de Acceso (Desacoplado y preparado para backend)
+    // @todo Backend Integration: Reemplazar llamadas internas por fetch(API_URL)
+    // =========================================================================
+
+    requestPasswordReset: async (email) => {
+        await new Promise(r => setTimeout(r, 450));
+        const cleanEmail = String(email || '').trim().toLowerCase();
+        if (!cleanEmail) {
+            return { success: false, message: 'Ingresa un correo institucional válido.' };
+        }
+
+        const data = pulsoStore.get();
+        const emailAliases = {
+            'agente@demo': 'agente@pulso360.co',
+            'supervisor@demo': 'supervisor@pulso360.co',
+            'sst@demo': 'sst@pulso360.co',
+            'auditor@demo': 'auditor@pulso360.co',
+            'admin@demo': 'admin@pulso360.co',
+            'agente': 'agente@pulso360.co',
+            'supervisor': 'supervisor@pulso360.co',
+            'sst': 'sst@pulso360.co',
+            'auditor': 'auditor@pulso360.co',
+            'admin': 'admin@pulso360.co'
+        };
+        const resolvedEmail = emailAliases[cleanEmail] || cleanEmail;
+        let foundUser = (data.users || []).find(u =>
+            u.email.toLowerCase() === cleanEmail ||
+            u.email.toLowerCase() === resolvedEmail
+        );
+        if (!foundUser) {
+            const roleMatch = ['agente', 'supervisor', 'sst', 'auditor', 'admin'].find(r => cleanEmail.startsWith(r));
+            if (roleMatch) {
+                foundUser = (data.users || []).find(u => u.role === roleMatch);
+            }
+        }
+
+        pulsoStore.audit({
+            actor: foundUser ? foundUser.id + ' (' + foundUser.role + ')' : 'actor-no-identificado',
+            action: 'SOLICITUD_RESET_PASSWORD',
+            target: 'Recuperacion de acceso institucional'
+        });
+
+        // Asegurar que no se exponga ningun correo o dominio @demo en la respuesta de despacho
+        const safeTargetEmail = (foundUser ? foundUser.email : cleanEmail).replace(/@demo$/, '@pulso360.co');
+
+        if (foundUser) {
+            data.passwordReset = data.passwordReset || { tokens: [] };
+            data.passwordReset.tokens = (data.passwordReset.tokens || []).filter(t => t.userId !== foundUser.id);
+
+            const token = 'rst-' + Date.now() + '-' + Math.random().toString(36).substring(2, 8);
+            const expiresAt = Date.now() + 30 * 60 * 1000;
+
+            data.passwordReset.tokens.push({
+                id: token,
+                userId: foundUser.id,
+                expiresAt,
+                used: false,
+                email: foundUser.email
+            });
+            pulsoStore.save(data);
+
+            return {
+                success: true,
+                message: 'Instrucciones de recuperación despachadas a tu correo institucional.',
+                targetEmail: safeTargetEmail,
+                devToken: token,
+                devLink: '/nueva-clave?token=' + token,
+                expiresInMinutes: 30
+            };
+        }
+
+        return {
+            success: true,
+            message: 'Si el correo institucional se encuentra registrado en el sistema, recibirás las instrucciones en breve.',
+            targetEmail: safeTargetEmail,
+            devToken: null,
+            devLink: null
+        };
+    },
+
+    validateResetToken: async (token) => {
+        await new Promise(r => setTimeout(r, 200));
+
+        if (!token) {
+            return { valid: false, reason: 'TOKEN_MISSING', message: 'No se suministró ningún token de recuperación válido. El enlace es obligatorio para acceder.' };
+        }
+
+        const data = pulsoStore.get();
+
+        if (token === 'demo-valid') {
+            const demoUser = (data.users || []).find(u => u.id === 'usr-1');
+            const demoEmail = (demoUser?.email || 'agente@pulso360.co').replace(/@demo$/, '@pulso360.co');
+            return { valid: true, userId: 'usr-1', email: demoEmail, isDemo: true };
+        }
+
+        const record = (data.passwordReset?.tokens || []).find(t => t.id === token);
+
+        if (!record) {
+            return { valid: false, reason: 'TOKEN_NOT_FOUND', message: 'Este enlace de recuperación no existe o ya fue revocado.' };
+        }
+
+        if (record.used) {
+            return { valid: false, reason: 'TOKEN_ALREADY_USED', message: 'Este enlace de recuperación ya fue utilizado previamente.' };
+        }
+
+        if (Number(record.expiresAt) <= Date.now()) {
+            return { valid: false, reason: 'TOKEN_EXPIRED', message: 'Este enlace ha expirado por límite de tiempo (30 minutos).' };
+        }
+
+        const targetUser = (data.users || []).find(u => u.id === record.userId);
+        const resolvedEmail = (record.email || (targetUser ? targetUser.email : '')).replace(/@demo$/, '@pulso360.co');
+
+        return { valid: true, userId: record.userId, email: resolvedEmail, stored: record };
+    },
+
+    resetPassword: async (token, newPassword) => {
+        await new Promise(r => setTimeout(r, 450));
+
+        const validation = await authService.validateResetToken(token);
+        if (!validation.valid) {
+            return { success: false, message: validation.message || 'El token de recuperación no es válido.' };
+        }
+
+        const passwordPolicy = validatePasswordStrength(newPassword);
+        if (!passwordPolicy.valid) {
+            return { success: false, message: passwordPolicy.message };
+        }
+
+        const data = pulsoStore.get();
+        const targetUserId = validation.userId;
+
+        const userIndex = (data.users || []).findIndex(u => u.id === targetUserId);
+        if (userIndex !== -1) {
+            data.users[userIndex].password = newPassword;
+        }
+
+        if (token !== 'demo-valid' && data.passwordReset?.tokens) {
+            const tokenIndex = data.passwordReset.tokens.findIndex(t => t.id === token);
+            if (tokenIndex !== -1) {
+                data.passwordReset.tokens[tokenIndex].used = true;
+            }
+        }
+
+        pulsoStore.save(data);
+
+        pulsoStore.audit({
+            actor: targetUserId + ' (recuperacion)',
+            action: 'RESTABLECIMIENTO_PASSWORD',
+            target: 'Credenciales de acceso institucional'
+        });
+
+        sessionStorage.removeItem(SESSION_KEY);
+        return { success: true, message: 'Contraseña institucional actualizada exitosamente.' };
     }
+};
+
+// Validación unificada de contraseña corporativa (8 caracteres robustos)
+export const validatePasswordStrength = (password) => {
+    if (!password || typeof password !== 'string') {
+        return { valid: false, message: 'La contraseña institucional es requerida.' };
+    }
+    if (password.length < 8) {
+        return { valid: false, message: 'La contraseña debe contener al menos 8 caracteres.' };
+    }
+    if (!(/[A-Z]/.test(password) && /[a-z]/.test(password))) {
+        return { valid: false, message: 'La contraseña debe contener letras mayúsculas y minúsculas.' };
+    }
+    if (!/[0-9]/.test(password)) {
+        return { valid: false, message: 'La contraseña debe incluir al menos un número (0 - 9).' };
+    }
+    return { valid: true };
 };

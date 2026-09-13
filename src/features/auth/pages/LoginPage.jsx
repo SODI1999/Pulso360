@@ -1,28 +1,52 @@
 // src/features/auth/pages/LoginPage.jsx
-// Página principal de inicio de sesión de Pulso360
+// Experiencia unificada de autenticacion Split-Screen (Login, Recuperacion y Nueva Clave in-situ)
 
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { authService } from '../../../core/auth/authService';
+import { Link, useNavigate, useLocation, useSearchParams } from 'react-router-dom';
+import { authService, validatePasswordStrength } from '../../../core/auth/authService';
 import { LoginForm } from '../components/LoginForm';
 import { DemoAccountsCard } from '../components/DemoAccountsCard';
 import { Icon } from '../../../core/components/Icon';
+import { AUTH_SAFEGUARDS, AUTH_METADATA } from '../data/authData';
 
-// Estilos del módulo de autenticación
+// Estilos modulares de autenticacion
 import '../../../styles/auth.css';
 
-export function LoginPage() {
+export function LoginPage({ initialMode }) {
   const navigate = useNavigate();
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [mode, setMode] = useState('login');
+
+  // Determinar el modo segun prop o ruta URL
+  useEffect(() => {
+    if (initialMode) {
+      setMode(initialMode);
+      return;
+    }
+    if (location.pathname === '/recuperar-clave') {
+      setMode('forgot');
+      return;
+    }
+    if (location.pathname === '/nueva-clave') {
+      setMode('reset');
+      return;
+    }
+    setMode('login');
+  }, [location.pathname, initialMode]);
+
+  // ==========================================
+  // ESTADOS MODO LOGIN
+  // ==========================================
+  const [email, setEmail] = useState('agente@pulso360.co');
+  const [password, setPassword] = useState('Pulso360#2026');
   const [loading, setLoading] = useState(false);
   const [feedback, setFeedback] = useState({ type: '', message: '' });
   const [lockedRemainingMs, setLockedRemainingMs] = useState(0);
 
-  // 1. Limpieza preventiva de sesión previa al entrar al Login y verificar bloqueo
+  // Limpieza preventiva de sesion previa al entrar y verificar bloqueo
   useEffect(() => {
-    // Si el usuario regresa a la pantalla de login, invalidamos la sesión anterior
     sessionStorage.removeItem('pulso360_current_session');
     const lockMs = authService.getRemainingLockMs();
     if (lockMs > 0) {
@@ -30,10 +54,9 @@ export function LoginPage() {
     }
   }, []);
 
-  // 2. Temporizador para decrementar el tiempo de bloqueo segundo a segundo
+  // Temporizador de decremento de bloqueo
   useEffect(() => {
     if (lockedRemainingMs <= 0) return;
-
     const timer = setInterval(() => {
       setLockedRemainingMs((prev) => {
         if (prev <= 1000) {
@@ -44,19 +67,16 @@ export function LoginPage() {
         return prev - 1000;
       });
     }, 1000);
-
     return () => clearInterval(timer);
   }, [lockedRemainingMs]);
 
-  // 3. Manejar selección desde la tarjeta de cuentas demo
-  const handleSelectDemo = (demoEmail) => {
-    setEmail(demoEmail);
-    setPassword('123456');
+  const handleSelectDemo = (roleData) => {
+    setEmail(roleData.email);
+    setPassword(roleData.password || 'Pulso360#2026');
     setFeedback({ type: '', message: '' });
   };
 
-  // 4. Procesar el envío de credenciales
-  const handleSubmit = async (e) => {
+  const handleLoginSubmit = async (e) => {
     e.preventDefault();
     if (!email || !password || lockedRemainingMs > 0) return;
 
@@ -77,12 +97,10 @@ export function LoginPage() {
         return;
       }
 
-      setFeedback({ type: 'success', message: 'Autenticación correcta. Redirigiendo...' });
+      setFeedback({ type: 'success', message: 'Autenticacion correcta. Redirigiendo...' });
 
       setTimeout(() => {
         const user = result.user;
-
-        // Si es agente y aún no ha firmado la política v2.4, va a consentimiento
         if (user.role === 'agente' && authService.needsConsent(user)) {
           navigate('/consentimiento?origin=login');
           return;
@@ -101,71 +119,574 @@ export function LoginPage() {
     } catch (error) {
       console.error('Login error:', error);
       setLoading(false);
-      setFeedback({ type: 'error', message: 'Ocurrió un error inesperado al validar las credenciales.' });
+      setFeedback({ type: 'error', message: 'Error al conectar con el servicio de autenticacion.' });
+    }
+  };
+
+  // ==========================================
+  // ESTADOS MODO RECUPERACION (FORGOT)
+  // ==========================================
+  const [recoveryEmail, setRecoveryEmail] = useState('');
+  const [recoveryLoading, setRecoveryLoading] = useState(false);
+  const [recoveryFeedback, setRecoveryFeedback] = useState({ type: '', message: '' });
+  const [dispatchedData, setDispatchedData] = useState(null);
+
+  const handleRecoverySubmit = async (e) => {
+    e.preventDefault();
+    if (!recoveryEmail.trim() || recoveryLoading) return;
+
+    setRecoveryLoading(true);
+    setRecoveryFeedback({ type: '', message: '' });
+
+    try {
+      const res = await authService.requestPasswordReset(recoveryEmail);
+      setRecoveryLoading(false);
+
+      if (res.success) {
+        setDispatchedData(res);
+      } else {
+        setRecoveryFeedback({ type: 'error', message: res.message });
+      }
+    } catch (err) {
+      console.error('Recovery request error:', err);
+      setRecoveryLoading(false);
+      setRecoveryFeedback({ type: 'error', message: 'Error inesperado al solicitar recuperacion.' });
+    }
+  };
+
+  // ==========================================
+  // ESTADOS MODO RESET PASSWORD (NUEVA CLAVE)
+  // ==========================================
+  // Blindaje estricto: Si no hay token en searchParams ni despacho reciente, se valida vacio (denegado)
+  const tokenParam = searchParams.get('token') || dispatchedData?.devToken || '';
+  const [tokenState, setTokenState] = useState({ loading: true, valid: false, email: '', message: '' });
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [resetLoading, setResetLoading] = useState(false);
+  const [resetFeedback, setResetFeedback] = useState({ type: '', message: '' });
+
+  // Validar token al cargar o cambiar a modo reset
+  useEffect(() => {
+    if (mode !== 'reset') return;
+    let isMounted = true;
+    authService.validateResetToken(tokenParam).then((res) => {
+      if (!isMounted) return;
+      if (res.valid) {
+        setTokenState({ loading: false, valid: true, email: res.email || '', message: '' });
+      } else {
+        setTokenState({ loading: false, valid: false, email: '', message: res.message });
+      }
+    });
+    return () => {
+      isMounted = false;
+    };
+  }, [mode, tokenParam]);
+
+  // Reglas de robustez corporativa unificadas (8 caracteres robustos)
+  const hasLength = newPassword.length >= 8;
+  const hasCases = /[A-Z]/.test(newPassword) && /[a-z]/.test(newPassword);
+  const hasNumbers = /[0-9]/.test(newPassword);
+  const passwordsMatch = Boolean(newPassword && confirmPassword && newPassword === confirmPassword);
+  const passwordPolicy = validatePasswordStrength(newPassword);
+
+  const checkPasswordStrength = (pwd) => {
+    if (!pwd) return 0;
+    let score = 0;
+    if (pwd.length >= 8) score++;
+    if (pwd.length >= 12) score++;
+    if (/[A-Z]/.test(pwd) && /[a-z]/.test(pwd)) score++;
+    if (/[0-9]/.test(pwd)) score++;
+    if (/[^A-Za-z0-9]/.test(pwd)) score++;
+    return Math.min(score, 4);
+  };
+
+  const strengthScore = checkPasswordStrength(newPassword);
+  const strengthLabels = ['Debil', 'Aceptable', 'Buena', 'Fuerte'];
+  const strengthClass = ['weak', 'weak', 'medium', 'strong'][Math.max(0, strengthScore - 1)] || 'weak';
+  const strengthLabel = newPassword ? strengthLabels[Math.max(0, strengthScore - 1)] : '—';
+
+  const isResetValid = tokenState.valid && passwordPolicy.valid && passwordsMatch && !resetLoading;
+
+  const handleResetSubmit = async (e) => {
+    e.preventDefault();
+    if (!isResetValid) return;
+
+    setResetLoading(true);
+    setResetFeedback({ type: '', message: '' });
+
+    try {
+      const result = await authService.resetPassword(tokenParam, newPassword);
+      setResetLoading(false);
+
+      if (result.success) {
+        setResetFeedback({
+          type: 'success',
+          message: 'Contrasena actualizada con exito. Redirigiendo al inicio de sesion...'
+        });
+        setTimeout(() => {
+          setMode('login');
+          setPassword(newPassword);
+          setResetFeedback({ type: '', message: '' });
+          setDispatchedData(null);
+          navigate('/login');
+        }, 1200);
+      } else {
+        setResetFeedback({ type: 'error', message: result.message });
+      }
+    } catch (err) {
+      console.error('Reset password error:', err);
+      setResetLoading(false);
+      setResetFeedback({ type: 'error', message: 'Ocurrio un error inesperado al guardar la contrasena.' });
     }
   };
 
   return (
-    <div className="login-wrapper">
-      {/* Panel Izquierdo: Branding y Privacidad por Diseño */}
-      <aside className="branding-panel" aria-label="Información de Pulso360">
-        <div className="branding-decoration-bg"></div>
-        <div className="branding-content">
-          <div className="branding-badge" aria-hidden="true">
-            <Icon name="shield" size={28} />
+    <div className="login-editorial-wrapper">
+      {/* =========================================================================
+          PANEL IZQUIERDO: Respaldo Institucional BPO y Salvaguardas SGSI
+          ========================================================================= */}
+      <aside className="login-manifesto-panel" aria-label="Garantías Institucionales de Pulso360">
+        <div className="manifesto-top-bar">
+          <div className="manifesto-brand-lockup">
+            <img src="/assets/imágenes/logo.png" alt="Pulso360" className="manifesto-brand-symbol" />
+            <span className="manifesto-brand-title">Pulso360</span>
           </div>
-          <h1 className="branding-title">Bienestar preventivo<br />con privacidad por diseño</h1>
-          <p className="branding-description">Pulso360 apoya la observación de tendencias colectivas de bienestar. No realiza diagnósticos ni comparte respuestas individuales con líderes.</p>
-
-          <div className="illustration-card">
-            <img src="/assets/imágenes/illustration.png" alt="Ilustración de analítica agregada y bienestar" className="illustration-img" />
-          </div>
-
-          <ul className="branding-feature-list">
-            <li className="branding-feature-item">
-              <Icon name="check" className="branding-feature-icon" />
-              <span>Tus respuestas individuales no se muestran a tu líder.</span>
-            </li>
-            <li className="branding-feature-item">
-              <Icon name="check" className="branding-feature-icon" />
-              <span>Tu bitácora es privada y se representa como cifrada en la maqueta.</span>
-            </li>
-            <li className="branding-feature-item">
-              <Icon name="check" className="branding-feature-icon" />
-              <span>Puedes cambiar tus finalidades de consentimiento voluntariamente.</span>
-            </li>
-          </ul>
+          <Link to="/" className="manifesto-back-link" title="Volver al portal público">
+            <Icon name="arrowLeft" size={14} />
+            <span>Volver al portal</span>
+          </Link>
         </div>
-      </aside>
 
-      {/* Panel Derecho: Formulario y Demos */}
-      <main className="auth-panel">
-        <div className="auth-container">
-          <header className="auth-header">
-            <div className="logo-container">
-              <img src="/assets/imágenes/logo.png" alt="Pulso360" className="brand-logo" />
-            </div>
-            <h2 className="auth-title">Iniciar sesión</h2>
-            <p className="auth-subtitle">Ingresa con tu correo institucional</p>
+        <div className="manifesto-body">
+          <header className="manifesto-editorial-header">
+            <h1 className="manifesto-title">{AUTH_METADATA.title}</h1>
+            <p className="manifesto-lead">{AUTH_METADATA.subtitle}</p>
           </header>
 
-          <LoginForm
-            email={email}
-            setEmail={setEmail}
-            password={password}
-            setPassword={setPassword}
-            onSubmit={handleSubmit}
-            loading={loading}
-            feedback={feedback}
-            lockedRemainingMs={lockedRemainingMs}
-          />
+          {/* Salvaguardas Éticas y de Seguridad SGSI */}
+          <div className="manifesto-safeguards-container">
+            <span className="safeguards-section-heading">Salvaguardas de Privacidad y SG-SST</span>
+            <ul className="manifesto-safeguards-clean">
+              {AUTH_SAFEGUARDS.map((safe) => (
+                <li key={safe.title} className="safeguard-card-clean">
+                  <span className="safeguard-bullet-icon" aria-hidden="true">
+                    <Icon name={safe.icon} size={16} />
+                  </span>
+                  <div className="safeguard-detail">
+                    <strong className="safeguard-name">{safe.title}</strong>
+                    <p className="safeguard-summary">{safe.description}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
 
-          <DemoAccountsCard onSelectDemo={handleSelectDemo} />
+        <footer className="manifesto-corporate-footer">
+          <span>{AUTH_METADATA.footerNote}</span>
+        </footer>
+      </aside>
 
-          <footer className="auth-footer">
-            <hr className="footer-divider" />
-            <p className="footer-legal">Prototipo académico · Ley 1581 de 2012 · Resolución 2764 de 2022</p>
-          </footer>
+      {/* =========================================================================
+          PANEL DERECHO: Formulario Unificado in-situ (Login | Forgot | Reset)
+          ========================================================================= */}
+      <main className="login-form-panel">
+        <div className="auth-form-card">
+          
+          {/* MODO 1: INICIAR SESION */}
+          {mode === 'login' && (
+            <>
+              <header className="auth-card-top">
+                <h2 className="auth-screen-title">Iniciar Sesión</h2>
+                <p className="auth-screen-desc">
+                  Acceso institucional seguro a consolas operativas y analíticas de bienestar BPO.
+                </p>
+              </header>
+
+              {/* Selector de Perfiles Demo */}
+              <DemoAccountsCard
+                activeEmail={email}
+                onSelectDemo={handleSelectDemo}
+              />
+
+              {/* Formulario de Login */}
+              <LoginForm
+                email={email}
+                setEmail={setEmail}
+                password={password}
+                setPassword={setPassword}
+                onSubmit={handleLoginSubmit}
+                onForgotPassword={() => {
+                  setFeedback({ type: '', message: '' });
+                  navigate('/recuperar-clave');
+                }}
+                loading={loading}
+                feedback={feedback}
+                lockedRemainingMs={lockedRemainingMs}
+              />
+
+              <footer className="auth-corporate-legal">
+                <p>
+                  Protección de datos conforme a Ley 1581 de 2012 · Sesión cifrada TLS y auditada.
+                </p>
+              </footer>
+            </>
+          )}
+
+          {/* MODO 2: RECUPERAR ACCESO IN-SITU */}
+          {mode === 'forgot' && (
+            <>
+              <header className="auth-card-top">
+                <div className="auth-subnav-row">
+                  <button
+                    type="button"
+                    className="auth-back-to-login"
+                    onClick={() => {
+                      setDispatchedData(null);
+                      navigate('/login');
+                    }}
+                  >
+                    <Icon name="arrowLeft" size={13} />
+                    <span>Volver a iniciar sesión</span>
+                  </button>
+                </div>
+
+                <h2 className="auth-screen-title">
+                  {dispatchedData ? 'Instrucciones Despachadas' : 'Recuperar Acceso'}
+                </h2>
+                <p className="auth-screen-desc">
+                  {dispatchedData
+                    ? `Hemos procesado la solicitud para ${dispatchedData.targetEmail?.replace(/@demo$/, '@pulso360.co')}. Sigue las instrucciones para restablecer tu clave.`
+                    : 'Ingresa tu correo institucional registrado para recibir el enlace seguro de restablecimiento.'}
+                </p>
+              </header>
+
+              {!dispatchedData ? (
+                <form className="login-form-root" onSubmit={handleRecoverySubmit} noValidate>
+                  <div className="form-field-group">
+                    <label htmlFor="recoveryEmailInput" className="field-label">
+                      Correo corporativo institucional
+                    </label>
+                    <div className="field-input-wrapper">
+                      <span className="field-icon" aria-hidden="true">
+                        <Icon name="mail" size={16} />
+                      </span>
+                      <input
+                        type="email"
+                        id="recoveryEmailInput"
+                        name="recoveryEmail"
+                        className="field-input has-left-icon"
+                        placeholder="colaborador@operacion.pulso360.co"
+                        value={recoveryEmail}
+                        onChange={(e) => setRecoveryEmail(e.target.value)}
+                        autoComplete="email"
+                        disabled={recoveryLoading}
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <p className="recovery-policy-note">
+                    El enlace seguro de restablecimiento expira en 30 minutos y es estrictamente de un solo uso.
+                  </p>
+
+                  <button
+                    type="submit"
+                    className="submit-action-btn"
+                    disabled={!recoveryEmail.trim() || recoveryLoading}
+                  >
+                    <span className="submit-btn-label">
+                      {recoveryLoading ? 'Validando y despachando...' : 'Enviar enlace de recuperación'}
+                    </span>
+                    {!recoveryLoading && (
+                      <span className="submit-btn-icon" aria-hidden="true">
+                        <Icon name="arrowRight" size={16} />
+                      </span>
+                    )}
+                    {recoveryLoading && <div className="action-spinner" aria-hidden="true"></div>}
+                  </button>
+
+                  {recoveryFeedback.message && (
+                    <div className={`form-feedback-pill ${recoveryFeedback.type}`} role="alert">
+                      <Icon name="alertTriangle" size={15} />
+                      <span>{recoveryFeedback.message}</span>
+                    </div>
+                  )}
+                </form>
+              ) : (
+                /* Estado Despachado in-situ */
+                <div className="recovery-dispatched-card">
+                  <div className="dispatched-pill-status">
+                    <Icon name="checkCircle" size={15} />
+                    <span>Despacho seguro completado</span>
+                  </div>
+
+                  {dispatchedData.devLink && (
+                    <div className="sandbox-eval-callout">
+                      <div className="sandbox-eval-header">
+                        <Icon name="fileText" size={14} />
+                        <strong>Simulación de Servicio SMTP (Sandbox)</strong>
+                      </div>
+                      <p className="sandbox-eval-text">
+                        En producción, este token se transmite vía SMTP seguro al servidor corporativo. Para evaluación, puedes abrir directamente el enlace generado:
+                      </p>
+                      <div className="sandbox-token-badge">
+                        <code>Token: {dispatchedData.devToken}</code>
+                        <span>Caduca en {dispatchedData.expiresInMinutes || 30} min</span>
+                      </div>
+                      <button
+                        type="button"
+                        className="btn-proceed-reset"
+                        onClick={() => navigate(`/nueva-clave?token=${dispatchedData.devToken || ''}`)}
+                      >
+                        <Icon name="lock" size={14} />
+                        <span>Abrir formulario de nueva contraseña</span>
+                      </button>
+                    </div>
+                  )}
+
+                  <div className="dispatched-footer-actions">
+                    <button
+                      type="button"
+                      className="btn-retry-other"
+                      onClick={() => {
+                        setDispatchedData(null);
+                        setRecoveryEmail('');
+                      }}
+                    >
+                      Enviar a otro correo
+                    </button>
+                    <button
+                      type="button"
+                      className="btn-return-login"
+                      onClick={() => {
+                        setDispatchedData(null);
+                        navigate('/login');
+                      }}
+                    >
+                      Volver al inicio de sesión
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              <footer className="auth-corporate-legal">
+                <p>Protección de datos conforme a Ley 1581 de 2012 · Sesión cifrada TLS y auditada.</p>
+              </footer>
+            </>
+          )}
+
+          {/* MODO 3: NUEVA CONTRASEÑA IN-SITU */}
+          {mode === 'reset' && (
+            <>
+              <header className="auth-card-top">
+                <div className="auth-subnav-row">
+                  <button
+                    type="button"
+                    className="auth-back-to-login"
+                    onClick={() => {
+                      setDispatchedData(null);
+                      navigate('/login');
+                    }}
+                  >
+                    <Icon name="arrowLeft" size={13} />
+                    <span>Volver a iniciar sesión</span>
+                  </button>
+                </div>
+
+                <h2 className="auth-screen-title">Crear Nueva Contraseña</h2>
+                <p className="auth-screen-desc">
+                  {tokenState.email
+                    ? `Restableciendo credenciales para ${tokenState.email}. Define tu nueva clave cumpliendo las políticas de robustez del sistema.`
+                    : 'Define tu nueva contraseña institucional cumpliendo las políticas de robustez del sistema.'}
+                </p>
+              </header>
+
+              {tokenState.loading && (
+                <div className="token-eval-box">
+                  <div className="action-spinner" style={{ display: 'block', margin: '16px auto' }}></div>
+                  <p>Verificando validez del enlace seguro...</p>
+                </div>
+              )}
+
+              {!tokenState.loading && !tokenState.valid && (
+                <div className="token-invalid-card">
+                  <div className="invalid-tag">
+                    <Icon name="alertTriangle" size={16} />
+                    <span>Enlace Inválido o Expirado</span>
+                  </div>
+                  <p className="invalid-message">{tokenState.message}</p>
+                  <button
+                    type="button"
+                    className="submit-action-btn"
+                    onClick={() => navigate('/recuperar-clave')}
+                  >
+                    Solicitar un nuevo enlace
+                  </button>
+                </div>
+              )}
+
+              {!tokenState.loading && tokenState.valid && (
+                <form className="login-form-root" onSubmit={handleResetSubmit} noValidate>
+                  {/* Campo de username para gestores de contraseñas (1Password, Bitwarden, Google Password Manager) */}
+                  <input
+                    type="text"
+                    name="username"
+                    id="resetUsernameInput"
+                    value={tokenState.email || dispatchedData?.targetEmail || recoveryEmail || email || ''}
+                    autoComplete="username"
+                    readOnly
+                    tabIndex={-1}
+                    aria-hidden="true"
+                    style={{
+                      position: 'absolute',
+                      width: '1px',
+                      height: '1px',
+                      padding: 0,
+                      margin: '-1px',
+                      overflow: 'hidden',
+                      clip: 'rect(0, 0, 0, 0)',
+                      whiteSpace: 'nowrap',
+                      border: 0
+                    }}
+                  />
+
+                  <div className="form-field-group">
+                    <label htmlFor="newPasswordInput" className="field-label">
+                      Nueva contraseña institucional
+                    </label>
+                    <div className="field-input-wrapper">
+                      <span className="field-icon" aria-hidden="true">
+                        <Icon name="lock" size={16} />
+                      </span>
+                      <input
+                        type={showNewPassword ? 'text' : 'password'}
+                        id="newPasswordInput"
+                        className="field-input has-left-icon has-right-action"
+                        placeholder="Al menos 8 caracteres y símbolos"
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        autoComplete="new-password"
+                        disabled={resetLoading}
+                        required
+                      />
+                      <button
+                        type="button"
+                        className="field-toggle-btn"
+                        onClick={() => setShowNewPassword(!showNewPassword)}
+                        aria-label={showNewPassword ? 'Ocultar contraseña' : 'Ver contraseña'}
+                        title={showNewPassword ? 'Ocultar contraseña' : 'Ver contraseña'}
+                      >
+                        <Icon name={showNewPassword ? 'eyeOff' : 'eye'} size={16} />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Medidor de robustez */}
+                  {newPassword && (
+                    <div className="strength-meter-container" aria-live="polite">
+                      <div className="strength-meter-header">
+                        <span>Nivel de fortaleza:</span>
+                        <strong className={`strength-label ${strengthClass}`}>{strengthLabel}</strong>
+                      </div>
+                      <div className="strength-bars-row">
+                        {[1, 2, 3, 4].map((step) => (
+                          <div
+                            key={step}
+                            className={`strength-bar-seg ${strengthScore >= step ? `active ${strengthClass}` : ''}`}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="form-field-group">
+                    <label htmlFor="confirmNewPasswordInput" className="field-label">
+                      Confirmar nueva contraseña
+                    </label>
+                    <div className="field-input-wrapper">
+                      <span className="field-icon" aria-hidden="true">
+                        <Icon name="lock" size={16} />
+                      </span>
+                      <input
+                        type={showConfirmPassword ? 'text' : 'password'}
+                        id="confirmNewPasswordInput"
+                        className="field-input has-left-icon has-right-action"
+                        placeholder="Repite la contraseña exactamente"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        autoComplete="new-password"
+                        disabled={resetLoading}
+                        required
+                      />
+                      <button
+                        type="button"
+                        className="field-toggle-btn"
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        aria-label={showConfirmPassword ? 'Ocultar confirmación de contraseña' : 'Ver confirmación de contraseña'}
+                        title={showConfirmPassword ? 'Ocultar confirmación de contraseña' : 'Ver confirmación de contraseña'}
+                      >
+                        <Icon name={showConfirmPassword ? 'eyeOff' : 'eye'} size={16} />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Requisitos obligatorios de robustez */}
+                  <div className="policy-requirements-box">
+                    <span className="policy-box-title">Requisitos obligatorios de robustez:</span>
+                    <ul className="policy-checklist">
+                      <li className={hasLength ? 'fulfilled' : ''}>
+                        <Icon name={hasLength ? 'checkCircle' : 'circle'} size={13} />
+                        <span>Mínimo 8 caracteres</span>
+                      </li>
+                      <li className={hasCases ? 'fulfilled' : ''}>
+                        <Icon name={hasCases ? 'checkCircle' : 'circle'} size={13} />
+                        <span>Mayúsculas y minúsculas</span>
+                      </li>
+                      <li className={hasNumbers ? 'fulfilled' : ''}>
+                        <Icon name={hasNumbers ? 'checkCircle' : 'circle'} size={13} />
+                        <span>Al menos un número (0 - 9)</span>
+                      </li>
+                      <li className={passwordsMatch ? 'fulfilled' : ''}>
+                        <Icon name={passwordsMatch ? 'checkCircle' : 'circle'} size={13} />
+                        <span>Ambas contraseñas son idénticas</span>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="submit-action-btn"
+                    disabled={!isResetValid}
+                  >
+                    <span className="submit-btn-label">
+                      {resetLoading ? 'Actualizando clave en sistema...' : 'Actualizar contraseña institucional'}
+                    </span>
+                    {!resetLoading && (
+                      <span className="submit-btn-icon" aria-hidden="true">
+                        <Icon name="shieldCheck" size={16} />
+                      </span>
+                    )}
+                    {resetLoading && <div className="action-spinner" aria-hidden="true"></div>}
+                  </button>
+
+                  {resetFeedback.message && (
+                    <div className={`form-feedback-pill ${resetFeedback.type}`} role="alert">
+                      <Icon name={resetFeedback.type === 'success' ? 'checkCircle' : 'alertTriangle'} size={15} />
+                      <span>{resetFeedback.message}</span>
+                    </div>
+                  )}
+                </form>
+              )}
+
+              <footer className="auth-corporate-legal">
+                <p>Protección de datos conforme a Ley 1581 de 2012 · Sesión cifrada TLS y auditada.</p>
+              </footer>
+            </>
+          )}
+
         </div>
       </main>
     </div>

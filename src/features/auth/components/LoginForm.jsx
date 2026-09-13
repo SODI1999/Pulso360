@@ -1,8 +1,7 @@
-// src/features/auth/components/LoginForm.jsx
-// Formulario de autenticación con validación reactiva, feedback visual e iconos SVG centralizados
+﻿// src/features/auth/components/LoginForm.jsx
+// Formulario de acceso institucional con orden ergonómico estricto y transición in-situ
 
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { Icon } from '../../../core/components/Icon';
 
 export function LoginForm({
@@ -11,6 +10,7 @@ export function LoginForm({
   password,
   setPassword,
   onSubmit,
+  onForgotPassword,
   loading,
   feedback,
   lockedRemainingMs
@@ -18,8 +18,8 @@ export function LoginForm({
   const [showPassword, setShowPassword] = useState(false);
 
   // Formato mm:ss para el tiempo restante de bloqueo por fuerza bruta
-  const formatLockTime = (ms) => {
-    const totalSeconds = Math.ceil(ms / 1000);
+  const formatCountdown = (ms) => {
+    const totalSeconds = Math.max(0, Math.ceil(ms / 1000));
     const minutes = Math.floor(totalSeconds / 60);
     const seconds = totalSeconds % 60;
     return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
@@ -28,84 +28,121 @@ export function LoginForm({
   const isButtonDisabled = !email.trim() || !password.trim() || loading || lockedRemainingMs > 0;
 
   return (
-    <form className="login-form" onSubmit={onSubmit} noValidate>
-      {/* Campo Correo Institucional */}
-      <div className="form-group">
-        <label htmlFor="usernameInput" className="form-label">Correo institucional</label>
-        <div className="input-wrapper">
-          <span className="input-icon" aria-hidden="true">
-            <Icon name="mail" />
+    <form className="login-form-root" onSubmit={onSubmit} noValidate>
+      {/* 1. Campo Correo Institucional */}
+      <div className="form-field-group">
+        <label htmlFor="loginEmailInput" className="field-label">
+          Correo corporativo
+        </label>
+        <div className="field-input-wrapper">
+          <span className="field-icon" aria-hidden="true">
+            <Icon name="mail" size={16} />
           </span>
           <input
             type="email"
-            id="usernameInput"
+            id="loginEmailInput"
             name="username"
-            className="form-input has-icon"
-            placeholder="agente@demo"
+            className="field-input has-left-icon"
+            placeholder="colaborador@operacion.pulso360.co"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             autoComplete="username"
+            disabled={loading || lockedRemainingMs > 0}
             required
           />
         </div>
       </div>
 
-      {/* Campo Contraseña con Toggle Ojo SVG */}
-      <div className="form-group">
-        <div className="form-label-row">
-          <label htmlFor="passwordInput" className="form-label">Contraseña</label>
-          <Link to="/recuperar-clave" className="forgot-link">¿Olvidaste tu contraseña?</Link>
-        </div>
-        <div className="input-wrapper">
-          <span className="input-icon" aria-hidden="true">
-            <Icon name="lock" />
+      {/* 2. Campo Contraseña */}
+      <div className="form-field-group">
+        <label htmlFor="loginPasswordInput" className="field-label">
+          Contraseña
+        </label>
+        <div className="field-input-wrapper">
+          <span className="field-icon" aria-hidden="true">
+            <Icon name="lock" size={16} />
           </span>
           <input
             type={showPassword ? 'text' : 'password'}
-            id="passwordInput"
+            id="loginPasswordInput"
             name="password"
-            className="form-input has-icon password-input"
-            placeholder="••••••••"
+            className="field-input has-left-icon has-right-action"
+            placeholder="••••••••••••"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             autoComplete="current-password"
+            disabled={loading || lockedRemainingMs > 0}
             required
           />
           <button
             type="button"
-            className="toggle-password-btn"
+            className="field-toggle-btn"
             onClick={() => setShowPassword(!showPassword)}
-            aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+            aria-label={showPassword ? 'Ocultar contraseña' : 'Ver contraseña'}
+            title={showPassword ? 'Ocultar contraseña' : 'Ver contraseña'}
+            tabIndex={0}
           >
-            <Icon name={showPassword ? 'eyeOff' : 'eye'} />
+            <Icon name={showPassword ? 'eyeOff' : 'eye'} size={16} />
           </button>
         </div>
       </div>
 
-      {/* Botón de Envío con Spinner e Icono SVG */}
+      {/* 3. Fila de Opciones Ergonomicas: Recordar en izq, Olvidaste contraseña en der */}
+      <div className="form-secondary-actions">
+        <label className="remember-checkbox-container">
+          <input
+            type="checkbox"
+            className="remember-checkbox"
+            disabled={loading || lockedRemainingMs > 0}
+          />
+          <span className="remember-text">Recordar este equipo</span>
+        </label>
+
+        <button
+          type="button"
+          className="forgot-password-trigger"
+          onClick={onForgotPassword}
+          tabIndex={0}
+        >
+          ¿Olvidaste tu contraseña?
+        </button>
+      </div>
+
+      {/* 4. Boton Principal (Hero Action) */}
       <button
         type="submit"
-        className={`submit-btn ${loading ? 'loading' : ''}`}
+        className={`submit-action-btn ${loading ? 'loading' : ''}`}
         disabled={isButtonDisabled}
       >
-        <span className="submit-text">
-          {loading ? 'Validando...' : 'Ingresar a Pulso360'}
+        <span className="submit-btn-label">
+          {loading ? 'Validando credenciales...' : 'Iniciar Sesión en Consola'}
         </span>
-        <span className="submit-icon" aria-hidden="true">
-          <Icon name="arrowRight" />
-        </span>
-        {loading && <div className="spinner" aria-hidden="true"></div>}
+        {!loading && (
+          <span className="submit-btn-icon" aria-hidden="true">
+            <Icon name="arrowRight" size={16} />
+          </span>
+        )}
+        {loading && <div className="action-spinner" aria-hidden="true"></div>}
       </button>
 
-      {/* Retroalimentación de Error / Éxito / Bloqueo */}
+      {/* 5. Retroalimentacion de Alertas */}
       {feedback.message && (
-        <div className={`form-feedback ${feedback.type}`} role="alert" aria-live="polite">
-          {feedback.message}
+        <div className={`form-feedback-pill ${feedback.type}`} role="alert" aria-live="polite">
+          <Icon name={feedback.type === 'success' ? 'checkCircle' : 'alertTriangle'} size={15} />
+          <span>{feedback.message}</span>
         </div>
       )}
+
       {lockedRemainingMs > 0 && !feedback.message && (
-        <div className="form-feedback error" role="alert">
-          Demasiados intentos. Podrás volver a intentar en {formatLockTime(lockedRemainingMs)}.
+        <div className="form-feedback-pill error lockout-mode" role="alert">
+          <Icon name="lock" size={16} />
+          <div>
+            <strong>Acceso temporalmente bloqueado</strong>
+            <p>
+              Reintentos excedidos. Podrás intentar de nuevo en{' '}
+              <span className="lockout-timer">{formatCountdown(lockedRemainingMs)}</span>
+            </p>
+          </div>
         </div>
       )}
     </form>
