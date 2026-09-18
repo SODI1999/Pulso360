@@ -35,7 +35,7 @@ export function AppLayout() {
             <aside className="app-sidebar" aria-label="Navegación principal">
                 <div className="sidebar-header">
                     <Link to={homePath} className="sidebar-brand-link" title="Ir al panel principal">
-                        <img src="/assets/imágenes/logo.png" alt="Pulso360 Logo" className="sidebar-logo" />
+                        <img src="/assets/marca/logo.png" alt="Pulso360 Logo" className="sidebar-logo" />
                     </Link>
                 </div>
 

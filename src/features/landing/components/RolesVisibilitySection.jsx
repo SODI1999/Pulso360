@@ -1,4 +1,4 @@
-﻿// src/features/landing/components/RolesVisibilitySection.jsx
+// src/features/landing/components/RolesVisibilitySection.jsx
 // Matriz Institucional de Transparencia y Separación Ética de Roles
 
 import { useState } from 'react';
@@ -7,6 +7,23 @@ import { ROLES_PERMISSIONS_MATRIX } from '../data/landingData';
 
 export function RolesVisibilitySection() {
   const [selectedRole, setSelectedRole] = useState(ROLES_PERMISSIONS_MATRIX[0]);
+
+  const handleRoleKeyDown = (e, currentIdx) => {
+    let nextIdx = null;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+      e.preventDefault();
+      nextIdx = (currentIdx + 1) % ROLES_PERMISSIONS_MATRIX.length;
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      nextIdx = (currentIdx - 1 + ROLES_PERMISSIONS_MATRIX.length) % ROLES_PERMISSIONS_MATRIX.length;
+    }
+    if (nextIdx !== null) {
+      const nextRole = ROLES_PERMISSIONS_MATRIX[nextIdx];
+      setSelectedRole(nextRole);
+      const nextBtn = document.getElementById(`role-tab-${nextRole.id}`);
+      if (nextBtn) nextBtn.focus();
+    }
+  };
 
   return (
     <section className="roles-transparency-section" id="transparencia-roles" aria-labelledby="transparency-title">
@@ -19,15 +36,18 @@ export function RolesVisibilitySection() {
           </p>
         </div>
 
-        <div className="transparency-role-selector" role="tablist">
-          {ROLES_PERMISSIONS_MATRIX.map((r) => (
+        <div className="transparency-role-selector" role="tablist" aria-label="Perfiles operativos Pulso360">
+          {ROLES_PERMISSIONS_MATRIX.map((r, idx) => (
             <button
               key={r.id}
+              id={`role-tab-${r.id}`}
               type="button"
               role="tab"
               aria-selected={selectedRole.id === r.id}
+              tabIndex={selectedRole.id === r.id ? 0 : -1}
               className={`role-select-btn ${selectedRole.id === r.id ? 'active' : ''}`}
               onClick={() => setSelectedRole(r)}
+              onKeyDown={(e) => handleRoleKeyDown(e, idx)}
             >
               <Icon name={r.icon} size={16} />
               <span>{r.name}</span>
@@ -36,7 +56,7 @@ export function RolesVisibilitySection() {
         </div>
 
         {/* Ficha Editorial de Especificación del Rol */}
-        <div className="role-specification-card">
+        <div className="role-specification-card" id="role-specification-card" role="tabpanel" aria-labelledby={`role-tab-${selectedRole.id}`}>
           <div className="role-spec-head">
             <div>
               <span className={`role-spec-badge ${selectedRole.badgeClass}`}>{selectedRole.roleTag}</span>
@@ -47,8 +67,8 @@ export function RolesVisibilitySection() {
 
           <div className="role-spec-table">
             <div className="spec-table-head">
-              <span>Capacidad / Regla de Acceso al Sistema</span>
-              <span>Estado Ético</span>
+              <span>Capacidad y Condición de Acceso</span>
+              <span>Gobernanza Ética</span>
             </div>
 
             <div className="spec-table-body">

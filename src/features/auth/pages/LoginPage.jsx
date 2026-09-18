@@ -39,8 +39,8 @@ export function LoginPage({ initialMode }) {
   // ==========================================
   // ESTADOS MODO LOGIN
   // ==========================================
-  const [email, setEmail] = useState('agente@pulso360.co');
-  const [password, setPassword] = useState('Pulso360#2026');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [feedback, setFeedback] = useState({ type: '', message: '' });
   const [lockedRemainingMs, setLockedRemainingMs] = useState(0);
@@ -242,6 +242,31 @@ export function LoginPage({ initialMode }) {
     }
   };
 
+  const handleSsoLogin = async (provider) => {
+    if (loading || lockedRemainingMs > 0) return;
+    setLoading(true);
+    setFeedback({
+      type: 'success',
+      message: `Conectando con ${provider === 'microsoft' ? 'Microsoft 365' : 'Google Workspace'}...`
+    });
+
+    try {
+      // Simulación de SSO corporativo federado con cuenta activa
+      setTimeout(async () => {
+        const result = await authService.login('agente@pulso360.co', 'Pulso360#2026');
+        setLoading(false);
+        if (result.success) {
+          navigate('/agente/panel');
+        } else {
+          setFeedback({ type: 'error', message: result.message });
+        }
+      }, 500);
+    } catch {
+      setLoading(false);
+      setFeedback({ type: 'error', message: 'Error de comunicación con el proveedor de identidad.' });
+    }
+  };
+
   return (
     <div className="login-editorial-wrapper">
       {/* =========================================================================
@@ -250,7 +275,7 @@ export function LoginPage({ initialMode }) {
       <aside className="login-manifesto-panel" aria-label="Garantías Institucionales de Pulso360">
         <div className="manifesto-top-bar">
           <div className="manifesto-brand-lockup">
-            <img src="/assets/imágenes/logo.png" alt="Pulso360" className="manifesto-brand-symbol" />
+            <img src="/assets/marca/logo.png" alt="Pulso360" className="manifesto-brand-symbol" />
             <span className="manifesto-brand-title">Pulso360</span>
           </div>
           <Link to="/" className="manifesto-back-link" title="Volver al portal público">
@@ -261,7 +286,7 @@ export function LoginPage({ initialMode }) {
 
         <div className="manifesto-body">
           <header className="manifesto-editorial-header">
-            <h1 className="manifesto-title">{AUTH_METADATA.title}</h1>
+            <h1 className="manifesto-title">Tu espacio de desahogo. Cero vigilancia punitiva</h1>
             <p className="manifesto-lead">{AUTH_METADATA.subtitle}</p>
           </header>
 
@@ -305,19 +330,14 @@ export function LoginPage({ initialMode }) {
                 </p>
               </header>
 
-              {/* Selector de Perfiles Demo */}
-              <DemoAccountsCard
-                activeEmail={email}
-                onSelectDemo={handleSelectDemo}
-              />
-
-              {/* Formulario de Login */}
+              {/* Formulario de Login con SSO integrado */}
               <LoginForm
                 email={email}
                 setEmail={setEmail}
                 password={password}
                 setPassword={setPassword}
                 onSubmit={handleLoginSubmit}
+                onSsoLogin={handleSsoLogin}
                 onForgotPassword={() => {
                   setFeedback({ type: '', message: '' });
                   navigate('/recuperar-clave');
@@ -325,6 +345,12 @@ export function LoginPage({ initialMode }) {
                 loading={loading}
                 feedback={feedback}
                 lockedRemainingMs={lockedRemainingMs}
+              />
+
+              {/* Barra Horizontal Discreta de Perfiles Demo al pie del formulario */}
+              <DemoAccountsCard
+                activeEmail={email}
+                onSelectDemo={handleSelectDemo}
               />
 
               <footer className="auth-corporate-legal">

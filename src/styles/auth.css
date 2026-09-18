@@ -49,7 +49,7 @@
   }
 }
 
-/* Ergonomía desktop: Split-Screen 50/50 exacto, 100vh sin scroll */
+/* Ergonomía desktop: Split-Screen 50/50 exacto, 100vh sin scroll (Zero-Scroll Invariant) */
 @media (min-width: 1024px) {
   .login-editorial-wrapper {
     flex-direction: row;
@@ -62,9 +62,12 @@
     order: 1;
     width: 50%;
     height: 100%;
-    padding: 2.25rem 3rem 1.75rem 3rem;
+    padding: clamp(1.25rem, 2.5vh, 2rem) 2.5rem;
+    border: none;
+    border-top: none;
+    border-right: none;
     border-bottom: none;
-    border-right: 1px solid rgba(255, 255, 255, 0.08);
+    border-left: none;
     overflow: hidden;
     scrollbar-width: none;
     -ms-overflow-style: none;
@@ -79,14 +82,19 @@
     order: 2;
     width: 50%;
     height: 100%;
-    padding: 2.5rem 3.5rem;
-    overflow-y: auto;
+    padding: clamp(1rem, 2.5vh, 2rem) clamp(1.5rem, 3vw, 3rem);
+    border: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+    overflow: hidden;
     box-sizing: border-box;
   }
 }
 
 /* ==========================================================================
-   2. PANEL EDITORIAL INSTITUCIONAL (IZQUIERDA - SLATE CORPORATIVO & TEAL)
+   2. PANEL EDITORIAL INSTITUCIONAL (IZQUIERDA - VERDE BOSQUE PROFUNDO BPO)
    ========================================================================== */
 .login-manifesto-panel {
   position: relative;
@@ -94,10 +102,10 @@
   flex-direction: column;
   justify-content: space-between;
   width: 100%;
-  background-color: #0F172A;
+  background-color: #082F28;
   background-image: 
-    linear-gradient(165deg, rgba(15, 23, 42, 0.94) 0%, rgba(30, 41, 59, 0.90) 50%, rgba(15, 23, 42, 0.96) 100%),
-    url('/assets/login-bg.jpg');
+    linear-gradient(165deg, rgba(8, 47, 40, 0.93) 0%, rgba(5, 31, 26, 0.97) 100%),
+    url('/assets/fotos/bpo-agent-authentic.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -158,21 +166,22 @@
 .manifesto-body {
   display: flex;
   flex-direction: column;
-  gap: 1.15rem;
+  gap: clamp(0.65rem, 1.5vh, 1.15rem);
   margin: auto 0;
-  padding: 0.75rem 0;
+  padding: clamp(0.35rem, 0.8vh, 0.65rem) 0;
 }
 
 .manifesto-editorial-header {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: clamp(0.3rem, 0.7vh, 0.5rem);
 }
 
 .manifesto-title {
-  font-size: 1.65rem;
-  font-weight: 800;
-  line-height: 1.22;
+  font-family: var(--font-family-display, 'Newsreader', Georgia, serif);
+  font-size: clamp(1.45rem, 2vw, 1.95rem);
+  font-weight: 700;
+  line-height: 1.2;
   letter-spacing: -0.025em;
   color: #FFFFFF;
   margin: 0;
@@ -180,32 +189,32 @@
 
 @media (min-width: 1280px) {
   .manifesto-title {
-    font-size: 1.95rem;
+    font-size: clamp(1.75rem, 2.3vw, 2.15rem);
   }
 }
 
 .manifesto-lead {
-  font-size: 0.88rem;
-  line-height: 1.52;
-  color: #CBD5E1;
+  font-size: clamp(0.8rem, 0.95vw, 0.88rem);
+  line-height: 1.48;
+  color: rgba(203, 213, 225, 0.9);
   margin: 0;
   max-width: 520px;
 }
 
-/* Lista Editorial de Salvaguardas Éticas (Sin Marcos Pesados, Sin Hovers Estáticos) */
+/* Lista Editorial de Salvaguardas Éticas (Espaciosa y Desaturada) */
 .manifesto-safeguards-container {
   display: flex;
   flex-direction: column;
-  gap: 0.65rem;
-  margin-top: 0.15rem;
+  gap: clamp(0.4rem, 0.8vh, 0.65rem);
+  margin-top: clamp(0.15rem, 0.4vh, 0.35rem);
 }
 
 .safeguards-section-heading {
-  font-size: 0.68rem;
-  font-weight: 700;
+  font-size: 0.66rem;
+  font-weight: 750;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: #A7D7C5; /* Landing mint suave */
+  letter-spacing: 0.08em;
+  color: rgba(167, 215, 197, 0.88);
 }
 
 .manifesto-safeguards-clean {
@@ -214,7 +223,7 @@
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.95rem;
+  gap: clamp(0.6rem, 1.2vh, 0.95rem);
 }
 
 .safeguard-card-clean {
@@ -232,74 +241,82 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 20px;
-  color: #5EEAD4;
-  background: transparent;
-  border: none;
+  width: 24px;
+  height: 24px;
+  color: rgba(158, 228, 213, 0.9);
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
   flex-shrink: 0;
-  margin-top: 2px;
+  margin-top: 1px;
 }
 
 .safeguard-detail {
   display: flex;
   flex-direction: column;
-  gap: 0.2rem;
+  gap: 0.18rem;
 }
 
 .safeguard-name {
-  font-size: 0.88rem;
-  font-weight: 700;
+  font-size: 0.84rem;
+  font-weight: 650;
   color: #F8FAFC;
   letter-spacing: -0.01em;
 }
 
 .safeguard-summary {
-  font-size: 0.78rem;
-  line-height: 1.48;
-  color: #94A3B8;
+  font-size: 0.73rem;
+  line-height: 1.4;
+  color: rgba(203, 213, 225, 0.82);
   margin: 0;
 }
 
 /* Pie corporativo institucional */
 .manifesto-corporate-footer {
-  font-size: 0.7rem;
-  color: #64748B;
-  padding-top: 0.75rem;
+  font-size: 0.68rem;
+  color: rgba(148, 163, 184, 0.85);
+  padding-top: clamp(0.4rem, 1vh, 0.75rem);
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* ==========================================================================
-   3. PANEL DE FORMULARIO (DERECHA - SUPERFICIE BLANCA PURA CON RESPIRACIÓN)
+   3. PANEL DE FORMULARIO (DERECHA - SUPERFICIE LINO CON TARJETA FLOTANTE)
    ========================================================================== */
 .login-form-panel {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
-  background-color: #FFFFFF;
+  background-color: #FAF8F5; /* Fondo Lino Suave */
+  padding: clamp(1rem, 2.5vh, 2rem) 1.5rem;
 }
 
 .auth-form-card {
   width: 100%;
-  max-width: 420px;
+  max-width: 440px;
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: clamp(0.6rem, 1.2vh, 0.95rem);
+  background-color: #FFFFFF; /* Blanco Puro */
+  border-radius: var(--radius-card, 16px); /* Esquinas amplias estandarizadas */
+  border: 1px solid rgba(17, 38, 35, 0.07); /* Borde sutil */
+  box-shadow: 0 10px 30px rgba(17, 38, 35, 0.04), 0 2px 8px rgba(17, 38, 35, 0.02); /* Sombra de elevación */
+  padding: clamp(1.1rem, 2vh, 1.75rem);
+  box-sizing: border-box;
 }
 
 /* Cabecera del Formulario */
 .auth-card-top {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: clamp(0.2rem, 0.5vh, 0.35rem);
 }
 
 .auth-subnav-row {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.15rem;
 }
 
 .auth-back-to-login {
@@ -323,144 +340,181 @@
 }
 
 .auth-screen-title {
-  font-size: 1.42rem;
-  font-weight: 800;
-  color: #0F172A;
+  font-family: var(--font-family-display, 'Newsreader', Georgia, serif);
+  font-size: clamp(1.35rem, 1.8vw, 1.6rem);
+  font-weight: 700;
+  color: #082F28;
   letter-spacing: -0.02em;
   margin: 0;
 }
 
 .auth-screen-desc {
-  font-size: 0.82rem;
-  line-height: 1.45;
+  font-size: clamp(0.76rem, 0.9vw, 0.82rem);
+  line-height: 1.42;
   color: #64748B;
   margin: 0;
 }
 
 /* ==========================================================================
-   4. SELECTOR ULTRA DISCRETO DE ROLES DEMO RBAC
+   4. BOTONES SSO CORPORATIVO BPO Y SEPARADOR ELEGANTE
    ========================================================================== */
-.demo-rbac-strip {
+.sso-providers-group {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
-  padding: 0.45rem 0.65rem;
-  background: #F8FAFC;
+  gap: clamp(0.32rem, 0.7vh, 0.52rem);
+  margin-top: 0.15rem;
+}
+
+.sso-provider-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  width: 100%;
+  height: clamp(38px, 4.2vh, 40px);
+  min-height: 38px;
+  background: #FFFFFF;
+  color: #1E293B;
   border: 1px solid #E2E8F0;
   border-radius: 8px;
-}
-
-.demo-rbac-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-}
-
-.demo-rbac-caption {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  font-size: 0.67rem;
+  font-size: 0.82rem;
   font-weight: 600;
-  color: #64748B;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-.demo-rbac-pass {
-  font-size: 0.67rem;
-  color: #64748B;
-}
-
-.demo-rbac-pass code {
-  font-family: monospace;
-  font-size: 0.67rem;
-  font-weight: 600;
-  color: #082F28;
-  background: #FFFFFF;
-  padding: 0.05rem 0.3rem;
-  border-radius: 3px;
-  border: 1px solid #E2E8F0;
-}
-
-.demo-rbac-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.25rem;
-}
-
-.demo-rbac-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  height: 23px;
-  padding: 0 0.5rem;
-  font-size: 0.69rem;
-  font-weight: 500;
-  color: #475569;
-  background: #FFFFFF;
-  border: 1px solid #E2E8F0;
-  border-radius: 9999px;
-  cursor: pointer;
-  transition: all 0.14s ease;
   font-family: inherit;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  transition: border-color 0.15s ease, background-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-.demo-rbac-chip:hover {
-  background: #F1F5F9;
+.sso-provider-btn:hover:not(:disabled) {
+  background-color: #F8FAFC;
   border-color: #CBD5E1;
   color: #0F172A;
+  box-shadow: 0 3px 8px rgba(15, 23, 42, 0.06);
+  transform: translateY(-1px);
 }
 
-.demo-rbac-chip.active {
-  background: #082F28;
-  border-color: #082F28;
-  color: #FFFFFF;
-  font-weight: 600;
+.sso-provider-btn:active:not(:disabled) {
+  transform: translateY(0);
 }
 
-.rbac-chip-icon {
+.sso-provider-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.sso-btn-icon {
+  flex-shrink: 0;
+}
+
+.sso-divider {
   display: flex;
   align-items: center;
+  gap: 0.75rem;
+  margin: clamp(0.2rem, 0.5vh, 0.35rem) 0;
 }
 
-.rbac-chip-label {
-  line-height: 1;
+.sso-divider-line {
+  flex: 1;
+  height: 1px;
+  background-color: #E2E8F0;
 }
 
-.demo-rbac-scope {
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-  font-size: 0.65rem;
-  color: #64748B;
-  margin-top: 0.05rem;
-}
-
-.rbac-scope-badge {
-  font-size: 0.58rem;
-  font-weight: 600;
-  padding: 0.05rem 0.3rem;
-  border-radius: 3px;
-  background: #E8F3EE;
-  color: #082F28;
-  text-transform: uppercase;
-}
-
-.rbac-scope-desc {
+.sso-divider-text {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: #94A3B8;
+  letter-spacing: 0.02em;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 /* ==========================================================================
-   5. FORMULARIO DE ACCESO (SUPERFICIE LIMPIA CON RESPIRACIÓN)
+   5. BARRA HORIZONTAL MINIMALISTA DE EVALUACIÓN DEMO BPO AL PIE DEL FORM
+   ========================================================================== */
+.demo-eval-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.28rem;
+  padding: clamp(0.35rem, 0.7vh, 0.55rem) 0.75rem;
+  background: #FAF8F5;
+  border: 1px solid #EAE6DF;
+  border-radius: 10px;
+  margin-top: 0.15rem;
+}
+
+.demo-eval-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.66rem;
+  color: #64748B;
+}
+
+.demo-eval-label {
+  font-weight: 700;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.demo-eval-pass code {
+  font-family: monospace;
+  font-size: 0.66rem;
+  font-weight: 600;
+  color: #082F28;
+  background: #FFFFFF;
+  padding: 0.05rem 0.3rem;
+  border-radius: 4px;
+  border: 1px solid #E2E8F0;
+}
+
+.demo-eval-pills {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.28rem;
+}
+
+.demo-eval-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.16rem 0.5rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #475569;
+  background: #FFFFFF;
+  border: 1px solid #CBD5E1;
+  border-radius: 9999px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s ease;
+}
+
+.demo-eval-pill:hover {
+  background: #F1F5F9;
+  border-color: #082F28;
+  color: #082F28;
+}
+
+.demo-eval-pill.active {
+  background: #082F28;
+  border-color: #082F28;
+  color: #FFFFFF;
+  box-shadow: 0 1px 4px rgba(8, 47, 40, 0.2);
+}
+
+/* Compatibilidad de estilos legacy */
+.demo-rbac-strip {
+  display: none;
+}
+
+/* ==========================================================================
+   6. FORMULARIO DE ACCESO (SUPERFICIE LIMPIA CON RESPIRACIÓN)
    ========================================================================== */
 .login-form-root {
   display: flex;
   flex-direction: column;
-  gap: 1.15rem;
+  gap: clamp(0.5rem, 1.1vh, 0.82rem);
   background: transparent;
   border: none;
   border-radius: 0;
@@ -471,11 +525,11 @@
 .form-field-group {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 0.25rem;
 }
 
 .field-label {
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 600;
   color: #334155;
   letter-spacing: -0.01em;
@@ -501,9 +555,10 @@
 
 .field-input {
   width: 100%;
-  height: 42px;
+  height: clamp(38px, 4.2vh, 40px);
+  min-height: 38px;
   padding: 0 0.85rem;
-  font-size: 0.88rem;
+  font-size: 0.86rem;
   color: #0F172A;
   background: #FFFFFF;
   border: 1px solid #CBD5E1;
@@ -515,15 +570,15 @@
 
 .field-input::placeholder {
   color: #94A3B8;
-  font-size: 0.84rem;
+  font-size: 0.82rem;
 }
 
 .field-input.has-left-icon {
-  padding-left: 2.5rem;
+  padding-left: 2.4rem;
 }
 
 .field-input.has-right-action {
-  padding-right: 2.65rem;
+  padding-right: 2.5rem;
 }
 
 .field-input:focus {
@@ -566,7 +621,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
-  margin-top: -0.1rem;
+  margin-top: -0.15rem;
 }
 
 .remember-checkbox-container {
@@ -585,12 +640,12 @@
 }
 
 .remember-text {
-  font-size: 0.76rem;
+  font-size: 0.74rem;
   color: #475569;
 }
 
 .forgot-password-trigger {
-  font-size: 0.76rem;
+  font-size: 0.74rem;
   font-weight: 600;
   color: #14705A;
   background: transparent;
@@ -613,18 +668,19 @@
   justify-content: center;
   gap: 0.55rem;
   width: 100%;
-  height: 42px;
+  height: clamp(38px, 4.2vh, 40px);
+  min-height: 38px;
   background: #082F28;
   color: #FFFFFF;
   border: none;
   border-radius: 8px;
-  font-size: 0.88rem;
+  font-size: 0.86rem;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.18s ease;
   box-shadow: 0 2px 8px rgba(8, 47, 40, 0.18);
   font-family: inherit;
-  margin-top: 0.15rem;
+  margin-top: 0.1rem;
 }
 
 .submit-action-btn:hover:not(:disabled) {
@@ -701,8 +757,8 @@
 }
 
 .auth-corporate-legal p {
-  font-size: 0.7rem;
-  line-height: 1.4;
+  font-size: 0.68rem;
+  line-height: 1.35;
   color: #64748B;
   margin: 0;
 }
@@ -762,11 +818,11 @@
 .recovery-dispatched-card {
   display: flex;
   flex-direction: column;
-  gap: 0.95rem;
+  gap: clamp(0.5rem, 1vh, 0.8rem);
   background: #F8FAFC;
   border: 1px solid #E2E8F0;
   border-radius: 10px;
-  padding: 1.25rem;
+  padding: clamp(0.85rem, 1.5vh, 1.15rem);
 }
 
 .dispatched-pill-status {
@@ -774,11 +830,11 @@
   align-items: center;
   justify-content: center;
   gap: 0.45rem;
-  padding: 0.35rem 0.75rem;
+  padding: 0.3rem 0.7rem;
   border-radius: 9999px;
   background: #E8F3EE;
   color: #082F28;
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   font-weight: 700;
   margin: 0 auto;
 }
@@ -786,8 +842,8 @@
 .sandbox-eval-callout {
   display: flex;
   flex-direction: column;
-  gap: 0.55rem;
-  padding: 0.8rem;
+  gap: 0.45rem;
+  padding: 0.65rem 0.75rem;
   border-radius: 8px;
   background: #F7FBF9;
   border: 1px solid #C2E2D4;
@@ -798,12 +854,12 @@
   align-items: center;
   gap: 0.45rem;
   color: #082F28;
-  font-size: 0.78rem;
+  font-size: 0.76rem;
 }
 
 .sandbox-eval-text {
-  font-size: 0.72rem;
-  line-height: 1.4;
+  font-size: 0.7rem;
+  line-height: 1.38;
   color: #14705A;
   margin: 0;
 }
@@ -813,11 +869,11 @@
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
-  padding: 0.35rem 0.6rem;
+  padding: 0.28rem 0.55rem;
   background: #FFFFFF;
   border-radius: 6px;
   border: 1px solid #C2E2D4;
-  font-size: 0.7rem;
+  font-size: 0.68rem;
 }
 
 .sandbox-token-badge code {
@@ -831,12 +887,14 @@
   justify-content: center;
   gap: 0.45rem;
   width: 100%;
-  padding: 0.55rem 0.8rem;
+  height: clamp(34px, 3.8vh, 38px);
+  min-height: 34px;
+  padding: 0 0.8rem;
   background: #082F28;
   color: #FFFFFF;
   border: none;
   border-radius: 6px;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 700;
   cursor: pointer;
   font-family: inherit;
@@ -850,19 +908,21 @@
 .dispatched-footer-actions {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: 0.35rem;
 }
 
 .btn-retry-other {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.45rem 0.8rem;
+  height: clamp(34px, 3.8vh, 38px);
+  min-height: 34px;
+  padding: 0 0.8rem;
   background: transparent;
   color: #64748B;
   border: 1px solid #CBD5E1;
   border-radius: 8px;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 600;
   cursor: pointer;
   font-family: inherit;
@@ -878,12 +938,14 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.45rem 0.8rem;
+  height: clamp(34px, 3.8vh, 38px);
+  min-height: 34px;
+  padding: 0 0.8rem;
   background: #082F28;
   color: #FFFFFF;
   border: none;
   border-radius: 8px;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 700;
   cursor: pointer;
   font-family: inherit;
@@ -902,10 +964,10 @@
   background: #F8FAFC;
   border: 1px solid #E2E8F0;
   border-radius: 10px;
-  padding: 1.25rem;
+  padding: clamp(0.85rem, 1.5vh, 1.15rem);
   display: flex;
   flex-direction: column;
-  gap: 0.8rem;
+  gap: 0.65rem;
   align-items: center;
   text-align: center;
 }
@@ -914,18 +976,18 @@
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  padding: 0.35rem 0.75rem;
+  padding: 0.3rem 0.7rem;
   border-radius: 9999px;
   background: #FEF2F2;
   border: 1px solid #FECACA;
   color: #991B1B;
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   font-weight: 700;
 }
 
 .invalid-message {
-  font-size: 0.78rem;
-  line-height: 1.45;
+  font-size: 0.76rem;
+  line-height: 1.4;
   color: #64748B;
   margin: 0;
 }
@@ -933,8 +995,8 @@
 .strength-meter-container {
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
-  padding: 0.55rem 0.75rem;
+  gap: 0.25rem;
+  padding: 0.45rem 0.65rem;
   background: #F8FAFC;
   border-radius: 8px;
   border: 1px solid #E2E8F0;
@@ -944,7 +1006,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   color: #64748B;
 }
 
@@ -978,8 +1040,8 @@
 .policy-requirements-box {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
-  padding: 0.65rem 0.75rem;
+  gap: 0.25rem;
+  padding: 0.45rem 0.65rem;
   background: #F8FAFC;
   border-radius: 8px;
   border: 1px solid #E2E8F0;
@@ -987,7 +1049,7 @@
 }
 
 .policy-box-title {
-  font-size: 0.68rem;
+  font-size: 0.66rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.03em;
@@ -1000,7 +1062,7 @@
   margin: 0;
   display: grid;
   grid-template-columns: 1fr;
-  gap: 0.3rem;
+  gap: 0.22rem;
 }
 
 @media (min-width: 480px) {

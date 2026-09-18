@@ -1,4 +1,4 @@
-﻿// src/features/landing/components/Footer.jsx
+// src/features/landing/components/Footer.jsx
 // Pie de página modular reutilizable para la Landing Page y páginas públicas
 
 import { Link, useLocation, useNavigate } from 'react-router-dom';
@@ -25,7 +25,7 @@ export function Footer() {
       <div className="landing-container footer-grid">
         <div className="footer-brand">
           <Link className="brand brand-footer" to="/" onClick={() => handleNavClick('#inicio')} aria-label="Pulso360, volver al inicio">
-            <img className="brand-logo" src="/assets/imágenes/logo.png" alt="" />
+            <img className="brand-logo" src="/assets/marca/logo.png" alt="" />
             <span className="brand-name">Pulso360</span>
           </Link>
           <p>Encuestas breves, privacidad individual y tendencias colectivas para prevenir el desgaste laboral en BPO.</p>
@@ -34,9 +34,9 @@ export function Footer() {
         <div className="footer-column">
           <h2>Explorar</h2>
           <button type="button" onClick={() => handleNavClick('#problema')}>El problema</button>
-          <button type="button" onClick={() => handleNavClick('#demostracion')}>Demostración</button>
           <button type="button" onClick={() => handleNavClick('#los-tres-actos')}>Los 3 Actos</button>
-          <button type="button" onClick={() => handleNavClick('#transparencia-roles')}>Transparencia de Roles</button>
+          <button type="button" onClick={() => handleNavClick('#transparencia-roles')}>Roles</button>
+          <Link to="/fundamentacion">Fundamentación</Link>
           <Link to="/contactenos">Contáctenos</Link>
         </div>
 
@@ -50,20 +50,20 @@ export function Footer() {
         <div className="footer-column footer-credits-col">
           <h2>Origen & Créditos</h2>
           <p className="footer-credits-paper">
-            «Agotamiento emocional y apoyo social en call centers de Medellín»
+            «Relación entre el agotamiento emocional y la percepción de apoyo social en trabajadores de call center de Medellín»
           </p>
           <p className="footer-credits-authors">
-            L. K. Valles, V. Velásquez, L. F. Vargas, J. D. Lezcano
+            Semillero de Trabajo Social · Asesora: I. J. Saldarriaga Roa
           </p>
           <Link to="/fundamentacion" className="footer-credits-link">
-            Ver fundamentación y deslinde
+            Ver fundamentación y marco legal
           </Link>
         </div>
       </div>
 
       <div className="landing-container footer-bottom">
         <p>© 2026 Pulso360 · Tecnológico de Antioquia (TdeA)</p>
-        <p>Software preventivo no médico · Ley 23 de 1982</p>
+        <p>Software preventivo no médico · Complementario a la Batería de Riesgo Psicosocial (Res. 2764/2022) · Ley 23 de 1982</p>
       </div>
     </footer>
   );

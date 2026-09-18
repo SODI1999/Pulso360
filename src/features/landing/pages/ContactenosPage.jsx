@@ -1,12 +1,18 @@
 // src/features/landing/pages/ContactenosPage.jsx
 // Vista dedicada para la ruta de Contáctenos con barra de navegación completa, columnas editoriales y pie de página institucional
 
+import { useEffect } from 'react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
-import { Contactenos } from '../components/Contactenos';
+import { ContactForm } from '../components/ContactForm';
 import { Icon } from '../../../core/components/Icon';
 
 export function ContactenosPage() {
+  // A08: Resetear scroll al tope para evitar aterrizar en el footer
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, []);
+
   return (
     <div className="landing-page-root contact-page-root">
       {/* Barra de navegación institucional completa */}
@@ -18,10 +24,9 @@ export function ContactenosPage() {
           <div className="contact-editorial-layout">
             {/* Columna Izquierda: Información Institucional & Canales de Acompañamiento */}
             <div className="contact-info-panel">
-              <div className="contact-badge">
-                <Icon name="support_agent" size={15} />
-                <span>Atención Institucional & SST</span>
-              </div>
+              <span className="contact-badge">
+                Atención Institucional & SST
+              </span>
 
               <h1>Hablemos de cómo cuidar el bienestar de tu operación.</h1>
               <p className="contact-lead">
@@ -44,9 +49,9 @@ export function ContactenosPage() {
                     <Icon name="clock" size={18} />
                   </div>
                   <div>
-                    <strong>Horario de Soporte Especializado</strong>
-                    <span>Lunes a Viernes: 07:00 – 18:00 COT</span>
-                    <small>Atención a incidencias críticas en turnos rotativos</small>
+                    <strong>Horario de Acompañamiento Institucional</strong>
+                    <span>Lunes a Viernes: 08:00 – 17:00 COT</span>
+                    <small>Coordinación de pilotos técnicos para operaciones BPO</small>
                   </div>
                 </div>
 
@@ -76,7 +81,7 @@ export function ContactenosPage() {
 
             {/* Columna Derecha: Formulario Funcional */}
             <div className="contact-form-column">
-              <Contactenos />
+              <ContactForm />
             </div>
           </div>
         </div>
@@ -88,5 +93,3 @@ export function ContactenosPage() {
   );
 }
 
-// Alias de exportación retrocompatible
-export { ContactenosPage as FormularioPage, ContactenosPage as FormularioView };

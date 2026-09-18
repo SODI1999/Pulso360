@@ -47,10 +47,10 @@ export function CreateUserModal({
       return;
     }
 
-    // 2. Formato de correo electrónico
-    const emailRegex = /^[^\s@]+@[^\s@]+$/;
+    // 2. Formato de correo electrónico (estricto con dominio y TLD calificado)
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailRegex.test(trimmedEmail)) {
-      setError('El correo institucional no tiene una estructura válida (ej. usuario@organizacion.com).');
+      setError('El correo institucional no tiene una estructura válida con dominio calificado (ej. colaborador@pulso360.co).');
       return;
     }
 
@@ -112,7 +112,7 @@ export function CreateUserModal({
                 id="createUserEmail"
                 type="email"
                 className="form-input"
-                placeholder="ejemplo@demo o usuario@empresa.com"
+                placeholder="colaborador@pulso360.co o usuario@empresa.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />

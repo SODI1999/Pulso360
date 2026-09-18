@@ -1,4 +1,4 @@
-﻿// src/features/landing/components/Navbar.jsx
+// src/features/landing/components/Navbar.jsx
 // Barra de navegación modular con ScrollSpy reactivo para la Landing Page y páginas públicas
 
 import { useState, useEffect } from 'react';
@@ -61,13 +61,27 @@ export function Navbar() {
     }
   };
 
+  // Accesibilidad: Cerrar menú con Escape en móvil
+  useEffect(() => {
+    if (!isMenuOpen) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setIsMenuOpen(false);
+        document.getElementById('mobileToggleBtn')?.focus();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isMenuOpen]);
+
   const isContactActive = location.pathname === '/contactenos' || location.pathname === '/formulario';
+  const isFoundationActive = location.pathname === '/fundamentacion';
 
   return (
-    <header className={`landing-header ${isScrolled || isContactActive ? 'scrolled' : ''}`} id="header">
+    <header className={`landing-header ${isScrolled || isContactActive || isFoundationActive ? 'scrolled' : ''}`} id="header">
       <div className="landing-container header-inner">
         <Link className="brand" to="/" onClick={() => handleNavClick('#inicio')} aria-label="Pulso360, volver al inicio">
-          <img className="brand-logo" src="/assets/imágenes/logo.png" alt="" />
+          <img className="brand-logo" src="/assets/marca/logo.png" alt="" />
           <span className="brand-name">Pulso360</span>
           <span className="brand-context">Bienestar laboral</span>
         </Link>
@@ -107,8 +121,17 @@ export function Navbar() {
                 className={`nav-link ${location.pathname === '/' && activeSection === 'transparencia-roles' ? 'active' : ''}`}
                 onClick={() => handleNavClick('#transparencia-roles')}
               >
-                Transparencia de Roles
+                Roles
               </button>
+            </li>
+            <li>
+              <Link
+                className={`nav-link ${isFoundationActive ? 'active' : ''}`}
+                to="/fundamentacion"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Fundamentación
+              </Link>
             </li>
             <li>
               <Link
@@ -119,7 +142,7 @@ export function Navbar() {
                 Contáctenos
               </Link>
             </li>
-            <li>
+            <li className="nav-item-mobile-cta">
               <Link
                 className="nav-link nav-link-mobile-cta"
                 to={currentUser ? roleHomePaths[currentUser.role] : '/login'}
@@ -139,8 +162,9 @@ export function Navbar() {
             className="mobile-toggle"
             id="mobileToggleBtn"
             type="button"
-            aria-label={isMenuOpen ? 'Cerrar menú' : 'Abrir menú'}
+            aria-label={isMenuOpen ? 'Cerrar menú de navegación' : 'Abrir menú de navegación'}
             aria-expanded={isMenuOpen}
+            aria-controls="navMenu"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
             <span></span><span></span><span></span>

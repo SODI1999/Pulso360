@@ -48,7 +48,7 @@ import { HabeasDataPage } from './features/admin/pages/HabeasDataPage';
 import { ReportsPage } from './features/reports/pages/ReportsPage';
 import { NotificationsPage } from './features/notifications/pages/NotificationsPage';
 import { LandingPage } from './features/landing/pages/LandingPage';
-import { ContactenosPage as Contactenos } from './features/landing/pages/ContactenosPage';
+import { ContactenosPage } from './features/landing/pages/ContactenosPage';
 import { AcademicFoundationPage } from './features/landing/pages/AcademicFoundationPage';
 
 
@@ -68,10 +68,8 @@ function App() {
                 <Route path="/recuperar-clave" element={<ForgotPasswordPage />} />
                 <Route path="/nueva-clave" element={<ResetPasswordPage />} />
                 <Route path="/403" element={<ForbiddenPage />} />
-                <Route path="/contactenos" element={<Contactenos />} />
-                <Route path="/formulario" element={<Contactenos />} />
+                <Route path="/contactenos" element={<ContactenosPage />} />
                 <Route path="/fundamentacion" element={<AcademicFoundationPage />} />
-                <Route path="/creditos" element={<AcademicFoundationPage />} />
 
                 {/* 2. Ruta de Consentimiento (Agente) */}
                 <Route

@@ -24,7 +24,7 @@
 .card {
   background-color: var(--c-superficie);
   border: 1px solid var(--c-borde-suave);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-card, 16px);
   padding: var(--space-4) var(--space-5);
   box-shadow: var(--shadow-xs);
   transition: box-shadow var(--transition-fast), border-color var(--transition-fast);

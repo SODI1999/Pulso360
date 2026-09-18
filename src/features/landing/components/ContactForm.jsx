@@ -1,12 +1,14 @@
-﻿// src/features/landing/components/Contactenos.jsx
-// Formulario funcional de Contáctenos con campos controlados (useState), validaciones en tiempo real y confirmación interactiva
+// src/features/landing/components/ContactForm.jsx
+// Formulario funcional e institucional de Contáctenos con campos controlados (useState),
+// validaciones en tiempo real, foco accesible WCAG AA y autorización expresa de Habeas Data (Ley 1581)
 
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Icon } from '../../../core/components/Icon';
 import { CONTACT_SUBJECTS } from '../data/landingData';
 import '../../../styles/contactenos.css';
 
-export function Contactenos() {
+export function ContactForm() {
   // 1. Estados controlados del formulario (useState)
   const [formData, setFormData] = useState({
     name: '',
@@ -14,7 +16,8 @@ export function Contactenos() {
     company: '',
     phone: '',
     subject: '',
-    message: ''
+    message: '',
+    habeasData: false
   });
 
   const [formErrors, setFormErrors] = useState({});
@@ -24,8 +27,9 @@ export function Contactenos() {
 
   // Manejo de cambios en los inputs controlados
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    const { name, value, type, checked } = e.target;
+    const fieldValue = type === 'checkbox' ? checked : value;
+    setFormData(prev => ({ ...prev, [name]: fieldValue }));
     if (formErrors[name]) {
       setFormErrors(prev => {
         const next = { ...prev };
@@ -35,7 +39,7 @@ export function Contactenos() {
     }
   };
 
-  // 2. Validación básica obligatoria
+  // 2. Validación básica obligatoria y Habeas Data
   const validateForm = () => {
     const errors = {};
 
@@ -45,7 +49,7 @@ export function Contactenos() {
       errors.name = 'Escribe al menos 3 caracteres.';
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!formData.email.trim()) {
       errors.email = 'El correo electrónico es obligatorio.';
     } else if (!emailRegex.test(formData.email.trim())) {
@@ -66,10 +70,14 @@ export function Contactenos() {
       errors.message = 'Por favor ingresa al menos 10 caracteres detallando tu solicitud.';
     }
 
+    if (!formData.habeasData) {
+      errors.habeasData = 'Debes aceptar la autorización de tratamiento de datos personales para continuar.';
+    }
+
     return errors;
   };
 
-  // 3. Evento onSubmit
+  // 3. Evento onSubmit con foco accesible en el primer campo inválido (WCAG AA)
   const handleSubmit = (e) => {
     e.preventDefault();
     setHasSubmittedOnce(true);
@@ -77,6 +85,20 @@ export function Contactenos() {
     const errors = validateForm();
     if (Object.keys(errors).length > 0) {
       setFormErrors(errors);
+      const firstErrorKey = Object.keys(errors)[0];
+      const fieldMap = {
+        name: 'contactName',
+        email: 'contactEmail',
+        company: 'contactCompany',
+        subject: 'contactSubject',
+        message: 'contactMessage',
+        habeasData: 'contactHabeasData'
+      };
+      const targetElement = document.getElementById(fieldMap[firstErrorKey]);
+      if (targetElement) {
+        targetElement.focus();
+        targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
       return;
     }
 
@@ -113,7 +135,8 @@ export function Contactenos() {
       company: '',
       phone: '',
       subject: '',
-      message: ''
+      message: '',
+      habeasData: false
     });
     setFormErrors({});
     setHasSubmittedOnce(false);
@@ -125,16 +148,18 @@ export function Contactenos() {
       <div className="form-panel-header">
         <span className="panel-kicker">Solicitud Institucional</span>
         <h2 className="panel-title">Envíanos tu requerimiento</h2>
-        <p className="panel-sub">Un especialista en BPO & SST responderá en menos de 24 horas.</p>
+        <p className="panel-sub">Coordinamos sesiones técnicas y demostraciones para líderes de operaciones y SST.</p>
       </div>
 
       {!submittedData ? (
         <form id="contactForm" className="landing-form" onSubmit={handleSubmit} noValidate>
-          {/* Banner de Alerta cuando se intenta enviar con campos incompletos */}
+          {/* Banner de Alerta moderno y sutil en caso de campos incompletos */}
           {hasSubmittedOnce && Object.keys(formErrors).length > 0 && (
             <div className="contact-alert-banner" role="alert">
-              <Icon name="alertTriangle" size={18} />
-              <div>
+              <span className="contact-alert-icon" aria-hidden="true">
+                <Icon name="alertTriangle" size={14} />
+              </span>
+              <div className="contact-alert-text">
                 <strong>Por favor revisa el formulario:</strong> Hay campos obligatorios pendientes o con información incompleta.
               </div>
             </div>
@@ -287,6 +312,44 @@ export function Contactenos() {
             )}
           </div>
 
+          {/* Checkbox Obligatorio de Habeas Data (Ley 1581) */}
+          <div className="form-field form-field-checkbox">
+            <label className="checkbox-label" htmlFor="contactHabeasData">
+              <input
+                id="contactHabeasData"
+                name="habeasData"
+                type="checkbox"
+                checked={formData.habeasData}
+                onChange={handleChange}
+                disabled={isSubmitting}
+                aria-required="true"
+                aria-invalid={!!formErrors.habeasData}
+                aria-describedby={formErrors.habeasData ? 'habeasData-error' : undefined}
+              />
+              <span className="checkbox-text">
+                Acepto el tratamiento de mis datos personales de contacto conforme a la Ley 1581 de 2012 y la{' '}
+                <Link to="/fundamentacion#marco-legal" className="checkbox-link" target="_blank" rel="noopener noreferrer">
+                  Política de Tratamiento de Datos
+                </Link>{' '}
+                para atender esta solicitud institucional. <span className="required-star" aria-hidden="true">*</span>
+              </span>
+            </label>
+            {formErrors.habeasData && (
+              <span id="habeasData-error" className="field-error visible" role="alert">
+                <Icon name="alertTriangle" size={13} />
+                <span>{formErrors.habeasData}</span>
+              </span>
+            )}
+          </div>
+
+          {/* Advertencia preventiva: no incluir datos de salud sensible */}
+          <div className="contact-health-disclaimer">
+            <Icon name="shieldCheck" size={15} className="disclaimer-icon" />
+            <span>
+              <strong>Reserva médica y datos sensibles:</strong> Por favor abstente de incluir datos de salud, diagnósticos o información clínica en este formulario.
+            </span>
+          </div>
+
           <button
             className="form-submit"
             type="submit"
@@ -299,7 +362,7 @@ export function Contactenos() {
               </>
             ) : (
               <>
-                <Icon name="check" size={18} />
+                <Icon name="send" size={18} />
                 <span>Enviar mensaje</span>
               </>
             )}
@@ -358,6 +421,3 @@ export function Contactenos() {
     </div>
   );
 }
-
-// Alias de exportación retrocompatible
-export { Contactenos as Formulario };

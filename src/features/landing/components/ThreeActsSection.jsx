@@ -1,87 +1,204 @@
-﻿// src/features/landing/components/ThreeActsSection.jsx
-// Unificación narrativa fluida de los 3 actos de Pulso360: Desahogo del Agente, Escudo k-anonimato y Acción SST
+// src/features/landing/components/ThreeActsSection.jsx
+// Recorrido interactivo unificado de los Tres Actos de Pulso360
+// Dirección A: Editorial Humano & Sereno — Fusión Elegante y Respiración, Cero AI Slop
 
 import { useState } from 'react';
 import { Icon } from '../../../core/components/Icon';
-import { BPO_SIMULATION_SCENARIOS } from '../data/landingData';
+import {
+  UNIFIED_SHOWCASE_TABS,
+  AGENT_SCALE_FACTORS,
+  AGENT_SCALE_SCENARIOS,
+  BPO_SIMULATION_SCENARIOS,
+  KANONYMITY_SIMULATION_DATA,
+  SST_OPERATIONAL_SIGNALS
+} from '../data/landingData';
 
 export function ThreeActsSection() {
+  const [activeTab, setActiveTab] = useState('agente');
+  const [selectedFactor, setSelectedFactor] = useState(4);
   const [selectedSituation, setSelectedSituation] = useState(BPO_SIMULATION_SCENARIOS[0]);
-  const [agentCount, setAgentCount] = useState(6);
+  const [agentCount, setAgentCount] = useState(KANONYMITY_SIMULATION_DATA.sliderDefault || 6);
+  const [showNlpAdvice, setShowNlpAdvice] = useState(false);
+
+  // Escenario dinámico según el nivel de escala 1-5 seleccionado
+  const currentScaleScenario = AGENT_SCALE_SCENARIOS[selectedFactor] || AGENT_SCALE_SCENARIOS[4];
 
   return (
-    <section className="three-acts-section" id="los-tres-actos" aria-labelledby="acts-main-title">
+    <section
+      className="three-acts-section"
+      id="los-tres-actos"
+      aria-labelledby="acts-main-title"
+    >
+      {/* Ancla para enlaces directos desde el Hero */}
+      <span id="demostracion" className="section-anchor-offset" aria-hidden="true" />
+
       <div className="landing-container">
         {/* Encabezado Editorial del Recorrido */}
         <div className="three-acts-header">
-          <span className="acts-eyebrow">Arquitectura Ética & Preventiva</span>
-          <h2 id="acts-main-title">Los Tres Actos de Pulso360</h2>
+          <span className="acts-eyebrow">Arquitectura Ética & Demostración Interactiva</span>
+          <h2 id="acts-main-title">
+            Los Tres Actos de Pulso360
+          </h2>
           <p className="acts-lead">
-            Cómo transformamos el cansancio silencioso de los pisos de operaciones en intervenciones tempranas y humanas, garantizando que el trabajador se exprese con total tranquilidad.
+            Un único recorrido sereno que articula el cuidado en tiempo real: desde el micro-pulso voluntario de 60 segundos del agente hasta la intervención oportuna de SST, respaldado por el muro matemático de k-anonimato.
           </p>
         </div>
 
-        <div className="acts-container">
-          {/* ============================================================ */}
-          {/* ACTO I: El Agente y su Desahogo Personal */}
-          {/* ============================================================ */}
-          <article className="act-spread" id="acto-1" aria-labelledby="act1-title">
-            <div className="act-meta-column">
-              <span className="act-roman-badge">Acto I</span>
-              <span className="act-category-tag tag-agent">
-                <Icon name="support_agent" size={14} />
-                Espacio Íntimo del Agente
-              </span>
-              <h3 id="act1-title">El desahogo diario sin juicio ni vigilancia</h3>
-              <p>
-                Al terminar su jornada, el agente dedica 60 segundos a responder sobre 6 dimensiones operativas (energía, carga, recuperación, apoyo, distanciamiento e ineficacia) y dispone de una bitácora libre y confidencial.
-              </p>
-              <div className="act-guarantee-pill">
-                <Icon name="lock" size={14} />
-                <span>100% privado: su supervisor jamás lee lo que escribe</span>
-              </div>
-            </div>
+        {/* Barra de Control de Pestañas Unificadas con navegación accesible por teclado */}
+        <div
+          className="unified-acts-nav"
+          role="tablist"
+          aria-label="Recorrido interactivo de los tres actos"
+          onKeyDown={(e) => {
+            const tabs = UNIFIED_SHOWCASE_TABS.map(t => t.id);
+            const currentIndex = tabs.indexOf(activeTab);
+            if (e.key === 'ArrowRight') {
+              e.preventDefault();
+              const nextIndex = (currentIndex + 1) % tabs.length;
+              setActiveTab(tabs[nextIndex]);
+              document.getElementById(`tab-${tabs[nextIndex]}`)?.focus();
+            } else if (e.key === 'ArrowLeft') {
+              e.preventDefault();
+              const prevIndex = (currentIndex - 1 + tabs.length) % tabs.length;
+              setActiveTab(tabs[prevIndex]);
+              document.getElementById(`tab-${tabs[prevIndex]}`)?.focus();
+            }
+          }}
+        >
+          {UNIFIED_SHOWCASE_TABS.map((tab) => {
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                role="tab"
+                aria-selected={isActive}
+                aria-controls={`panel-${tab.id}`}
+                id={`tab-${tab.id}`}
+                className={`unified-tab-btn ${isActive ? 'active' : ''}`}
+                onClick={() => setActiveTab(tab.id)}
+              >
+                <span className="tab-btn-icon" aria-hidden="true">
+                  <Icon name={tab.icon} size={18} />
+                </span>
+                <span className="tab-btn-texts">
+                  <strong className="tab-btn-label">{tab.label}</strong>
+                  <span className="tab-btn-sub">{tab.subtitle}</span>
+                </span>
+              </button>
+            );
+          })}
+        </div>
 
-            <div className="act-interactive-column">
-              <div className="act-interactive-panel">
-                <div className="panel-subhead">
-                  <span>Simula una situación real en piso de Contact Center:</span>
+        {/* Tarjeta Unificada de Demostración */}
+        <div className="unified-showcase-viewport">
+          
+          {/* =========================================================================
+              ACTO I: ESPACIO ÍNTIMO DEL AGENTE
+              ========================================================================= */}
+          {activeTab === 'agente' && (
+            <div
+              className="act-tab-content act-agent-content"
+              id="panel-agente"
+              role="tabpanel"
+              aria-labelledby="tab-agente"
+            >
+              <div className="act-content-header">
+                <div className="act-pill-badge agent-badge">
+                  <Icon name="lock" size={14} />
+                  <span>Espacio confidencial · Procesamiento disociado · Cero vigilancia punitiva</span>
+                </div>
+                <span className="act-step-label">Micro-pulso de 60 segundos · Muestra interactiva de evaluación</span>
+              </div>
+
+              {/* Selector de Carga Cognitiva y Emocional (1 al 5) */}
+              <div className="agent-eval-block">
+                <div className="agent-eval-prompt">
+                  <h3>¿Cómo percibes la carga cognitiva y emocional al cierre del turno?</h3>
+                  <p>Evalúa el ritmo de atención, la fricción técnica y la presión de llamadas consecutivas.</p>
                 </div>
 
-                <div className="situation-tab-row" role="tablist">
-                  {BPO_SIMULATION_SCENARIOS.map((s) => (
+                <div className="factor-scale-interactive" role="radiogroup" aria-label="Escala de carga del turno">
+                  {AGENT_SCALE_FACTORS.map((f) => (
                     <button
-                      key={s.id}
+                      key={f.level}
                       type="button"
-                      role="tab"
-                      aria-selected={selectedSituation.id === s.id}
-                      className={`situation-tab ${selectedSituation.id === s.id ? 'active' : ''}`}
-                      onClick={() => setSelectedSituation(s)}
+                      role="radio"
+                      aria-checked={selectedFactor === f.level}
+                      className={`factor-chip factor-level-${f.level} ${selectedFactor === f.level ? 'selected' : ''}`}
+                      onClick={() => setSelectedFactor(f.level)}
                     >
-                      {s.label}
+                      <span className="chip-mood-icon" aria-hidden="true">
+                        <Icon name={f.icon} size={20} />
+                      </span>
+                      <strong className="chip-label">{f.label}</strong>
+                      <span className="chip-hint">{f.context}</span>
                     </button>
                   ))}
                 </div>
+              </div>
 
-                <div className="act-journal-card">
-                  <div className="journal-entry-box">
-                    <span className="quote-mark">&ldquo;</span>
-                    <p>{selectedSituation.agentQuote}</p>
+              {/* Simulación de Situaciones Reales en Piso de Operaciones */}
+              <div className="agent-journal-block">
+                <div className="situation-row-header">
+                  <div className="situation-label">
+                    <Icon name="edit_note" size={16} />
+                    <span>Prueba un escenario de Contact Center:</span>
+                  </div>
+                  <div className="situation-pills-row" role="tablist" aria-label="Escenarios de piso">
+                    {BPO_SIMULATION_SCENARIOS.map((s) => (
+                      <button
+                        key={s.id}
+                        type="button"
+                        role="tab"
+                        aria-selected={selectedSituation.id === s.id}
+                        className={`situation-pill ${selectedSituation.id === s.id ? 'active' : ''}`}
+                        onClick={() => setSelectedSituation(s)}
+                      >
+                        {s.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Tarjeta de Bitácora y Orientación Léxica Local */}
+                <div className="journal-harmonious-card">
+                  <div className="journal-entry-area">
+                    <p className="journal-entry-text">{selectedSituation.agentQuote}</p>
+                    <span className="journal-privacy-notice">
+                      <Icon name="lock" size={12} />
+                      Bitácora procesada localmente · Tu supervisor jamás lee este texto
+                    </span>
                   </div>
 
-                  <div className="nlp-deterministic-card">
-                    <div className="nlp-card-header">
-                      <div className="nlp-icon-title">
-                        <Icon name="healing" size={16} />
-                        <strong>Orientación Empática Inmediata (NLP Léxico Local)</strong>
+                  <div className="nlp-guidance-area">
+                    <div className="nlp-guidance-top">
+                      <div className="nlp-badge-group">
+                        <span className="nlp-engine-tag">
+                          <Icon name="healing" size={13} />
+                          Motor Léxico Preventivo
+                        </span>
+                        <span className="nlp-no-dx-tag">No emite diagnósticos médicos</span>
                       </div>
-                      <span className="nlp-no-diagnosis-pill">No emite diagnósticos médicos</span>
+                      <button
+                        type="button"
+                        className="nlp-expand-btn"
+                        onClick={() => setShowNlpAdvice(!showNlpAdvice)}
+                      >
+                        {showNlpAdvice ? 'Ocultar recomendación' : 'Ver recomendación ergonómica por nivel'}
+                      </button>
                     </div>
 
-                    <h5 className="nlp-feedback-title">{selectedSituation.nlpTitle}</h5>
-                    <p className="nlp-feedback-text">{selectedSituation.nlpFeedback}</p>
+                    <h4 className="nlp-feedback-title">{selectedSituation.nlpTitle}</h4>
+                    <p className="nlp-feedback-desc">{selectedSituation.nlpFeedback}</p>
 
-                    <div className="domain-context-note">
+                    {showNlpAdvice && (
+                      <div className="nlp-extra-advice" role="note">
+                        <p><strong>Pauta ergonómica preventiva:</strong> {currentScaleScenario.advice}</p>
+                      </div>
+                    )}
+
+                    <div className="domain-context-strip">
                       <Icon name="info" size={13} />
                       <span>{selectedSituation.domainContext}</span>
                     </div>
@@ -89,155 +206,233 @@ export function ThreeActsSection() {
                 </div>
               </div>
             </div>
-          </article>
+          )}
 
-          {/* ============================================================ */}
-          {/* ACTO II: El Escudo Matemático de k-Anonimato */}
-          {/* ============================================================ */}
-          <article className="act-spread" id="acto-2" aria-labelledby="act2-title">
-            <div className="act-meta-column">
-              <span className="act-roman-badge">Acto II</span>
-              <span className="act-category-tag tag-shield">
-                <Icon name="fileShield" size={14} />
-                El Escudo Algorítmico
-              </span>
-              <h3 id="act2-title">El muro matemático de k-anonimato (k &ge; 5)</h3>
-              <p>
-                En grupos pequeños, cualquier reporte permitiría deducir quién respondió. Por eso, Pulso360 impone un umbral matemático estricto: si un equipo o campaña tiene menos de 5 respuestas, los datos quedan completamente sellados.
-              </p>
-              <div className="act-guarantee-pill">
-                <Icon name="shieldCheck" size={14} />
-                <span>La identidad queda disociada e irrecuperable en el servidor</span>
+          {/* =========================================================================
+              ACTO II: ESCUDO K-ANONIMATO (k >= 5)
+              ========================================================================= */}
+          {activeTab === 'kanonymity' && (
+            <div
+              className="act-tab-content act-kanonymity-content"
+              id="panel-kanonymity"
+              role="tabpanel"
+              aria-labelledby="tab-kanonymity"
+            >
+              <div className="act-content-header">
+                <div className="act-pill-badge shield-badge">
+                  <Icon name="shieldCheck" size={14} />
+                  <span>Escudo Matemático de Privacidad · Disociación Algorítmica</span>
+                </div>
+                <span className="act-step-label">Umbral Ético: k &ge; 5 respuestas</span>
               </div>
-            </div>
 
-            <div className="act-interactive-column">
-              <div className="act-interactive-panel threshold-panel">
-                <div className="threshold-header">
-                  <div>
-                    <h4>Simulador interactivo de protección de identidad</h4>
-                    <p>Mueve el control para comprobar cuándo el sistema bloquea o permite la visualización.</p>
+              <div className="kanonymity-simulator-grid">
+                {/* Control Interactivo de Umbral */}
+                <div className="kanonymity-control-card">
+                  <div className="kanonymity-prompt">
+                    <h3>{KANONYMITY_SIMULATION_DATA.title}</h3>
+                    <p>{KANONYMITY_SIMULATION_DATA.description}</p>
+                  </div>
+
+                  <div className="slider-interactive-box">
+                    <div className="slider-readout-row">
+                      <span>Respuestas registradas en el equipo:</span>
+                      <strong className="slider-counter">
+                        {agentCount} {agentCount === 1 ? 'participante distinto' : 'participantes distintos'}
+                      </strong>
+                    </div>
+
+                    <input
+                      type="range"
+                      min={KANONYMITY_SIMULATION_DATA.sliderMin}
+                      max={KANONYMITY_SIMULATION_DATA.sliderMax}
+                      value={agentCount}
+                      onChange={(e) => setAgentCount(Number(e.target.value))}
+                      className="kanonymity-slider"
+                      aria-label="Número de participantes respondiendo en el equipo"
+                    />
+
+                    <div className="slider-ticks-row">
+                      <span className="tick-min">1 (Mínimo)</span>
+                      <span className="tick-threshold">
+                        <Icon name="shield" size={12} />
+                        k = 5 (Umbral)
+                      </span>
+                      <span className="tick-max">12 (Óptimo)</span>
+                    </div>
+                  </div>
+
+                  <div className="kanonymity-math-guarantee">
+                    <Icon name="fileShield" size={15} />
+                    <span>
+                      En grupos menores a 5 participantes, cualquier reporte permitiría inferir respuestas individuales. Pulso360 protege deliberadamente la visualización para salvaguardar la privacidad.
+                    </span>
                   </div>
                 </div>
 
-                <div className="threshold-control-box">
-                  <div className="threshold-label-row">
-                    <span>Respuestas registradas en el equipo:</span>
-                    <strong className="agent-count-display">{agentCount} agentes</strong>
-                  </div>
-                  <input
-                    type="range"
-                    min="1"
-                    max="12"
-                    value={agentCount}
-                    onChange={(e) => setAgentCount(Number(e.target.value))}
-                    className="threshold-slider-input"
-                    aria-label="Número de agentes respondiendo en el equipo"
-                  />
-                  <div className="threshold-scale-guide">
-                    <span>1 (Riesgo alto)</span>
-                    <span className="scale-mark-k5">Umbral ético: k = 5</span>
-                    <span>12 (Óptimo)</span>
-                  </div>
-                </div>
-
-                <div className="threshold-result-view">
+                {/* Resultado Dinámico: Protegido por Privacidad vs Desbloqueado */}
+                <div className="kanonymity-result-card">
                   {agentCount < 5 ? (
-                    <div className="threshold-status-box status-locked">
-                      <div className="threshold-icon-circle lock">
-                        <Icon name="lock" size={24} />
+                    <div className="k-status-box status-protected" role="status">
+                      <div className="status-icon-circle shield-protected">
+                        <Icon name="kAnonymityShield" size={24} />
                       </div>
-                      <div className="threshold-status-text">
-                        <span className="badge-status-danger">Visualización Bloqueada por Seguridad</span>
-                        <h5>Muestra Insuficiente ({agentCount} de 5 requeridos)</h5>
+                      <div className="status-copy">
+                        <span className="status-pill pill-shield">
+                          Visualización Protegida por Privacidad
+                        </span>
+                        <h4>
+                          Protegido por Privacidad ({agentCount} de 5 participantes)
+                        </h4>
                         <p>
-                          Pulso360 oculta automáticamente las métricas de este equipo. Un grupo menor a 5 personas permitiría deducir identidades individuales.
+                          Este bloqueo deliberado protege la identidad de los colaboradores mientras el quórum de participantes sea menor a 5 personas.
                         </p>
+                        <small className="status-subnote">
+                          Al alcanzar k &ge; 5 participantes distintos, SG-SST visualiza promedios colectivos sin identificar registros individuales.
+                        </small>
                       </div>
                     </div>
                   ) : (
-                    <div className="threshold-status-box status-unlocked">
-                      <div className="threshold-icon-circle check">
-                        <Icon name="shieldCheck" size={24} />
-                      </div>
-                      <div className="threshold-status-text">
-                        <span className="badge-status-success">k-Anonimato Cumplido (k = {agentCount} &ge; 5)</span>
-                        <h5>Tendencia Colectiva Desbloqueada para SST</h5>
-                        <p>
-                          Los datos se promedian de forma colectiva. Es matemáticamente imposible rastrear la respuesta de ningún trabajador específico.
+                    <div className="sst-unlocked-report-card" role="region" aria-label="Reporte Preventivo Colectivo Desbloqueado">
+                      {/* Cabecera del reporte */}
+                      <div className="unlocked-report-head">
+                        <div className="unlocked-badge-row">
+                          <span className="unlocked-k-badge">
+                            <Icon name="shieldCheck" size={13} />
+                            k-Anonimato Activo (k = {agentCount})
+                          </span>
+                          <span className="unlocked-validity-badge">
+                            Muestra Representativa
+                          </span>
+                        </div>
+                        <h4 className="unlocked-report-title">
+                          Reporte Preventivo Agregado · Campaña Soporte N1
+                        </h4>
+                        <p className="unlocked-report-sub">
+                          Respuestas agrupadas y promediadas matemáticamente. Ningún dato nominal expuesto.
                         </p>
+                      </div>
+
+                      {/* Métrica 1: Índice de Energía Colectiva */}
+                      <div className="unlocked-metric-block">
+                        <div className="energy-index-header">
+                          <span className="energy-index-label">Índice de Energía Colectiva</span>
+                          <span className="energy-index-val">
+                            <strong>72</strong> / 100 <span className="energy-status-text">(Sostenible)</span>
+                          </span>
+                        </div>
+                        <div className="energy-bar-track" aria-label="Barra de nivel de energía: 72%">
+                          <div className="energy-bar-fill" style={{ width: '72%' }} />
+                        </div>
+                      </div>
+
+                      {/* Métrica 2: Distribución Grupal Disociada */}
+                      <div className="unlocked-distribution-block">
+                        <span className="distribution-title">Distribución anónima del equipo ({agentCount} respuestas):</span>
+                        <div className="distribution-chips-row">
+                          <div className="dist-chip chip-balanced">
+                            <span className="dist-chip-pct">67%</span>
+                            <span className="dist-chip-label">Ritmo Balanceado</span>
+                          </div>
+                          <div className="dist-chip chip-fatigue">
+                            <span className="dist-chip-pct">33%</span>
+                            <span className="dist-chip-label">Fatiga Moderada</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Sugerencia de Protocolo Oportuno SG-SST */}
+                      <div className="unlocked-protocol-box">
+                        <Icon name="checkCircle" size={16} className="protocol-icon" />
+                        <div className="protocol-text">
+                          <strong>Protocolo sugerido para SG-SST:</strong>
+                          <p>Activar pausa activa guiada de 10 min a las 15:30 y balancear colas críticas.</p>
+                        </div>
+                      </div>
+
+                      {/* Sello de Garantía y Privacidad */}
+                      <div className="unlocked-privacy-seal">
+                        <Icon name="lock" size={13} />
+                        <span>Métricas 100% desvinculadas de AHT y evaluaciones individuales de desempeño.</span>
                       </div>
                     </div>
                   )}
                 </div>
               </div>
             </div>
-          </article>
+          )}
 
-          {/* ============================================================ */}
-          {/* ACTO III: La Intervención Preventiva en SST */}
-          {/* ============================================================ */}
-          <article className="act-spread" id="acto-3" aria-labelledby="act3-title">
-            <div className="act-meta-column">
-              <span className="act-roman-badge">Acto III</span>
-              <span className="act-category-tag tag-sst">
-                <Icon name="healing" size={14} />
-                Acción Ocupacional SST
-              </span>
-              <h3 id="act3-title">Intervenciones oportunas en condiciones de trabajo</h3>
-              <p>
-                Los especialistas en Seguridad y Salud en el Trabajo (SST) no actúan como evaluadores ni jueces; actúan como facilitadores del entorno laboral, coordinando micro-pausas y balance de turnos antes de que el personal colapse.
-              </p>
-              <div className="act-guarantee-pill">
-                <Icon name="trendingUp" size={14} />
-                <span>Intervenciones registradas con trazabilidad auditable</span>
+          {/* =========================================================================
+              ACTO III: VIGILANCIA PREVENTIVA SST
+              ========================================================================= */}
+          {activeTab === 'sst' && (
+            <div
+              className="act-tab-content act-sst-content"
+              id="panel-sst"
+              role="tabpanel"
+              aria-labelledby="tab-sst"
+            >
+              <div className="act-content-header">
+                <div className="act-pill-badge sst-badge">
+                  <Icon name="healing" size={14} />
+                  <span>Consola de Vigilancia Preventiva (SG-SST)</span>
+                </div>
+                <span className="act-step-label">k &ge; 5 verificado · Datos consolidados</span>
               </div>
-            </div>
 
-            <div className="act-interactive-column">
-              <div className="act-interactive-panel sst-panel-preview">
-                <div className="sst-panel-preview-head">
+              <div className="sst-signals-layout">
+                <div className="sst-intro-block">
+                  <h3>Intervención oportuna sobre condiciones de trabajo</h3>
+                  <p>
+                    Seguridad y Salud en el Trabajo interviene sobre los ritmos de piso, turnos y pausas activas, sin vigilar individualmente a los colaboradores.
+                  </p>
+                </div>
+
+                {/* Tarjetas de Turnos y Señales Operacionales */}
+                <div className="sst-shift-grid">
+                  {SST_OPERATIONAL_SIGNALS.map((sig) => (
+                    <div
+                      key={sig.id}
+                      className={`sst-signal-card ${sig.statusType === 'warning' ? 'signal-warning' : 'signal-normal'}`}
+                    >
+                      <div className="signal-card-header">
+                        <strong>{sig.shift}</strong>
+                        <span className={`signal-status-pill ${sig.statusType === 'warning' ? 'pill-amber' : 'pill-green'}`}>
+                          {sig.status}
+                        </span>
+                      </div>
+                      <div className="signal-metric-row">
+                        <span className="signal-metric-val">{sig.energyIndex}</span>
+                        <span className="signal-metric-sub">Índice de soporte y energía grupal</span>
+                      </div>
+                      <p className="signal-summary-text">{sig.summary}</p>
+                      <div className="signal-protocol-applied">
+                        <Icon name="checkCircle" size={13} />
+                        <span>{sig.actionProtocol}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Callout de Trazabilidad Auditable */}
+                <div className="sst-traceability-callout">
+                  <div className="callout-icon-wrap">
+                    <Icon name="trendingUp" size={20} />
+                  </div>
                   <div>
-                    <h4>Mapa de Carga Operativa por Campaña</h4>
-                    <small>Medición continua agregada según marco Maslach & Batería SST Colombia</small>
-                  </div>
-                  <span className="sst-active-tag">Vigilancia Preventiva Activa</span>
-                </div>
-
-                <div className="sst-actions-list">
-                  <div className="sst-action-item">
-                    <div className="action-indicator amber">
-                      <Icon name="alertTriangle" size={16} />
-                    </div>
-                    <div>
-                      <strong>Campaña Soporte Técnico — Turno Noche (20:00 - 04:00)</strong>
-                      <p>Incremento del 38% en reporte de fatiga visual y cervical tras 3 días de alta demanda.</p>
-                      <div className="action-applied-pill">
-                        <Icon name="checkCircle" size={13} />
-                        <span>Protocolo aplicado: Pausas activas guiadas de 10 min a las 23:00 y 02:00</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="sst-action-item">
-                    <div className="action-indicator green">
-                      <Icon name="checkCircle" size={16} />
-                    </div>
-                    <div>
-                      <strong>Campaña Cobranzas Especializadas — Turno Mañana (07:00 - 15:00)</strong>
-                      <p>Índice de soporte y apoyo del supervisor en nivel óptimo (4.3 / 5.0). Estabilidad sostenida.</p>
-                      <div className="action-applied-pill green">
-                        <Icon name="checkCircle" size={13} />
-                        <span>Condiciones estables: Seguimiento preventivo quincenal</span>
-                      </div>
-                    </div>
+                    <strong>Cero consecuencias punitivas · Trazabilidad 100% auditable</strong>
+                    <p>
+                      Las intervenciones preventivas quedan registradas en la bitácora de cumplimiento de SG-SST sin asociarse jamás a nómina, AHT o sanciones laborales.
+                    </p>
                   </div>
                 </div>
               </div>
             </div>
-          </article>
+          )}
+
         </div>
       </div>
     </section>
   );
 }
+

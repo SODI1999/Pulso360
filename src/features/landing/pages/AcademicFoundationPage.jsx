@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
+import { ScrollToTopButton } from '../components/ScrollToTopButton';
 import { Icon } from '../../../core/components/Icon';
 import {
   FOUNDATION_META,
@@ -62,10 +63,10 @@ export function AcademicFoundationPage() {
             <header className='academic-hero-header'>
               <div className='academic-kicker-row'>
                 <div className='kicker-badges-group'>
-                  <span className='academic-kicker-badge'>
-                    <Icon name='shieldCheck' size={13} />
-                    <span>{FOUNDATION_META.badge}</span>
+                  <span className='academic-editorial-kicker'>
+                    {FOUNDATION_META.badge}
                   </span>
+                  <span className='kicker-separator' aria-hidden='true'>·</span>
                   <span className='academic-meta-date'>
                     {FOUNDATION_META.kicker}
                   </span>
@@ -90,8 +91,42 @@ export function AcademicFoundationPage() {
                 {FOUNDATION_META.lead}
               </p>
 
+              {/* ÍNDICE EDITORIAL DE SECCIONES (JUMP LINKS / TOC ACCESIBLE A15) */}
+              <nav className='academic-toc-strip' aria-label='Índice temático del dossier'>
+                <div className='toc-header-label'>
+                  <Icon name='bookmark' size={14} />
+                  <span>Índice del Dossier Científico:</span>
+                </div>
+                <div className='toc-links-row'>
+                  <a href='#autores' className='toc-pill-link'>
+                    <Icon name='users' size={13} />
+                    <span>Equipo</span>
+                  </a>
+                  <a href='#evidencia-empirica' className='toc-pill-link'>
+                    <Icon name='insights' size={13} />
+                    <span>1. Evidencia</span>
+                  </a>
+                  <a href='#transferencia' className='toc-pill-link'>
+                    <Icon name='fileShield' size={13} />
+                    <span>2. Transferencia</span>
+                  </a>
+                  <a href='#antivigilancia' className='toc-pill-link'>
+                    <Icon name='shieldCheck' size={13} />
+                    <span>3. Garantías</span>
+                  </a>
+                  <a href='#citacion' className='toc-pill-link'>
+                    <Icon name='fileText' size={13} />
+                    <span>4. Citación</span>
+                  </a>
+                  <a href='#marco-legal' className='toc-pill-link'>
+                    <Icon name='lock' size={13} />
+                    <span>5. Marco Legal</span>
+                  </a>
+                </div>
+              </nav>
+
               {/* MATRIZ DE AUTORIA INTERDISCIPLINARIA */}
-              <div className='academic-authorship-showcase' aria-label='Autoría interdisciplinaria'>
+              <div className='academic-authorship-showcase' id='autores' aria-label='Autoría interdisciplinaria'>
                 {/* Trabajo Social */}
                 <article className='authorship-card authorship-social'>
                   <div className='authorship-card-top'>
@@ -124,13 +159,6 @@ export function AcademicFoundationPage() {
                   </div>
                 </article>
 
-                {/* Divisor Interdisciplinario */}
-                <div className='authorship-divider' aria-hidden='true'>
-                  <div className='divider-line'></div>
-                  <span className='divider-chip'>Transferencia Metodológica</span>
-                  <div className='divider-line'></div>
-                </div>
-
                 {/* Ingeniería de Software */}
                 <article className='authorship-card authorship-tech'>
                   <div className='authorship-card-top'>
@@ -145,11 +173,11 @@ export function AcademicFoundationPage() {
                   </div>
                   <div className='authorship-body'>
                     <div className='author-lead-item'>
-                      <span className='author-role-label'>Arquitectura & Desarrollo de Software:</span>
+                      <span className='author-role-label'>{AUTHORS_MATRIX.softwareEngineering.leadAuthorRole}:</span>
                       <p className='author-principal-name'>{AUTHORS_MATRIX.softwareEngineering.leadAuthor}</p>
                     </div>
                     <div className='author-coauthors-wrap'>
-                      <span className='author-role-label'>Equipo de Desarrollo:</span>
+                      <span className='author-role-label'>Naturaleza Jurídica & Adscripción:</span>
                       <div className='coauthors-chips'>
                         {AUTHORS_MATRIX.softwareEngineering.coauthors.map((dev) => (
                           <span key={dev} className='coauthor-chip tech-chip'>{dev}</span>
@@ -166,7 +194,7 @@ export function AcademicFoundationPage() {
             </header>
 
             {/* SECCION 1: EVIDENCIA EMPIRICA */}
-            <section className='academic-editorial-section' aria-labelledby='sec-evidencia-titulo'>
+            <section className='academic-editorial-section' id='evidencia-empirica' aria-labelledby='sec-evidencia-titulo'>
               <div className='section-title-wrap'>
                 <span className='section-tag'>Evidencia Empírica de Campo</span>
                 <h2 id='sec-evidencia-titulo'>Radiografía del agotamiento en centros de contacto locales</h2>
@@ -189,7 +217,7 @@ export function AcademicFoundationPage() {
                 {/* Tarjeta Principal */}
                 <div className='empirical-dossier-main'>
                   <div className='dossier-stat-header'>
-                    <span className='dossier-tag'>Prevalencia Global Diagnosticada</span>
+                    <span className='dossier-tag'>{EMPIRICAL_DATA.mainMetric.tag}</span>
                     <div className='dossier-big-number'>
                       <span className='number-val'>{EMPIRICAL_DATA.mainMetric.percentage}</span>
                       <span className='number-label'>{EMPIRICAL_DATA.mainMetric.label}</span>
@@ -200,7 +228,7 @@ export function AcademicFoundationPage() {
                       {EMPIRICAL_DATA.distribution.map((dist) => (
                         <div
                           key={dist.level}
-                          className={'dist-segment ' + dist.toneClass}
+                          className={'dist-segment ' + dist.toneClass + (dist.percentage < 20 ? ' dist-segment-small' : '')}
                           style={{ width: dist.percentage + '%' }}
                           title={dist.level + ': ' + dist.percentage + '%'}
                         >
@@ -237,6 +265,24 @@ export function AcademicFoundationPage() {
                       </div>
                       <h3 className='aside-title'>{sec.title}</h3>
                       <p className='aside-desc'>{sec.description}</p>
+                      {sec.id === 'protective' && (
+                        <div className='correlation-vector-box' aria-label='Relación de amortiguación psicométrica'>
+                          <div className='correlation-node node-support'>
+                            <span className='node-label'>Apoyo Social</span>
+                            <span className='node-arrow' aria-hidden='true'>&uarr;</span>
+                          </div>
+                          <div className='correlation-vector-arrow' aria-hidden='true'>
+                            <span className='vector-line' />
+                            <span className='vector-tag'>amortigua</span>
+                            <span className='vector-line' />
+                          </div>
+                          <div className='correlation-node node-burnout'>
+                            <span className='node-label'>Agotamiento</span>
+                            <span className='node-arrow' aria-hidden='true'>&darr;</span>
+                          </div>
+                          <span className='correlation-sig-badge'>p &lt; 0.01</span>
+                        </div>
+                      )}
                       {sec.operationalMeaning && (
                         <div className='aside-highlight-box'>
                           <Icon name='info' size={14} className='highlight-icon' />
@@ -250,7 +296,7 @@ export function AcademicFoundationPage() {
             </section>
 
             {/* SECCION 2: MATRIZ DE TRANSFERENCIA METODOLOGICA */}
-            <section className='academic-editorial-section' aria-labelledby='sec-transferencia-titulo'>
+            <section className='academic-editorial-section' id='transferencia' aria-labelledby='sec-transferencia-titulo'>
               <div className='section-title-wrap'>
                 <span className='section-tag'>Transferencia Metodológica</span>
                 <h2 id='sec-transferencia-titulo'>De la problemática social a los requerimientos de software</h2>
@@ -263,7 +309,12 @@ export function AcademicFoundationPage() {
                   <article key={card.id} className='transfer-flow-card'>
                     <div className='card-top-bar'>
                       <div className='card-badge-row'>
-                        <span className='card-step-number'>{'Eje ' + card.number}</span>
+                        <div className='card-badge-left'>
+                          <span className='card-axis-icon-wrap' aria-hidden='true'>
+                            <Icon name={card.icon || 'shieldCheck'} size={15} />
+                          </span>
+                          <span className='card-step-number'>{'Eje ' + card.number}</span>
+                        </div>
                         <span className='card-feature-badge'>{card.featureBadge}</span>
                       </div>
                       <h3 className='card-flow-title'>{card.title}</h3>
@@ -308,14 +359,14 @@ export function AcademicFoundationPage() {
             </section>
 
             {/* SECCION 3: GARANTIAS ETICAS & NO-VIGILANCIA */}
-            <section className='academic-editorial-section anti-surveillance-section' aria-labelledby='sec-privacidad-titulo'>
+            <section className='academic-editorial-section anti-surveillance-section' id='antivigilancia' aria-labelledby='sec-privacidad-titulo'>
               <div className='anti-surveillance-card'>
                 <div className='anti-surveillance-header'>
                   <div className='shield-icon-badge'>
                     <Icon name='shieldCheck' size={24} />
                   </div>
                   <div className='anti-surveillance-titles'>
-                    <span className='section-tag-light'>Seguridad Psicológica Garantizada</span>
+                    <span className='section-tag-light'>Salvaguardas de Seguridad Psicológica</span>
                     <h2 id='sec-privacidad-titulo' className='anti-surveillance-heading'>Garantía Anti-Vigilancia Punitiva</h2>
                     <p className='anti-surveillance-sub'>
                       El bienestar laboral nunca debe convertirse en un mecanismo de vigilancia, control disciplinario ni persecución. Pulso360 incorpora salvaguardas arquitectónicas inquebrantables por diseño:
@@ -339,7 +390,7 @@ export function AcademicFoundationPage() {
             </section>
 
             {/* SECCION 4: CITACION ACADEMICA FORMAL */}
-            <section className='academic-editorial-section citation-section' aria-labelledby='sec-citacion-titulo'>
+            <section className='academic-editorial-section citation-section' id='citacion' aria-labelledby='sec-citacion-titulo'>
               <div className='citation-card'>
                 <div className='citation-top-row'>
                   <div>
@@ -397,10 +448,10 @@ export function AcademicFoundationPage() {
             </section>
 
             {/* SECCION 5: MARCO JURIDICO COLOMBIANO */}
-            <section className='academic-editorial-section legal-framework-section' aria-labelledby='sec-legal-titulo'>
+            <section className='academic-editorial-section legal-framework-section' id='marco-legal' aria-labelledby='sec-legal-titulo'>
               <div className='section-title-wrap'>
                 <span className='section-tag'>Marco Normativo Colombiano</span>
-                <h2 id='sec-legal-titulo'>Deslinde de Responsabilidad & Blindaje Legal Integral</h2>
+                <h2 id='sec-legal-titulo'>Deslinde de Responsabilidad & Marco Normativo de Referencia</h2>
               </div>
               <p className='section-prose'>
                 Pulso360 está articulado bajo el ordenamiento jurídico colombiano en materia laboral, derechos de autor, reserva médica ocupacional y protección estricta de datos personales:
@@ -416,7 +467,12 @@ export function AcademicFoundationPage() {
                   return (
                     <article key={item.code} className={'legal-dossier-row ' + themeClass}>
                       <div className='legal-row-meta'>
-                        <span className='legal-tag-badge'>{item.tag}</span>
+                        <div className='legal-meta-head'>
+                          <span className='legal-icon-wrap' aria-hidden='true'>
+                            <Icon name={item.icon || 'shieldCheck'} size={18} />
+                          </span>
+                          <span className='legal-tag-badge'>{item.tag}</span>
+                        </div>
                         <strong className='legal-code-pill'>{item.code}</strong>
                       </div>
                       <div className='legal-row-content'>
@@ -434,11 +490,11 @@ export function AcademicFoundationPage() {
               <div className='footer-actions-left'>
                 <Link to='/' className='btn-return-primary'>
                   <Icon name='arrowLeft' size={16} />
-                  <span>Volver a la plataforma</span>
+                  <span>Volver al inicio</span>
                 </Link>
                 <Link to='/login' className='btn-action-secondary'>
                   <Icon name='lock' size={15} />
-                  <span>Acceso a la plataforma</span>
+                  <span>Iniciar sesión</span>
                 </Link>
               </div>
 
@@ -449,6 +505,9 @@ export function AcademicFoundationPage() {
       </main>
 
       <Footer />
+
+      {/* Botón Flotante Accesible para Volver al Inicio en Documentos Extensos */}
+      <ScrollToTopButton />
     </div>
   );
 }

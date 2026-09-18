@@ -1,12 +1,15 @@
-﻿// src/features/landing/components/HeroSection.jsx
-// Hero Editorial Principal de Pulso360 con marca de agua BPO y tooltip pedagógico de k-anonimato
+// src/features/landing/components/HeroSection.jsx
+// Hero Split Canónico (60/40): Claridad Industrial & Serenidad Humana
+// Ficha de Cierre de Turno y Desconexión Laboral (Ley 2191) + Popover Accesible de k-Anonimato
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Icon } from '../../../core/components/Icon';
 
 export function HeroSection() {
-  const [showTooltip, setShowTooltip] = useState(false);
+  const [isKPopoverOpen, setIsKPopoverOpen] = useState(false);
+  const popoverRef = useRef(null);
+  const popoverTriggerRef = useRef(null);
 
   const scrollToSection = (id) => {
     const el = document.getElementById(id);
@@ -15,70 +18,220 @@ export function HeroSection() {
     }
   };
 
+  // Manejo de teclado (Escape) y click exterior para accesibilidad WCAG AA
+  useEffect(() => {
+    if (!isKPopoverOpen) return;
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setIsKPopoverOpen(false);
+        popoverTriggerRef.current?.focus();
+      }
+    };
+
+    const handleClickOutside = (e) => {
+      if (
+        popoverRef.current &&
+        !popoverRef.current.contains(e.target) &&
+        popoverTriggerRef.current &&
+        !popoverTriggerRef.current.contains(e.target)
+      ) {
+        setIsKPopoverOpen(false);
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isKPopoverOpen]);
+
   return (
     <section className="hero-editorial" id="inicio" aria-labelledby="hero-main-title">
-      {/* Capa de Marca de Agua Fotográfica BPO y Gradiente de Difuminado */}
-      <div className="hero-watermark-bg" aria-hidden="true" />
-      <div className="hero-watermark-gradient" aria-hidden="true" />
+      <div className="landing-container hero-split-grid">
+        {/* =========================================================================
+            COLUMNA IZQUIERDA (60%): Manifiesto Editorial Humano
+            ========================================================================= */}
+        <div className="hero-editorial-col">
+          {/* Eyebrow tipográfico puro */}
+          <span className="hero-editorial-eyebrow">
+            Salud Ocupacional & Prevención en Contact Centers
+          </span>
 
-      <div className="landing-container hero-editorial-inner">
-        {/* Cabecera Principal y Titular Editorial */}
-        <div className="hero-editorial-top">
           <h1 id="hero-main-title" className="hero-editorial-title">
-            Detección temprana del agotamiento en Contact Centers. <br />
-            <em>Anticipa la rotación y la fatiga, sin invadir la privacidad.</em>
+            Detección temprana del agotamiento en Contact Centers.
+            <span className="hero-title-sub">
+              Anticipa la fatiga y la rotación en piso, sin vulnerar la intimidad del agente.
+            </span>
           </h1>
 
           <p className="hero-editorial-lead">
-            Desarrollado para centros de contacto y operaciones de alta presión: un sistema preventivo no médico que reemplaza encuestas anuales tardías por micro-pulsos de 60 segundos, bitácoras privadas y estricto{' '}
-            <button
-              type="button"
-              className="kanonymity-tooltip-wrapper"
-              onMouseEnter={() => setShowTooltip(true)}
-              onMouseLeave={() => setShowTooltip(false)}
-              onClick={() => setShowTooltip(prev => !prev)}
-              onKeyDown={(e) => {
-                if (e.key === 'Escape') setShowTooltip(false);
-              }}
-              aria-expanded={showTooltip}
-              aria-haspopup="dialog"
-              aria-label="Explicación de qué significa k-anonimato k mayor o igual a 5"
-            >
-              <strong className="kanonymity-term">
-                k-anonimato (k &ge; 5)
-                <Icon name="info" size={14} className="kanonymity-info-icon" />
-              </strong>
-              {showTooltip && (
-                <span className="kanonymity-tooltip-popover" role="tooltip" id="kanonymity-tooltip-popover">
-                  <span className="tooltip-title">¿Qué significa k &ge; 5?</span>
-                  <span className="tooltip-desc">
-                    Garantiza que SST nunca ve datos individuales: las tendencias y métricas solo se calculan si al menos 5 personas del mismo equipo respondieron, haciendo matemáticamente imposible saber quién dijo qué.
-                  </span>
-                </span>
-              )}
-            </button>{' '}
-            para que Seguridad y Salud en el Trabajo (SST) intervenga antes de que el desgaste se transforme en ausentismo o rotación.
+            Micro-pulsos voluntarios de 60 segundos y analítica agregada para que SST intervenga a tiempo. Cero vigilancia individual, cero fricción operativa.
           </p>
 
-          <div className="hero-editorial-cta-bar">
+          {/* Acciones principales */}
+          <div className="hero-cta-group">
             <button
               type="button"
               className="btn-editorial btn-editorial-primary"
-              onClick={() => scrollToSection('demostracion')}
+              onClick={() => scrollToSection('los-tres-actos')}
             >
-              Ver demostración interactiva
-              <Icon name="arrowRight" size={16} />
+              Probar demostración interactiva
             </button>
             <Link to="/login" className="btn-editorial btn-editorial-outline">
-              Acceder a la plataforma
+              Acceso a plataforma
             </Link>
-            <span className="hero-guarantee-note">
-              <Icon name="shieldCheck" size={16} />
-              Garantía Habeas Data: confidencialidad individual blindada
-            </span>
+          </div>
+
+          {/* Pie editorial continuo y fluido con Popover accesible de k-anonimato */}
+          <div className="hero-trust-editorial">
+            <Icon name="shieldCheck" size={16} className="hero-trust-icon" />
+            <div className="hero-trust-text">
+              Tus respuestas son privadas: protegidas por Ley 1581 y selladas con{' '}
+              <span className="hero-k-popover-anchor">
+                <button
+                  type="button"
+                  ref={popoverTriggerRef}
+                  className="hero-k-popover-trigger"
+                  onClick={() => setIsKPopoverOpen((prev) => !prev)}
+                  aria-expanded={isKPopoverOpen}
+                  aria-haspopup="dialog"
+                  aria-controls="hero-k-dialog"
+                >
+                  <strong>k-anonimato (k &ge; 5)</strong>
+                  <Icon name="info" size={13} className="k-popover-info-icon" />
+                </button>
+
+                {isKPopoverOpen && (
+                  <div
+                    id="hero-k-dialog"
+                    ref={popoverRef}
+                    className="kanonymity-popover"
+                    role="dialog"
+                    aria-label="Garantía de k-Anonimato (k ≥ 5)"
+                  >
+                    <div className="k-popover-header">
+                      <div className="k-popover-title-row">
+                        <Icon name="kAnonymityShield" size={15} className="k-popover-shield" />
+                        <strong className="k-popover-title">¿Qué significa k &ge; 5?</strong>
+                      </div>
+                      <button
+                        type="button"
+                        className="k-popover-close"
+                        onClick={() => setIsKPopoverOpen(false)}
+                        aria-label="Cerrar explicación de k-anonimato"
+                      >
+                        <Icon name="x" size={13} />
+                      </button>
+                    </div>
+
+                    <p className="k-popover-text">
+                      Es el umbral matemático de privacidad: si un equipo registra menos de 5 respuestas activas, el panel de SST se bloquea automáticamente. Protege la confidencialidad individual impidiendo la deducción directa de respuestas en muestras pequeñas.
+                    </p>
+
+                    <div className="k-popover-footer">
+                      <button
+                        type="button"
+                        className="k-popover-action-link"
+                        onClick={() => {
+                          setIsKPopoverOpen(false);
+                          scrollToSection('los-tres-actos');
+                        }}
+                      >
+                        Ver simulación en el Acto II &rarr;
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </span>
+              {' '}para proteger la confidencialidad individual en muestras pequeñas.
+            </div>
+          </div>
+        </div>
+
+        {/* =========================================================================
+            COLUMNA DERECHA (40%): Ficha de Cierre de Turno y Desconexión Laboral
+            (Ley 2191, check-in 48s, 0% individual supervisor visibility)
+            ========================================================================= */}
+        <div className="hero-teaser-col" aria-label="Ficha de Cierre de Turno y Desconexión Laboral">
+          <div className="disconnection-card">
+            {/* Píldora de aclaración de muestra demostrativa */}
+            <div className="disconnection-demo-header">
+              <span className="disconnection-demo-pill">
+                <Icon name="info" size={12} />
+                Ejemplo ilustrativo de cierre de turno
+              </span>
+            </div>
+
+            {/* Cabecera de la ficha */}
+            <div className="disconnection-card-top">
+              <span className="disconnection-law-badge">
+                <Icon name="shieldCheck" size={13} />
+                Ley 2191 · Desconexión Laboral
+              </span>
+              <span className="disconnection-time-badge">
+                <Icon name="clock" size={13} />
+                Check-in 48s
+              </span>
+            </div>
+
+            {/* Estado principal de cierre de turno */}
+            <div className="disconnection-status-block">
+              <h3 className="disconnection-title">
+                Desconexión Laboral Activa
+              </h3>
+              <p className="disconnection-desc">
+                Así experimenta el colaborador su cierre de turno al completar el micro-pulso de 60 segundos. Tus respuestas son confidenciales y alimentan el promedio de bienestar de la campaña.
+              </p>
+            </div>
+
+            {/* Cuadrícula de salvaguardas operacionales tangibles */}
+            <div className="disconnection-safeguards-grid">
+              <div className="safeguard-item">
+                <div className="safeguard-icon-wrap">
+                  <Icon name="timerAht" size={16} />
+                </div>
+                <div className="safeguard-text">
+                  <strong className="safeguard-metric">48 segundos</strong>
+                  <span className="safeguard-label">Tiempo invertido en check-in</span>
+                </div>
+              </div>
+
+              <div className="safeguard-item">
+                <div className="safeguard-icon-wrap">
+                  <Icon name="lock" size={16} />
+                </div>
+                <div className="safeguard-text">
+                  <strong className="safeguard-metric">Solo promedios</strong>
+                  <span className="safeguard-label">Visibilidad individual bloqueada por diseño</span>
+                </div>
+              </div>
+
+              <div className="safeguard-item safeguard-item-full">
+                <div className="safeguard-icon-wrap">
+                  <Icon name="notifications" size={16} />
+                </div>
+                <div className="safeguard-text">
+                  <strong className="safeguard-metric">Silenciadas hasta las 07:00</strong>
+                  <span className="safeguard-label">Notificaciones y recordatorios laborales bloqueados</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Pie técnico con sello de k-anonimato */}
+            <div className="disconnection-card-foot">
+              <Icon name="kAnonymityShield" size={14} className="disconnection-foot-icon" />
+              <span>SST solo visualiza promedios colectivos si el equipo supera k &ge; 5.</span>
+            </div>
           </div>
         </div>
       </div>
     </section>
   );
 }
+
+
+

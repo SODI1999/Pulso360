@@ -5,10 +5,11 @@ import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Navbar } from '../components/Navbar';
 import { HeroSection } from '../components/HeroSection';
-import { ShowcaseSection } from '../components/ShowcaseSection';
 import { ProblemSection } from '../components/ProblemSection';
 import { ThreeActsSection } from '../components/ThreeActsSection';
 import { RolesVisibilitySection } from '../components/RolesVisibilitySection';
+import { AcademicBackingSection } from '../components/AcademicBackingSection';
+import { ContactCtaSection } from '../components/ContactCtaSection';
 import { Footer } from '../components/Footer';
 import { ScrollToTopButton } from '../components/ScrollToTopButton';
 
@@ -39,13 +40,14 @@ export function LandingPage() {
       {/* Header Institucional Reutilizable */}
       <Navbar />
 
-      {/* Secciones Modulares Ensambladas */}
+      {/* Secciones Modulares Ensambladas (Recorrido Editorial Unificado) */}
       <main id="contenido">
         <HeroSection />
-        <ShowcaseSection />
         <ProblemSection />
         <ThreeActsSection />
         <RolesVisibilitySection />
+        <AcademicBackingSection />
+        <ContactCtaSection />
       </main>
 
       {/* Pie de Página Institucional */}
@@ -56,3 +58,4 @@ export function LandingPage() {
     </div>
   );
 }
+
