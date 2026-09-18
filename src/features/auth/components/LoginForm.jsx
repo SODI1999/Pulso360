@@ -162,13 +162,8 @@ export function LoginForm({
         disabled={isButtonDisabled}
       >
         <span className="submit-btn-label">
-          {loading ? 'Validando credenciales...' : 'Iniciar Sesión en Consola'}
+          {loading ? 'Validando credenciales...' : 'Iniciar sesión'}
         </span>
-        {!loading && (
-          <span className="submit-btn-icon" aria-hidden="true">
-            <Icon name="arrowRight" size={16} />
-          </span>
-        )}
         {loading && <div className="action-spinner" aria-hidden="true"></div>}
       </button>
 

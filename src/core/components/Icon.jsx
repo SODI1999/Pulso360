@@ -48,6 +48,12 @@ export function Icon({ name, className = '', size, ...props }) {
         <polyline points="5 12 12 5 19 12" />
       </>
     ),
+    chevronDown: (
+      <polyline points="6 9 12 15 18 9" />
+    ),
+    chevronUp: (
+      <polyline points="18 15 12 9 6 15" />
+    ),
     check: (
       <polyline points="20 6 9 17 4 12" />
     ),

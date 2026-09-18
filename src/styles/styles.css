@@ -834,13 +834,13 @@ img {
   position: relative;
   background: var(--landing-cream);
   border-bottom: 1px solid var(--landing-line);
-  padding-block: 28px 60px;
+  padding-block: 64px 60px;
   overflow: hidden;
 }
 
 @media (min-width: 1024px) {
   .hero-editorial {
-    padding-block: 36px 72px;
+    padding-block: 84px 72px;
   }
 }
 

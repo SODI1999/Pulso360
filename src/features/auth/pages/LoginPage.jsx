@@ -286,7 +286,9 @@ export function LoginPage({ initialMode }) {
 
         <div className="manifesto-body">
           <header className="manifesto-editorial-header">
-            <h1 className="manifesto-title">Tu espacio de desahogo. Cero vigilancia punitiva</h1>
+            <h1 className="manifesto-title">
+              Tu espacio de desahogo.<br className="manifesto-break" /> Cero vigilancia punitiva.
+            </h1>
             <p className="manifesto-lead">{AUTH_METADATA.subtitle}</p>
           </header>
 
@@ -326,7 +328,7 @@ export function LoginPage({ initialMode }) {
               <header className="auth-card-top">
                 <h2 className="auth-screen-title">Iniciar Sesión</h2>
                 <p className="auth-screen-desc">
-                  Acceso institucional seguro a consolas operativas y analíticas de bienestar BPO.
+                  Acceso institucional seguro a tu espacio Pulso360.
                 </p>
               </header>
 
@@ -380,12 +382,12 @@ export function LoginPage({ initialMode }) {
                 </div>
 
                 <h2 className="auth-screen-title">
-                  {dispatchedData ? 'Instrucciones Despachadas' : 'Recuperar Acceso'}
+                  {dispatchedData ? 'Revisa tu correo' : 'Recuperar acceso'}
                 </h2>
                 <p className="auth-screen-desc">
                   {dispatchedData
-                    ? `Hemos procesado la solicitud para ${dispatchedData.targetEmail?.replace(/@demo$/, '@pulso360.co')}. Sigue las instrucciones para restablecer tu clave.`
-                    : 'Ingresa tu correo institucional registrado para recibir el enlace seguro de restablecimiento.'}
+                    ? `Enviamos un enlace de recuperación a ${dispatchedData.targetEmail?.replace(/@demo$/, '@pulso360.co') || recoveryEmail}. Revisa tu bandeja de entrada y sigue las instrucciones.`
+                    : 'Ingresa tu correo institucional registrado para recibir el enlace de recuperación.'}
                 </p>
               </header>
 
@@ -393,7 +395,7 @@ export function LoginPage({ initialMode }) {
                 <form className="login-form-root" onSubmit={handleRecoverySubmit} noValidate>
                   <div className="form-field-group">
                     <label htmlFor="recoveryEmailInput" className="field-label">
-                      Correo corporativo institucional
+                      Correo institucional
                     </label>
                     <div className="field-input-wrapper">
                       <span className="field-icon" aria-hidden="true">
@@ -415,7 +417,7 @@ export function LoginPage({ initialMode }) {
                   </div>
 
                   <p className="recovery-policy-note">
-                    El enlace seguro de restablecimiento expira en 30 minutos y es estrictamente de un solo uso.
+                    El enlace será válido durante 30 minutos y solo podrá usarse una vez.
                   </p>
 
                   <button
@@ -424,13 +426,8 @@ export function LoginPage({ initialMode }) {
                     disabled={!recoveryEmail.trim() || recoveryLoading}
                   >
                     <span className="submit-btn-label">
-                      {recoveryLoading ? 'Validando y despachando...' : 'Enviar enlace de recuperación'}
+                      {recoveryLoading ? 'Validando y enviando...' : 'Enviar enlace'}
                     </span>
-                    {!recoveryLoading && (
-                      <span className="submit-btn-icon" aria-hidden="true">
-                        <Icon name="arrowRight" size={16} />
-                      </span>
-                    )}
                     {recoveryLoading && <div className="action-spinner" aria-hidden="true"></div>}
                   </button>
 
@@ -446,7 +443,7 @@ export function LoginPage({ initialMode }) {
                 <div className="recovery-dispatched-card">
                   <div className="dispatched-pill-status">
                     <Icon name="checkCircle" size={15} />
-                    <span>Despacho seguro completado</span>
+                    <span>Correo enviado correctamente</span>
                   </div>
 
                   {dispatchedData.devLink && (
@@ -456,7 +453,7 @@ export function LoginPage({ initialMode }) {
                         <strong>Simulación de Servicio SMTP (Sandbox)</strong>
                       </div>
                       <p className="sandbox-eval-text">
-                        En producción, este token se transmite vía SMTP seguro al servidor corporativo. Para evaluación, puedes abrir directamente el enlace generado:
+                        En producción, este enlace se envía al correo corporativo. Para evaluación, puedes abrirlo directamente:
                       </p>
                       <div className="sandbox-token-badge">
                         <code>Token: {dispatchedData.devToken}</code>
@@ -467,8 +464,7 @@ export function LoginPage({ initialMode }) {
                         className="btn-proceed-reset"
                         onClick={() => navigate(`/nueva-clave?token=${dispatchedData.devToken || ''}`)}
                       >
-                        <Icon name="lock" size={14} />
-                        <span>Abrir formulario de nueva contraseña</span>
+                        <span>Continuar restablecimiento (Modo Demo)</span>
                       </button>
                     </div>
                   )}
@@ -482,17 +478,7 @@ export function LoginPage({ initialMode }) {
                         setRecoveryEmail('');
                       }}
                     >
-                      Enviar a otro correo
-                    </button>
-                    <button
-                      type="button"
-                      className="btn-return-login"
-                      onClick={() => {
-                        setDispatchedData(null);
-                        navigate('/login');
-                      }}
-                    >
-                      Volver al inicio de sesión
+                      Usar otro correo
                     </button>
                   </div>
                 </div>
@@ -522,11 +508,9 @@ export function LoginPage({ initialMode }) {
                   </button>
                 </div>
 
-                <h2 className="auth-screen-title">Crear Nueva Contraseña</h2>
+                <h2 className="auth-screen-title">Crear nueva contraseña</h2>
                 <p className="auth-screen-desc">
-                  {tokenState.email
-                    ? `Restableciendo credenciales para ${tokenState.email}. Define tu nueva clave cumpliendo las políticas de robustez del sistema.`
-                    : 'Define tu nueva contraseña institucional cumpliendo las políticas de robustez del sistema.'}
+                  Estás creando una nueva contraseña para {tokenState.email || 'tu cuenta'}. Asegúrate de cumplir los requisitos de seguridad.
                 </p>
               </header>
 
@@ -591,7 +575,7 @@ export function LoginPage({ initialMode }) {
                         type={showNewPassword ? 'text' : 'password'}
                         id="newPasswordInput"
                         className="field-input has-left-icon has-right-action"
-                        placeholder="Al menos 8 caracteres y símbolos"
+                        placeholder="Ingresa tu nueva contraseña"
                         value={newPassword}
                         onChange={(e) => setNewPassword(e.target.value)}
                         autoComplete="new-password"
@@ -640,7 +624,7 @@ export function LoginPage({ initialMode }) {
                         type={showConfirmPassword ? 'text' : 'password'}
                         id="confirmNewPasswordInput"
                         className="field-input has-left-icon has-right-action"
-                        placeholder="Repite la contraseña exactamente"
+                        placeholder="Repite tu nueva contraseña"
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         autoComplete="new-password"
@@ -661,7 +645,7 @@ export function LoginPage({ initialMode }) {
 
                   {/* Requisitos obligatorios de robustez */}
                   <div className="policy-requirements-box">
-                    <span className="policy-box-title">Requisitos obligatorios de robustez:</span>
+                    <span className="policy-box-title">Requisitos de seguridad:</span>
                     <ul className="policy-checklist">
                       <li className={hasLength ? 'fulfilled' : ''}>
                         <Icon name={hasLength ? 'checkCircle' : 'circle'} size={13} />
@@ -688,13 +672,8 @@ export function LoginPage({ initialMode }) {
                     disabled={!isResetValid}
                   >
                     <span className="submit-btn-label">
-                      {resetLoading ? 'Actualizando clave en sistema...' : 'Actualizar contraseña institucional'}
+                      {resetLoading ? 'Actualizando contraseña...' : 'Actualizar contraseña'}
                     </span>
-                    {!resetLoading && (
-                      <span className="submit-btn-icon" aria-hidden="true">
-                        <Icon name="shieldCheck" size={16} />
-                      </span>
-                    )}
                     {resetLoading && <div className="action-spinner" aria-hidden="true"></div>}
                   </button>
 
