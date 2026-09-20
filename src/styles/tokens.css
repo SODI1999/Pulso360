@@ -25,6 +25,20 @@
   --c-superficie-alt: #f8fafc;
   --c-superficie-elevada: #ffffff;
 
+  /* Paleta Ergonómica y de Descanso Visual "Pulso Calma" (BPO Operativo) */
+  --c-calma-bg: #f4f7f5;
+  --c-calma-surface: #ffffff;
+  --c-calma-surface-subtle: #edf2ef;
+  --c-calma-surface-hover: #e8efe9;
+  --c-calma-border: #d5e0dc;
+  --c-calma-border-subtle: #e5ece9;
+  --c-calma-text: #112623;
+  --c-calma-text-muted: #3d5551;
+  --c-calma-accent: #1b7a68;
+  --c-calma-accent-hover: #146354;
+  --c-calma-accent-soft: #e2f2ee;
+  --c-calma-ring: rgba(27, 122, 104, 0.22);
+
   /* Textos y Contraste (WCAG 2.1 AA) */
   --c-texto: #0f172a;
   /* Slate 900 */
@@ -89,6 +103,13 @@
   --c-privado-bg: #f8fafc;
   --c-privado-border: #cbd5e1;
 
+  /* Alerta Naranja Institucional / Res. 3461 de 2025 */
+  --c-legal-orange: #ea580c;
+  --c-legal-orange-bg: #fff7ed;
+  --c-legal-orange-border: #fed7aa;
+  --c-legal-orange-text: #9a3412;
+  --c-legal-orange-text-dark: #7c2d12;
+
   /* Escala Mapa de Calor (Riesgo Psicosocial) */
   --hm-bajo: #10b981;
   --hm-medio-bajo: #84cc16;
@@ -96,9 +117,9 @@
   --hm-alto: #f97316;
   --hm-critico: #ef4444;
 
-  /* Tipografía del Sistema y Editorial Contemporánea */
-  --font-family-display: 'Newsreader', Georgia, serif;
+  /* Tipografía del Sistema y Editorial Contemporánea (100% Plus Jakarta Sans) */
   --font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-family-display: var(--font-family);
   --font-family-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 
   /* Escala de Espaciado */

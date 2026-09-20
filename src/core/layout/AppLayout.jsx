@@ -96,25 +96,17 @@ export function AppLayout() {
 
                     <div className="topbar-actions">
                         <Link to="/notificaciones" className="btn btn-topbar-notifications" aria-label="Ver avisos">
-                            <Icon name="notifications" size={18} />
+                            <Icon name="notifications" size={16} />
                             <span>Avisos</span>
                             {unreadCount > 0 && (
-                                <span style={{
-                                    background: 'var(--c-critico)',
-                                    color: '#ffffff',
-                                    fontSize: '11px',
-                                    fontWeight: '700',
-                                    padding: '1px 7px',
-                                    borderRadius: '10px',
-                                    marginLeft: '4px'
-                                }}>
+                                <span className="topbar-pill-badge">
                                     {unreadCount}
                                 </span>
                             )}
                         </Link>
 
                         <button className="btn btn-topbar-logout" onClick={handleLogout} title="Cerrar sesión actual">
-                            <Icon name="logout" size={18} />
+                            <Icon name="logout" size={16} />
                             <span>Salir</span>
                         </button>
                     </div>

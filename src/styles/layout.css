@@ -251,7 +251,7 @@
 /* Contenedor de Página */
 .page-container {
   flex: 1;
-  padding: var(--space-5) var(--space-6);
+  padding: var(--space-5) clamp(24px, 2.5vw, 40px);
   max-width: 1440px;
   width: 100%;
   margin: 0 auto;
