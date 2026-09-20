@@ -1,5 +1,5 @@
 // src/features/agent/pages/CheckinWizardPage.jsx
-// Formulario de Check-in diario por pasos (RF-03) con escala 1 a 5, opción de omitir y atajos de teclado
+// Formulario de Check-in diario por pasos (RF-03) somático, ergonómico y restaurador
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { Link } from 'react-router-dom';
@@ -7,14 +7,45 @@ import { authService, roleLabels } from '../../../core/auth/authService';
 import { pulsoStore } from '../../../core/storage/pulsoStore';
 import { Icon } from '../../../core/components/Icon';
 import { ScaleSelector } from '../components/ScaleSelector';
+import { BpoResetModal } from '../components/BpoResetModal';
 
 const QUESTIONS = [
-    { key: 'energia', title: '¿Cómo sientes tu energía hoy?', labels: ['Muy baja', 'Baja', 'Media', 'Alta', 'Muy alta'] },
-    { key: 'cargaEmocional', title: '¿Qué nivel de carga emocional percibes hoy?', labels: ['Muy baja', 'Baja', 'Media', 'Alta', 'Muy alta'] },
-    { key: 'recuperacion', title: '¿Qué tan recuperado te sientes después de la jornada anterior?', labels: ['Nada', 'Poco', 'Parcial', 'Bien', 'Muy bien'] },
-    { key: 'apoyo', title: '¿Qué nivel de apoyo percibes hoy en tu entorno de trabajo?', labels: ['Muy bajo', 'Bajo', 'Medio', 'Alto', 'Muy alto'] },
-    { key: 'distanciamiento', title: '¿Qué tan distante o desconectado te sientes de tu trabajo hoy?', labels: ['Nada', 'Poco', 'Algo', 'Bastante', 'Mucho'] },
-    { key: 'ineficacia', title: '¿Qué tanta sensación de ineficacia percibes hoy?', labels: ['Ninguna', 'Baja', 'Media', 'Alta', 'Muy alta'] }
+    {
+        key: 'energia',
+        title: '¿Con qué nivel de batería física y mental estás enfrentando este turno?',
+        labels: ['Sin batería', 'Baja energía', 'Justa para el turno', 'Buena energía', 'Plena y enfocado'],
+        contextNote: 'Empezar con poca energía es natural tras jornadas largas o trasnocho. Reconocerlo te ayuda a no forzarte de más.'
+    },
+    {
+        key: 'cargaEmocional',
+        title: '¿Qué tan difícil o cargado sientes el trato con los usuarios en esta jornada?',
+        labels: ['Muy tranquilo', 'Manejable', 'Exigente', 'Muy tenso', 'Hostil o agotador'],
+        contextNote: 'Absorber la molestia de los clientes desgasta a cualquiera. Marcar un nivel alto refleja la rudeza de la cola hoy, no tu capacidad.'
+    },
+    {
+        key: 'recuperacion',
+        title: '¿Lograste descansar y desconectarte de la operación antes de iniciar hoy?',
+        labels: ['Nada de descanso', 'Poco descanso', 'Descanso parcial', 'Buen descanso', 'Totalmente recuperado'],
+        contextNote: 'Tu descanso es un derecho laboral. El sueño interrumpido o pensar en llamadas afecta directamente tu bienestar.'
+    },
+    {
+        key: 'apoyo',
+        title: 'Cuando se te complica una llamada o un caso difícil, ¿qué tan respaldado te sientes por tu soporte?',
+        labels: ['Sin respaldo', 'Poco apoyo', 'Respaldo básico', 'Buen respaldo', 'Totalmente respaldado'],
+        contextNote: 'Esta percepción es exclusivamente tuya; jamás se utiliza para calificar ni amonestar a tu supervisor ni a tus compañeros.'
+    },
+    {
+        key: 'distanciamiento',
+        title: '¿Sientes la necesidad de ponerte en \'piloto automático\' para sobrellevar la cola de llamadas?',
+        labels: ['Nada (conectado)', 'Casi nunca', 'A veces', 'Frecuentemente', 'Todo el turno'],
+        contextNote: 'Poner un escudo mental es una reacción natural de autoprotección cuando la cola no frena. No significa desinterés.'
+    },
+    {
+        key: 'ineficacia',
+        title: '¿Sientes que los sistemas, herramientas y políticas te dejan resolverle al usuario o te atan las manos?',
+        labels: ['Todo fluye', 'Mayormente fluido', 'Trabas ocasionales', 'Manos atadas', 'Impotencia total'],
+        contextNote: 'La frustración cuando el sistema se congela o la política no ayuda es un fallo de herramientas, no de tu capacidad.'
+    }
 ];
 
 export function CheckinWizardPage() {
@@ -40,18 +71,23 @@ export function CheckinWizardPage() {
         );
 
         const shiftStartHour = Number(user?.shiftStartHour ?? 8);
+        const currentHour = Number(dateParts.hour);
         let key = `${dateParts.year}-${dateParts.month}-${dateParts.day}`;
 
-        if (Number(dateParts.hour) < shiftStartHour) {
+        if (currentHour < shiftStartHour) {
             const previousDate = new Date(`${key}T12:00:00Z`);
             previousDate.setUTCDate(previousDate.getUTCDate() - 1);
             key = previousDate.toISOString().slice(0, 10);
         }
 
-        return { journeyKey: key, shiftStartHour };
+        // Fuera de horario regular: más de 8 horas tras el inicio o antes del inicio
+        const hoursSinceStart = (currentHour - shiftStartHour + 24) % 24;
+        const isOutsideShift = hoursSinceStart >= 8;
+
+        return { journeyKey: key, shiftStartHour, currentHour, isOutsideShift };
     }, [user]);
 
-    const { journeyKey, shiftStartHour } = calculateJourneyKey();
+    const { journeyKey, shiftStartHour, isOutsideShift } = calculateJourneyKey();
     const draftKey = `pulso360_checkin_draft_${user?.id}_${journeyKey}`;
 
     // Estados del flujo
@@ -61,6 +97,8 @@ export function CheckinWizardPage() {
     const [isEditing, setIsEditing] = useState(false);
     const [submittedSuccess, setSubmittedSuccess] = useState(false);
     const [draftNotice, setDraftNotice] = useState('');
+    const [isResetModalOpen, setIsResetModalOpen] = useState(false);
+    const [dismissDisconnectNotice, setDismissDisconnectNotice] = useState(false);
 
     const stepTimerRef = useRef(null);
 
@@ -87,7 +125,7 @@ export function CheckinWizardPage() {
         };
     }, []);
 
-    // Guardar respuesta y avanzar automáticamente de paso
+    // Guardar respuesta y avanzar automáticamente de paso (220ms para confirmación visual)
     const updateDraftValue = useCallback((key, value) => {
         setDraft(prevDraft => {
             const updated = { ...prevDraft, [key]: value };
@@ -103,7 +141,7 @@ export function CheckinWizardPage() {
 
         stepTimerRef.current = setTimeout(() => {
             setCurrentStep(prev => Math.min(5, prev + 1));
-        }, 120);
+        }, 220);
     }, [draftKey]);
 
     // Manejo de atajos por teclado (1-5 para escala, ArrowLeft para volver)
@@ -134,7 +172,7 @@ export function CheckinWizardPage() {
 
         const missing = QUESTIONS.some(q => !Object.prototype.hasOwnProperty.call(draft, q.key));
         if (missing) {
-            alert('Por favor responde cada dimensión o utiliza "Prefiero no responder".');
+            alert('Por favor responde cada dimensión o utiliza "Prefiero omitir esta pregunta hoy".');
             return;
         }
 
@@ -169,7 +207,6 @@ export function CheckinWizardPage() {
         setSubmittedSuccess(true);
     };
 
-
     // 1. Caso: Bloqueo por falta de consentimiento C1
     if (!consent?.c1) {
         return (
@@ -199,36 +236,66 @@ export function CheckinWizardPage() {
         );
     }
 
-    // 2. Caso: Pantalla de confirmación de éxito
+    // 2. Caso: Pantalla de Cierre Restaurador (éxito)
     if (submittedSuccess) {
         return (
             <div>
-                <div className="page-header">
+                <div className="page-header page-header--wizard">
                     <div>
                         <h1 className="page-title">Check-in de bienestar</h1>
                         <p className="page-subtitle">Jornada {journeyKey} · Completado exitosamente</p>
                     </div>
                 </div>
 
-                <div className="card center-card">
+                <div className="card center-card restaurador-card">
                     <div className="center-icon-badge" style={{ backgroundColor: 'var(--c-exito-bg)', color: 'var(--c-exito)', border: '1px solid var(--c-exito-border)' }}>
-                        <Icon name="check" size={32} />
+                        <Icon name="checkCircle" size={32} />
                     </div>
-                    <h2 style={{ fontSize: '22px', fontWeight: '700', marginBottom: '8px', color: 'var(--c-texto)' }}>
-                        ¡Listo! Gracias por tu registro diario
+
+                    <h2 className="restaurador-title">
+                        ¡Turno registrado! Gracias por hacer esta pausa.
                     </h2>
-                    <p style={{ color: 'var(--c-texto-suave)', marginBottom: '24px', maxWidth: '520px', margin: '0 auto 24px', lineHeight: '1.5' }}>
-                        Las respuestas marcadas como &ldquo;Prefiero no responder&rdquo; se almacenan como ausencia de dato, nunca como cero.
+
+                    <div className="restaurador-somatic-box">
+                        <div className="restaurador-somatic-icon-badge">
+                            <Icon name="self_improvement" size={20} />
+                        </div>
+                        <p className="restaurador-somatic-text">
+                            Antes de volver a ponerte la diadema: baja los hombros, gira suavemente el cuello e hidrátate con un sorbo de agua.
+                        </p>
+                    </div>
+
+                    <p className="restaurador-privacy-note">
+                        Tus respuestas están protegidas bajo la <strong>Urna Sellada de Pulso360</strong>. Las dimensiones omitidas se almacenan como ausencia de dato, nunca como cero.
                     </p>
-                    <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
-                        <Link to="/agente/mi-bienestar" className="btn btn-primary">
-                            Ver mi bienestar personal
-                        </Link>
-                        <Link to="/agente/bitacora" className="btn btn-secondary">
-                            Escribir en mi bitácora
-                        </Link>
+
+                    <div className="restaurador-actions">
+                        <div className="restaurador-links-group">
+                            <Link to="/agente/mi-bienestar" className="btn btn-primary">
+                                <Icon name="favorite" size={16} />
+                                <span>Ver mi bienestar personal</span>
+                            </Link>
+                            <button
+                                type="button"
+                                className="btn btn-decompression-highlight"
+                                onClick={() => setIsResetModalOpen(true)}
+                            >
+                                <Icon name="self_improvement" size={18} />
+                                <span>Pausa de reseteo (2 min)</span>
+                            </button>
+                            <Link to="/agente/bitacora" className="btn btn-secondary">
+                                <Icon name="edit_note" size={16} />
+                                <span>Escribir en mi bitácora</span>
+                            </Link>
+                        </div>
                     </div>
                 </div>
+
+                {/* Modal de Descompresión BPO (Box Breathing, Descanso Ocular, Estiramientos) */}
+                <BpoResetModal
+                    isOpen={isResetModalOpen}
+                    onClose={() => setIsResetModalOpen(false)}
+                />
             </div>
         );
     }
@@ -286,7 +353,36 @@ export function CheckinWizardPage() {
 
     return (
         <div>
-            <div className="page-header" style={{ maxWidth: '600px', margin: '0 auto 16px' }}>
+            {/* Soporte de Desconexión Laboral (Ley 2191 de 2022) */}
+            {isOutsideShift && !dismissDisconnectNotice && (
+                <div className="disconnect-banner wizard-disconnect-banner">
+                    <div className="disconnect-info">
+                        <div className="disconnect-icon-wrapper">
+                            <Icon name="clock" size={20} />
+                        </div>
+                        <div>
+                            <div className="disconnect-title">
+                                <span>Desconexión Laboral Activa (Ley 2191 de 2022)</span>
+                                <span className="badge badge-ok">Fuera de horario ordinario</span>
+                            </div>
+                            <p className="disconnect-desc">
+                                Tu turno regular ha culminado o estás antes de tu hora de inicio. En Pulso360 respaldamos tu derecho al descanso efectivo. Si te encuentras en jornada extraordinaria o deseas completar tu registro voluntariamente, continúa con total tranquilidad.
+                            </p>
+                        </div>
+                    </div>
+                    <div className="disconnect-actions">
+                        <button
+                            type="button"
+                            className="btn btn-modal-comprendido btn-sm"
+                            onClick={() => setDismissDisconnectNotice(true)}
+                        >
+                            Continuar registro
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            <div className="page-header page-header--wizard">
                 <div>
                     <h1 className="page-title">Check-in de bienestar</h1>
                     <p className="page-subtitle">
@@ -298,7 +394,7 @@ export function CheckinWizardPage() {
             <form className="card wizard-card" onSubmit={handleSubmit}>
                 <div className="wizard-header-meta">
                     <strong className="wizard-step-indicator">
-                        Paso {currentStep + 1} de 6
+                        Dimensión {currentStep + 1} de 6
                     </strong>
                     <span className="wizard-draft-notice">
                         {draftNotice}
@@ -313,7 +409,7 @@ export function CheckinWizardPage() {
                     />
                 </div>
 
-                {/* Sección de la pregunta activa */}
+                {/* Sección de la pregunta activa con escala somática */}
                 <ScaleSelector
                     question={currentQ}
                     currentValue={currentValue}
@@ -321,7 +417,7 @@ export function CheckinWizardPage() {
                     onSkip={() => updateDraftValue(currentQ.key, null)}
                 />
 
-                {/* Botones de Navegación del Wizard */}
+                {/* Botones de Navegación del Wizard con anticipación simétrica */}
                 <div className="wizard-footer-actions">
                     <button
                         type="button"
@@ -336,7 +432,19 @@ export function CheckinWizardPage() {
                         <span>Atrás</span>
                     </button>
 
-                    {currentStep === 5 && (
+                    {currentStep < 5 ? (
+                        <button
+                            type="button"
+                            className="btn btn-ghost"
+                            onClick={() => {
+                                if (stepTimerRef.current) clearTimeout(stepTimerRef.current);
+                                setCurrentStep(prev => Math.min(5, prev + 1));
+                            }}
+                        >
+                            <span>Siguiente</span>
+                            <Icon name="arrowRight" size={16} />
+                        </button>
+                    ) : (
                         <button type="submit" className="btn btn-primary">
                             <span>Enviar check-in</span>
                             <Icon name="check" size={16} />
@@ -344,8 +452,19 @@ export function CheckinWizardPage() {
                     )}
                 </div>
 
-                <div className="privacy-notice-box">
-                    Tus respuestas individuales no se comparten con tu líder. Solo pueden contribuir a indicadores colectivos protegidos cuando C4 está activo y se cumple el umbral mínimo de confidencialidad (N ≥ 5).
+                {/* Micro-garantía de privacidad: Urna Sellada (N ≥ 5) y aislamiento estricto de roles */}
+                <div className="privacy-notice-box wizard-privacy-box">
+                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
+                        <Icon name="shieldCheck" size={16} style={{ color: 'var(--c-primario)', flexShrink: 0, marginTop: '2px' }} />
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                            <strong style={{ color: 'var(--c-texto)', fontSize: '12.5px' }}>
+                                Protección por Urna Sellada (N ≥ 5)
+                            </strong>
+                            <span style={{ fontSize: '12px', color: 'var(--c-texto-suave)', lineHeight: '1.45' }}>
+                                Tus respuestas individuales están resguardadas con aislamiento estricto de roles. Ningún supervisor ni líder de campaña puede ver tus notas ni valoraciones particulares; únicamente alimentan métricas colectivas anonimizadas cuando el grupo alcanza al menos 5 personas.
+                            </span>
+                        </div>
+                    </div>
                 </div>
             </form>
         </div>

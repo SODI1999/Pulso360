@@ -1,87 +1,200 @@
-/* Estilos de la bitacora y analisis visual */
+/* src/styles/bitacora.css
+   Estilos ergonómicos de la Bitácora "Modo Desahogo" y Análisis NLP Explicable Local (Pulso360)
+   Diseñado bajo principios de ergonomía BPO: prevención de fatiga visual y descanso cognitivo
+*/
 
+/* 1. Chips de análisis empático y factores identificados */
 .analysis-chip {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-1);
+  gap: var(--space-2, 8px);
   margin: 4px 6px 4px 0;
+  padding: 6px 14px;
+  border-radius: var(--radius-full, 9999px);
+  background: var(--c-calma-accent-soft, #e2f2ee);
+  color: var(--c-calma-text, #112623);
+  border: 1px solid var(--c-calma-border, #d5e0dc);
+  font-size: 12.5px;
+  font-weight: 600;
+  transition: all var(--transition-fast, 140ms ease);
+}
+
+.analysis-chip.factor-chip-adjusted {
+  background: var(--c-primario-50, #f0fdfa);
+  color: var(--c-primario, #0f766e);
+  border-color: var(--c-primario-border, #99f6e4);
+}
+
+.factor-chip-subtext {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--c-calma-accent, #1b7a68);
+  margin-left: 2px;
+}
+
+/* 2. Tarjeta del panel de análisis */
+.analysis-card {
+  margin-top: var(--space-5, 20px);
+  padding: var(--space-4, 16px);
+  border: 1px solid var(--c-calma-border, #d5e0dc);
+  border-radius: var(--radius-card, 8px);
+  background: var(--c-calma-surface, #ffffff);
+  box-shadow: var(--shadow-xs, 0 1px 2px 0 rgba(15, 23, 42, 0.04));
+}
+
+/* 3. Evidencia léxica sobria y no invasiva (Sustitución del amarillo chillón por verde salvia) */
+.evidence {
+  background: var(--c-calma-accent-soft, #e2f2ee);
+  color: var(--c-calma-text, #112623);
+  border-bottom: 2px solid var(--c-calma-accent, #1b7a68);
+  padding: 2px 7px;
+  border-radius: var(--radius-xs, 4px);
+  font-weight: 600;
+  font-size: 0.95em;
+  display: inline-block;
+  margin: 2px 3px 2px 0;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+/* 4. Sellos de privacidad, procesamiento local y aislamiento RBAC */
+.privacy-badge-rbac {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2, 8px);
   padding: 5px 12px;
-  border-radius: var(--radius-full);
-  background: var(--c-info-bg);
-  color: var(--c-info);
-  border: 1px solid var(--c-info-border);
+  border-radius: var(--radius-full, 9999px);
+  background: var(--c-primario-50, #f0fdfa);
+  color: var(--c-primario, #0f766e);
+  border: 1px solid var(--c-primario-border, #99f6e4);
   font-size: 12px;
   font-weight: 600;
+  letter-spacing: 0.01em;
 }
 
-.analysis-card {
-  margin-top: var(--space-4);
-  padding: var(--space-4);
-  border: 1px solid var(--c-borde-suave);
-  border-radius: var(--radius-lg);
-  background: var(--c-fondo);
+.local-seal {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2, 8px);
+  padding: 10px 14px;
+  border-radius: var(--radius-md, 5px);
+  background: var(--c-calma-accent-soft, #e2f2ee);
+  color: var(--c-calma-text, #112623);
+  border: 1px solid var(--c-calma-border, #d5e0dc);
+  font-size: 12px;
+  line-height: 1.5;
 }
 
-.evidence {
-  background: #fef08a;
-  color: #713f12;
-  padding: 1px 5px;
-  border-radius: var(--radius-xs);
-  font-weight: 600;
+.analysis-calm-banner {
+  background: var(--c-fondo-subtle, #f1f5f9);
+  border: 1px solid var(--c-borde-suave, #e2e8f0);
+  border-radius: var(--radius-md, 5px);
+  padding: 10px 14px;
+  font-size: 12px;
+  color: var(--c-texto-suave, #475569);
+  line-height: 1.55;
 }
 
+/* 5. Área de escritura ergonómica: "Modo Desahogo" */
+.desahogo-container {
+  width: 100%;
+  max-width: 68ch;
+  margin: 0 auto;
+}
+
+.desahogo-textarea {
+  width: 100%;
+  font-family: var(--font-family, 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif);
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--c-texto, #0f172a);
+  background: var(--c-superficie, #ffffff);
+  border: 1.5px solid var(--c-borde, #cbd5e1);
+  border-radius: var(--radius-md, 5px);
+  padding: 16px;
+  resize: vertical;
+  min-height: 180px;
+  box-sizing: border-box;
+  transition: border-color var(--transition-fast, 140ms ease), box-shadow var(--transition-fast, 140ms ease);
+}
+
+.desahogo-textarea:focus {
+  outline: none;
+  border-color: var(--c-primario, #0f766e);
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.22);
+}
+
+.desahogo-textarea::placeholder {
+  color: var(--c-texto-mutado, #64748b);
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+/* 6. Grilla de selección en modal de corrección */
 .category-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: var(--space-2);
+  gap: var(--space-2, 8px);
 }
 
 .category-grid label {
   font-size: 12.5px;
-  padding: var(--space-2) var(--space-3);
-  border: 1.5px solid var(--c-borde-suave);
-  border-radius: var(--radius-md);
-  background: var(--c-superficie);
+  padding: var(--space-2, 8px) var(--space-3, 12px);
+  border: 1.5px solid var(--c-borde-suave, #e2e8f0);
+  border-radius: var(--radius-md, 5px);
+  background: var(--c-superficie, #ffffff);
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: var(--space-2);
-  transition: all var(--transition-fast);
+  gap: var(--space-2, 8px);
+  transition: all var(--transition-fast, 140ms ease);
+  user-select: none;
 }
 
 .category-grid label:hover {
-  background: var(--c-fondo);
-  border-color: var(--c-primario-border);
+  background: var(--c-fondo, #f8fafc);
+  border-color: var(--c-primario-border, #99f6e4);
 }
 
 .char-count {
   font-size: 11.5px;
-  color: var(--c-texto-mutado);
+  color: var(--c-texto-mutado, #64748b);
   text-align: right;
-  margin-top: var(--space-1);
+  margin-top: var(--space-1, 4px);
+  transition: color var(--transition-fast, 140ms ease);
+}
+
+.char-count.warn {
+  color: var(--c-alerta, #d97706);
+  font-weight: 600;
+}
+
+.char-count.danger {
+  color: var(--c-critico, #dc2626);
+  font-weight: 700;
 }
 
 .nlp-preview-card {
-  background: var(--c-fondo);
-  border: 1px solid var(--c-borde-suave);
-  border-radius: var(--radius-lg);
-  padding: var(--space-4);
-  margin-top: var(--space-4);
+  background: var(--c-fondo, #f8fafc);
+  border: 1px solid var(--c-borde-suave, #e2e8f0);
+  border-radius: var(--radius-lg, 6px);
+  padding: var(--space-4, 16px);
+  margin-top: var(--space-4, 16px);
 }
 
 .keyword-tag {
   display: inline-block;
-  background: var(--c-fondo-subtle);
-  color: var(--c-texto-suave);
+  background: var(--c-fondo-subtle, #f1f5f9);
+  color: var(--c-texto-suave, #475569);
   font-size: 11.5px;
   font-weight: 600;
   padding: 2px 8px;
-  border-radius: var(--radius-full);
+  border-radius: var(--radius-full, 9999px);
   margin-right: 4px;
-  border: 1px solid var(--c-borde-suave);
+  border: 1px solid var(--c-borde-suave, #e2e8f0);
 }
 
-/* Entradas en la lista lateral */
+/* 7. Entradas en la lista lateral */
 .journal-row {
   white-space: normal !important;
   text-align: left !important;
@@ -89,37 +202,100 @@
   display: block !important;
   height: auto !important;
   min-height: auto !important;
-  padding: 12px 8px !important;
-  border-radius: var(--radius-md) !important;
-  border-bottom: 1px solid var(--c-borde-suave) !important;
-  transition: background-color var(--transition-fast);
+  padding: 12px 14px !important;
+  border-radius: var(--radius-md, 5px) !important;
+  border: 1px solid transparent !important;
+  border-bottom: 1px solid var(--c-borde-suave, #e2e8f0) !important;
+  transition: all var(--transition-fast, 140ms ease);
+  cursor: pointer;
 }
 
 .journal-row:hover {
-  background-color: var(--c-fondo) !important;
+  background-color: var(--c-calma-surface-hover, #e8efe9) !important;
 }
 
-.journal-row > span {
-  display: block;
-  width: 100%;
+.journal-row.active {
+  background-color: var(--c-primario-suave, #e6f7f5) !important;
+  border-color: var(--c-primario, #0f766e) !important;
 }
 
 .journal-row strong {
   display: block;
   font-size: 13px;
-  color: var(--c-texto);
+  color: var(--c-texto, #0f172a);
   margin-bottom: 3px;
 }
 
 .journal-row small {
   display: block;
-  font-size: 12px;
-  color: var(--c-texto-suave);
+  font-size: 12.5px;
+  color: var(--c-texto-suave, #475569);
   line-height: 1.45;
   margin-bottom: 6px;
   word-break: break-word;
   overflow-wrap: break-word;
   white-space: normal;
+}
+
+/* 8. Layout semántico y Split-View adaptable */
+.journal-layout {
+  display: grid;
+  grid-template-columns: minmax(300px, 360px) 1fr;
+  gap: var(--space-5, 20px);
+  align-items: start;
+}
+
+.journal-sidebar-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 8px);
+  margin-top: var(--space-3, 12px);
+  max-height: 600px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+/* Scrollbar ergonómica para lista lateral */
+.journal-sidebar-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.journal-sidebar-list::-webkit-scrollbar-track {
+  background: var(--c-fondo-subtle, #f1f5f9);
+  border-radius: var(--radius-full, 9999px);
+}
+
+.journal-sidebar-list::-webkit-scrollbar-thumb {
+  background: var(--c-borde, #cbd5e1);
+  border-radius: var(--radius-full, 9999px);
+}
+
+.journal-sidebar-list::-webkit-scrollbar-thumb:hover {
+  background: var(--c-borde-fuerte, #94a3b8);
+}
+
+.journal-editor-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3, 12px);
+  align-items: center;
+  margin-top: var(--space-4, 16px);
+  flex-wrap: wrap;
+}
+
+/* 9. Media Queries ergonómicas para dispositivos medianos y móviles */
+@media (max-width: 960px) {
+  .journal-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .desahogo-container {
+    max-width: 100%;
+  }
+
+  .journal-sidebar-list {
+    max-height: 320px;
+  }
 }
 
 @media (max-width: 540px) {
@@ -129,41 +305,17 @@
 
   .analysis-card,
   .nlp-preview-card {
-    padding: var(--space-3);
+    padding: var(--space-3, 12px);
   }
-}
 
-/* ==========================================================================
-   Bitacora Split-View & Semantic Layout
-   ========================================================================== */
-
-.journal-layout {
-  display: grid;
-  grid-template-columns: 320px 1fr;
-  gap: var(--space-5);
-  align-items: start;
-}
-
-@media (max-width: 960px) {
-  .journal-layout {
-    grid-template-columns: 1fr;
+  .journal-editor-actions {
+    flex-direction: column;
+    align-items: stretch;
   }
-}
 
-.journal-sidebar-list {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  margin-top: var(--space-3);
-  max-height: 540px;
-  overflow-y: auto;
-}
-
-.journal-editor-actions {
-  display: flex;
-  gap: var(--space-3);
-  align-items: center;
-  margin-top: var(--space-4);
-  flex-wrap: wrap;
+  .journal-editor-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
 }
 

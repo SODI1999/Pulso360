@@ -37,6 +37,7 @@ export function JournalPage() {
     const [showHistoryModal, setShowHistoryModal] = useState(false);
 
     const pendingAnalysisRef = useRef(null);
+    const textareaRef = useRef(null);
 
     // Cargar bitácoras del agente
     const loadJournals = useCallback(() => {
@@ -81,7 +82,11 @@ export function JournalPage() {
     const handleSaveJournal = (e) => {
         e.preventDefault();
         const trimmed = journalText.trim();
-        if (!trimmed) return;
+        if (!trimmed) {
+            setFeedback({ type: 'warn', message: 'Escribe algunas palabras sobre lo vivido en tu turno antes de guardar.' });
+            textareaRef.current?.focus();
+            return;
+        }
 
         let storeData = pulsoStore.get();
         const isNew = !currentJournalId;
@@ -288,9 +293,13 @@ export function JournalPage() {
             return;
         }
 
+        const now = new Date();
+        const year = now.getFullYear();
         const isAnonymous = crisisMode === 'anonimo';
         const prefix = isAnonymous ? 'ANON-PRI' : 'CONF-PRI';
-        const code = `${prefix}-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+        storeData.supportRequests = storeData.supportRequests || [];
+        const existingCount = storeData.supportRequests.filter(r => String(r.code || '').startsWith(`${prefix}-${year}-`)).length;
+        const code = `${prefix}-${year}-${String(existingCount + 1).padStart(4, '0')}`;
 
         const newRequest = {
             id: `req-${Date.now()}`,
@@ -375,7 +384,13 @@ export function JournalPage() {
         <div>
             <div className="page-header">
                 <div>
-                    <h1 className="page-title">Mi bitácora laboral</h1>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', marginBottom: '6px' }}>
+                        <h1 className="page-title" style={{ margin: 0 }}>Mi bitácora laboral</h1>
+                        <span className="privacy-badge-rbac" title="Espacio de Acceso Exclusivo del Titular (Aislamiento RBAC)">
+                            <Icon name="shield" size={14} />
+                            <span>Acceso exclusivo</span>
+                        </span>
+                    </div>
                     <p className="page-subtitle">
                         Solo tú puedes consultar estos textos. Almacenamiento privado; ningún otro rol dispone de acceso a tus notas.
                     </p>
@@ -386,7 +401,7 @@ export function JournalPage() {
                 </Link>
             </div>
 
-            {/* Split View: Lista a la izquierda y Editor a la derecha */}
+            {/* Split View: Lista a la izquierda y Editor Modo Desahogo a la derecha */}
             <div id="journalArea" className="journal-layout">
                 {/* 1. Panel de Entradas Previas */}
                 <section className="card">
@@ -416,14 +431,6 @@ export function JournalPage() {
                                         type="button"
                                         className={`btn btn-ghost journal-row ${isSelected ? 'active' : ''}`}
                                         onClick={() => handleSelectJournal(item)}
-                                        style={{
-                                            textAlign: 'left',
-                                            width: '100%',
-                                            padding: '10px 12px',
-                                            borderRadius: 'var(--radius-md)',
-                                            border: isSelected ? '1px solid var(--c-primario)' : '1px solid transparent',
-                                            background: isSelected ? 'var(--c-primario-suave)' : 'var(--c-superficie)'
-                                        }}
                                     >
                                         <div style={{ width: '100%' }}>
                                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -446,61 +453,71 @@ export function JournalPage() {
                     </div>
                 </section>
 
-                {/* 2. Editor de Entrada */}
+                {/* 2. Editor de Entrada: Modo Desahogo */}
                 <section className="card">
-                    <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                    <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '8px' }}>
                         <div>
                             <div className="card-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <Icon name="lock" size={18} />
-                                <span>Entrada privada</span>
+                                <Icon name="spa" size={18} style={{ color: 'var(--c-primario, #0f766e)' }} />
+                                <span>Modo Desahogo</span>
                             </div>
-                            <div className="card-subtitle">Evita nombres de compañeros o datos de clientes.</div>
+                            <div className="card-subtitle">Escribe con libertad para procesar tu jornada operativa sin juicios.</div>
                         </div>
                         <span className="badge badge-info" id="nlpModeBadge">
                             {consent?.c3 ? 'NLP Activo' : 'NLP desactivado'}
                         </span>
                     </div>
 
-                    {/* Alerta de Datos de Terceros (Regex) */}
+                    {/* Alerta de Datos de Terceros (Reformulada pedagógicamente) */}
                     {hasThirdPartyData && (
-                        <div className="alert-banner warn" style={{ display: 'flex', gap: '10px', margin: '12px 0' }}>
-                            <Icon name="info" size={18} />
-                            <div style={{ fontSize: '13px' }}>
-                                Evita escribir nombres de compañeros o datos identificativos de clientes. Puedes describir la situación sin identificarlos.
+                        <div className="alert-banner warn" style={{ display: 'flex', gap: '10px', margin: '14px 0', alignItems: 'flex-start' }}>
+                            <Icon name="info" size={18} style={{ flexShrink: 0, marginTop: '2px' }} />
+                            <div style={{ fontSize: '13px', lineHeight: '1.5' }}>
+                                <strong>Protege tu privacidad y la de los demás:</strong> Te sugerimos no incluir nombres de compañeros ni datos de clientes (cédulas o números de contrato). Enfócate en cómo te sentiste tú con la situación vivida.
                             </div>
                         </div>
                     )}
 
-                    <form id="journalForm" onSubmit={handleSaveJournal}>
+                    <form id="journalForm" onSubmit={handleSaveJournal} noValidate>
                         <div className="form-group">
-                            <label className="form-label" htmlFor="contextTag">Contexto opcional</label>
+                            <label className="form-label" htmlFor="contextTag">Contexto operativo de tu jornada (opcional)</label>
                             <select
                                 id="contextTag"
                                 className="form-select"
                                 value={contextTag}
                                 onChange={(e) => setContextTag(e.target.value)}
                             >
-                                <option value="">Sin etiqueta</option>
-                                <option value="Turno mañana">Turno mañana</option>
-                                <option value="Turno tarde">Turno tarde</option>
-                                <option value="Campaña">Campaña</option>
+                                <option value="">Sin etiqueta contextual</option>
+                                <option value="Turno mañana (apertura)">Turno mañana (apertura)</option>
+                                <option value="Turno intermedio">Turno intermedio</option>
+                                <option value="Turno noche / cierre">Turno noche / cierre</option>
+                                <option value="Pico de llamadas / Caída de sistema">Pico de llamadas / Caída de sistema</option>
+                                <option value="Llamadas difíciles / clientes molestos">Llamadas difíciles / clientes molestos</option>
+                                <option value="Jornada habitual">Jornada habitual</option>
                             </select>
                         </div>
 
-                        <div className="form-group">
-                            <label className="form-label" htmlFor="journalText">¿Qué deseas registrar hoy?</label>
-                            <textarea
-                                id="journalText"
-                                className="form-textarea"
-                                rows={8}
-                                maxLength={2000}
-                                placeholder="Escribe con total tranquilidad sobre cómo viviste tu jornada..."
-                                value={journalText}
-                                onChange={(e) => setJournalText(e.target.value)}
-                                required
-                            />
-                            <div className="char-count">
-                                <span>{journalText.length}</span> / 2000 caracteres
+                        <div className="desahogo-container">
+                            <div className="form-group">
+                                <label className="form-label" htmlFor="journalText" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <span>Espacio de reflexión y desahogo personal</span>
+                                    <span style={{ fontSize: '11.5px', color: 'var(--c-texto-mutado)', fontWeight: '500' }}>
+                                        Espacio de escritura privado
+                                    </span>
+                                </label>
+                                <textarea
+                                    ref={textareaRef}
+                                    id="journalText"
+                                    className="form-textarea desahogo-textarea"
+                                    rows={9}
+                                    maxLength={2000}
+                                    placeholder="¿Tuviste una llamada que te dejó con el corazón acelerado? ¿El sistema estuvo lento o resolviste un caso difícil? Escribe con libertad; este espacio es privado y no es medido por monitoreo de calidad (QA) ni por supervisión..."
+                                    value={journalText}
+                                    onChange={(e) => setJournalText(e.target.value)}
+                                />
+                                <div className={`char-count ${journalText.length > 1950 ? 'danger' : journalText.length > 1800 ? 'warn' : ''}`}>
+                                    <span>{journalText.length}</span> / 2000 caracteres
+                                </div>
                             </div>
                         </div>
 
@@ -522,7 +539,13 @@ export function JournalPage() {
                             </button>
 
                             {currentJournalId && (
-                                <button type="button" className="btn btn-danger" onClick={handleDeleteJournal}>
+                                <button
+                                    type="button"
+                                    className="btn btn-danger btn-sm"
+                                    onClick={handleDeleteJournal}
+                                    style={{ marginLeft: 'auto' }}
+                                >
+                                    <Icon name="delete" size={15} />
                                     <span>Eliminar entrada</span>
                                 </button>
                             )}

@@ -1,5 +1,5 @@
 // src/features/agent/components/ScaleSelector.jsx
-// Selector de escala de percepción (1 a 5) y opción de omitir respuesta
+// Selector de escala somática de percepción (1 a 5) con notas empáticas y atajos ergonómicos
 
 import { Icon } from '../../../core/components/Icon';
 
@@ -14,8 +14,18 @@ export function ScaleSelector({ question, currentValue, onSelectValue, onSkip })
                 {question.title}
             </h2>
 
-            {/* Escala del 1 al 5 */}
-            <div className="scale-selector" role="radiogroup" aria-label={question.title}>
+            {/* Micro-nota empática contextual de la pregunta (desculpabilizadora) */}
+            {question.contextNote && (
+                <div className="scale-context-note" role="note">
+                    <div className="scale-context-icon-wrapper">
+                        <Icon name="info" size={15} />
+                    </div>
+                    <p className="scale-context-text">{question.contextNote}</p>
+                </div>
+            )}
+
+            {/* Escala somática, ergonómica y táctil del 1 al 5 */}
+            <div className="scale-selector" role="radiogroup" aria-label={question.title} aria-keyshortcuts="1 2 3 4 5">
                 {question.labels.map((label, labelIndex) => {
                     const val = labelIndex + 1;
                     const isActive = currentValue === val;
@@ -23,26 +33,32 @@ export function ScaleSelector({ question, currentValue, onSelectValue, onSkip })
                         <button
                             key={val}
                             type="button"
+                            role="radio"
                             className={`scale-btn ${isActive ? 'active' : ''}`}
                             onClick={() => onSelectValue(val)}
-                            aria-pressed={isActive}
+                            aria-checked={isActive}
+                            aria-label={`Opción ${val}: ${label}. Atajo de teclado: número ${val}`}
                         >
-                            <strong>{val}</strong>
-                            <span style={{ fontSize: '11px' }}>{label}</span>
+                            <kbd className="scale-shortcut" title={`Atajo de teclado: tecla ${val}`}>
+                                {val}
+                            </kbd>
+                            <strong className="scale-number">{val}</strong>
+                            <span className="scale-label">{label}</span>
                         </button>
                     );
                 })}
             </div>
 
-            {/* Botón de Omitir / No Responder */}
-            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+            {/* Botón de Omisión empático */}
+            <div className="scale-skip-wrapper">
                 <button
                     type="button"
                     className={`skip-btn ${isSkipped ? 'active' : ''}`}
                     onClick={onSkip}
+                    aria-pressed={isSkipped}
                 >
-                    <Icon name="eyeOff" size={14} />
-                    <span>Prefiero no responder a esta dimensión</span>
+                    <Icon name="eyeOff" size={15} />
+                    <span>Prefiero omitir esta pregunta hoy</span>
                 </button>
             </div>
         </section>

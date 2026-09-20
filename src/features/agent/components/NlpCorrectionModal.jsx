@@ -1,6 +1,4 @@
-// src/features/agent/components/NlpCorrectionModal.jsx
-// Modal de intervención humana (Human-in-the-loop) para corregir clasificaciones NLP
-
+import { useEffect } from 'react';
 import { Icon } from '../../../core/components/Icon';
 
 export function NlpCorrectionModal({
@@ -13,23 +11,48 @@ export function NlpCorrectionModal({
     onSave,
     onClose
 }) {
+    useEffect(() => {
+        if (!isOpen) return;
+        const handleKeyDown = (e) => {
+            if (e.key === 'Escape') onClose();
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [isOpen, onClose]);
+
     if (!isOpen) return null;
 
     return (
-        <div className="modal-overlay active" role="dialog" aria-modal="true">
+        <div
+            className="modal-overlay active"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="nlp-correction-title"
+            onClick={(e) => {
+                if (e.target === e.currentTarget) onClose();
+            }}
+        >
             <div className="modal-box" style={{ maxWidth: '540px' }}>
                 <div className="modal-header">
                     <div>
-                        <h2 className="modal-title">
+                        <h2 id="nlp-correction-title" className="modal-title">
                             Corregir clasificación orientativa
                         </h2>
-                        <p className="modal-subtitle">
-                            Tu corrección humana tiene prioridad absoluta y quedará registrada en tu historial de intervenciones.
+                        <p className="modal-subtitle" style={{ marginTop: '4px', lineHeight: '1.5' }}>
+                            Tú eres quien mejor sabe cómo viviste tu turno. Tu criterio siempre prima sobre cualquier clasificación léxica automática.
                         </p>
                     </div>
                     <button type="button" className="modal-close-btn" onClick={onClose} aria-label="Cerrar">
                         <Icon name="close" size={18} />
                     </button>
+                </div>
+
+                {/* Garantía de privacidad BPO sin reporte punitivo */}
+                <div className="analysis-calm-banner" style={{ marginBottom: '16px', display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
+                    <Icon name="lock" size={16} style={{ color: 'var(--c-calma-accent, #1b7a68)', flexShrink: 0, marginTop: '2px' }} />
+                    <span style={{ fontSize: '12px', lineHeight: '1.5' }}>
+                        Esta corrección es estrictamente privada y queda almacenada en tu bitácora personal. No se comparte ni se reporta a supervisores, coordinadores ni monitoreo de calidad (QA).
+                    </span>
                 </div>
 
                 <div className="category-grid" style={{ marginBottom: '16px', maxHeight: '240px', overflowY: 'auto' }}>
@@ -55,15 +78,21 @@ export function NlpCorrectionModal({
                 </div>
 
                 <div className="form-group">
-                    <label className="form-label">Comentario u observación (opcional)</label>
+                    <label className="form-label" htmlFor="nlpCorrectionNote">
+                        Comentario o motivo de tu ajuste (opcional)
+                    </label>
                     <textarea
+                        id="nlpCorrectionNote"
                         className="form-textarea"
                         rows={2}
                         maxLength={200}
-                        placeholder="Detalle adicional para tu registro..."
+                        placeholder="Si lo deseas, anota por qué consideras que estos factores describen mejor lo vivido..."
                         value={correctionNote}
                         onChange={(e) => onChangeNote(e.target.value)}
                     />
+                    <div className="char-count">
+                        <span>{correctionNote.length}</span> / 200 caracteres
+                    </div>
                 </div>
 
                 <div className="modal-footer">
@@ -80,17 +109,34 @@ export function NlpCorrectionModal({
 }
 
 export function NlpHistoryModal({ isOpen, history = [], onClose }) {
+    useEffect(() => {
+        if (!isOpen) return;
+        const handleKeyDown = (e) => {
+            if (e.key === 'Escape') onClose();
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [isOpen, onClose]);
+
     if (!isOpen) return null;
 
     return (
-        <div className="modal-overlay active" role="dialog" aria-modal="true">
+        <div
+            className="modal-overlay active"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="nlp-history-title"
+            onClick={(e) => {
+                if (e.target === e.currentTarget) onClose();
+            }}
+        >
             <div className="modal-box" style={{ maxWidth: '580px' }}>
                 <div className="modal-header">
                     <div>
-                        <h2 className="modal-title">
+                        <h2 id="nlp-history-title" className="modal-title">
                             Historial de correcciones NLP
                         </h2>
-                        <p className="modal-subtitle">
+                        <p className="modal-subtitle" style={{ marginTop: '4px', lineHeight: '1.5' }}>
                             Trazabilidad cronológica de todas las intervenciones humanas sobre esta entrada.
                         </p>
                     </div>
