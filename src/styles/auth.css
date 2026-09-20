@@ -491,6 +491,19 @@
 
 .demo-accordion-prompt {
   letter-spacing: -0.01em;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.demo-eval-academic-badge {
+  font-size: 0.72rem;
+  font-weight: 650;
+  color: #475569;
+}
+
+.demo-accordion-trigger:hover .demo-eval-academic-badge {
+  color: #082F28;
 }
 
 .demo-accordion-chevron {
@@ -674,6 +687,27 @@
   background: #F1F5F9;
   color: #94A3B8;
   cursor: not-allowed;
+}
+
+.field-input.input-error {
+  border-color: #EF4444;
+  background-color: #FEF2F2;
+}
+
+.field-input.input-error:focus {
+  border-color: #DC2626;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.18);
+}
+
+.form-field-inline-error {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.74rem;
+  font-weight: 500;
+  color: #DC2626;
+  margin-top: 0.25rem;
+  line-height: 1.35;
 }
 
 .field-toggle-btn {

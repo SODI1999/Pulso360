@@ -357,7 +357,7 @@ export function LoginPage({ initialMode }) {
 
               <footer className="auth-corporate-legal">
                 <p>
-                  Protección de datos conforme a Ley 1581 de 2012 · Sesión cifrada TLS y auditada.
+                  Protección de datos conforme a la Ley 1581 de 2012 y estándares SG-SST
                 </p>
               </footer>
             </>
@@ -485,7 +485,7 @@ export function LoginPage({ initialMode }) {
               )}
 
               <footer className="auth-corporate-legal">
-                <p>Protección de datos conforme a Ley 1581 de 2012 · Sesión cifrada TLS y auditada.</p>
+                <p>Protección de datos conforme a la Ley 1581 de 2012 y estándares SG-SST</p>
               </footer>
             </>
           )}
@@ -687,7 +687,7 @@ export function LoginPage({ initialMode }) {
               )}
 
               <footer className="auth-corporate-legal">
-                <p>Protección de datos conforme a Ley 1581 de 2012 · Sesión cifrada TLS y auditada.</p>
+                <p>Protección de datos conforme a la Ley 1581 de 2012 y estándares SG-SST</p>
               </footer>
             </>
           )}

@@ -1,7 +1,7 @@
 // src/features/auth/components/LoginForm.jsx
 // Formulario de acceso institucional con orden ergonómico estricto y transición in-situ
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Icon } from '../../../core/components/Icon';
 
 export function LoginForm({
@@ -17,6 +17,36 @@ export function LoginForm({
   lockedRemainingMs
 }) {
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberDevice, setRememberDevice] = useState(false);
+  const [emailError, setEmailError] = useState('');
+
+  // 1. Verificar si existe correo recordado al montar el componente
+  useEffect(() => {
+    try {
+      const savedEmail = localStorage.getItem('pulso360_remembered_email');
+      if (savedEmail) {
+        setEmail(savedEmail);
+        setRememberDevice(true);
+      }
+    } catch {
+      // Manejo seguro en entornos donde localStorage no esté disponible
+    }
+  }, [setEmail]);
+
+  // 2. Gestionar persistencia en localStorage tras inicio de sesión exitoso (NUNCA contraseñas)
+  useEffect(() => {
+    if (feedback?.type === 'success') {
+      try {
+        if (rememberDevice && email.trim()) {
+          localStorage.setItem('pulso360_remembered_email', email.trim());
+        } else {
+          localStorage.removeItem('pulso360_remembered_email');
+        }
+      } catch {
+        // Manejo seguro de fallos en localStorage
+      }
+    }
+  }, [feedback?.type, rememberDevice, email]);
 
   // Formato mm:ss para el tiempo restante de bloqueo por fuerza bruta
   const formatCountdown = (ms) => {
@@ -28,6 +58,40 @@ export function LoginForm({
 
   const isButtonDisabled = !email.trim() || !password.trim() || loading || lockedRemainingMs > 0;
 
+  // Validación de formato de email institucional y alias válidos del sistema
+  const isValidEmailFormat = (raw) => {
+    const val = String(raw || '').trim().toLowerCase();
+    if (!val) return false;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (emailRegex.test(val)) return true;
+
+    const validAliases = [
+      'agente@demo',
+      'agente',
+      'supervisor@demo',
+      'supervisor',
+      'sst@demo',
+      'sst',
+      'auditor@demo',
+      'auditor',
+      'admin@demo',
+      'admin'
+    ];
+    return validAliases.includes(val);
+  };
+
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    if (!isValidEmailFormat(email)) {
+      setEmailError('Ingresa un correo institucional válido (ej. usuario@pulso360.co)');
+      return;
+    }
+    setEmailError('');
+    if (onSubmit) {
+      onSubmit(e);
+    }
+  };
+
   const handleSsoClick = (provider) => {
     if (loading || lockedRemainingMs > 0) return;
     if (onSsoLogin) {
@@ -36,7 +100,7 @@ export function LoginForm({
   };
 
   return (
-    <form className="login-form-root" onSubmit={onSubmit} noValidate>
+    <form className="login-form-root" onSubmit={handleFormSubmit} noValidate>
       {/* 1. Botones SSO Corporativo BPO */}
       <div className="sso-providers-group">
         <button
@@ -89,15 +153,26 @@ export function LoginForm({
             type="email"
             id="loginEmailInput"
             name="username"
-            className="field-input has-left-icon"
+            className={`field-input has-left-icon ${emailError ? 'input-error' : ''}`}
             placeholder="colaborador@operacion.pulso360.co"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              if (emailError) setEmailError('');
+            }}
             autoComplete="username"
             disabled={loading || lockedRemainingMs > 0}
+            aria-invalid={emailError ? 'true' : 'false'}
+            aria-describedby={emailError ? 'loginEmailError' : undefined}
             required
           />
         </div>
+        {emailError && (
+          <div id="loginEmailError" className="form-field-inline-error" role="alert">
+            <Icon name="alertTriangle" size={13} />
+            <span>{emailError}</span>
+          </div>
+        )}
       </div>
 
       {/* 2. Campo Contraseña */}
@@ -140,6 +215,8 @@ export function LoginForm({
           <input
             type="checkbox"
             className="remember-checkbox"
+            checked={rememberDevice}
+            onChange={(e) => setRememberDevice(e.target.checked)}
             disabled={loading || lockedRemainingMs > 0}
           />
           <span className="remember-text">Recordar este equipo</span>
