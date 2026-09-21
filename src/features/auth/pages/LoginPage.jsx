@@ -247,7 +247,7 @@ export function LoginPage({ initialMode }) {
     setLoading(true);
     setFeedback({
       type: 'success',
-      message: `Conectando con ${provider === 'microsoft' ? 'Microsoft 365' : 'Google Workspace'}...`
+    message: `Iniciando simulación de acceso con ${provider === 'microsoft' ? 'Microsoft 365' : 'Google Workspace'}...`
     });
 
     try {
@@ -272,7 +272,7 @@ export function LoginPage({ initialMode }) {
       {/* =========================================================================
           PANEL IZQUIERDO: Respaldo Institucional BPO y Salvaguardas SGSI
           ========================================================================= */}
-      <aside className="login-manifesto-panel" aria-label="Garantías Institucionales de Pulso360">
+      <aside className="login-manifesto-panel" aria-label="Principios de acceso y privacidad de Pulso360">
         <div className="manifesto-top-bar">
           <div className="manifesto-brand-lockup">
             <img src="/assets/marca/logo.png" alt="Pulso360" className="manifesto-brand-symbol" />
@@ -287,7 +287,7 @@ export function LoginPage({ initialMode }) {
         <div className="manifesto-body">
           <header className="manifesto-editorial-header">
             <h1 className="manifesto-title">
-              Tu espacio de desahogo.<br className="manifesto-break" /> Cero vigilancia punitiva.
+              Tu espacio de desahogo.<br className="manifesto-break" /> Bienestar separado del desempeño.
             </h1>
             <p className="manifesto-lead">{AUTH_METADATA.subtitle}</p>
           </header>
@@ -328,7 +328,7 @@ export function LoginPage({ initialMode }) {
               <header className="auth-card-top">
                 <h2 className="auth-screen-title">Iniciar Sesión</h2>
                 <p className="auth-screen-desc">
-                  Acceso institucional seguro a tu espacio Pulso360.
+                  Acceso institucional a tu espacio Pulso360.
                 </p>
               </header>
 
@@ -417,7 +417,7 @@ export function LoginPage({ initialMode }) {
                   </div>
 
                   <p className="recovery-policy-note">
-                    El enlace será válido durante 30 minutos y solo podrá usarse una vez.
+                    El enlace temporal será válido durante 30 minutos y sólo podrá usarse una vez.
                   </p>
 
                   <button
@@ -453,7 +453,7 @@ export function LoginPage({ initialMode }) {
                         <strong>Simulación de Servicio SMTP (Sandbox)</strong>
                       </div>
                       <p className="sandbox-eval-text">
-                        En producción, este enlace se envía al correo corporativo. Para evaluación, puedes abrirlo directamente:
+                        En un servicio de correo conectado, este enlace se enviaría al correo corporativo. Para esta evaluación académica, puedes abrirlo directamente:
                       </p>
                       <div className="sandbox-token-badge">
                         <code>Token: {dispatchedData.devToken}</code>
@@ -517,7 +517,7 @@ export function LoginPage({ initialMode }) {
               {tokenState.loading && (
                 <div className="token-eval-box">
                   <div className="action-spinner" style={{ display: 'block', margin: '16px auto' }}></div>
-                  <p>Verificando validez del enlace seguro...</p>
+                  <p>Verificando la validez del enlace temporal...</p>
                 </div>
               )}
 

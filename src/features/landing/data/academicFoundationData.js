@@ -6,9 +6,9 @@ export const FOUNDATION_META = {
   kicker: 'Medellín, Colombia · Investigación Formativa TdeA 2026',
   badge: 'Evidencia Empírica & Transferencia Tecnológica',
   title: 'De la investigación social a la ingeniería preventiva: Relación entre el agotamiento emocional y el apoyo social en call centers',
-  lead: 'Cómo un estudio cuantitativo sobre 185 operadores en Medellín (84.3% con agotamiento significativo) inspiró a estudiantes de Ingeniería de Software del TdeA a crear Pulso360: una plataforma preventiva, no punitiva y sellada con k-anonimato (k ≥ 5 agentes únicos).',
+  lead: 'Cómo un estudio cuantitativo sobre 185 operadores en Medellín (84.3% con agotamiento significativo) inspiró a estudiantes de Ingeniería de Software del TdeA a crear Pulso360: una plataforma preventiva que separa tendencias agregadas de registros individuales en sus flujos definidos.',
   lastUpdated: 'Septiembre 2026',
-  institution: 'Tecnológico de Antioquia — Institución Universitaria',
+  institution: 'Tecnológico de Antioquia: Institución Universitaria',
   city: 'Medellín, Colombia',
 };
 
@@ -40,7 +40,7 @@ export const AUTHORS_MATRIX = {
     ],
     faculty: 'Facultad de Ingeniería (Ingeniería de Software)',
     institution: 'Tecnológico de Antioquia (TdeA)',
-    focus: 'Salvaguardas de k-anonimato (k ≥ 5 agentes únicos), micro-pulsos al cierre de turno y bitácora confidencial con análisis léxico local en cliente',
+    focus: 'Regla de agregación k-anonimato (k ≥ 5 agentes únicos), micro-pulsos al cierre de turno y análisis léxico local para la bitácora',
     icon: 'fileShield'
   }
 };
@@ -50,13 +50,13 @@ export const EMPIRICAL_DATA = {
   instruments: [
     {
       acronym: 'MBI-HSS',
-      name: 'Maslach Burnout Inventory — Human Services Survey (MBI-HSS)',
-      purpose: 'Instrumento psicométrico validado para la medición del Agotamiento Emocional en trabajadores de servicios de alta interacción.'
+      name: 'Maslach Burnout Inventory: Human Services Survey (MBI-HSS)',
+      purpose: 'Instrumento descrito en la investigación para explorar agotamiento emocional en trabajadores de servicios de alta interacción.'
     },
     {
       acronym: 'MSPSS',
       name: 'Multidimensional Scale of Perceived Social Support (MSPSS de Zimet et al.)',
-      purpose: 'Escala psicométrica de Zimet et al. para evaluar la percepción de apoyo social en tres dimensiones: pares laborales, supervisores y familia/entorno significativo.'
+      purpose: 'Escala de Zimet et al. descrita para explorar la percepción de apoyo social en tres dimensiones: pares laborales, supervisores y familia/entorno significativo.'
     }
   ],
   mainMetric: {
@@ -96,7 +96,7 @@ export const TRANSFER_CARDS = [
     title: 'Miedo a Represalias vs. Salvaguarda de k-Anonimato (k ≥ 5)',
     socialProblem: 'Junto con la alta intención de deserción (76.5%), los relatos cualitativos de campo evidenciaron que los operadores suelen sobrellevar la sobrecarga en silencio por temor a repercusiones en turno o estabilidad.',
     bpoBarrier: 'Las encuestas internas nominales despiertan desconfianza en piso por miedo a represalias, pérdida de turnos preferidos o afectación en evaluaciones.',
-    pulsoSolution: 'Agregación colectiva por diseño: supervisores y SST solo acceden a tendencias consolidadas de grupos de mínimo 5 agentes únicos (k ≥ 5). Los datos se agregan colectivamente para prevenir la individualización de los registros.',
+    pulsoSolution: 'Agregación colectiva por diseño en los flujos definidos: supervisores y SST reciben tendencias consolidadas sólo cuando el grupo alcanza el umbral de 5 agentes únicos (k ≥ 5). La interfaz bloquea la vista colectiva por debajo de ese umbral.',
     featureBadge: 'Privacidad por Diseño (k ≥ 5 agentes únicos)',
     icon: 'kAnonymityShield'
   },
@@ -106,7 +106,7 @@ export const TRANSFER_CARDS = [
     title: 'Medición Anual Tardía vs. Micro-pulsos Diarios de 60 Segundos al Cerrar Turno',
     socialProblem: 'El agotamiento emocional varía según las colas de llamadas y la intensidad de la semana, pero las evaluaciones corporativas suelen ser anuales y retrospectivas.',
     bpoBarrier: 'Cuando se consolida la evaluación de riesgo psicosocial meses después, la persona con agotamiento severo suele haber renunciado o encontrarse incapacitada médicamente.',
-    pulsoSolution: 'Micro-pulsos diarios de 60 segundos contestados voluntariamente al cerrar turno: capturan la curva de desgaste sin fricción operativa y habilitan alertas tempranas para SST.',
+    pulsoSolution: 'Micro-pulsos diarios de 60 segundos contestados voluntariamente al cerrar turno: registran una percepción breve del turno y pueden alimentar una revisión agregada de SST cuando se cumple el umbral definido.',
     featureBadge: 'Ergonomía de Turno',
     icon: 'clock'
   },
@@ -114,20 +114,20 @@ export const TRANSFER_CARDS = [
     id: 'nlp-journal',
     number: '03',
     title: 'Falta de Desahogo Seguro vs. Bitácora Íntima con NLP Léxico Local en Cliente',
-    socialProblem: 'La investigación de campo evidenció que el desahogo emocional y la ventilación cognitiva reducen el agotamiento, pero los operadores carecen de canales seguros en planta.',
+    socialProblem: 'La investigación de campo relacionó el desahogo emocional y la ventilación cognitiva con el abordaje del agotamiento; el estudio también señaló la falta de canales de expresión confiables en planta.',
     bpoBarrier: 'El monitoreo corporativo continuo sobre chats y llamadas inhibe cualquier expresión espontánea de frustración por temor a sanciones disciplinarias.',
-    pulsoSolution: 'Bitácora personal y confidencial con análisis léxico procesado localmente en el navegador (Web Worker / NLP en cliente): ningún texto íntimo ni transcripción se transmite a servidores corporativos.',
+    pulsoSolution: 'Bitácora personal con análisis léxico determinista en el cliente. El repositorio actual centraliza la persistencia en `pulsoStore`; cualquier despliegue con backend debe conservar explícitamente el alcance de esta separación.',
     featureBadge: 'Seguridad Psicológica & NLP Local',
     icon: 'edit_note'
   },
   {
     id: 'disconnection',
     number: '04',
-    title: 'Sobrecarga Extralaboral vs. Garantía de Desconexión Laboral Efectiva (Ley 2191 de 2022)',
+    title: 'Sobrecarga extralaboral y marco de desconexión laboral (Ley 2191 de 2022)',
     socialProblem: 'La invasión constante de los descansos y días libres con avisos o turnos sobrevenidos intensifica la fatiga auditiva crónica y la deserción operativa.',
     bpoBarrier: 'En la dinámica 24/7 de los Contact Centers, las comunicaciones fuera de horario desbordan las jornadas pactadas e impiden la recuperación psicofísica.',
-    pulsoSolution: 'Garantía técnica de desconexión efectiva (Ley 2191 de 2022): la plataforma se sincroniza con los turnos pactados e inhibe check-ins, recordatorios y notificaciones fuera de la jornada de trabajo.',
-    featureBadge: 'Conformidad Legal (Ley 2191)',
+    pulsoSolution: 'La Ley 2191 de 2022 se presenta como marco de referencia para la desconexión laboral. La versión actual documenta el principio, pero no demuestra una sincronización con turnos pactados ni un bloqueo integral fuera de jornada.',
+    featureBadge: 'Marco de referencia (Ley 2191)',
     icon: 'zap'
   }
 ];
@@ -162,21 +162,21 @@ export const LEGAL_FRAMEWORK_DATA = [
   {
     code: 'Ley 1581 de 2012 & Decreto 1377 de 2013',
     title: 'Tratamiento de Datos Sensibles & Voluntariedad',
-    body: 'Los datos sobre estados de ánimo y fatiga son clasificados como sensibles (Art. 5, Ley 1581 de 2012). Su registro en Pulso360 es estrictamente voluntario e informado. La plataforma prohíbe por diseño el uso de estos datos para sanciones, evaluaciones disciplinarias de desempeño o despidos.',
+    body: 'Los datos sobre estados de ánimo y fatiga pueden estar sujetos a reglas de protección de datos sensibles (Art. 5, Ley 1581 de 2012). El producto plantea un registro voluntario e informado y define como límite de diseño que estos datos no se usen para sanciones ni evaluaciones disciplinarias; la aplicación efectiva requiere gobernanza institucional.',
     tag: 'Datos Sensibles',
     icon: 'lock'
   },
   {
     code: 'Ley 2191 de 2022',
-    title: 'Garantía de Desconexión Laboral Efectiva',
-    body: 'Garantía de desconexión laboral efectiva para los operadores de Contact Center. Pulso360 respeta los turnos pactados y bloquea check-ins o notificaciones operativas durante descansos, días libres, licencias o periodos de vacaciones.',
+    title: 'Marco de referencia para la desconexión laboral',
+    body: 'La Ley 2191 de 2022 sirve como marco de referencia para discutir la desconexión laboral en operaciones de Contact Center. La versión actual de Pulso360 no debe presentarse como una sincronización legal completa con turnos, licencias o vacaciones.',
     tag: 'Desconexión Laboral',
     icon: 'clock'
   },
   {
     code: 'Decreto 1072 de 2015 & Ley 1010 de 2006',
     title: 'Articulación SG-SST & Prevención de Acoso Laboral',
-    body: 'La plataforma provee tendencias preventivas agregadas y anónimas al COPASST y al Comité de Convivencia Laboral, fortaleciendo el Sistema de Gestión de SST y promoviendo ambientes de trabajo dignos y libres de acoso laboral.',
+    body: 'La plataforma está orientada a tendencias preventivas agregadas para apoyar conversaciones de SST. El alcance de cada rol y el umbral de visualización dependen de los controles implementados; no equivale por sí solo a una garantía de anonimato ni sustituye las responsabilidades institucionales.',
     tag: 'SG-SST',
     icon: 'shieldCheck'
   }
@@ -184,23 +184,23 @@ export const LEGAL_FRAMEWORK_DATA = [
 
 export const ANTI_SURVEILLANCE_PILLARS = [
   {
-    title: 'Cero Rankings Individuales',
-    description: 'Prohibido por arquitectura generar listas o clasificaciones de agentes más o menos cansados para supervisores.',
+    title: 'Sin rankings individuales en la vista revisada',
+    description: 'Principio de diseño: no presentar a supervisores listas o clasificaciones de agentes según su estado de bienestar.',
     icon: 'checkCircle'
   },
   {
-    title: 'Salvaguarda de k-Anonimato (k ≥ 5)',
-    description: 'Las métricas colectivas solo se procesan si el grupo activo en el turno cuenta con al menos 5 agentes únicos.',
+    title: 'Umbral de agregación k-Anonimato (k ≥ 5)',
+    description: 'La vista colectiva revisada se bloquea cuando el grupo no alcanza 5 agentes únicos; el umbral no equivale por sí solo a anonimato universal.',
     icon: 'shieldCheck'
   },
   {
-    title: 'Bitácora Confidencial con NLP en Cliente',
-    description: 'El procesamiento léxico se ejecuta localmente en el navegador del operador sin transmitir textos íntimos al servidor.',
+    title: 'Análisis léxico local para la bitácora',
+    description: 'El procesamiento léxico determinista se ejecuta en el navegador; cualquier despliegue con backend debe conservar explícitamente este alcance y sus límites de persistencia.',
     icon: 'lock'
   },
   {
-    title: 'Desvinculación Contractual y Operativa',
-    description: 'Los registros de bienestar no se utilizan para incentivos económicos, métricas de calidad punitiva ni evaluaciones de desempeño.',
+    title: 'Separación de bienestar y desempeño',
+    description: 'Principio de diseño: los registros de bienestar no deben convertirse en rankings ni métricas punitivas de desempeño; la gobernanza institucional debe sostener este límite.',
     icon: 'zap'
   }
 ];

@@ -32,7 +32,7 @@ export function RolesVisibilitySection() {
           <span className="acts-eyebrow">Matriz de Gobernanza & Privacidad</span>
           <h2 id="transparency-title">Transparencia Radical por Rol</h2>
           <p className="transparency-lead">
-            La confianza se construye con reglas explícitas. En Pulso360, ningún rol puede exceder sus límites éticos. Selecciona un perfil para auditar sus facultades y restricciones:
+            La confianza se construye con reglas explícitas. Selecciona un perfil para revisar qué información puede consultar la aplicación en esta experiencia y qué queda fuera de su alcance:
           </p>
         </div>
 
@@ -95,7 +95,7 @@ export function RolesVisibilitySection() {
           <div className="role-guarantee-footer">
             <Icon name="shieldCheck" size={20} />
             <div>
-              <strong>Garantía Institucional Pulso360:</strong>
+              <strong>Límite de acceso en Pulso360:</strong>
               <p>{selectedRole.guarantee}</p>
             </div>
           </div>

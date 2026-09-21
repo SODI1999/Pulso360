@@ -16,7 +16,6 @@ import '../../../styles/agent.css';
 
 // Escala rápida de energía: reutiliza las etiquetas de la dimensión "energia"
 // del Check-in Wizard (no se inventa un concepto ni una escala paralela).
-// Los rostros ilustrados los aporta <EnergyFace /> (SVG animado al hover).
 const QUICK_ENERGY_SCALE = [
   { value: 1, label: 'Sin batería' },
   { value: 2, label: 'Baja energía' },
@@ -148,7 +147,7 @@ export function AgentDashboardPage() {
   const [isPerspectiveModalOpen, setIsPerspectiveModalOpen] = useState(false);
 
   return (
-    <div className="calm-home">
+    <div className="agent-page calm-home">
       {/* 1. Cabecera: saludo y contexto del turno en una línea */}
       <header className="calm-home-head">
         <h1 className="calm-home-title">
@@ -221,7 +220,7 @@ export function AgentDashboardPage() {
               <div className="calm-breathe" aria-hidden="true" />
               <h2 className="calm-card-title">¿Cómo va tu energía en este turno?</h2>
               <p className="calm-card-sub">
-                Toca cómo te sientes y termina tu check-in en menos de un minuto.
+                Elige un nivel para iniciar tu check-in del turno.
                 {isOutsideShift && ' Estás fuera de tu turno: registrar es voluntario.'}
               </p>
               <div className="calm-mood-row" role="group" aria-label="Escala rápida de energía del turno">
@@ -234,8 +233,8 @@ export function AgentDashboardPage() {
                     aria-label={`Energía ${option.value} de 5: ${option.label}`}
                   >
                     <span className="calm-mood-emoji" aria-hidden="true">
-                    <EnergyFace value={option.value} />
-                  </span>
+                      <EnergyFace value={option.value} />
+                    </span>
                     <span className="calm-mood-label">{option.label}</span>
                   </button>
                 ))}
@@ -264,9 +263,17 @@ export function AgentDashboardPage() {
           </div>
 
           <div className="calm-rail-block calm-rail-block--pause">
-            <h3 className="calm-rail-title">Pausa guiada</h3>
+            <div className="calm-pause-heading">
+              <span className="calm-pause-mark" aria-hidden="true">
+                <Icon name="self_improvement" size={17} />
+              </span>
+              <div>
+                <h3 className="calm-rail-title">Un respiro para ti</h3>
+                <span className="calm-pause-private">Privada · 2 minutos</span>
+              </div>
+            </div>
             <p className="calm-rail-desc">
-              2 minutos de respiración, descanso visual y estiramientos para descomprimir de la línea.
+              Respiración, descanso visual y estiramientos suaves para soltar la tensión de la línea.
             </p>
             <button
               type="button"
@@ -274,9 +281,10 @@ export function AgentDashboardPage() {
               onClick={() => setIsResetModalOpen(true)}
               title="Abrir ejercicios de respiración, descanso visual y estiramiento"
             >
-              <Icon name="self_improvement" size={16} />
-              <span>Iniciar pausa (2 min)</span>
+              <span>Tomar una pausa</span>
+              <Icon name="arrowRight" size={16} />
             </button>
+            <p className="calm-pause-note">No se registra como indicador individual.</p>
           </div>
         </aside>
       </div>
@@ -284,7 +292,7 @@ export function AgentDashboardPage() {
       {/* 5. Pie: una sola línea de privacidad */}
       <footer className="calm-foot">
         <span className="calm-foot-note">
-          Nadie más puede ver tus registros individuales.
+          Tus registros individuales quedan fuera de las vistas operativas agregadas.
         </span>
         <button
           type="button"

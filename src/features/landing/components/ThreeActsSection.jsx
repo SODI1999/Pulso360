@@ -106,7 +106,7 @@ export function ThreeActsSection() {
               <div className="act-content-header">
                 <div className="act-pill-badge agent-badge">
                   <Icon name="lock" size={14} />
-                  <span>Espacio confidencial · Procesamiento disociado · Cero vigilancia punitiva</span>
+                  <span>Espacio personal · Ejemplo ilustrativo · No es una evaluación de desempeño</span>
                 </div>
                 <span className="act-step-label">Micro-pulso de 60 segundos · Muestra interactiva de evaluación</span>
               </div>
@@ -167,7 +167,7 @@ export function ThreeActsSection() {
                     <p className="journal-entry-text">{selectedSituation.agentQuote}</p>
                     <span className="journal-privacy-notice">
                       <Icon name="lock" size={12} />
-                      Bitácora procesada localmente · Tu supervisor jamás lee este texto
+                      En esta demo, el texto permanece en la bitácora individual y no aparece en la vista agregada
                     </span>
                   </div>
 
@@ -422,7 +422,7 @@ export function ThreeActsSection() {
                   <div>
                     <strong>Cero consecuencias punitivas · Trazabilidad 100% auditable</strong>
                     <p>
-                      Las intervenciones preventivas quedan registradas en la bitácora de cumplimiento de SG-SST sin asociarse jamás a nómina, AHT o sanciones laborales.
+                      La demo presenta intervenciones preventivas separadas de nómina, AHT y sanciones laborales; la implementación debe conservar esa separación mediante sus controles de acceso.
                     </p>
                   </div>
                 </div>
@@ -435,4 +435,3 @@ export function ThreeActsSection() {
     </section>
   );
 }
-

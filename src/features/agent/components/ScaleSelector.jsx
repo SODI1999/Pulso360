@@ -2,6 +2,16 @@
 // Selector de escala somática de percepción (1 a 5) con notas empáticas y atajos ergonómicos
 
 import { Icon } from '../../../core/components/Icon';
+import { EnergyFace } from './EnergyFace';
+
+const FACE_DIRECTION = {
+    energia: 'positive',
+    cargaEmocional: 'negative',
+    recuperacion: 'positive',
+    apoyo: 'positive',
+    distanciamiento: 'negative',
+    ineficacia: 'negative'
+};
 
 export function ScaleSelector({ question, currentValue, onSelectValue, onSkip }) {
     if (!question) return null;
@@ -29,20 +39,22 @@ export function ScaleSelector({ question, currentValue, onSelectValue, onSkip })
                 {question.labels.map((label, labelIndex) => {
                     const val = labelIndex + 1;
                     const isActive = currentValue === val;
+                    const visualValue = FACE_DIRECTION[question.key] === 'negative' ? 6 - val : val;
                     return (
                         <button
                             key={val}
                             type="button"
                             role="radio"
-                            className={`scale-btn ${isActive ? 'active' : ''}`}
+                            className={`scale-btn scale-btn--heat-${visualValue} ${isActive ? 'active' : ''}`}
                             onClick={() => onSelectValue(val)}
                             aria-checked={isActive}
                             aria-label={`Opción ${val}: ${label}. Atajo de teclado: número ${val}`}
                         >
-                            <kbd className="scale-shortcut" title={`Atajo de teclado: tecla ${val}`}>
-                                {val}
-                            </kbd>
-                            <strong className="scale-number">{val}</strong>
+                            <span className="scale-energy-face" aria-hidden="true">
+                                <EnergyFace
+                                    value={FACE_DIRECTION[question.key] === 'negative' ? 6 - val : val}
+                                />
+                            </span>
                             <span className="scale-label">{label}</span>
                         </button>
                     );

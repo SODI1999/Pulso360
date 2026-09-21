@@ -214,7 +214,7 @@ export const ROLES_PERMISSIONS_MATRIX = [
       { text: 'Acceder a métricas o respuestas individuales de otros compañeros.', allowed: false },
       { text: 'Ser evaluado en su rendimiento laboral (AHT o calidad) a partir de su pulso.', allowed: false }
     ],
-    guarantee: 'Las respuestas se procesan de forma disociada y no se utilizan por supervisores ni clientes para emitir sanciones o calificar el desempeño laboral.'
+    guarantee: 'En esta experiencia, la vista de supervisión no expone respuestas individuales ni usa el pulso como calificación de desempeño. La implementación real debe conservar estos límites mediante sus controles de acceso.'
   },
   {
     id: 'supervisor',

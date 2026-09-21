@@ -87,9 +87,9 @@
 
 .sidebar-nav-heading {
   font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: normal;
   color: var(--c-texto-mutado);
   padding: var(--space-3) var(--space-3) var(--space-1);
   margin-top: var(--space-2);
@@ -118,18 +118,10 @@
   background-color: var(--c-primario-suave);
   color: var(--c-primario);
   font-weight: 600;
+  border-left: none; /* H-01 refuerzo: sin rayas laterales, estado comunicado por fondo + color + peso */
 }
 
-.nav-item.active::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 8px;
-  bottom: 8px;
-  width: 3.5px;
-  border-radius: 0 var(--radius-xs) var(--radius-xs) 0;
-  background-color: var(--c-primario);
-}
+/* H-01 antislop: left-stripe eliminada. Estado activo comunicado por fondo + color + peso. */
 
 /* Apoyo Inmediato — acción de emergencia en sidebar */
 .nav-item.nav-crisis {

@@ -3,7 +3,14 @@
 
 import { Icon } from '../../../core/components/Icon';
 
-export function PrivacyBlockedCard({ sampleCount = 3, minThreshold = 5 }) {
+export function PrivacyBlockedCard({
+    sampleCount = 3,
+    respondentsCount,
+    minThreshold = 5,
+    customMessage
+}) {
+    const visibleSampleCount = respondentsCount ?? sampleCount;
+
     return (
         <div className="umbral-blocked-card" role="alert" aria-live="polite">
             <div className="umbral-blocked-icon" aria-hidden="true">
@@ -11,10 +18,10 @@ export function PrivacyBlockedCard({ sampleCount = 3, minThreshold = 5 }) {
             </div>
             <h2 className="umbral-blocked-title">Información protegida</h2>
             <p className="umbral-blocked-message">
-                Información protegida: no se alcanza el umbral mínimo de participantes ({minThreshold} agentes) para garantizar la confidencialidad y prevenir la reidentificación de respuestas.
+                {customMessage || `Información protegida: no se alcanza el umbral mínimo de participantes (${minThreshold} agentes) para reducir el riesgo de reidentificación de respuestas.`}
             </p>
             <div className="umbral-sample-count">
-                Muestra actual N={sampleCount} · Umbral mínimo N={minThreshold}
+                Muestra actual N={visibleSampleCount} · Umbral mínimo N={minThreshold}
             </div>
         </div>
     );

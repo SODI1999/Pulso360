@@ -39,7 +39,7 @@ export function TeamDashboardPage() {
                 <div>
                     <h1 className="page-title">Panel de Supervisión · Campaña Soporte Alpha</h1>
                     <p className="page-subtitle">
-                        Visualización agregada protegida por umbral de privacidad (N ≥ {minThreshold}). No existe acceso a datos individuales.
+                        Visualización agregada protegida por umbral de privacidad (N ≥ {minThreshold}). Esta vista no incluye datos individuales.
                     </p>
                 </div>
 

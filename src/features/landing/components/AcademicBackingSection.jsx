@@ -10,16 +10,16 @@ export function AcademicBackingSection() {
       <div className="landing-container">
         <div className="academic-backing-card">
           <div className="academic-card-top">
-            <span className="acts-eyebrow">Transferencia Tecnológica & Rigor Científico</span>
+            <span className="acts-eyebrow">Origen y evidencia del proyecto</span>
             <h2 id="academic-title">
               Ciencia social aplicada a la realidad operativa del Contact Center.
             </h2>
             <p className="academic-backing-lead">
-              Pulso360 nace de la investigación empírica liderada por el Semillero de Trabajo Social y la Facultad de Ingeniería del Tecnológico de Antioquia (TdeA), evaluando a 185 trabajadores en plataformas reales de call center en Medellín.
+              Pulso360 toma como referencia una investigación formativa del TdeA sobre agotamiento emocional y apoyo social en 185 trabajadores de call center en Medellín. La plataforma es una transferencia académica preventiva, no un instrumento clínico.
             </p>
           </div>
 
-          <div className="academic-normative-strip" aria-label="Marco normativo y garantías legales">
+          <div className="academic-normative-strip" aria-label="Marco normativo de referencia">
             <div className="normative-item">
               <Icon name="fileShield" size={15} />
               <span>Resolución 2764 de 2022 (SG-SST)</span>
@@ -38,7 +38,7 @@ export function AcademicBackingSection() {
             <div className="paper-cite-box">
               <Icon name="fileText" size={16} className="paper-icon" />
               <p>
-                «Relación entre el agotamiento emocional y la percepción de apoyo social en trabajadores de call center de Medellín» — Asesoría: I. J. Saldarriaga Roa (TdeA).
+                «Relación entre el agotamiento emocional y la percepción de apoyo social en trabajadores de call center de Medellín». Asesoría: I. J. Saldarriaga Roa (TdeA).
               </p>
             </div>
             <Link to="/fundamentacion" className="btn-academic-dossier">

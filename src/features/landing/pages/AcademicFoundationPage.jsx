@@ -20,6 +20,7 @@ import {
 export function AcademicFoundationPage() {
   const [citationFormat, setCitationFormat] = useState('apa7');
   const [copied, setCopied] = useState(false);
+  const [copyFailed, setCopyFailed] = useState(false);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
@@ -30,9 +31,12 @@ export function AcademicFoundationPage() {
     try {
       await navigator.clipboard.writeText(text);
       setCopied(true);
+      setCopyFailed(false);
       setTimeout(() => setCopied(false), 2500);
     } catch {
       setCopied(false);
+      setCopyFailed(true);
+      setTimeout(() => setCopyFailed(false), 2500);
     }
   };
 
@@ -95,7 +99,7 @@ export function AcademicFoundationPage() {
               <nav className='academic-toc-strip' aria-label='Índice temático del dossier'>
                 <div className='toc-header-label'>
                   <Icon name='bookmark' size={14} />
-                  <span>Índice del Dossier Científico:</span>
+                  <span>Secciones del documento:</span>
                 </div>
                 <div className='toc-links-row'>
                   <a href='#autores' className='toc-pill-link'>
@@ -112,7 +116,7 @@ export function AcademicFoundationPage() {
                   </a>
                   <a href='#antivigilancia' className='toc-pill-link'>
                     <Icon name='shieldCheck' size={13} />
-                    <span>3. Garantías</span>
+                    <span>3. Principios de diseño</span>
                   </a>
                   <a href='#citacion' className='toc-pill-link'>
                     <Icon name='fileText' size={13} />
@@ -200,7 +204,7 @@ export function AcademicFoundationPage() {
                 <h2 id='sec-evidencia-titulo'>Radiografía del agotamiento en centros de contacto locales</h2>
               </div>
               <p className='section-prose'>
-                {EMPIRICAL_DATA.sampleContext} La evaluación aplicó instrumentos psicométricos validados internacionalmente:
+                {EMPIRICAL_DATA.sampleContext} La investigación reporta el uso de los siguientes instrumentos; sus resultados y condiciones de aplicación pertenecen al estudio original:
               </p>
               <div className='instruments-row'>
                 {EMPIRICAL_DATA.instruments.map((inst) => (
@@ -358,7 +362,7 @@ export function AcademicFoundationPage() {
               </div>
             </section>
 
-            {/* SECCION 3: GARANTIAS ETICAS & NO-VIGILANCIA */}
+            {/* SECCION 3: PRINCIPIOS ETICOS & NO-VIGILANCIA */}
             <section className='academic-editorial-section anti-surveillance-section' id='antivigilancia' aria-labelledby='sec-privacidad-titulo'>
               <div className='anti-surveillance-card'>
                 <div className='anti-surveillance-header'>
@@ -367,9 +371,9 @@ export function AcademicFoundationPage() {
                   </div>
                   <div className='anti-surveillance-titles'>
                     <span className='section-tag-light'>Salvaguardas de Seguridad Psicológica</span>
-                    <h2 id='sec-privacidad-titulo' className='anti-surveillance-heading'>Garantía Anti-Vigilancia Punitiva</h2>
+                    <h2 id='sec-privacidad-titulo' className='anti-surveillance-heading'>Principios de diseño anti-vigilancia</h2>
                     <p className='anti-surveillance-sub'>
-                      El bienestar laboral nunca debe convertirse en un mecanismo de vigilancia, control disciplinario ni persecución. Pulso360 incorpora salvaguardas arquitectónicas inquebrantables por diseño:
+                      El bienestar laboral no debe convertirse en vigilancia, control disciplinario ni persecución. Esta sección documenta salvaguardas y límites de diseño; su alcance depende de los controles activos en cada despliegue:
                     </p>
                   </div>
                 </div>
@@ -425,7 +429,9 @@ export function AcademicFoundationPage() {
                       aria-label='Copiar referencia bibliográfica al portapapeles'
                     >
                       <Icon name={copied ? 'check' : 'copy'} size={15} />
-                      <span aria-live='polite'>{copied ? '¡Cita copiada!' : 'Copiar cita'}</span>
+                      <span aria-live='polite'>
+                        {copied ? '¡Cita copiada!' : copyFailed ? 'No se pudo copiar' : 'Copiar cita'}
+                      </span>
                     </button>
                   </div>
                 </div>
@@ -454,7 +460,7 @@ export function AcademicFoundationPage() {
                 <h2 id='sec-legal-titulo'>Deslinde de Responsabilidad & Marco Normativo de Referencia</h2>
               </div>
               <p className='section-prose'>
-                Pulso360 está articulado bajo el ordenamiento jurídico colombiano en materia laboral, derechos de autor, reserva médica ocupacional y protección estricta de datos personales:
+                Esta página reúne referencias del ordenamiento jurídico colombiano relacionadas con derechos de autor, SST, desconexión laboral y protección de datos. No constituye certificación de cumplimiento legal:
               </p>
               <div className='legal-dossier-shell'>
                 {LEGAL_FRAMEWORK_DATA.map((item) => {

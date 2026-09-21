@@ -145,7 +145,7 @@ export function ConsentPage() {
           {/* Resumen de la Política */}
           <section className="consent-policy-box">
             <h2 className="consent-policy-title">Aviso de privacidad · Resumen normativo</h2>
-            <p className="consent-policy-text">Pulso360 recopila únicamente la información asociada con las finalidades que decidas activar voluntariamente. La información individual sensible jamás se comparte con supervisores ni líderes operativos.</p>
+            <p className="consent-policy-text">Pulso360 recopila únicamente la información asociada con las finalidades que decidas activar voluntariamente. En los flujos definidos, la información individual sensible queda fuera de las vistas de supervisión operativa.</p>
 
             <h3 className="consent-policy-subtitle">Control total del titular</h3>
             <p className="consent-policy-text">Puedes modificar tus preferencias en cualquier momento y ejercer tus derechos de consulta, rectificación, portabilidad y supresión desde el módulo “Mis datos”.</p>
@@ -175,7 +175,7 @@ export function ConsentPage() {
             <label className={`consent-item ${consents.c2 ? 'active' : ''}`} htmlFor="c2" style={{ cursor: 'pointer' }}>
               <div className="consent-info">
                 <div className="consent-title">C2 · Bitácora privada</div>
-                <div className="consent-desc">Permite guardar notas de texto libre en tu espacio personal cifrado.</div>
+                <div className="consent-desc">Permite guardar notas de texto libre en tu espacio personal dentro del almacenamiento configurado por el despliegue.</div>
                 <div className="consent-consequence">Si lo desactivas: la bitácora se oculta de tu menú.</div>
               </div>
               <input

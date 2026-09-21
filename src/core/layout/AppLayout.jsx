@@ -1,7 +1,7 @@
 // src/core/layout/AppLayout.jsx
 // Plantilla maestra de la aplicación con navegación reactiva por roles y consentimientos
 
-import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { Link, NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { authService, roleLabels, roleHomePaths } from '../auth/authService';
 import { pulsoStore } from '../storage/pulsoStore';
 import { Icon } from '../components/Icon';
@@ -9,7 +9,37 @@ import { InactivityModal } from '../components/InactivityModal';
 
 export function AppLayout() {
     const navigate = useNavigate();
+    const { pathname } = useLocation(); // debe ir antes del early return (regla de hooks)
     const user = authService.getCurrentUser();
+
+    // Mapa de rutas → nombre de página visible en el topbar (H-03 antislop)
+    const PAGE_NAMES = {
+        '/agente/panel': 'Panel de turno',
+        '/agente/checkin': 'Check-in de bienestar',
+        '/agente/bitacora': 'Bitácora personal',
+        '/agente/mi-analisis': 'Mi análisis',
+        '/agente/mi-bienestar': 'Mi bienestar',
+        '/agente/apoyo': 'Canal de apoyo',
+        '/agente/mis-datos': 'Mis datos y privacidad',
+        '/apoyo-crisis': 'Apoyo inmediato',
+        '/supervisor/panel': 'Panel de equipo',
+        '/supervisor/acciones': 'Acciones de equipo',
+        '/sst/panel': 'Panel SST',
+        '/sst/alertas': 'Bandeja de alertas',
+        '/sst/reglas-alertas': 'Reglas de alerta',
+        '/sst/intervenciones': 'Intervenciones',
+        '/sst/buzon': 'Buzón de apoyo',
+        '/auditor/auditoria': 'Registro de auditoría',
+        '/admin/organizacion': 'Organización',
+        '/admin/usuarios-roles': 'Usuarios y roles',
+        '/admin/parametros': 'Parámetros del sistema',
+        '/admin/importar': 'Importación CSV',
+        '/admin/solicitudes': 'Solicitudes Habeas Data',
+        '/reportes': 'Reportes',
+        '/notificaciones': 'Avisos',
+    };
+
+    const currentPageName = PAGE_NAMES[pathname] ?? null;
 
     // Si no hay sesión, AppLayout no se renderiza (es controlado por ProtectedRoute)
     if (!user) return null;
@@ -87,19 +117,25 @@ export function AppLayout() {
             <div className="app-main">
                 <header className="app-topbar">
                     <div className="topbar-title">
-                        <span>Pulso360</span>
-                        <span style={{ color: 'var(--c-texto-mutado)', fontSize: '13px' }}>|</span>
-                        <span style={{ fontSize: '13.5px', color: 'var(--c-texto-suave)', fontWeight: '500' }}>
-                            {roleLabel}
-                        </span>
+                        {/* H-03 antislop: muestra la página actual en vez de datos ya visibles en el sidebar */}
+                        {currentPageName
+                            ? <span>{currentPageName}</span>
+                            : <span className="topbar-brand-fallback">Pulso360</span>
+                        }
                     </div>
 
                     <div className="topbar-actions">
-                        <Link to="/notificaciones" className="btn btn-topbar-notifications" aria-label="Ver avisos">
-                            <Icon name="notifications" size={16} />
+                        <Link
+                            to="/notificaciones"
+                            className={`btn btn-topbar-notifications${unreadCount > 0 ? ' has-unread' : ''}`}
+                            aria-label={unreadCount > 0 ? `Ver avisos (${unreadCount} sin leer)` : 'Ver avisos'}
+                        >
+                            <span className="topbar-bell-icon" aria-hidden="true">
+                                <Icon name="notifications" size={18} />
+                            </span>
                             <span>Avisos</span>
                             {unreadCount > 0 && (
-                                <span className="topbar-pill-badge">
+                                <span className="topbar-pill-badge" aria-hidden="true">
                                     {unreadCount}
                                 </span>
                             )}

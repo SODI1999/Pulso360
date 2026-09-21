@@ -7,6 +7,7 @@ import { authService } from '../../../core/auth/authService';
 import { pulsoStore } from '../../../core/storage/pulsoStore';
 import { Icon } from '../../../core/components/Icon';
 import { TrendLineChart } from '../../../core/components/TrendLineChart';
+import '../../../styles/agent.css';
 
 const DIMENSION_DEFINITIONS = [
     { key: 'energia', label: 'Batería de turno', desc: 'Vitalidad y energía disponible durante la operación' },
@@ -42,13 +43,13 @@ export function MyWellbeingPage() {
     }, [checkinRecords]);
 
     return (
-        <div style={{ maxWidth: '1040px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '28px' }}>
+        <div className="agent-page agent-page--wellbeing" style={{ maxWidth: '1040px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '28px' }}>
             {/* Cabecera Editorial Limpia */}
             <header className="page-header" style={{ marginBottom: 0 }}>
                 <div>
                     <h1 className="page-title">Mi tendencia personal de bienestar</h1>
                     <p className="page-subtitle">
-                        Espacio estrictamente individual y confidencial; tus respuestas nunca se comparan con las de otros ni se exponen a supervisión.
+                        Espacio individual para revisar tus registros; esta vista no compara tus respuestas con las de otras personas ni las presenta en la supervisión agregada.
                     </p>
                 </div>
                 <Link to="/agente/checkin" className="btn btn-primary">
@@ -61,7 +62,7 @@ export function MyWellbeingPage() {
             <div className="alert-banner alert-banner--calma" style={{ display: 'flex', gap: '14px', alignItems: 'flex-start', marginBottom: 0 }}>
                 <Icon name="kAnonymityShield" size={22} style={{ color: 'var(--c-primario)', flexShrink: 0, marginTop: '2px' }} />
                 <div style={{ fontSize: '13px', lineHeight: '1.55' }}>
-                    <strong>Espacio protegido del titular:</strong> Las seis dimensiones evalúan factores del turno de trabajo y no juicios de valor sobre tu persona. Este seguimiento te pertenece en exclusiva para reconocer patrones de fatiga y modular tu jornada a tiempo.
+                    <strong>Espacio personal:</strong> Las seis dimensiones describen factores del turno de trabajo, no juicios de valor sobre tu persona. Puedes revisar estos registros para reconocer patrones de fatiga y decidir tus próximos pasos.
                 </div>
             </div>
 
@@ -198,4 +199,3 @@ export function MyWellbeingPage() {
         </div>
     );
 }
-

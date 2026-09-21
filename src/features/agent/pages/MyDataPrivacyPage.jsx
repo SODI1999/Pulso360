@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { authService, roleLabels } from '../../../core/auth/authService';
 import { pulsoStore } from '../../../core/storage/pulsoStore';
 import { Icon } from '../../../core/components/Icon';
+import '../../../styles/agent.css';
 
 export function MyDataPrivacyPage() {
     const currentUser = authService.getCurrentUser();
@@ -161,7 +162,7 @@ export function MyDataPrivacyPage() {
     const isSuppressionConfirmed = suppressionConfirmText.trim() === 'SUPRIMIR';
 
     return (
-        <div style={{ maxWidth: '1040px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '24px' }}>
+        <div className="agent-page agent-page--privacy" style={{ maxWidth: '1040px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '24px' }}>
             <header className="page-header" style={{ marginBottom: 0 }}>
                 <div>
                     <h1 className="page-title">Aquí controlas tus datos personales</h1>

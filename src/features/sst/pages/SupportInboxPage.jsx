@@ -52,7 +52,7 @@ export function SupportInboxPage() {
         <div>
           <h1 className="page-title">Buzón de acompañamiento y orientación</h1>
           <p className="page-subtitle">
-            Canal confidencial exclusivo de SST para la gestión de solicitudes individuales voluntarias (RF-10).
+            Canal reservado para SST en la gestión de solicitudes individuales voluntarias (RF-10).
           </p>
         </div>
       </div>
@@ -61,7 +61,7 @@ export function SupportInboxPage() {
       <div className="alert-banner info" style={{ marginBottom: 'var(--space-6)' }}>
         <Icon name="shield" size={20} />
         <div>
-          <strong>Privacidad y reserva estricta:</strong> En las solicitudes anónimas, el sistema garantiza que ningún dato identifique al titular. En las solicitudes confidenciales identificadas, los datos de contacto son de acceso exclusivo y restringido para el profesional de SST asignado, nunca accesibles por supervisión operativa ni gerencia.
+          <strong>Privacidad y reserva:</strong> En la modalidad anónima, el flujo no solicita datos de contacto y muestra un código de seguimiento. En la modalidad identificada, el detalle de contacto se presenta al profesional SST asignado según los controles activos del despliegue.
         </div>
       </div>
 

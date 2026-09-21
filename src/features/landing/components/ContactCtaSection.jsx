@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom';
-import { Icon } from '../../../core/components/Icon';
 
 /**
  * Módulo Institucional de Contacto y Acompañamiento Operativo
@@ -15,20 +14,16 @@ export function ContactCtaSection() {
               ¿Lideras una operación BPO o gestionas Seguridad y Salud en el Trabajo?
             </h2>
             <p className="contact-cta-lead">
-              Coordinemos una demostración técnica guiada para tu equipo de operaciones y talento humano, con dimensionamiento de umbrales éticos de k-anonimato y auditoría de privacidad sin fricción operativa.
+              Coordinemos una demostración técnica guiada para tu equipo de operaciones y talento humano, con revisión de umbrales de k-anonimato y límites de privacidad aplicados a la operación.
             </p>
             <div className="contact-cta-buttons">
               <Link to="/contactenos" className="btn-editorial btn-editorial-primary">
                 Coordinar demostración o piloto
               </Link>
-              <a href="mailto:contacto@pulso360.co" className="btn-editorial btn-editorial-outline btn-contact-email" title="Enviar correo a contacto@pulso360.co">
-                Escribir correo
-              </a>
             </div>
-            <span className="contact-cta-guarantee">
-              <Icon name="shieldCheck" size={14} />
-              Las consultas comerciales o institucionales jamás se vinculan con las bitácoras o respuestas anónimas de los agentes.
-            </span>
+            <p className="contact-cta-guarantee">
+              La demostración se centra en umbrales de k-anonimato, tendencias agregadas y límites de acceso por rol.
+            </p>
           </div>
         </div>
       </div>

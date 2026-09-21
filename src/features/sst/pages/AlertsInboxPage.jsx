@@ -126,7 +126,7 @@ export function AlertsInboxPage() {
       <div className="alert-banner info" style={{ marginBottom: 'var(--space-6)' }}>
         <Icon name="info" size={20} />
         <div>
-          <strong>Ciclo de alerta preventiva (RF-08):</strong> Las alertas identifican variaciones agregadas para formular planes de mitigación de grupo. El sistema jamás individualiza trabajadores ni genera reportes punitivos.
+          <strong>Ciclo de alerta preventiva (RF-08):</strong> Las alertas identifican variaciones agregadas para formular planes de mitigación de grupo. En esta vista no se muestran trabajadores individualizados ni reportes punitivos.
         </div>
       </div>
 

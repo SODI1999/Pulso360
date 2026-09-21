@@ -1,18 +1,13 @@
 // src/features/agent/components/PerspectiveSimModal.jsx
 // Simulador de transparencia y k-anonimato: clarifica qué información permanece privada y qué visualiza el supervisor/SST
 
-import { useEffect } from 'react';
+import { useRef } from 'react';
 import { Icon } from '../../../core/components/Icon';
+import { useAgentModalAccessibility } from './useAgentModalAccessibility';
 
 export function PerspectiveSimModal({ isOpen, onClose }) {
-    useEffect(() => {
-        if (!isOpen) return;
-        const handleKeyDown = (e) => {
-            if (e.key === 'Escape') onClose();
-        };
-        window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [isOpen, onClose]);
+    const dialogRef = useRef(null);
+    useAgentModalAccessibility({ isOpen, onClose, dialogRef });
 
     if (!isOpen) return null;
 
@@ -26,35 +21,24 @@ export function PerspectiveSimModal({ isOpen, onClose }) {
                 if (e.target === e.currentTarget) onClose();
             }}
         >
-            <div className="modal-box perspective-modal" role="document">
+            <div ref={dialogRef} className="modal-box agent-modal perspective-modal" role="document">
                 <div className="modal-header">
                     <div>
-                        <span
-                            style={{
-                                fontSize: '11px',
-                                fontWeight: '700',
-                                color: 'var(--c-calma-accent)',
-                                textTransform: 'uppercase',
-                                letterSpacing: '0.05em',
-                                display: 'block',
-                                marginBottom: '4px'
-                            }}
-                        >
-                            Transparencia Algorítmica y Privacidad por Diseño
+                        <span className="agent-kicker">
+                            Transparencia de datos
                         </span>
                         <h2 id="perspective-modal-title" className="modal-title">
                             ¿Qué ve tu supervisor y qué permanece protegido?
                         </h2>
                         <p className="modal-subtitle">
-                            Compara cara a cara lo que está en tu control exclusivo frente a los datos que llegan a la operación.
+                            Revisa qué permanece en tu espacio personal y qué puede aparecer en vistas agregadas de la operación.
                         </p>
                     </div>
                     <button
                         type="button"
-                        className="btn-ghost"
+                        className="modal-close-btn"
                         onClick={onClose}
                         aria-label="Cerrar ventana de perspectiva"
-                        style={{ padding: '6px', borderRadius: 'var(--radius-full)' }}
                     >
                         <Icon name="close" size={20} />
                     </button>
@@ -65,34 +49,34 @@ export function PerspectiveSimModal({ isOpen, onClose }) {
                     <div className="perspective-card private">
                         <div className="perspective-header">
                             <div>
-                                <h3 style={{ fontSize: '14px', fontWeight: '700', color: 'var(--c-texto)', margin: 0 }}>
+                                <h3 className="perspective-card-title">
                                     Tu Espacio Privado
                                 </h3>
-                                <span style={{ fontSize: '11.5px', color: 'var(--c-texto-suave)' }}>
-                                    Visión exclusiva del agente
+                                <span className="perspective-card-sub">
+                                    Registros de tu espacio personal
                                 </span>
                             </div>
-                            <span className="perspective-badge private">Secreto Individual</span>
+                            <span className="perspective-badge private">No es una vista operativa</span>
                         </div>
                         <ul className="perspective-list">
                             <li className="perspective-list-item">
-                                <span className="perspective-item-icon" style={{ color: 'var(--c-calma-accent)' }}>
+                                <span className="perspective-item-icon perspective-item-icon--private">
                                     <Icon name="check_circle" size={15} />
                                 </span>
                                 <span>
-                                    <strong>Notas de Bitácora:</strong> Redacción íntegra, emociones y desahogo de turno quedan cifrados localmente.
+                                    <strong>Notas de Bitácora:</strong> La redacción íntegra, las emociones y el desahogo de turno permanecen en el espacio personal configurado por la aplicación.
                                 </span>
                             </li>
                             <li className="perspective-list-item">
-                                <span className="perspective-item-icon" style={{ color: 'var(--c-calma-accent)' }}>
+                                <span className="perspective-item-icon perspective-item-icon--private">
                                     <Icon name="check_circle" size={15} />
                                 </span>
                                 <span>
-                                    <strong>Puntuaciones somáticas individuales:</strong> El valor exacto que marcas en cada escala (1 a 5) nunca se asocia a tu nombre.
+                                    <strong>Puntuaciones somáticas individuales:</strong> En esta simulación, el valor exacto de cada escala se mantiene en el registro del agente y no se muestra en las vistas colectivas.
                                 </span>
                             </li>
                             <li className="perspective-list-item">
-                                <span className="perspective-item-icon" style={{ color: 'var(--c-calma-accent)' }}>
+                                <span className="perspective-item-icon perspective-item-icon--private">
                                     <Icon name="check_circle" size={15} />
                                 </span>
                                 <span>
@@ -100,7 +84,7 @@ export function PerspectiveSimModal({ isOpen, onClose }) {
                                 </span>
                             </li>
                             <li className="perspective-list-item">
-                                <span className="perspective-item-icon" style={{ color: 'var(--c-calma-accent)' }}>
+                                <span className="perspective-item-icon perspective-item-icon--private">
                                     <Icon name="check_circle" size={15} />
                                 </span>
                                 <span>
@@ -114,10 +98,10 @@ export function PerspectiveSimModal({ isOpen, onClose }) {
                     <div className="perspective-card supervisor">
                         <div className="perspective-header">
                             <div>
-                                <h3 style={{ fontSize: '14px', fontWeight: '700', color: 'var(--c-texto)', margin: 0 }}>
+                                <h3 className="perspective-card-title">
                                     Vista de Operaciones / SST
                                 </h3>
-                                <span style={{ fontSize: '11.5px', color: 'var(--c-texto-suave)' }}>
+                                <span className="perspective-card-sub">
                                     Reportes colectivos consolidados
                                 </span>
                             </div>
@@ -125,7 +109,7 @@ export function PerspectiveSimModal({ isOpen, onClose }) {
                         </div>
                         <ul className="perspective-list">
                             <li className="perspective-list-item">
-                                <span className="perspective-item-icon" style={{ color: '#1d4ed8' }}>
+                                <span className="perspective-item-icon perspective-item-icon--ops">
                                     <Icon name="info" size={15} />
                                 </span>
                                 <span>
@@ -133,7 +117,7 @@ export function PerspectiveSimModal({ isOpen, onClose }) {
                                 </span>
                             </li>
                             <li className="perspective-list-item">
-                                <span className="perspective-item-icon" style={{ color: 'var(--c-critico)' }}>
+                                <span className="perspective-item-icon perspective-item-icon--risk">
                                     <Icon name="close" size={15} />
                                 </span>
                                 <span>
@@ -141,7 +125,7 @@ export function PerspectiveSimModal({ isOpen, onClose }) {
                                 </span>
                             </li>
                             <li className="perspective-list-item">
-                                <span className="perspective-item-icon" style={{ color: 'var(--c-critico)' }}>
+                                <span className="perspective-item-icon perspective-item-icon--risk">
                                     <Icon name="close" size={15} />
                                 </span>
                                 <span>
@@ -149,7 +133,7 @@ export function PerspectiveSimModal({ isOpen, onClose }) {
                                 </span>
                             </li>
                             <li className="perspective-list-item">
-                                <span className="perspective-item-icon" style={{ color: '#1d4ed8' }}>
+                                <span className="perspective-item-icon perspective-item-icon--ops">
                                     <Icon name="info" size={15} />
                                 </span>
                                 <span>
@@ -165,7 +149,7 @@ export function PerspectiveSimModal({ isOpen, onClose }) {
                     <Icon name="shield" size={20} />
                     <div>
                         <strong>Mecanismo de Urna Cerrada Institucional:</strong>
-                        <p style={{ margin: '3px 0 0', fontSize: '12px' }}>
+                        <p>
                             Los datos personales se procesan con salvaguardas técnicas irreversibles. Ninguna métrica de bienestar puede utilizarse en evaluaciones de desempeño, amonestaciones o rankings operativos de la operación.
                         </p>
                     </div>
@@ -177,7 +161,7 @@ export function PerspectiveSimModal({ isOpen, onClose }) {
                     <span>Aislamiento por roles (RBAC): El módulo de supervisor no posee endpoints ni consultas de identidad individual.</span>
                 </div>
 
-                <div className="modal-footer" style={{ marginTop: '20px', display: 'flex', justifyContent: 'flex-end' }}>
+                <div className="modal-footer">
                     <button
                         type="button"
                         className="btn-modal-comprendido"

@@ -23,21 +23,21 @@ export function ProblemSection() {
             ========================================================================= */}
         <div className="problem-metric-strip" aria-label="Indicadores clave de la industria BPO">
           <div className="strip-metric-item">
-            <span className="strip-metric-val">420s</span>
-            <strong className="strip-metric-lbl">Meta típica de AHT (Average Handle Time)</strong>
+          <span className="strip-metric-val">AHT</span>
+          <strong className="strip-metric-lbl">Presión por duración de llamada</strong>
             <p className="strip-metric-sub">
-              Presión constante por acortar cada llamada en línea directa con el usuario.
+            Un indicador operativo puede coexistir con fatiga y tensión; Pulso360 no lo convierte en una calificación individual.
             </p>
-            <span className="strip-metric-source">Ref. sectorial BPrO / ANDI Colombia 2024</span>
+          <span className="strip-metric-source">Contexto operativo BPO · no es una métrica de este demo</span>
           </div>
 
           <div className="strip-metric-item">
-            <span className="strip-metric-val">35% – 40%</span>
-            <strong className="strip-metric-lbl">Rotación anual promedio en centros de contacto</strong>
+          <span className="strip-metric-val">Turnos</span>
+          <strong className="strip-metric-lbl">Pausas, colas y rotación</strong>
             <p className="strip-metric-sub">
-              Deserción prematura impulsada por el desgaste acumulado y la falta de apoyo oportuno.
+            La experiencia cambia con llamadas consecutivas, turnos rotativos y pausas que no siempre se cumplen.
             </p>
-            <span className="strip-metric-source">Ref. sectorial BPrO / ANDI Colombia 2024</span>
+          <span className="strip-metric-source">Situaciones de operación que la demo permite reconocer</span>
           </div>
 
           <div className="strip-metric-item highlight-item">
@@ -46,7 +46,7 @@ export function ProblemSection() {
             <p className="strip-metric-sub">
               Evidencia empírica identificada en la investigación base del Semillero en Medellín.
             </p>
-            <span className="strip-metric-source">Muestra: n=185 trabajadores · Medellín · 2024</span>
+            <span className="strip-metric-source">Investigación formativa TdeA · muestra n=185 · Medellín</span>
           </div>
         </div>
 
@@ -73,7 +73,7 @@ export function ProblemSection() {
               «Llevo cuatro horas de llamadas pegadas y clientes bravos. No alcanzo ni a tomar agua, pero si digo algo me clavan el turno de cierre o me toca domingo.»
             </blockquote>
             <cite className="dialogue-quote-cite">
-              — Relato testimonial basado en la investigación cualitativa del TdeA con operadores en Medellín
+              Relato testimonial basado en la investigación cualitativa del TdeA con operadores en Medellín
             </cite>
           </div>
 
@@ -121,21 +121,21 @@ export function ProblemSection() {
               <div className="side-label">Enfoque Tradicional Pasivo</div>
               <ul className="side-list">
                 <li>
-                  <span className="bullet-neutral" aria-hidden="true">—</span>
+                  <span className="bullet-neutral" aria-hidden="true">•</span>
                   <div>
                     <strong>Cuestionarios extensos (+45 preguntas)</strong>
                     <p>Interrumpen la operación y fatigan al responder.</p>
                   </div>
                 </li>
                 <li>
-                  <span className="bullet-neutral" aria-hidden="true">—</span>
+                  <span className="bullet-neutral" aria-hidden="true">•</span>
                   <div>
                     <strong>Resultados 6 a 9 meses tarde</strong>
                     <p>Fotografía desactualizada cuando el agente ya desertó.</p>
                   </div>
                 </li>
                 <li>
-                  <span className="bullet-neutral" aria-hidden="true">—</span>
+                  <span className="bullet-neutral" aria-hidden="true">•</span>
                   <div>
                     <strong>Sospecha de anonimato en el piso</strong>
                     <p>El agente desconfía y oculta su sobrecarga real.</p>
@@ -152,21 +152,21 @@ export function ProblemSection() {
                   <span className="bullet-check"><Icon name="checkCircle" size={15} /></span>
                   <div>
                     <strong>Micro-pulso ágil de 60 segundos</strong>
-                    <p>Voluntario al cerrar turno, sin fricción operativa.</p>
+                    <p>Voluntario al cerrar turno y pensado para una interacción breve.</p>
                   </div>
                 </li>
                 <li>
                   <span className="bullet-check"><Icon name="checkCircle" size={15} /></span>
                   <div>
-                    <strong>Señales tempranas en menos de 48 horas</strong>
-                    <p>Intervención de SST con pausas y rotación a tiempo.</p>
+                    <strong>Señales para revisión de SST</strong>
+                    <p>Las tendencias agregadas orientan pausas y acciones preventivas del equipo.</p>
                   </div>
                 </li>
                 <li>
                   <span className="bullet-check"><Icon name="checkCircle" size={15} /></span>
                   <div>
-                    <strong>k-Anonimato algorítmico matemático</strong>
-                    <p>Garantía ética: grupos menores a 5 quedan blindados.</p>
+                    <strong>Umbral de k-anonimato</strong>
+                    <p>Con menos de 5 registros elegibles, la vista colectiva queda bloqueada.</p>
                   </div>
                 </li>
               </ul>
@@ -177,5 +177,3 @@ export function ProblemSection() {
     </section>
   );
 }
-
-

@@ -7,6 +7,7 @@ import { authService } from '../../../core/auth/authService';
 import { pulsoStore } from '../../../core/storage/pulsoStore';
 import { Icon } from '../../../core/components/Icon';
 import '../../../styles/bitacora.css';
+import '../../../styles/agent.css';
 
 export function MyAnalysisPage() {
     const currentUser = authService.getCurrentUser();
@@ -17,13 +18,13 @@ export function MyAnalysisPage() {
     }, [data.journals, currentUser?.id]);
 
     return (
-        <div style={{ maxWidth: '1040px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '28px' }}>
+        <div className="agent-page agent-page--analysis">
             {/* Cabecera Editorial Limpia */}
             <header className="page-header" style={{ marginBottom: 0 }}>
                 <div>
                     <h1 className="page-title">Análisis orientativo de mis textos</h1>
                     <p className="page-subtitle">
-                        Resultados explicables derivados de tus reflexiones personales en bitácora. Visibles única y exclusivamente para ti.
+                        Resultados explicables derivados de tus reflexiones personales en bitácora, disponibles dentro de tu espacio de agente.
                     </p>
                 </div>
                 <Link to="/agente/bitacora" className="btn btn-primary">
@@ -32,7 +33,7 @@ export function MyAnalysisPage() {
                 </Link>
             </header>
 
-            {/* Sello Explícito de Análisis Local Transparente y Privacidad Absoluta */}
+            {/* Alcance explícito del análisis local */}
             <div
                 style={{
                     padding: '18px 20px',
@@ -69,7 +70,7 @@ export function MyAnalysisPage() {
                         </strong>
                     </div>
                     <p style={{ fontSize: '12.5px', color: 'var(--c-calma-text-muted)', lineHeight: '1.55', margin: 0 }}>
-                        Este clasificador léxico de apoyo opera <strong>exclusivamente dentro de la memoria de tu navegador</strong> mediante concordancia determinista de términos. Tus reflexiones no se envían a servidores de IA externos ni a terceros en la nube. <strong>Ningún supervisor, líder de campaña ni directivo recibe notificaciones ni puede ver estos factores</strong>. La información es orientativa para tu autorreflexión y no constituye diagnóstico clínico.
+                        Este clasificador léxico de apoyo opera <strong>dentro de la memoria de tu navegador</strong> mediante concordancia determinista de términos. En el despliegue actual, tus reflexiones no se envían a servidores de IA externos. Los factores se muestran en tu espacio de agente y son orientativos para tu autorreflexión; no constituyen un diagnóstico clínico.
                     </p>
                 </div>
             </div>
@@ -171,4 +172,3 @@ export function MyAnalysisPage() {
         </div>
     );
 }
-

@@ -8,6 +8,7 @@ import { pulsoStore } from '../../../core/storage/pulsoStore';
 import { Icon } from '../../../core/components/Icon';
 import { ScaleSelector } from '../components/ScaleSelector';
 import { BpoResetModal } from '../components/BpoResetModal';
+import '../../../styles/agent.css';
 
 const QUESTIONS = [
     {
@@ -32,7 +33,7 @@ const QUESTIONS = [
         key: 'apoyo',
         title: 'Cuando se te complica una llamada o un caso difícil, ¿qué tan respaldado te sientes por tu soporte?',
         labels: ['Sin respaldo', 'Poco apoyo', 'Respaldo básico', 'Buen respaldo', 'Totalmente respaldado'],
-        contextNote: 'Esta percepción es exclusivamente tuya; jamás se utiliza para calificar ni amonestar a tu supervisor ni a tus compañeros.'
+        contextNote: 'Esta percepción corresponde a tu experiencia del turno; en los flujos definidos no se plantea usarla para calificar o amonestar a otras personas.'
     },
     {
         key: 'distanciamiento',
@@ -210,7 +211,7 @@ export function CheckinWizardPage() {
     // 1. Caso: Bloqueo por falta de consentimiento C1
     if (!consent?.c1) {
         return (
-            <div>
+            <div className="agent-page agent-page--checkin">
                 <div className="page-header">
                     <div>
                         <h1 className="page-title">Check-in de bienestar</h1>
@@ -239,7 +240,7 @@ export function CheckinWizardPage() {
     // 2. Caso: Pantalla de Cierre Restaurador (éxito)
     if (submittedSuccess) {
         return (
-            <div>
+            <div className="agent-page agent-page--checkin">
                 <div className="page-header page-header--wizard">
                     <div>
                         <h1 className="page-title">Check-in de bienestar</h1>
@@ -266,7 +267,7 @@ export function CheckinWizardPage() {
                     </div>
 
                     <p className="restaurador-privacy-note">
-                        Tus respuestas están protegidas bajo la <strong>Urna Sellada de Pulso360</strong>. Las dimensiones omitidas se almacenan como ausencia de dato, nunca como cero.
+                        Tus respuestas siguen la regla de agregación definida para esta experiencia. Las dimensiones omitidas se almacenan como ausencia de dato, no como cero.
                     </p>
 
                     <div className="restaurador-actions">
@@ -307,7 +308,7 @@ export function CheckinWizardPage() {
         const remainingTime = (editHours * 60 * 60 * 1000) - age;
 
         return (
-            <div>
+            <div className="agent-page agent-page--checkin">
                 <div className="page-header">
                     <div>
                         <h1 className="page-title">Check-in de bienestar</h1>
@@ -352,7 +353,7 @@ export function CheckinWizardPage() {
     const currentValue = draft[currentQ.key];
 
     return (
-        <div>
+        <div className="agent-page agent-page--checkin">
             {/* Soporte de Desconexión Laboral (Ley 2191 de 2022) */}
             {isOutsideShift && !dismissDisconnectNotice && (
                 <div className="disconnect-banner wizard-disconnect-banner">
@@ -391,7 +392,7 @@ export function CheckinWizardPage() {
                 </div>
             </div>
 
-            <form className="card wizard-card" onSubmit={handleSubmit}>
+            <form className="card wizard-card agent-work-surface" onSubmit={handleSubmit}>
                 <div className="wizard-header-meta">
                     <strong className="wizard-step-indicator">
                         Dimensión {currentStep + 1} de 6
@@ -452,16 +453,16 @@ export function CheckinWizardPage() {
                     )}
                 </div>
 
-                {/* Micro-garantía de privacidad: Urna Sellada (N ≥ 5) y aislamiento estricto de roles */}
+                {/* Regla visible de agregación y alcance por rol */}
                 <div className="privacy-notice-box wizard-privacy-box">
                     <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
                         <Icon name="shieldCheck" size={16} style={{ color: 'var(--c-primario)', flexShrink: 0, marginTop: '2px' }} />
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
                             <strong style={{ color: 'var(--c-texto)', fontSize: '12.5px' }}>
-                                Protección por Urna Sellada (N ≥ 5)
+                                Regla de agregación (N ≥ 5)
                             </strong>
                             <span style={{ fontSize: '12px', color: 'var(--c-texto-suave)', lineHeight: '1.45' }}>
-                                Tus respuestas individuales están resguardadas con aislamiento estricto de roles. Ningún supervisor ni líder de campaña puede ver tus notas ni valoraciones particulares; únicamente alimentan métricas colectivas anonimizadas cuando el grupo alcanza al menos 5 personas.
+                                En los flujos definidos, las respuestas individuales quedan fuera de la vista colectiva mientras el grupo no alcanza al menos 5 personas. Los roles operativos reciben tendencias agregadas, no el detalle de cada respuesta.
                             </span>
                         </div>
                     </div>

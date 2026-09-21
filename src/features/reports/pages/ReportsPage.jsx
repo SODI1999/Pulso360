@@ -140,7 +140,7 @@ export function ReportsPage() {
       ['Recuperacion agregada', '58', 'Atencion Preventiva'],
       ['Tasa de participacion', '92%', 'Muestra representativa'],
       [],
-      ['CLAUSULA DE PRIVACIDAD', 'Este documento contiene exclusivamente datos agregados anonimizados. No expone check-ins individuales ni bitacoras personales.']
+      ['ALCANCE DE PRIVACIDAD', 'Este documento contiene datos agregados del corte seleccionado. No incluye check-ins individuales ni bitácoras personales.']
     ];
 
     const csvContent = csvRows

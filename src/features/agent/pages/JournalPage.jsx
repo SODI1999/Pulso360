@@ -11,6 +11,7 @@ import { NlpAnalysisPanel } from '../components/NlpAnalysisPanel';
 import { NlpCorrectionModal, NlpHistoryModal } from '../components/NlpCorrectionModal';
 import { CrisisSupportModal } from '../components/CrisisSupportModal';
 import '../../../styles/bitacora.css';
+import '../../../styles/agent.css';
 
 export function JournalPage() {
     const currentUser = authService.getCurrentUser();
@@ -352,11 +353,11 @@ export function JournalPage() {
     // 1. Caso: Bloqueo por falta de consentimiento C2
     if (!consent?.c2) {
         return (
-            <div>
+            <div className="agent-page agent-page--journal">
                 <div className="page-header">
                     <div>
                         <h1 className="page-title">Mi bitácora laboral</h1>
-                        <p className="page-subtitle">Almacenamiento privado y cifrado.</p>
+                        <p className="page-subtitle">Bitácora personal y análisis local.</p>
                     </div>
                 </div>
 
@@ -381,7 +382,7 @@ export function JournalPage() {
     const allCategoriesWithNone = [...nlpEngine.getCategoryNames(), 'Ninguna aplica'];
 
     return (
-        <div>
+        <div className="agent-page agent-page--journal">
             <div className="page-header">
                 <div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', marginBottom: '6px' }}>
@@ -392,7 +393,7 @@ export function JournalPage() {
                         </span>
                     </div>
                     <p className="page-subtitle">
-                        Solo tú puedes consultar estos textos. Almacenamiento privado; ningún otro rol dispone de acceso a tus notas.
+                        En esta experiencia, tus notas se muestran dentro de tu espacio personal y no forman parte de las vistas operativas agregadas.
                     </p>
                 </div>
                 <Link to="/agente/mi-analisis" className="btn btn-secondary">
@@ -402,9 +403,9 @@ export function JournalPage() {
             </div>
 
             {/* Split View: Lista a la izquierda y Editor Modo Desahogo a la derecha */}
-            <div id="journalArea" className="journal-layout">
+            <div id="journalArea" className="journal-layout agent-work-layout">
                 {/* 1. Panel de Entradas Previas */}
-                <section className="card">
+                <section className="card agent-work-surface">
                     <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <div className="card-title">Mis entradas</div>
                         <button type="button" className="btn btn-secondary" onClick={handleNewEntry}>
@@ -454,7 +455,7 @@ export function JournalPage() {
                 </section>
 
                 {/* 2. Editor de Entrada: Modo Desahogo */}
-                <section className="card">
+                <section className="card agent-work-surface agent-journal-editor">
                     <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '8px' }}>
                         <div>
                             <div className="card-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -511,7 +512,7 @@ export function JournalPage() {
                                     className="form-textarea desahogo-textarea"
                                     rows={9}
                                     maxLength={2000}
-                                    placeholder="¿Tuviste una llamada que te dejó con el corazón acelerado? ¿El sistema estuvo lento o resolviste un caso difícil? Escribe con libertad; este espacio es privado y no es medido por monitoreo de calidad (QA) ni por supervisión..."
+                                    placeholder="¿Tuviste una llamada que te dejó con el corazón acelerado? ¿El sistema estuvo lento o resolviste un caso difícil? Escribe con libertad; este espacio pertenece a tu registro personal y no se muestra en las vistas agregadas..."
                                     value={journalText}
                                     onChange={(e) => setJournalText(e.target.value)}
                                 />

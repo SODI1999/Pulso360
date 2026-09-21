@@ -7,6 +7,7 @@ import { authService, roleLabels } from '../../../core/auth/authService';
 import { pulsoStore } from '../../../core/storage/pulsoStore';
 import { Icon } from '../../../core/components/Icon';
 import { SupportRequestForm } from '../components/SupportRequestForm';
+import '../../../styles/agent.css';
 
 export function SupportChannelPage() {
     const currentUser = authService.getCurrentUser();
@@ -81,10 +82,10 @@ export function SupportChannelPage() {
         return (
             <div>
                 <div className="page-header">
-                    <div>
+                    <div className="agent-page agent-page--support">
                         <h1 className="page-title">Solicitar acompañamiento</h1>
                         <p className="page-subtitle">
-                            Tu solicitud es canalizada exclusivamente al equipo de SST; no es visible para tu líder ni para tu supervisor.
+                            Tu solicitud se canaliza al equipo de SST; esta vista no la presenta a tu líder ni a tu supervisor.
                         </p>
                     </div>
                 </div>
@@ -115,12 +116,12 @@ export function SupportChannelPage() {
     }
 
     return (
-        <div>
+        <div className="agent-page agent-page--support">
             <div className="page-header">
                 <div>
                     <h1 className="page-title">Solicitar acompañamiento</h1>
                     <p className="page-subtitle">
-                        Tu solicitud es canalizada exclusivamente al equipo de SST; no es visible para tu líder ni para tu supervisor.
+                        Tu solicitud se canaliza al equipo de SST; esta vista no la presenta a tu líder ni a tu supervisor.
                     </p>
                 </div>
                 <Link to="/apoyo-crisis" className="btn btn-calma-urgent">
@@ -199,7 +200,7 @@ export function SupportChannelPage() {
                                         </div>
                                     ) : (
                                         <div style={{ fontSize: '12px', color: 'var(--c-calma-text-muted)' }}>
-                                            Contacto asignado directamente a profesional de SST con reserva absoluta.
+                                            Contacto asignado directamente a profesional de SST según la modalidad seleccionada y los controles del despliegue.
                                         </div>
                                     )}
                                 </div>
@@ -211,4 +212,3 @@ export function SupportChannelPage() {
         </div>
     );
 }
-

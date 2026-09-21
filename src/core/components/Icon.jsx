@@ -10,6 +10,58 @@ export function Icon({ name, className = '', size, ...props }) {
         <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
       </>
     ),
+    // Señales gestuales de la pausa guiada (el icono enseña el movimiento)
+    volumeOn: (
+      <>
+        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+        <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+        <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+      </>
+    ),
+    volumeOff: (
+      <>
+        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+        <line x1="22" y1="9" x2="16" y2="15" />
+        <line x1="16" y1="9" x2="22" y2="15" />
+      </>
+    ),
+    bell: (
+      <>
+        <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
+        <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+      </>
+    ),
+    bellOff: (
+      <>
+        <path d="M18 8a6 6 0 0 0-9.33-5" />
+        <path d="M6 8c0 7-3 9-3 9h15" />
+        <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+        <line x1="2" y1="2" x2="22" y2="22" />
+      </>
+    ),
+    breathIn: (
+      <>
+        <path d="M12 21v-8" />
+        <polyline points="8.5 16.5 12 13 15.5 16.5" />
+        <path d="M5 8c1.5-2 4-3 7-3s5.5 1 7 3" />
+        <circle cx="12" cy="12" r="10" opacity="0.35" />
+      </>
+    ),
+    breathHold: (
+      <>
+        <circle cx="12" cy="12" r="4" />
+        <circle cx="12" cy="12" r="7.5" />
+        <circle cx="12" cy="12" r="10" opacity="0.35" />
+      </>
+    ),
+    breathOut: (
+      <>
+        <path d="M12 3v8" />
+        <polyline points="8.5 7.5 12 11 15.5 7.5" />
+        <path d="M5 16c1.5 2 4 3 7 3s5.5-1 7-3" />
+        <circle cx="12" cy="12" r="10" opacity="0.35" />
+      </>
+    ),
     lock: (
       <>
         <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />

@@ -30,7 +30,7 @@ export function ContactenosPage() {
 
               <h1>Hablemos de cómo cuidar el bienestar de tu operación.</h1>
               <p className="contact-lead">
-                Pulso360 ayuda a los centros de contacto a detectar el agotamiento laboral antes de que se transforme en rotación o crisis, protegiendo la intimidad del agente con k-anonimato estricto. Acompañamos a tu equipo de gestión humana, SST y operaciones.
+                Pulso360 ayuda a los centros de contacto a revisar señales tempranas de agotamiento laboral y sus condiciones de operación. En los flujos definidos, la vista colectiva aplica una regla de agregación k-anonimato; acompañamos a tu equipo de gestión humana, SST y operaciones.
               </p>
 
               <div className="contact-channels-list">
@@ -67,13 +67,13 @@ export function ContactenosPage() {
                 </div>
               </div>
 
-              {/* Tarjeta de Garantía de Privacidad y Habeas Data */}
+              {/* Tarjeta de separación de flujos y Habeas Data */}
               <div className="contact-privacy-guarantee">
                 <Icon name="shieldCheck" size={22} />
                 <div>
-                  <strong>Independencia Estricta de Datos</strong>
+                  <strong>Separación de flujos de datos</strong>
                   <p>
-                    Las solicitudes comerciales o de soporte técnico jamás se vinculan con las bitácoras personales ni con las respuestas de bienestar de los agentes de tu organización.
+                    Las solicitudes comerciales o de soporte técnico se gestionan en un flujo distinto de las bitácoras personales y de las respuestas de bienestar. El alcance final depende de los controles activos del despliegue.
                   </p>
                 </div>
               </div>
@@ -92,4 +92,3 @@ export function ContactenosPage() {
     </div>
   );
 }
-

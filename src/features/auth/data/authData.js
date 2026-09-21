@@ -48,7 +48,7 @@ export const DEMO_ROLES = [
     email: 'auditor@pulso360.co',
     password: 'Pulso360#2026',
     icon: 'audit',
-    description: 'Trazabilidad de accesos, verificación del umbral k ≥ 5 y cumplimiento estricto de Habeas Data.'
+    description: 'Trazabilidad de accesos, verificación del umbral k ≥ 5 y revisión de reglas de Habeas Data.'
   },
   {
     id: 'admin',
@@ -69,18 +69,18 @@ export const DEMO_ROLES = [
 export const AUTH_SAFEGUARDS = [
   {
     icon: 'shieldCheck',
-    title: 'Protección Colectiva (k ≥ 5)',
-    description: 'Tus respuestas solo se consolidan en grupos de 5 o más agentes. Nadie en la operación puede aislar tu registro.'
+    title: 'Regla de agregación (k ≥ 5)',
+    description: 'En los flujos definidos, las respuestas sólo alimentan una vista colectiva cuando el grupo alcanza 5 o más agentes únicos.'
   },
   {
     icon: 'fileShield',
-    title: 'Desvinculado de tus Métricas y AHT',
-    description: 'Tu nivel de fatiga o saturación jamás afectará tu adherencia al turno, tiempos de llamada ni evaluaciones laborales.'
+    title: 'Separación de bienestar y AHT',
+    description: 'El diseño separa el registro de bienestar de las métricas operativas; la gobernanza institucional debe sostener este límite.'
   },
   {
     icon: 'lock',
-    title: 'Bitácora Confidencial y Personal',
-    description: 'Tus notas se procesan localmente en tu dispositivo. Tu supervisor nunca tiene acceso al texto de tu bitácora.'
+    title: 'Bitácora personal',
+    description: 'El análisis léxico de la bitácora se ejecuta localmente en el navegador; su alcance depende del despliegue y de los controles activos.'
   }
 ];
 
@@ -113,7 +113,7 @@ export const BPO_SSO_PROVIDERS = [
     id: 'magic-link',
     label: 'Acceso con Enlace Rápido',
     shortLabel: 'Enlace Rápido',
-    helper: 'Enlace seguro temporal enviado a tu correo corporativo'
+    helper: 'Enlace temporal enviado a tu correo corporativo'
   }
 ];
 

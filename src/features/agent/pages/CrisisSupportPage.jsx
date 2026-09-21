@@ -7,6 +7,7 @@ import { authService, roleLabels } from '../../../core/auth/authService';
 import { pulsoStore } from '../../../core/storage/pulsoStore';
 import { Icon } from '../../../core/components/Icon';
 import { BpoResetModal } from '../components/BpoResetModal';
+import '../../../styles/agent.css';
 
 const GROUNDING_STEPS = [
     {
@@ -134,13 +135,12 @@ export function CrisisSupportPage() {
     const currentStep = GROUNDING_STEPS[activeGroundingIndex];
 
     return (
-        <div style={{ maxWidth: '920px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '24px' }}>
-            <div>
+        <div className="crisis-page-col">
+            <div className="agent-page agent-page--crisis">
                 <button
                     type="button"
                     className="btn btn-secondary"
                     onClick={() => navigate(-1)}
-                    style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}
                 >
                     <Icon name="arrowLeft" size={18} />
                     <span>Volver a la vista anterior</span>
@@ -149,28 +149,20 @@ export function CrisisSupportPage() {
 
             {/* Banner Principal de Calma y Contención */}
             <div className="crisis-hero-banner">
-                <div style={{ display: 'flex', gap: '20px', alignItems: 'flex-start' }}>
+                <div className="crisis-hero-flex">
                     <div className="crisis-hero-icon">
                         <Icon name="support" size={28} />
                     </div>
-                    <div style={{ flex: 1 }}>
+                    <div className="crisis-hero-body">
                         <span
-                            style={{
-                                fontSize: '11px',
-                                fontWeight: '700',
-                                color: 'var(--c-calma-accent)',
-                                textTransform: 'uppercase',
-                                letterSpacing: '0.06em',
-                                display: 'block',
-                                marginBottom: '4px'
-                            }}
+                            className="agent-kicker"
                         >
                             Espacio de Seguridad y Primeros Auxilios Psicológicos
                         </span>
-                        <h1 style={{ fontSize: '22px', fontWeight: '800', color: 'var(--c-calma-text)', marginBottom: '8px', letterSpacing: '-0.01em' }}>
+                        <h1 className="crisis-hero-title">
                             Estás a tiempo de hacer una pausa y recibir apoyo
                         </h1>
-                        <p style={{ fontSize: '13.5px', color: 'var(--c-calma-text-muted)', lineHeight: '1.6', margin: 0 }}>
+                        <p className="crisis-hero-lead">
                             Pulso360 no es un servicio de atención clínica ni reemplaza a un profesional especializado.
                             Si estás sintiendo una sobrecarga desbordante, angustia aguda o riesgo físico, aquí dispones de técnicas inmediatas de regulación sensorial, líneas telefónicas oficiales de emergencia y la opción de solicitar acompañamiento profesional a SST en total reserva.
                         </p>
@@ -179,10 +171,10 @@ export function CrisisSupportPage() {
             </div>
 
             {/* SECCIÓN 1: Primeros Auxilios Psicológicos (PAP) - Anclaje Sensorial 5-4-3-2-1 */}
-            <div className="card" style={{ border: '1.5px solid var(--c-calma-border)' }}>
+            <div className="card crisis-card--calma">
                 <div className="card-header">
                     <div>
-                        <div className="card-title" style={{ fontSize: '16px', color: 'var(--c-calma-text)' }}>
+                        <div className="card-title crisis-card-title crisis-card-title--calma">
                             <Icon name="self_improvement" size={20} />
                             <span>Técnica de Anclaje Sensorial (Grounding 5-4-3-2-1)</span>
                         </div>
@@ -194,7 +186,6 @@ export function CrisisSupportPage() {
                         type="button"
                         className="btn btn-calma-outline"
                         onClick={() => setIsBpoResetOpen(true)}
-                        style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}
                     >
                         <Icon name="healing" size={18} />
                         <span>Abrir respiración guiada de emergencia (Box 4x4)</span>
@@ -202,51 +193,28 @@ export function CrisisSupportPage() {
                 </div>
 
                 {/* Pasos interactivos */}
-                <div style={{ marginTop: '16px' }}>
-                    <div
-                        style={{
-                            display: 'flex',
-                            gap: '8px',
-                            overflowX: 'auto',
-                            paddingBottom: '8px',
-                            marginBottom: '16px'
-                        }}
-                    >
+                <div className="grounding-tabs-wrap">
+                    <div className="grounding-tabs">
                         {GROUNDING_STEPS.map((step, idx) => (
                             <button
                                 key={step.number}
                                 type="button"
                                 onClick={() => setActiveGroundingIndex(idx)}
-                                className="grounding-tab-btn"
-                                style={{
-                                    border: activeGroundingIndex === idx ? `2px solid ${step.color}` : '1px solid var(--c-calma-border)',
-                                    backgroundColor: activeGroundingIndex === idx ? 'var(--c-calma-surface-subtle)' : 'var(--c-superficie)'
-                                }}
+                                className={`grounding-tab-btn ${activeGroundingIndex === idx ? 'active' : ''}`} style={{ '--step-color': step.color }}
                             >
-                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '4px' }}>
+                                <div className="grounding-tab-head">
                                     <span
-                                        style={{
-                                            fontSize: '15px',
-                                            fontWeight: '800',
-                                            color: step.color
-                                        }}
+                                        className="grounding-tab-num"
                                     >
                                         {step.number}
                                     </span>
                                     <span
-                                        style={{
-                                            fontSize: '10px',
-                                            fontWeight: '700',
-                                            padding: '2px 6px',
-                                            borderRadius: 'var(--radius-full)',
-                                            backgroundColor: activeGroundingIndex === idx ? step.color : 'var(--c-fondo-subtle)',
-                                            color: activeGroundingIndex === idx ? '#ffffff' : 'var(--c-texto-mutado)'
-                                        }}
+                                        className="grounding-tab-badge"
                                     >
                                         {step.badge}
                                     </span>
                                 </div>
-                                <div style={{ fontSize: '11.5px', fontWeight: '600', color: 'var(--c-calma-text)' }}>
+                                <div className="grounding-tab-sense">
                                     {step.sense}
                                 </div>
                             </button>
@@ -254,42 +222,21 @@ export function CrisisSupportPage() {
                     </div>
 
                     {/* Detalle del paso seleccionado */}
-                    <div
-                        style={{
-                            padding: '18px 20px',
-                            backgroundColor: 'var(--c-calma-bg)',
-                            borderRadius: 'var(--radius-lg)',
-                            border: '1px solid var(--c-calma-border)',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: '10px'
-                        }}
-                    >
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <div className="grounding-step-detail">
+                        <div className="grounding-step-head">
                             <span
-                                style={{
-                                    width: '32px',
-                                    height: '32px',
-                                    borderRadius: 'var(--radius-full)',
-                                    backgroundColor: currentStep.color,
-                                    color: '#ffffff',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    fontWeight: '800',
-                                    fontSize: '15px'
-                                }}
+                                className="grounding-step-num" style={{ '--step-color': currentStep.color }}
                             >
                                 {currentStep.number}
                             </span>
-                            <strong style={{ fontSize: '15px', color: 'var(--c-calma-text)' }}>
+                            <strong className="grounding-step-title">
                                 {currentStep.title}
                             </strong>
                         </div>
-                        <p style={{ fontSize: '13px', color: 'var(--c-calma-text-muted)', lineHeight: '1.55', margin: '0' }}>
+                        <p className="grounding-step-guide">
                             {currentStep.guide}
                         </p>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '8px' }}>
+                        <div className="grounding-step-meta">
                             <button
                                 type="button"
                                 className="btn btn-ghost btn-sm"
@@ -299,7 +246,7 @@ export function CrisisSupportPage() {
                                 <Icon name="arrowLeft" size={14} />
                                 <span>Paso anterior</span>
                             </button>
-                            <span style={{ fontSize: '12px', color: 'var(--c-texto-mutado)', fontWeight: '600' }}>
+                            <span className="grounding-step-source">
                                 Paso {activeGroundingIndex + 1} de {GROUNDING_STEPS.length}
                             </span>
                             <button
@@ -320,7 +267,7 @@ export function CrisisSupportPage() {
             <div className="card">
                 <div className="card-header">
                     <div>
-                        <div className="card-title" style={{ fontSize: '16px', color: 'var(--c-texto)' }}>
+                        <div className="card-title crisis-card-title">
                             <Icon name="phone" size={20} />
                             <span>Líneas oficiales y gratuitas de atención telefónica 24/7</span>
                         </div>
@@ -333,38 +280,24 @@ export function CrisisSupportPage() {
                 <div className="crisis-lines-layout">
                     {/* Tarjeta Destacada: Línea 106 (Salud Mental Distrital y Nacional) */}
                     <div
-                        className="card"
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'space-between',
-                            padding: '22px',
-                            border: '1.5px solid var(--c-calma-border)',
-                            backgroundColor: 'var(--c-calma-surface)'
-                        }}
-                    >
+                        className="card crisis-line-card crisis-line-card--destacada">
                         <div>
-                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
-                                <strong style={{ fontSize: '18px', color: 'var(--c-calma-accent)' }}>
+                            <div className="crisis-line-head">
+                                <strong className="crisis-line-name">
                                     Línea 106
                                 </strong>
                                 <span className="badge badge-ok">Canal Prioritario 24/7</span>
                             </div>
-                            <div style={{ fontSize: '13px', fontWeight: '700', color: 'var(--c-texto)', marginBottom: '6px' }}>
+                            <div className="crisis-line-label">
                                 Salud mental y escucha distrital
                             </div>
-                            <p style={{ fontSize: '12.5px', color: 'var(--c-texto-suave)', lineHeight: '1.5', margin: '0 0 20px' }}>
+                            <p className="crisis-line-desc">
                                 Orientación y primeros auxilios psicológicos atendidos por profesionales en salud mental. Gratuita desde fijos y móviles en toda Colombia. Recomendada para descompresión ante sobrecarga emocional.
                             </p>
                         </div>
                         <a
                             href="tel:106"
-                            className="btn btn-calma-urgent"
-                            style={{
-                                width: '100%',
-                                minHeight: '44px',
-                                justifyContent: 'center'
-                            }}
+                            className="btn btn-calma-urgent crisis-line-call crisis-line-call--destacada"
                             aria-label="Llamar directamente a la Línea 106 de salud mental"
                         >
                             <Icon name="phone" size={18} />
@@ -376,41 +309,24 @@ export function CrisisSupportPage() {
                     <div className="crisis-secondary-lines">
                         {/* Botón Táctil: Línea 123 */}
                         <div
-                            className="card"
-                            style={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                justifyContent: 'space-between',
-                                padding: '16px',
-                                border: '1.5px solid var(--c-borde)',
-                                backgroundColor: 'var(--c-superficie)'
-                            }}
-                        >
+                            className="card crisis-line-card crisis-card--borde">
                             <div>
-                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
-                                    <strong style={{ fontSize: '16px', color: 'var(--c-critico)' }}>
+                                <div className="crisis-line-head">
+                                    <strong className="crisis-line-name">
                                         Línea 123
                                     </strong>
                                     <span className="badge badge-danger">Emergencias 24/7</span>
                                 </div>
-                                <div style={{ fontSize: '12px', fontWeight: '600', color: 'var(--c-texto)', marginBottom: '4px' }}>
+                                <div className="crisis-line-label">
                                     Número Único de Seguridad y Emergencias
                                 </div>
-                                <p style={{ fontSize: '11.5px', color: 'var(--c-texto-suave)', lineHeight: '1.4', margin: '0 0 12px' }}>
+                                <p className="crisis-line-desc">
                                     Para situaciones con riesgo inminente de vida, integridad física o requerimiento inmediato de ambulancia.
                                 </p>
                             </div>
                             <a
                                 href="tel:123"
-                                className="btn btn-secondary btn-sm"
-                                style={{
-                                    width: '100%',
-                                    minHeight: '36px',
-                                    fontWeight: '700',
-                                    borderColor: 'var(--c-critico)',
-                                    color: 'var(--c-critico)',
-                                    justifyContent: 'center'
-                                }}
+                                className="btn btn-secondary btn-sm crisis-line-call crisis-line-call--critico"
                                 aria-label="Llamar directamente a la Línea 123 de emergencias"
                             >
                                 <Icon name="phone" size={16} />
@@ -420,33 +336,24 @@ export function CrisisSupportPage() {
 
                         {/* Línea 155 y Afiliación EPS / ARL */}
                         <div
-                            className="card"
-                            style={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                justifyContent: 'space-between',
-                                padding: '16px',
-                                border: '1px solid var(--c-borde-suave)'
-                            }}
-                        >
+                            className="card crisis-line-card crisis-line-card--suave">
                             <div>
-                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
-                                    <strong style={{ fontSize: '15px', color: 'var(--c-texto)' }}>
+                                <div className="crisis-line-head">
+                                    <strong className="crisis-line-name crisis-line-name--sm">
                                         Línea 155 / EPS / ARL
                                     </strong>
                                     <span className="badge badge-info">Orientación</span>
                                 </div>
-                                <div style={{ fontSize: '12px', fontWeight: '600', color: 'var(--c-texto)', marginBottom: '4px' }}>
+                                <div className="crisis-line-label">
                                     Orientación a mujeres & Canales de salud
                                 </div>
-                                <p style={{ fontSize: '11.5px', color: 'var(--c-texto-suave)', lineHeight: '1.4', margin: '0 0 12px' }}>
+                                <p className="crisis-line-desc">
                                     Orientación gratuita 24h a mujeres víctimas de violencia y canal de apoyo psicológico de tu EPS o ARL asignada.
                                 </p>
                             </div>
                             <a
                                 href="tel:155"
-                                className="btn btn-secondary btn-sm"
-                                style={{ width: '100%', minHeight: '36px', justifyContent: 'center' }}
+                                className="btn btn-secondary btn-sm crisis-line-call"
                                 aria-label="Llamar a la Línea 155 de orientación a mujeres"
                             >
                                 <Icon name="phone" size={15} />
@@ -458,10 +365,10 @@ export function CrisisSupportPage() {
             </div>
 
             {/* SECCIÓN 3: Canalización Legal Diferenciada (Ley 1010/2006 vs Res. 3461/2025) */}
-            <div className="card" style={{ border: '1px solid var(--c-borde)' }}>
+            <div className="card crisis-card--borde">
                 <div className="card-header">
                     <div>
-                        <div className="card-title" style={{ fontSize: '16px', color: 'var(--c-texto)' }}>
+                        <div className="card-title crisis-card-title">
                             <Icon name="shieldCheck" size={20} />
                             <span>Rutas institucionales y marco normativo colombiano</span>
                         </div>
@@ -471,38 +378,21 @@ export function CrisisSupportPage() {
                     </div>
                 </div>
 
-                <div
-                    style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-                        gap: '16px',
-                        marginTop: '16px'
-                    }}
-                >
+                <div className="crisis-legal-grid">
                     {/* Caja Informativa 1: Acoso Laboral (Ley 1010 de 2006 - CCL) */}
-                    <div
-                        style={{
-                            padding: '16px 18px',
-                            backgroundColor: 'var(--c-fondo)',
-                            borderRadius: 'var(--radius-lg)',
-                            border: '1.5px solid var(--c-borde)',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: '8px'
-                        }}
-                    >
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <span className="badge badge-info" style={{ textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                    <div className="crisis-legal-box crisis-legal-box--acoso">
+                        <div className="crisis-legal-head">
+                            <span className="badge badge-info crisis-legal-badge-capsule">
                                 Ley 1010 de 2006
                             </span>
                         </div>
-                        <strong style={{ fontSize: '14.5px', color: 'var(--c-texto)' }}>
+                        <strong className="crisis-legal-title">
                             Ruta para Acoso Laboral: Comité de Convivencia Laboral (CCL)
                         </strong>
-                        <p style={{ fontSize: '12.5px', color: 'var(--c-texto-suave)', lineHeight: '1.5', margin: 0 }}>
+                        <p className="crisis-legal-desc">
                             El <strong>Comité de Convivencia Laboral (CCL)</strong> es el organismo bipartito (integrado por representantes de los trabajadores y del empleador) competente para recibir y tramitar quejas formales sobre conductas persistentes y demostrables de maltrato, persecución, discriminación, entorpecimiento o inequidad en el trabajo.
                         </p>
-                        <ul style={{ fontSize: '12px', color: 'var(--c-texto-mutado)', margin: '4px 0 0', paddingLeft: '18px', lineHeight: '1.45' }}>
+                        <ul className="crisis-legal-list">
                             <li>Procedimiento confidencial y preventivo de concertación.</li>
                             <li>Formulación de compromisos mutuos de mejora del clima laboral.</li>
                             <li>Radicación directa ante la secretaría del CCL de la compañía.</li>
@@ -510,44 +400,27 @@ export function CrisisSupportPage() {
                     </div>
 
                     {/* Caja Informativa 2: Presunto Acoso Sexual (Resolución 3461 de 2025 - MinTrabajo) */}
-                    <div
-                        style={{
-                            padding: '16px 18px',
-                            backgroundColor: 'var(--c-legal-orange-bg)',
-                            borderRadius: 'var(--radius-lg)',
-                            border: '1.5px solid var(--c-legal-orange-border)',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: '8px'
-                        }}
-                    >
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div className="crisis-legal-box crisis-legal-box--naranja">
+                        <div className="crisis-legal-head">
                             <span
-                                style={{
-                                    fontSize: '11px',
-                                    fontWeight: '700',
-                                    padding: '3px 8px',
-                                    borderRadius: 'var(--radius-full)',
-                                    backgroundColor: 'var(--c-legal-orange)',
-                                    color: '#ffffff'
-                                }}
+                                className="crisis-legal-badge-pill"
                             >
                                 Resolución 3461 de 2025
                             </span>
-                            <span style={{ fontSize: '11px', fontWeight: '700', color: 'var(--c-legal-orange-text)' }}>
+                            <span className="crisis-legal-badge-orange">
                                 Atención Urgente e Independiente
                             </span>
                         </div>
-                        <strong style={{ fontSize: '14.5px', color: 'var(--c-legal-orange-text)' }}>
+                        <strong className="crisis-legal-title crisis-legal-title--orange">
                             Presunto Acoso o Violencia Sexual: NO pasa por el CCL
                         </strong>
-                        <p style={{ fontSize: '12.5px', color: 'var(--c-legal-orange-text-dark)', lineHeight: '1.5', margin: 0 }}>
+                        <p className="crisis-legal-desc crisis-legal-desc--orange">
                             Conforme a la <strong>Resolución 3461 de 2025 del Ministerio del Trabajo</strong>, las denuncias o situaciones de presunto acoso o violencia sexual en el trabajo <strong>tienen prohibida la conciliación o mediación con el denunciado</strong>, a fin de evitar cualquier forma de revictimización.
                         </p>
-                        <ul style={{ fontSize: '12px', color: 'var(--c-legal-orange-text)', margin: '4px 0 0', paddingLeft: '18px', lineHeight: '1.45' }}>
+                        <ul className="crisis-legal-list crisis-legal-list--orange">
                             <li><strong>Canalización directa:</strong> Se activa ante la Gerencia de Talento Humano, SST o autoridades externas (Fiscalía, MinTrabajo, Línea 155).</li>
                             <li><strong>Medidas cautelares inmediatas:</strong> Separación física o de funciones sin desmejora salarial ni perjuicio para la persona afectada.</li>
-                            <li>Trato con debida diligencia de género y confidencialidad absoluta.</li>
+                            <li>Trato con debida diligencia de género y reserva según el canal utilizado.</li>
                         </ul>
                     </div>
                 </div>
@@ -557,24 +430,24 @@ export function CrisisSupportPage() {
             <div className="card">
                 <div className="card-header">
                     <div>
-                        <div className="card-title" style={{ fontSize: '16px', fontWeight: '700', marginBottom: '4px' }}>
+                        <div className="card-title crisis-card-title crisis-card-title--tight">
                             Contacto prioritario con el equipo de SST
                         </div>
                         <div className="card-subtitle">
                             Solo se creará una solicitud voluntaria de contacto si tú decides activarla y confirmarla expresamente.
-                            Ningún texto de tu bitácora ni respuestas individuales se compartirán con terceros ni supervisores.
+                            El flujo de solicitud no incorpora automáticamente el texto de tu bitácora ni las respuestas individuales.
                         </div>
                     </div>
                 </div>
 
                 {/* Si C5 no está concedido */}
                 {!consent?.c5 ? (
-                    <div className="alert-banner warn" style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+                    <div className="alert-banner warn crisis-alert-flex">
                         <Icon name="info" size={20} />
                         <div>
                             <strong>Finalidad C5 requerida:</strong> Para canalizar una solicitud de orientación o contacto con SST debes activar la finalidad <em>C5 (Acompañamiento)</em> en tus preferencias de consentimiento informado. Las líneas telefónicas oficiales y el ejercicio de anclaje siguen plenamente disponibles.
-                            <div style={{ marginTop: '12px' }}>
-                                <Link to="/consentimiento" className="btn btn-primary" style={{ fontSize: '13px' }}>
+                            <div className="crisis-consent-cta">
+                                <Link to="/consentimiento" className="btn btn-primary btn-sm">
                                     Gestionar consentimiento
                                 </Link>
                             </div>
@@ -595,15 +468,15 @@ export function CrisisSupportPage() {
                                 <span>Solicitar contacto prioritario de SST</span>
                             </button>
                         ) : (
-                            <div style={{ padding: '20px', border: '1px solid var(--c-borde)', borderRadius: 'var(--radius-lg)', background: 'var(--c-fondo)' }}>
-                                <div style={{ fontWeight: '700', fontSize: '14.5px', color: 'var(--c-texto)', marginBottom: '8px' }}>
+                            <div className="crisis-priority-panel">
+                                <div className="crisis-priority-panel-title">
                                     Paso 2: Elige la modalidad y confirma tu solicitud
                                 </div>
-                                <p style={{ fontSize: '13px', color: 'var(--c-texto-suave)', marginBottom: '16px' }}>
+                                <p className="crisis-priority-panel-lead">
                                     Selecciona cómo deseas que el equipo de SST gestione tu caso prioritario:
                                 </p>
 
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '20px' }}>
+                                <div className="support-mode-list">
                                     <label
                                         className={`support-mode-capsule ${crisisMode === 'anonimo' ? 'active' : ''}`}
                                         htmlFor="crisisAnonimo"
@@ -618,11 +491,11 @@ export function CrisisSupportPage() {
                                             onChange={() => setCrisisMode('anonimo')}
                                         />
                                         <div>
-                                            <strong style={{ color: 'var(--c-texto)', fontSize: '13.5px' }}>
-                                                Modalidad Anónima (Recomendada si deseas reserva total)
+                                            <strong>
+                                                Modalidad Anónima (Recomendada si no deseas compartir datos de contacto)
                                             </strong>
-                                            <div style={{ fontSize: '12px', color: 'var(--c-texto-suave)', marginTop: '3px' }}>
-                                                Tu identidad queda protegida. SST no recibirá tu nombre ni tu correo institucional. Podrás consultar el estado y respuesta dentro de la app con el código generado.
+                                            <div className="support-mode-desc">
+                                                Esta modalidad no solicita tu nombre ni tu correo institucional. Podrás consultar el estado y respuesta dentro de la app con el código generado.
                                             </div>
                                         </div>
                                     </label>
@@ -641,22 +514,22 @@ export function CrisisSupportPage() {
                                             onChange={() => setCrisisMode('confidencial')}
                                         />
                                         <div>
-                                            <strong style={{ color: 'var(--c-texto)', fontSize: '13.5px' }}>
+                                            <strong>
                                                 Modalidad Confidencial Identificada
                                             </strong>
-                                            <div style={{ fontSize: '12px', color: 'var(--c-texto-suave)', marginTop: '3px' }}>
-                                                Tu nombre y correo institucional serán visibles exclusivamente para el profesional SST asignado a fin de contactarte directamente para orientación. Tu supervisor no interviene.
+                                            <div className="support-mode-desc">
+                                                Tu nombre y correo institucional se muestran al profesional SST asignado para facilitar la orientación; la vista de supervisión no participa en este flujo.
                                             </div>
                                         </div>
                                     </label>
                                 </div>
 
-                                <div className="alert-banner info" style={{ marginBottom: '20px', fontSize: '12.5px' }}>
+                                <div className="alert-banner info crisis-panel-note">
                                     <Icon name="info" size={18} />
-                                    <div><strong>Garantía de confidencialidad:</strong> En ningún caso se envía el texto de tu bitácora ni tus respuestas de check-in.</div>
+                                    <div><strong>Alcance de la solicitud:</strong> El flujo no envía automáticamente el texto de tu bitácora ni tus respuestas de check-in.</div>
                                 </div>
 
-                                <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                                <div className="form-actions">
                                     <button
                                         type="button"
                                         className="btn btn-secondary"
@@ -677,14 +550,14 @@ export function CrisisSupportPage() {
                         )}
 
                         {feedback && (
-                            <div className="alert-banner ok" style={{ marginTop: '16px' }}>
+                            <div className="alert-banner ok crisis-feedback">
                                 <Icon name="check" size={20} />
                                 <div>
-                                    <span className="badge badge-ok" style={{ marginBottom: '4px' }}>Solicitud prioritaria registrada</span>
+                                    <span className="badge badge-ok crisis-feedback-badge">Solicitud prioritaria registrada</span>
                                     <br />
                                     <strong>Código de radicado:</strong> <code>{feedback.code}</code> ({feedback.isAnonymous ? 'Modalidad Anónima - Identidad protegida' : 'Modalidad Confidencial Identificada'}).
                                     <br />
-                                    <small style={{ color: 'var(--c-texto-suave)' }}>
+                                    <small>
                                         SST atenderá tu caso con carácter prioritario. No se transmitió texto de tu bitácora.
                                     </small>
                                 </div>
@@ -702,4 +575,3 @@ export function CrisisSupportPage() {
         </div>
     );
 }
-

@@ -69,7 +69,7 @@ export function HeroSection() {
           </h1>
 
           <p className="hero-editorial-lead">
-            Micro-pulsos voluntarios de 60 segundos y analítica agregada para que SST intervenga a tiempo. Cero vigilancia individual, cero fricción operativa.
+            Micro-pulsos voluntarios de 60 segundos y analítica agregada para que SST revise tendencias del equipo sin convertir el bienestar en una métrica de desempeño.
           </p>
 
           {/* Acciones principales */}
@@ -90,7 +90,7 @@ export function HeroSection() {
           <div className="hero-trust-editorial">
             <Icon name="shieldCheck" size={16} className="hero-trust-icon" />
             <div className="hero-trust-text">
-              Tus respuestas son privadas: protegidas por Ley 1581 y selladas con{' '}
+              La aplicación separa los registros individuales de las tendencias agregadas y bloquea{' '}
               <span className="hero-k-popover-anchor">
                 <button
                   type="button"
@@ -111,7 +111,7 @@ export function HeroSection() {
                     ref={popoverRef}
                     className="kanonymity-popover"
                     role="dialog"
-                    aria-label="Garantía de k-Anonimato (k ≥ 5)"
+                    aria-label="Explicación del umbral de k-Anonimato (k ≥ 5)"
                   >
                     <div className="k-popover-header">
                       <div className="k-popover-title-row">
@@ -147,14 +147,14 @@ export function HeroSection() {
                   </div>
                 )}
               </span>
-              {' '}para proteger la confidencialidad individual en muestras pequeñas.
+              {' '}cuando la muestra es pequeña. Revisa el alcance de esta demo antes de registrar datos reales.
             </div>
           </div>
         </div>
 
         {/* =========================================================================
             COLUMNA DERECHA (40%): Ficha de Cierre de Turno y Desconexión Laboral
-            (Ley 2191, check-in 48s, 0% individual supervisor visibility)
+            (Ley 2191, check-in ilustrativo, sin vista individual para supervisión)
             ========================================================================= */}
         <div className="hero-teaser-col" aria-label="Ficha de Cierre de Turno y Desconexión Laboral">
           <div className="disconnection-card">
@@ -174,7 +174,7 @@ export function HeroSection() {
               </span>
               <span className="disconnection-time-badge">
                 <Icon name="clock" size={13} />
-                Check-in 48s
+                Ejemplo de check-in · 60 s
               </span>
             </div>
 
@@ -184,7 +184,7 @@ export function HeroSection() {
                 Desconexión Laboral Activa
               </h3>
               <p className="disconnection-desc">
-                Así experimenta el colaborador su cierre de turno al completar el micro-pulso de 60 segundos. Tus respuestas son confidenciales y alimentan el promedio de bienestar de la campaña.
+                Ejemplo ilustrativo del cierre de turno. El registro voluntario puede alimentar una tendencia agregada cuando el grupo cumple el umbral de protección.
               </p>
             </div>
 
@@ -195,7 +195,7 @@ export function HeroSection() {
                   <Icon name="timerAht" size={16} />
                 </div>
                 <div className="safeguard-text">
-                  <strong className="safeguard-metric">48 segundos</strong>
+                  <strong className="safeguard-metric">60 segundos</strong>
                   <span className="safeguard-label">Tiempo invertido en check-in</span>
                 </div>
               </div>
@@ -205,8 +205,8 @@ export function HeroSection() {
                   <Icon name="lock" size={16} />
                 </div>
                 <div className="safeguard-text">
-                  <strong className="safeguard-metric">Solo promedios</strong>
-                  <span className="safeguard-label">Visibilidad individual bloqueada por diseño</span>
+                  <strong className="safeguard-metric">Tendencias agregadas</strong>
+                  <span className="safeguard-label">La vista de supervisión no muestra registros individuales</span>
                 </div>
               </div>
 
@@ -215,8 +215,8 @@ export function HeroSection() {
                   <Icon name="notifications" size={16} />
                 </div>
                 <div className="safeguard-text">
-                  <strong className="safeguard-metric">Silenciadas hasta las 07:00</strong>
-                  <span className="safeguard-label">Notificaciones y recordatorios laborales bloqueados</span>
+                  <strong className="safeguard-metric">Participación voluntaria</strong>
+                  <span className="safeguard-label">El agente decide si registra su experiencia del turno</span>
                 </div>
               </div>
             </div>
@@ -232,6 +232,3 @@ export function HeroSection() {
     </section>
   );
 }
-
-
-

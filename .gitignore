@@ -44,6 +44,8 @@ GEMINI.md
 **/GEMINI.md
 .agents/
 .cline/
+.anti-slop
+**/anti-slop
 
 
 # Auditoras internas locales de UI/UX
@@ -51,6 +53,7 @@ docs/auditoria-ui-ux-2026-09-13/
 docs/auditoria_ia/
 **docs
 **docs/**
+**/anti-slop
 
 #docs de ia
 .gemini/

@@ -1,6 +1,7 @@
-import { useEffect } from 'react';
+import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Icon } from '../../../core/components/Icon';
+import { useAgentModalAccessibility } from './useAgentModalAccessibility';
 
 export function CrisisSupportModal({
     isOpen,
@@ -13,14 +14,8 @@ export function CrisisSupportModal({
     onContinue,
     onClose
 }) {
-    useEffect(() => {
-        if (!isOpen) return;
-        const handleKeyDown = (e) => {
-            if (e.key === 'Escape') onClose();
-        };
-        window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [isOpen, onClose]);
+    const dialogRef = useRef(null);
+    useAgentModalAccessibility({ isOpen, onClose, dialogRef });
 
     if (!isOpen) return null;
 
@@ -34,22 +29,12 @@ export function CrisisSupportModal({
                 if (e.target === e.currentTarget) onClose();
             }}
         >
-            <div className="modal-box" style={{ maxWidth: '540px' }}>
+            <div ref={dialogRef} className="modal-box agent-modal">
                 {!priorityStep ? (
                     <div>
                         <div className="modal-header">
                             <div>
-                                <span
-                                    style={{
-                                        fontSize: '11px',
-                                        fontWeight: '700',
-                                        color: 'var(--c-calma-accent)',
-                                        textTransform: 'uppercase',
-                                        letterSpacing: '0.05em',
-                                        display: 'block',
-                                        marginBottom: '4px'
-                                    }}
-                                >
+                                <span className="agent-kicker">
                                     Cuidado Psicosocial Voluntario
                                 </span>
                                 <h2 id="crisis-modal-title" className="modal-title">
@@ -65,34 +50,22 @@ export function CrisisSupportModal({
                         </div>
 
                         {/* Aviso explícito de privacidad para desactivar el pánico */}
-                        <div
-                            style={{
-                                padding: '14px 16px',
-                                backgroundColor: 'var(--c-calma-surface-subtle)',
-                                border: '1px solid var(--c-calma-border)',
-                                borderRadius: 'var(--radius-md)',
-                                margin: '14px 0',
-                                display: 'flex',
-                                alignItems: 'flex-start',
-                                gap: '12px'
-                            }}
-                        >
-                            <Icon name="shieldCheck" size={22} style={{ color: 'var(--c-calma-accent)', flexShrink: 0, marginTop: '2px' }} />
-                            <div style={{ fontSize: '12.5px', color: 'var(--c-calma-text)', lineHeight: '1.5' }}>
+                        <div className="agent-notice">
+                            <Icon name="shieldCheck" size={22} className="agent-notice-icon" />
+                            <div className="agent-notice-text">
                                 <strong>Tranquilo/a:</strong> Esta sugerencia fue generada por coincidencias léxicas dentro de tu propio navegador. Ningún supervisor, directivo ni compañero ha recibido alerta alguna. Tú decides en total privacidad si deseas cerrar esta ventana o solicitar apoyo.
                             </div>
                         </div>
 
                         {/* Enlaces rápidos a Línea 106 y canal prioritario SST */}
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', margin: '16px 0' }}>
-                            <div style={{ fontSize: '12px', fontWeight: '700', color: 'var(--c-texto-suave)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                        <div className="agent-modal-quick">
+                            <div className="agent-modal-quick-label">
                                 Accesos rápidos de contención inmediata
                             </div>
-                            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                            <div className="agent-modal-quick-actions">
                                 <a
                                     href="tel:106"
                                     className="btn-clinical-support"
-                                    style={{ flex: 1, minWidth: '200px', justifyContent: 'center' }}
                                     aria-label="Llamar directamente a la Línea 106 de salud mental"
                                 >
                                     <Icon name="phone" size={16} />
@@ -102,7 +75,6 @@ export function CrisisSupportModal({
                                     type="button"
                                     className="btn btn-primary"
                                     onClick={() => onSetPriorityStep(true)}
-                                    style={{ flex: 1, minWidth: '200px', justifyContent: 'center' }}
                                 >
                                     <Icon name="shield" size={16} />
                                     <span>Solicitar contacto SST</span>
@@ -110,8 +82,8 @@ export function CrisisSupportModal({
                             </div>
                         </div>
 
-                        <div className="modal-footer" style={{ gap: '8px', flexWrap: 'wrap', marginTop: '20px', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <Link to="/apoyo-crisis" className="btn btn-secondary" onClick={onClose} style={{ fontSize: '13px' }}>
+                        <div className="modal-footer modal-footer--split">
+                            <Link to="/apoyo-crisis" className="btn btn-secondary" onClick={onClose}>
                                 <Icon name="self_improvement" size={16} />
                                 <span>Ver primeros auxilios psicológicos y rutas</span>
                             </Link>
@@ -124,17 +96,7 @@ export function CrisisSupportModal({
                     <div>
                         <div className="modal-header">
                             <div>
-                                <span
-                                    style={{
-                                        fontSize: '11px',
-                                        fontWeight: '700',
-                                        color: 'var(--c-primario)',
-                                        textTransform: 'uppercase',
-                                        letterSpacing: '0.05em',
-                                        display: 'block',
-                                        marginBottom: '4px'
-                                    }}
-                                >
+                                <span className="agent-kicker agent-kicker--primario">
                                     Canal Reservado con SST
                                 </span>
                                 <h2 id="crisis-modal-title" className="modal-title">
@@ -150,7 +112,7 @@ export function CrisisSupportModal({
                         </div>
 
                         {!hasC5Consent ? (
-                            <div className="alert-banner warn" style={{ margin: '16px 0' }}>
+                            <div className="alert-banner warn">
                                 <Icon name="info" size={18} />
                                 <div>
                                     <strong>Finalidad C5 requerida:</strong> Debes activar la finalidad <em>C5 (Acompañamiento)</em> en tus preferencias para solicitar contacto con SST.
@@ -162,8 +124,7 @@ export function CrisisSupportModal({
                                 </div>
                             </div>
                         ) : (
-                            <div style={{ marginTop: '16px' }}>
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>
+                            <div className="support-mode-list">
                                     <label className={`support-mode-capsule ${crisisMode === 'anonimo' ? 'active' : ''}`}>
                                         <input
                                             type="radio"
@@ -174,8 +135,8 @@ export function CrisisSupportModal({
                                             onChange={() => onChangeCrisisMode('anonimo')}
                                         />
                                         <div>
-                                            <strong style={{ fontSize: '13px', color: 'var(--c-texto)' }}>Modalidad Anónima</strong>
-                                            <div style={{ fontSize: '11.5px', color: 'var(--c-texto-suave)', marginTop: '2px' }}>
+                                            <strong>Modalidad Anónima</strong>
+                                            <div className="support-mode-desc">
                                                 Tu identidad queda protegida. SST no recibirá tu nombre ni tu correo. Consultas la respuesta dentro de la app con el radicado del caso.
                                             </div>
                                         </div>
@@ -191,13 +152,12 @@ export function CrisisSupportModal({
                                             onChange={() => onChangeCrisisMode('confidencial')}
                                         />
                                         <div>
-                                            <strong style={{ fontSize: '13px', color: 'var(--c-texto)' }}>Modalidad Confidencial Identificada</strong>
-                                            <div style={{ fontSize: '11.5px', color: 'var(--c-texto-suave)', marginTop: '2px' }}>
-                                                Tus datos de contacto serán visibles de forma reservada y exclusiva para el profesional SST. Tu líder o supervisor no recibe notificación alguna.
+                                            <strong>Modalidad Confidencial Identificada</strong>
+                                            <div className="support-mode-desc">
+                                                Tus datos de contacto se muestran al profesional SST asignado para gestionar la orientación. Este modal no notifica a tu líder o supervisor.
                                             </div>
                                         </div>
                                     </label>
-                                </div>
                             </div>
                         )}
 
@@ -217,4 +177,3 @@ export function CrisisSupportModal({
         </div>
     );
 }
-

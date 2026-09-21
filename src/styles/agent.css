@@ -1,7 +1,7 @@
 /* ==========================================================================
    src/styles/agent.css
-   Panel del agente bajo principios de Calm Technology:
-   una pantalla = un propósito. Menos cards, menos texto, menos estímulos.
+   Panel del agente: una pantalla = un propósito. La identidad se apoya
+   en el contexto real del turno, no en decoración de bienestar genérica.
    La analítica y las tendencias viven en "Mi bienestar" / "Mi análisis".
    ========================================================================== */
 
@@ -9,7 +9,7 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  max-width: 960px;
+  max-width: 1040px;
   margin: 0 auto;
   padding: 28px 0 32px;
 }
@@ -87,12 +87,24 @@
 
 /* Tarjeta única principal: check-in rápido del turno */
 .calm-card {
-  background: linear-gradient(180deg, #ffffff 0%, #f7fbf9 100%);
+  position: relative;
+  background: var(--c-calma-surface);
   border: 1px solid var(--c-calma-border-subtle);
   border-radius: var(--radius-card);
-  box-shadow: var(--shadow-md);
-  padding: 48px 40px 44px;
-  text-align: center;
+  box-shadow: var(--shadow-sm);
+  padding: 32px 34px 34px;
+  text-align: left;
+}
+
+.calm-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 28px;
+  width: 42px;
+  height: 3px;
+  background: var(--c-calma-accent);
+  border-radius: 0 0 3px 3px;
 }
 
 .calm-card-title {
@@ -103,67 +115,51 @@
 }
 
 .calm-card-sub {
-  margin: 8px auto 0;
+  margin: 8px 0 0;
   max-width: 460px;
   font-size: 13px;
   color: var(--c-texto-mutado);
   line-height: 1.5;
 }
 
-/* Halo de respiración: marcapasos visual con el ritmo de la pausa guiada
-   (≈ inhalar 4s · sostener 2s · exhalar 5s). Comunica "espacio de pausa"
-   antes de cualquier texto. Se apaga con prefers-reduced-motion (global). */
+/* Marcador discreto de la tarea principal; evita convertir el check-in
+   operativo en una escena decorativa de wellness. */
 .calm-breathe {
-  width: 92px;
-  height: 92px;
-  margin: 0 auto 12px;
-  border-radius: 50%;
-  background: radial-gradient(circle, var(--c-calma-accent-soft) 0%, rgba(27, 122, 104, 0.06) 60%, transparent 72%);
-  animation: calm-breathe 11s ease-in-out infinite;
+  width: 12px;
+  height: 12px;
+  margin: 0 0 16px;
+  border-radius: 3px;
+  background: var(--c-calma-accent);
 }
 
-@keyframes calm-breathe {
-  0%, 100% {
-    transform: scale(0.86);
-    opacity: 0.65;
-  }
-  45% {
-    transform: scale(1.08);
-    opacity: 1;
-  }
-  60% {
-    transform: scale(1.0);
-  }
-}
-
-/* Escala de energía rápida (emojis grandes, un toque) */
+/* Escala de energía rápida: opciones legibles y táctiles, sin apariencia
+   de selector de sentimientos decorativo. */
 .calm-mood-row {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 12px;
   margin-top: 26px;
   flex-wrap: wrap;
 }
 
 .calm-mood-btn {
-  width: 84px;
-  padding: 12px 6px 10px;
+  flex: 1 1 0;
+  min-width: 92px;
+  min-height: 112px;
+  padding: 12px 8px 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 9px;
-  background: transparent;
-  border: 1.5px solid transparent;
-  border-radius: var(--radius-card);
+  background: var(--c-calma-surface);
+  border: 1px solid var(--c-calma-border);
+  border-radius: var(--radius-sm);
   cursor: pointer;
-  /* Curva lenta de desaceleración: el movimiento calma en vez de avisar */
-  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.2s ease, border-color 0.2s ease;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
 }
 
 .calm-mood-btn:hover {
-  background-color: var(--c-calma-surface-subtle);
-  border-color: var(--c-calma-border-subtle);
-  transform: translateY(-3px);
+  border-color: var(--c-calma-accent);
 }
 
 .calm-mood-btn:focus-visible {
@@ -171,53 +167,44 @@
   outline-offset: 2px;
 }
 
-/* Disco cálido por nivel: cada opción tiene cuerpo y color propio.
-   El rostro SVG (EnergyFace) vive dentro del disco. */
+.calm-mood-label {
+  max-width: 11ch;
+  font-size: 12px;
+  color: var(--c-texto-mutado);
+  line-height: 1.3;
+}
+
 .calm-mood-emoji {
-  width: 72px;
-  height: 72px;
+  width: 62px;
+  height: 62px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .calm-mood-emoji .energy-face {
-  width: 44px;
-  height: 44px;
+  width: 42px;
+  height: 42px;
   display: block;
 }
 
-.calm-mood-btn:hover .calm-mood-emoji {
-  transform: scale(1.07);
-}
+.calm-mood-1 .calm-mood-emoji { background-color: #fde7e7; }
+.calm-mood-2 .calm-mood-emoji { background-color: #fff1cf; }
+.calm-mood-3 .calm-mood-emoji { background-color: #e9eef0; }
+.calm-mood-4 .calm-mood-emoji { background-color: #dff4e8; }
+.calm-mood-5 .calm-mood-emoji { background-color: #cceee4; }
 
-.calm-mood-1 .calm-mood-emoji {
-  background-color: var(--c-critico-bg);
-}
-
-.calm-mood-2 .calm-mood-emoji {
-  background-color: var(--c-alerta-bg);
-}
-
-.calm-mood-3 .calm-mood-emoji {
-  background-color: var(--c-calma-surface-subtle);
-}
-
-.calm-mood-4 .calm-mood-emoji {
-  background-color: var(--c-exito-bg);
-}
-
-.calm-mood-5 .calm-mood-emoji {
-  background-color: var(--c-calma-accent-soft);
-}
-
-.calm-mood-label {
-  font-size: 11.5px;
-  color: var(--c-texto-mutado);
-  line-height: 1.3;
-}
+.calm-mood-1:hover,
+.calm-mood-1:focus-visible { background-color: #fff3f3; }
+.calm-mood-2:hover,
+.calm-mood-2:focus-visible { background-color: #fff9e9; }
+.calm-mood-3:hover,
+.calm-mood-3:focus-visible { background-color: #f3f6f7; }
+.calm-mood-4:hover,
+.calm-mood-4:focus-visible { background-color: #effaf3; }
+.calm-mood-5:hover,
+.calm-mood-5:focus-visible { background-color: #e9f8f3; }
 
 /* Estado: check-in ya registrado en la jornada actual */
 .calm-done {
@@ -259,7 +246,7 @@
   display: grid;
   grid-template-columns: minmax(0, 1.7fr) minmax(280px, 1fr);
   gap: 16px;
-  align-items: stretch;
+  align-items: start;
 }
 
 /* Carril contextual */
@@ -279,6 +266,8 @@
 
 .calm-rail-block--pause {
   flex: 0 0 auto;
+  background: var(--c-calma-surface-subtle);
+  border-color: #c8e5d8;
 }
 
 .calm-rail-title {
@@ -369,9 +358,53 @@
   line-height: 1.5;
 }
 
+.calm-pause-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.calm-pause-heading .calm-rail-title {
+  margin-bottom: 2px;
+}
+
+.calm-pause-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  border-radius: var(--radius-sm);
+  color: #176653;
+  background-color: var(--c-calma-accent-soft);
+}
+
+.calm-pause-private {
+  display: block;
+  font-size: 10.5px;
+  color: var(--c-calma-accent);
+  font-weight: 700;
+}
+
 .calm-pause-btn {
   width: 100%;
   justify-content: center;
+  gap: 10px;
+  box-shadow: 0 8px 18px rgba(22, 101, 83, 0.14);
+}
+
+.calm-pause-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(22, 101, 83, 0.2);
+}
+
+.calm-pause-note {
+  margin: 10px 0 0;
+  font-size: 10.5px;
+  color: var(--c-texto-mutado);
+  text-align: center;
 }
 
 /* Pie: una sola línea de privacidad, sin badges repetidos */
@@ -421,16 +454,18 @@
 
 @media (max-width: 640px) {
   .calm-card {
-    padding: 26px 16px;
+    padding: 26px 18px;
   }
 
   .calm-mood-btn {
-    width: 66px;
+    min-width: 0;
+    min-height: 104px;
+    padding-inline: 4px;
   }
 
   .calm-mood-emoji {
-    width: 52px;
-    height: 52px;
+    width: 50px;
+    height: 50px;
   }
 
   .calm-mood-emoji .energy-face {
@@ -448,5 +483,1632 @@
 @media (prefers-reduced-motion: reduce) {
   .calm-mood-btn {
     transition: none;
+  }
+}
+
+/* Lenguaje compartido de las rutas del agente. No fuerza una misma
+   composición: sólo da continuidad a encabezados, superficies y estados. */
+.agent-page .page-header {
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--c-calma-border-subtle);
+}
+
+.agent-page:not(.calm-home) {
+  position: relative;
+  width: 100%;
+  max-width: 1040px;
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.agent-page:not(.calm-home)::before {
+  content: 'ESPACIO DEL AGENTE';
+  display: block;
+  margin-bottom: 8px;
+  color: var(--c-calma-accent);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.agent-page .page-title {
+  letter-spacing: -0.025em;
+}
+
+/* El panel y las vistas internas comparten el mismo eje de lectura. */
+.agent-page:not(.calm-home) > .page-header,
+.agent-page:not(.calm-home) > .agent-work-surface,
+.agent-page:not(.calm-home) > .card,
+.agent-page:not(.calm-home) > .alert-banner,
+.agent-page:not(.calm-home) > section {
+  width: 100%;
+}
+
+.agent-page .card {
+  border-radius: var(--radius-card);
+  border-color: var(--c-calma-border-subtle);
+  box-shadow: var(--shadow-xs);
+}
+
+.agent-page .card:hover {
+  border-color: var(--c-calma-border);
+}
+
+.agent-page .card-header {
+  border-bottom: 1px solid var(--c-calma-border-subtle);
+  padding-bottom: 12px;
+}
+
+.agent-page .form-label {
+  color: var(--c-calma-text);
+}
+
+.agent-page .form-input,
+.agent-page .form-select,
+.agent-page .form-textarea {
+  border-color: var(--c-calma-border);
+  background: var(--c-calma-surface);
+}
+
+.agent-page .form-input:focus,
+.agent-page .form-select:focus,
+.agent-page .form-textarea:focus {
+  border-color: var(--c-calma-accent);
+  box-shadow: 0 0 0 3px var(--c-calma-ring);
+}
+
+.agent-page .center-card {
+  max-width: 720px;
+  margin-inline: auto;
+  border-top: 3px solid var(--c-calma-accent);
+}
+
+.agent-work-surface {
+  position: relative;
+  overflow: hidden;
+}
+
+.agent-work-surface::before {
+  content: '';
+  display: block;
+  width: 44px;
+  height: 3px;
+  margin-bottom: 18px;
+  background: var(--c-calma-accent);
+  border-radius: 0 0 3px 3px;
+}
+
+.agent-work-layout {
+  align-items: start;
+}
+
+.agent-journal-editor {
+  min-width: 0;
+}
+
+.agent-journal-editor .card-header {
+  padding-bottom: 16px;
+}
+
+.agent-page .privacy-notice-box {
+  background: var(--c-calma-surface-subtle);
+  border-color: var(--c-calma-border);
+  border-radius: var(--radius-card);
+}
+
+.agent-page .wizard-card {
+  max-width: 1040px;
+  margin-inline: auto;
+  border-top: 0;
+}
+
+.agent-page--checkin .page-header--wizard,
+.agent-page--checkin .wizard-disconnect-banner {
+  max-width: 1040px;
+  width: 100%;
+  margin-inline: 0;
+}
+
+.agent-page--checkin .wizard-card {
+  padding-inline: clamp(24px, 4vw, 48px);
+}
+
+.agent-page--checkin .check-step {
+  max-width: 900px;
+  margin-inline: auto;
+}
+
+.agent-page--analysis {
+  gap: 24px;
+}
+
+.agent-page--analysis .page-header,
+.agent-page--analysis > section,
+.agent-page--analysis > div {
+  width: 100%;
+  margin-inline: 0;
+}
+
+.agent-page--analysis #analysisList {
+  padding-inline: 0 !important;
+}
+
+.agent-page .wizard-header-meta {
+  color: var(--c-calma-text);
+}
+
+.agent-page .progress-track {
+  background: var(--c-calma-border-subtle);
+}
+
+.agent-page .progress-fill {
+  background: var(--c-calma-accent);
+}
+
+.agent-page .check-step-title {
+  max-width: 34ch;
+  letter-spacing: -0.025em;
+}
+
+.agent-page .scale-context-note {
+  background: var(--c-calma-surface-subtle);
+  border-color: var(--c-calma-border);
+}
+
+.agent-page .scale-btn {
+  border-radius: var(--radius-card);
+  border-color: var(--c-calma-border);
+  box-shadow: none;
+}
+
+.agent-page .scale-energy-face {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  margin-bottom: 2px;
+  border-radius: 50%;
+  background: var(--c-calma-accent-soft);
+  transition: background-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.agent-page .scale-energy-face .energy-face {
+  width: 30px;
+  height: 30px;
+}
+
+.agent-page .scale-btn.active .scale-energy-face {
+  background: var(--c-calma-surface);
+}
+
+.agent-page .scale-btn--heat-1:hover,
+.agent-page .scale-btn--heat-1:focus-visible,
+.agent-page .scale-btn--heat-1.active {
+  background: #fff3f3;
+  border-color: #e7a4a4;
+}
+
+.agent-page .scale-btn--heat-2:hover,
+.agent-page .scale-btn--heat-2:focus-visible,
+.agent-page .scale-btn--heat-2.active {
+  background: #fff9e9;
+  border-color: #e7c56f;
+}
+
+.agent-page .scale-btn--heat-3:hover,
+.agent-page .scale-btn--heat-3:focus-visible,
+.agent-page .scale-btn--heat-3.active {
+  background: #f3f6f7;
+  border-color: #aebfc4;
+}
+
+.agent-page .scale-btn--heat-4:hover,
+.agent-page .scale-btn--heat-4:focus-visible,
+.agent-page .scale-btn--heat-4.active {
+  background: #effaf3;
+  border-color: #9bd1ad;
+}
+
+.agent-page .scale-btn--heat-5:hover,
+.agent-page .scale-btn--heat-5:focus-visible,
+.agent-page .scale-btn--heat-5.active {
+  background: #e9f8f3;
+  border-color: #70bfa5;
+}
+
+.agent-page .scale-btn--heat-1:hover .scale-energy-face,
+.agent-page .scale-btn--heat-1:focus-visible .scale-energy-face,
+.agent-page .scale-btn--heat-1.active .scale-energy-face { background: #f7caca; }
+.agent-page .scale-btn--heat-2:hover .scale-energy-face,
+.agent-page .scale-btn--heat-2:focus-visible .scale-energy-face,
+.agent-page .scale-btn--heat-2.active .scale-energy-face { background: #ffe3a2; }
+.agent-page .scale-btn--heat-3:hover .scale-energy-face,
+.agent-page .scale-btn--heat-3:focus-visible .scale-energy-face,
+.agent-page .scale-btn--heat-3.active .scale-energy-face { background: #d8e1e4; }
+.agent-page .scale-btn--heat-4:hover .scale-energy-face,
+.agent-page .scale-btn--heat-4:focus-visible .scale-energy-face,
+.agent-page .scale-btn--heat-4.active .scale-energy-face { background: #c5e9d3; }
+.agent-page .scale-btn--heat-5:hover .scale-energy-face,
+.agent-page .scale-btn--heat-5:focus-visible .scale-energy-face,
+.agent-page .scale-btn--heat-5.active .scale-energy-face { background: #9edfc9; }
+
+.agent-page .scale-btn:hover,
+.agent-page .scale-btn.active {
+  border-color: var(--c-calma-accent);
+  background: var(--c-calma-accent-soft);
+  box-shadow: 0 0 0 1px var(--c-calma-accent);
+}
+
+/* El mapa de calor tiene prioridad sobre el estado neutro del selector. */
+.agent-page .scale-btn--heat-1:hover,
+.agent-page .scale-btn--heat-1:focus-visible,
+.agent-page .scale-btn--heat-1.active { background: #fff3f3; border-color: #e7a4a4; }
+.agent-page .scale-btn--heat-2:hover,
+.agent-page .scale-btn--heat-2:focus-visible,
+.agent-page .scale-btn--heat-2.active { background: #fff9e9; border-color: #e7c56f; }
+.agent-page .scale-btn--heat-3:hover,
+.agent-page .scale-btn--heat-3:focus-visible,
+.agent-page .scale-btn--heat-3.active { background: #f3f6f7; border-color: #aebfc4; }
+.agent-page .scale-btn--heat-4:hover,
+.agent-page .scale-btn--heat-4:focus-visible,
+.agent-page .scale-btn--heat-4.active { background: #effaf3; border-color: #9bd1ad; }
+.agent-page .scale-btn--heat-5:hover,
+.agent-page .scale-btn--heat-5:focus-visible,
+.agent-page .scale-btn--heat-5.active { background: #e9f8f3; border-color: #70bfa5; }
+
+.agent-page .skip-btn {
+  border-radius: var(--radius-sm);
+}
+
+.agent-page .desahogo-textarea {
+  border-color: var(--c-calma-border);
+  background: #fcfefd;
+}
+
+.agent-page .journal-row {
+  border-radius: var(--radius-sm) !important;
+}
+
+.agent-page .perspective-grid {
+  gap: 12px;
+}
+
+.agent-page .perspective-card {
+  border-radius: var(--radius-card);
+  box-shadow: none;
+}
+
+.agent-page .badge {
+  border-radius: var(--radius-sm);
+}
+
+.agent-page .alert-banner--calma {
+  background: var(--c-calma-surface-subtle);
+  border-color: var(--c-calma-border);
+  color: var(--c-calma-text);
+}
+
+.agent-page .modal-box,
+.agent-page .modal-card {
+  border: 1px solid var(--c-calma-border);
+  border-radius: var(--radius-card);
+  box-shadow: 0 20px 48px rgba(15, 23, 42, 0.16);
+}
+
+/* ==========================================================================
+   Capa compartida de modales del módulo de agente
+   Contrato único de superficie de decisión: ancho controlado, scroll
+   interno contenido, kicker editorial y avisos de privacidad. Las variantes
+   sólo cambian el ancho; no introducen otra gramática visual.
+   ========================================================================== */
+
+.agent-modal {
+  width: 100%;
+  max-width: 540px;
+  max-height: min(760px, calc(100vh - 40px));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--c-calma-border) transparent;
+}
+
+.agent-modal--wide {
+  max-width: 640px;
+}
+
+.agent-modal::-webkit-scrollbar {
+  width: 7px;
+}
+
+.agent-modal::-webkit-scrollbar-thumb {
+  background: var(--c-calma-border);
+  border-radius: var(--radius-full);
+}
+
+.agent-modal .modal-header {
+  margin-bottom: 18px;
+}
+
+.agent-modal .modal-footer {
+  padding-top: 16px;
+}
+
+/* Kicker editorial: identifica el canal institucional sobre el título.
+   Compartido por modales y superficies de formulario del módulo. */
+.agent-kicker {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--c-calma-accent);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.agent-kicker--primario {
+  color: var(--c-primario);
+}
+
+/* Aviso de privacidad o de alcance: icono + texto. Variantes de superficie
+   según el contexto: calma (canal protegido), plana (sección contigua) y
+   punteada (orientación informativa, no compromiso institucional). */
+.agent-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px 16px;
+  margin: 14px 0;
+  border: 1px solid var(--c-calma-border);
+  border-radius: var(--radius-md);
+  background-color: var(--c-calma-surface-subtle);
+}
+
+.agent-notice--flat {
+  border: 1px solid var(--c-borde-suave);
+  background-color: var(--c-fondo);
+}
+
+.agent-notice--dashed {
+  margin-bottom: 20px;
+  border: 1px dashed var(--c-borde);
+  background-color: var(--c-fondo);
+}
+
+.agent-notice--dashed .agent-notice-icon {
+  color: var(--c-texto-suave);
+}
+
+.agent-notice--dashed .agent-notice-text {
+  font-size: 12px;
+  color: var(--c-texto-suave);
+}
+
+.agent-notice--center {
+  align-items: center;
+}
+
+.agent-notice--center .agent-notice-icon {
+  margin-top: 0;
+}
+
+.agent-notice-icon {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--c-calma-accent);
+}
+
+.agent-notice-text {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--c-calma-text);
+}
+
+/* Nota breve sin caja (ej. recordatorio de privacidad en modo anónimo) */
+.agent-note-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 8px 0 4px;
+  font-size: 12px;
+  color: var(--c-texto-suave);
+}
+
+.agent-note-row .agent-notice-icon {
+  margin-top: 0;
+}
+
+/* Ayudas de campo y grillas reutilizables de formulario */
+.form-label--strong {
+  font-weight: 700;
+  color: var(--c-texto);
+}
+
+.field-hint {
+  margin-top: 4px;
+  font-size: 11.5px;
+  color: var(--c-texto-mutado);
+}
+
+.form-row-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.form-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.form-actions .btn-primary {
+  min-height: 42px;
+  padding: 10px 20px;
+  font-size: 14px;
+}
+
+/* Tarjeta de formulario institucional del módulo (canal de apoyo) */
+.agent-form-card {
+  border: 1.5px solid var(--c-calma-border);
+}
+
+.agent-form-card form {
+  margin-top: 16px;
+}
+
+.agent-form-card .card-title {
+  font-size: 16px;
+  color: var(--c-calma-text);
+}
+
+.agent-form-card .alert-banner {
+  margin-top: 16px;
+}
+
+/* Cápsulas de modalidad (formulario de apoyo y paso SST del canal de crisis) */
+.support-mode-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 14px;
+  margin-top: 6px;
+}
+
+.support-mode-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 16px 0 20px;
+}
+
+.support-mode-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.support-mode-head strong {
+  font-size: 13.5px;
+  color: var(--c-texto);
+}
+
+.support-mode-head .badge {
+  font-size: 10px;
+}
+
+.support-mode-desc {
+  margin: 4px 0 0;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--c-texto-suave);
+}
+
+.support-mode-list strong {
+  font-size: 13.5px;
+  color: var(--c-texto);
+}
+
+/* ==========================================================================
+   Ruta de apoyo inmediato (/apoyo-crisis)
+   Columna de lectura, banner de contención y anclaje 5-4-3-2-1.
+   El color de cada paso llega como variable CSS (--step-color) desde los
+   datos del ejercicio; el estilo sigue definido en CSS, no en JSX.
+   ========================================================================== */
+
+.crisis-page-col {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 920px;
+  margin: 0 auto;
+}
+
+.crisis-hero-flex {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.crisis-hero-body {
+  flex: 1;
+}
+
+.crisis-hero-title {
+  margin: 0 0 8px;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--c-calma-text);
+}
+
+.crisis-hero-lead {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--c-calma-text-muted);
+}
+
+.crisis-card--calma {
+  border: 1.5px solid var(--c-calma-border);
+}
+
+.crisis-card--borde {
+  border-color: var(--c-borde);
+}
+
+.crisis-card-title {
+  font-size: 16px;
+  color: var(--c-texto);
+}
+
+.crisis-card-title--calma {
+  color: var(--c-calma-text);
+}
+
+.crisis-card-title--tight {
+  margin-bottom: 4px;
+}
+
+.grounding-tabs-wrap {
+  margin-top: 16px;
+}
+
+.grounding-tabs {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  margin-bottom: 16px;
+}
+
+.grounding-tab-btn {
+  border: 1px solid var(--c-calma-border);
+  background: var(--c-superficie);
+}
+
+.grounding-tab-btn.active {
+  border: 2px solid var(--step-color, var(--c-calma-accent));
+  background: var(--c-calma-surface-subtle);
+}
+
+.grounding-tab-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.grounding-tab-num {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--step-color, var(--c-calma-accent));
+}
+
+.grounding-tab-badge {
+  padding: 2px 6px;
+  border-radius: var(--radius-full);
+  background: var(--c-fondo-subtle);
+  color: var(--c-texto-mutado);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.grounding-tab-btn.active .grounding-tab-badge {
+  background: var(--step-color, var(--c-calma-accent));
+  color: #ffffff;
+}
+
+.grounding-tab-sense {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--c-calma-text);
+}
+
+.grounding-step-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px 20px;
+  border: 1px solid var(--c-calma-border);
+  border-radius: var(--radius-lg);
+  background: var(--c-calma-bg);
+}
+
+.grounding-step-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.grounding-step-num {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  background: var(--step-color, var(--c-calma-accent));
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.grounding-step-title {
+  margin: 0;
+  font-size: 15px;
+  color: var(--c-calma-text);
+}
+
+.grounding-step-guide {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--c-calma-text-muted);
+}
+
+.grounding-step-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+}
+
+.grounding-step-source {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--c-texto-mutado);
+}
+
+/* Líneas oficiales, canalización legal y panel de contacto prioritario */
+.crisis-line-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 16px;
+}
+
+.crisis-line-card--destacada {
+  padding: 22px;
+  border: 1.5px solid var(--c-calma-border);
+  background: var(--c-calma-surface);
+}
+
+.crisis-line-card--suave {
+  border-color: var(--c-borde-suave);
+}
+
+.crisis-line-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.crisis-line-name {
+  font-size: 16px;
+  color: var(--c-texto);
+}
+
+.crisis-line-label {
+  margin-bottom: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--c-texto);
+}
+
+.crisis-line-desc {
+  margin: 0 0 12px;
+  font-size: 11.5px;
+  line-height: 1.4;
+  color: var(--c-texto-suave);
+}
+
+.crisis-line-call {
+  width: 100%;
+  min-height: 36px;
+  justify-content: center;
+}
+
+.crisis-line-call--critico {
+  font-weight: 700;
+  border-color: var(--c-critico);
+  color: var(--c-critico);
+}
+
+.crisis-line-card--destacada .crisis-line-head {
+  margin-bottom: 8px;
+}
+
+.crisis-line-card--destacada .crisis-line-name {
+  font-size: 18px;
+  color: var(--c-calma-accent);
+}
+
+.crisis-line-card--destacada .crisis-line-label {
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+
+.crisis-line-card--destacada .crisis-line-desc {
+  font-size: 12.5px;
+  line-height: 1.5;
+  margin: 0 0 20px;
+}
+
+.crisis-line-call--destacada {
+  min-height: 44px;
+}
+
+.crisis-legal-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.crisis-legal-box {
+  padding: 18px;
+  border: 1px solid var(--c-borde);
+  border-radius: var(--radius-lg);
+  background: var(--c-superficie);
+}
+
+.crisis-legal-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.crisis-legal-badge-capsule {
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.crisis-legal-title {
+  margin: 0;
+  font-size: 14.5px;
+  color: var(--c-texto);
+}
+
+.crisis-legal-desc {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--c-texto-suave);
+}
+
+.crisis-legal-list {
+  margin: 4px 0 0;
+  padding-left: 18px;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--c-texto-mutado);
+}
+
+.crisis-legal-badge-orange {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--c-legal-orange-text);
+}
+
+.crisis-legal-title--orange {
+  color: var(--c-legal-orange-text);
+}
+
+.crisis-legal-desc--orange {
+  color: var(--c-legal-orange-text-dark);
+}
+
+.crisis-legal-list--orange {
+  color: var(--c-legal-orange-text);
+}
+
+.crisis-legal-box--acoso {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px 18px;
+  border: 1.5px solid var(--c-borde);
+  border-radius: var(--radius-lg);
+  background: var(--c-fondo);
+}
+
+.crisis-legal-box--naranja {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px 18px;
+  border: 1.5px solid var(--c-legal-orange-border);
+  border-radius: var(--radius-lg);
+  background: var(--c-legal-orange-bg);
+}
+
+.crisis-legal-badge-pill {
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  background: var(--c-legal-orange);
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.crisis-line-name--sm {
+  font-size: 15px;
+}
+
+.crisis-alert-flex {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.crisis-priority-panel {
+  padding: 20px;
+  border: 1px solid var(--c-borde);
+  border-radius: var(--radius-lg);
+  background: var(--c-fondo);
+}
+
+.crisis-priority-panel-title {
+  margin-bottom: 8px;
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--c-texto);
+}
+
+.crisis-priority-panel-lead {
+  margin: 0 0 16px;
+  font-size: 13px;
+  color: var(--c-texto-suave);
+}
+
+.crisis-priority-panel .support-mode-list {
+  gap: 12px;
+  margin: 0 0 20px;
+}
+
+.crisis-consent-cta {
+  margin-top: 12px;
+}
+
+.crisis-panel-note {
+  margin-bottom: 20px;
+  font-size: 12.5px;
+}
+
+.crisis-feedback {
+  margin-top: 16px;
+}
+
+.crisis-feedback small {
+  color: var(--c-texto-suave);
+}
+
+.crisis-feedback .badge {
+  margin-bottom: 4px;
+}
+
+/* Fila de accesos rápidos de contención (teléfono, canal prioritario) */
+.agent-modal-quick {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 16px 0;
+}
+
+/* Footer dividido: acción de navegación a la izquierda, salida a la derecha */
+.agent-modal .modal-footer--split {
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Banner de consentimiento / advertencia dentro de un modal de agente */
+.agent-modal .alert-banner {
+  margin: 16px 0;
+}
+
+/* Grilla de categorías del modal de corrección, con scroll contenido */
+.agent-modal-catgrid {
+  max-height: 240px;
+  overflow-y: auto;
+  margin-bottom: 16px;
+}
+
+/* Estado seleccionado de la grilla, definido en CSS (antes inline en JSX) */
+.agent-modal .category-grid label:has(input:checked) {
+  background: var(--c-primario-suave);
+  border-color: var(--c-primario);
+}
+
+.agent-modal-quick-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--c-texto-suave);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.agent-modal-quick-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.agent-modal-quick-actions .btn,
+.agent-modal-quick-actions .btn-clinical-support {
+  flex: 1;
+  min-width: 200px;
+  justify-content: center;
+}
+
+/* Lista interna desplazable (historial de correcciones) */
+.agent-modal-scroll {
+  max-height: 300px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.agent-modal-history-item {
+  padding: 12px;
+  border: 1px solid var(--c-borde-suave);
+  border-radius: var(--radius-sm);
+  background: var(--c-fondo);
+  font-size: 12.5px;
+}
+
+.agent-modal-history-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.agent-modal-history-title {
+  font-size: 13px;
+  color: var(--c-texto);
+}
+
+.agent-modal-history-date {
+  font-size: 11px;
+  color: var(--c-texto-mutado);
+}
+
+.agent-modal-history-badges {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin: 4px 0;
+}
+
+.agent-modal-history-previous {
+  font-size: 11.5px;
+  color: var(--c-texto-mutado);
+  margin-top: 4px;
+}
+
+.agent-modal-history-note {
+  margin-top: 6px;
+  padding: 6px 10px;
+  border-radius: var(--radius-xs);
+  background: var(--c-superficie);
+  color: var(--c-texto-suave);
+  font-style: italic;
+}
+
+.agent-page .modal-header {
+  background: var(--c-calma-surface-subtle);
+  border-bottom-color: var(--c-calma-border-subtle);
+}
+
+.agent-page .modal-title {
+  letter-spacing: -0.02em;
+}
+
+.agent-page .modal-footer {
+  border-top: 1px solid var(--c-calma-border-subtle);
+}
+
+.agent-page .support-mode-capsule {
+  border: 1px solid var(--c-calma-border);
+  border-radius: var(--radius-card);
+  background: var(--c-calma-surface);
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.agent-page .support-mode-capsule:hover,
+.agent-page .support-mode-capsule.active {
+  border-color: var(--c-calma-accent);
+  background: var(--c-calma-accent-soft);
+}
+
+.agent-page .privacy-badge-rbac {
+  border-radius: var(--radius-sm);
+}
+
+.agent-page .analysis-chip,
+.agent-page .keyword-tag {
+  border-radius: var(--radius-sm);
+}
+
+@media (max-width: 640px) {
+  .modal-overlay {
+    align-items: flex-start;
+    padding: 16px;
+    overflow-y: auto;
+  }
+
+  .agent-modal {
+    max-width: 100%;
+    max-height: calc(100vh - 32px);
+    padding: 20px;
+  }
+
+  .agent-modal .modal-footer {
+    align-items: stretch;
+  }
+
+  .agent-modal .modal-footer .btn,
+  .agent-modal .modal-footer a {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ========================================================================== 
+   Modo Pausa inmersivo (BpoResetModal): pantalla completa atenuada,
+   una cosa por pantalla. Fondo verde-negro profundo para aislar
+   sensorialmente al agente del turno.
+   ========================================================================== */
+
+.pause-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #0b211d;
+  animation: pause-fade 260ms ease;
+  padding: 24px;
+  overflow: hidden;
+}
+
+/* Aurora boreal a la deriva: dos velos de color muy difusos en movimiento lentísimo */
+.pause-overlay::before {
+  content: '';
+  position: absolute;
+  inset: -18% -12%;
+  background: none;
+  opacity: 0;
+  animation: none;
+  pointer-events: none;
+}
+
+@keyframes aurora-drift {
+  from {
+    transform: translate3d(-2.5%, 0, 0) scale(1);
+    opacity: 0.7;
+  }
+  to {
+    transform: translate3d(2.5%, -1.5%, 0) scale(1.07);
+    opacity: 1;
+  }
+}
+
+/* Estrellas tenues y horizonte: la quietud del cielo */
+.pause-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: none;
+  opacity: 0;
+  pointer-events: none;
+}
+
+@keyframes pause-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Niebla baja: capa difusa que se desplaza lentísimo (profundidad de paisaje) */
+.pause-mist {
+  position: absolute;
+  z-index: 0;
+  left: -10%;
+  right: -10%;
+  bottom: -6%;
+  height: 42%;
+  background: none;
+  opacity: 0;
+  animation: none;
+  pointer-events: none;
+}
+
+@keyframes mist-drift {
+  from {
+    transform: translate3d(-3%, 0, 0);
+  }
+  to {
+    transform: translate3d(3%, -2%, 0);
+  }
+}
+
+/* Controles superiores: ambiente sonoro + salir */
+.pause-controls {
+  position: absolute;
+  z-index: 2;
+  top: 20px;
+  right: 24px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pause-brand {
+  position: fixed;
+  top: 29px;
+  left: 28px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: rgba(198, 226, 216, 0.7);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.pause-brand-name {
+  color: #9bdbc8;
+}
+
+.pause-brand-divider {
+  color: rgba(198, 226, 216, 0.38);
+}
+
+.pause-sound,
+.pause-exit {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: transparent;
+  border: 1px solid rgba(198, 226, 216, 0.25);
+  border-radius: var(--radius-md);
+  color: #c6e2d8;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.pause-sound:hover,
+.pause-exit:hover {
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
+.pause-sound:focus-visible,
+.pause-exit:focus-visible {
+  outline: 2px solid #7ec8b2;
+  outline-offset: 2px;
+}
+
+/* Barras diminutas: confirman que hay ambiente sonoro sonando */
+.pause-sound-bars {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 12px;
+}
+
+.pause-sound-bars i {
+  width: 2px;
+  height: 100%;
+  border-radius: 999px;
+  background-color: #7ec8b2;
+  transform-origin: bottom;
+  animation: sound-bar 1.8s ease-in-out infinite;
+}
+
+.pause-sound-bars i:nth-child(2) {
+  animation-delay: 0.3s;
+}
+
+.pause-sound-bars i:nth-child(3) {
+  animation-delay: 0.6s;
+}
+
+@keyframes sound-bar {
+  0%, 100% {
+    transform: scaleY(0.3);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+
+/* Anillo de progreso total de la pausa */
+.pause-ring {
+  position: absolute;
+  z-index: 2;
+  top: 24px;
+  left: calc(50% - 22px);
+  width: 44px;
+  height: 44px;
+  transform: rotate(-90deg);
+}
+
+.pause-ring-track {
+  fill: none;
+  stroke: rgba(198, 226, 216, 0.18);
+  stroke-width: 2.5;
+}
+
+.pause-ring-fill {
+  fill: none;
+  stroke: #7ec8b2;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1s linear;
+}
+
+/* Escenario: una sola pieza de contenido centrada (sobre la capa atmosférica) */
+.pause-stage {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+  max-width: 560px;
+}
+
+.pause-stage--completion {
+  gap: 14px;
+}
+
+.pause-kicker {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #7ec8b2;
+}
+
+.pause-title {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 800;
+  color: #eaf4ef;
+  letter-spacing: -0.01em;
+}
+
+.pause-sub {
+  margin: 0;
+  max-width: 420px;
+  font-size: 14px;
+  color: #a9c7bd;
+  line-height: 1.6;
+}
+
+.pause-entry-list {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 2px 0 6px;
+}
+
+.pause-entry-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 110px;
+  padding: 10px 12px;
+  border: 1px solid rgba(198, 226, 216, 0.22);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(6px);
+}
+
+.pause-entry-chip-label {
+  font-size: 9px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: rgba(198, 226, 216, 0.7);
+}
+
+.pause-entry-chip strong {
+  font-size: 14px;
+  color: #edf9f4;
+  font-weight: 700;
+}
+
+.pause-phase-word {
+  margin: 0;
+  font-size: 34px;
+  font-weight: 800;
+  color: #eaf4ef;
+}
+
+.pause-phase-hint {
+  margin: 0;
+  max-width: 420px;
+  font-size: 14px;
+  color: #a9c7bd;
+  line-height: 1.6;
+}
+
+.pause-meta {
+  margin: 4px 0 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: #7ec8b2;
+  font-variant-numeric: tabular-nums;
+}
+
+.pause-count {
+  margin: 8px 0 0;
+  font-size: 42px;
+  font-weight: 800;
+  color: #eaf4ef;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.pause-start-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 14px;
+  min-width: 220px;
+  height: 48px;
+  background-color: var(--c-calma-accent);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.24);
+}
+
+.pause-start-btn:hover {
+  background-color: var(--c-calma-accent-hover);
+  transform: translateY(-1px);
+}
+
+.pause-start-btn:focus-visible {
+  outline: 2px solid #7ec8b2;
+  outline-offset: 2px;
+}
+
+/* Orbe guía de respiración (pseudo-3D con gradientes CSS, sin WebGL).
+   El tamaño lo controla la curva 4-2-6 desde JS (requestAnimationFrame). */
+.pause-orb-scene {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 4px 0;
+}
+
+.pause-orb-arc {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.pause-orb-arc-track {
+  fill: none;
+  stroke: rgba(198, 226, 216, 0.14);
+  stroke-width: 2.5;
+}
+
+.pause-orb-arc-fill {
+  fill: none;
+  stroke: #8fe3cf;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+}
+
+.pause-orb-aura {
+  position: absolute;
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(94, 234, 212, 0.16), transparent 70%);
+  filter: blur(20px);
+}
+
+/* Orbe con volumen: luz superior, sombra inferior, brillo especular */
+.pause-orb {
+  position: relative;
+  width: 190px;
+  height: 190px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 32% 26%, rgba(255, 255, 255, 0.4), transparent 44%),
+    radial-gradient(circle at 50% 58%, rgba(94, 234, 212, 0.55), rgba(27, 122, 104, 0.8) 62%, rgba(10, 42, 36, 0.96) 100%);
+  box-shadow:
+    inset 0 12px 26px rgba(255, 255, 255, 0.14),
+    inset 0 -20px 38px rgba(3, 22, 18, 0.6),
+    0 26px 60px rgba(3, 22, 18, 0.5),
+    0 0 70px rgba(94, 234, 212, 0.16);
+  transform: scale(0.78);
+  will-change: transform;
+}
+
+.pause-orb-sheen {
+  position: absolute;
+  left: 18%;
+  top: 11%;
+  width: 40%;
+  height: 26%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.55), transparent 70%);
+  filter: blur(7px);
+}
+
+/* Sostén: el orbe se tiñe cálido para hacer visible la pausa del aire */
+.pause-orb.orb-phase-1 {
+  background:
+    radial-gradient(circle at 32% 26%, rgba(255, 255, 255, 0.42), transparent 44%),
+    radial-gradient(circle at 50% 58%, rgba(232, 217, 160, 0.5), rgba(46, 122, 100, 0.8) 62%, rgba(10, 42, 36, 0.96) 100%);
+  box-shadow:
+    inset 0 12px 26px rgba(255, 255, 255, 0.16),
+    inset 0 -20px 38px rgba(3, 22, 18, 0.6),
+    0 26px 60px rgba(3, 22, 18, 0.5),
+    0 0 80px rgba(232, 217, 160, 0.2);
+}
+
+/* Guía textual: palabra de fase + barra de avance + instrucción */
+.pause-guide {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.pause-phase-count {
+  margin-left: 10px;
+  font-size: 20px;
+  font-weight: 700;
+  color: #7ec8b2;
+  font-variant-numeric: tabular-nums;
+}
+
+.pause-phase-bar {
+  width: 200px;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(198, 226, 216, 0.16);
+  overflow: hidden;
+}
+
+.pause-phase-bar-fill {
+  display: block;
+  width: 0%;
+  height: 100%;
+  border-radius: 999px;
+  background: #8fe3cf;
+}
+
+/* Sin movimiento: orbe estático centrado y barra vacía (el texto guía igual) */
+@media (prefers-reduced-motion: reduce) {
+  .pause-orb {
+    transform: scale(1);
+  }
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .pause-brand {
+    display: none;
+  }
+
+  .pause-controls {
+    top: 14px;
+    right: 14px;
+  }
+
+  .pause-sound,
+  .pause-exit {
+    padding: 8px 10px;
+  }
+
+  .pause-breath-viewport {
+    width: 240px;
+    height: 240px;
+  }
+
+  .pause-breath-circle {
+    width: 150px;
+    height: 150px;
+  }
+
+  .pause-title,
+  .pause-phase-word {
+    font-size: 26px;
+  }
+
+  .pause-count {
+    font-size: 34px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pause-overlay {
+    animation: none;
+  }
+
+  .pause-overlay::before {
+    animation: none;
+  }
+
+  .pause-mist {
+    animation: none;
+  }
+
+  .pause-sound-bars i {
+    animation: none;
+  }
+
+  .pause-ring-fill {
+    transition: none;
+  }
+
+  .pause-phase-fill {
+    transition: none;
+  }
+
+  .pause-start-btn:hover,
+  .calm-pause-btn:hover {
+    transform: none;
   }
 }

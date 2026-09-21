@@ -95,6 +95,111 @@
   line-height: 1.55;
 }
 
+/* 4b. Bloques internos del panel de análisis (antes estilos inline en JSX) */
+.analysis-panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.analysis-panel-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.analysis-panel-title svg {
+  color: var(--c-calma-accent, #1b7a68);
+}
+
+.analysis-panel-title strong {
+  font-size: 14px;
+  color: var(--c-texto, #0f172a);
+}
+
+.analysis-panel-head .badge {
+  font-size: 11px;
+}
+
+.analysis-card .local-seal {
+  margin-bottom: 12px;
+}
+
+.analysis-card .local-seal svg {
+  color: var(--c-calma-accent, #1b7a68);
+  margin-top: 2px;
+}
+
+.analysis-card .analysis-calm-banner {
+  margin-bottom: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.analysis-card .analysis-calm-banner svg {
+  color: var(--c-calma-accent, #1b7a68);
+  margin-top: 2px;
+}
+
+.analysis-panel-factors {
+  margin-bottom: 14px;
+}
+
+.analysis-panel-label {
+  margin-bottom: 8px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--c-texto-suave, #475569);
+}
+
+.analysis-panel-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.analysis-panel-evidence {
+  margin-bottom: 16px;
+  font-size: 12.5px;
+  color: var(--c-texto-suave, #475569);
+  line-height: 1.6;
+}
+
+.analysis-panel-evidence-label {
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: var(--c-texto, #0f172a);
+}
+
+.analysis-evidence-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.analysis-evidence-empty {
+  font-style: italic;
+  color: var(--c-texto-mutado, #64748b);
+}
+
+.analysis-panel-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--c-calma-border, #d5e0dc);
+}
+
+.analysis-panel-actions .btn {
+  font-size: 12.5px;
+  padding: 6px 12px;
+}
+
 /* 5. Área de escritura ergonómica: "Modo Desahogo" */
 .desahogo-container {
   width: 100%;
