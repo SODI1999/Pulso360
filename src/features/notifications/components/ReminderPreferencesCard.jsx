@@ -1,31 +1,40 @@
 // src/features/notifications/components/ReminderPreferencesCard.jsx
-// Panel modular de configuración de recordatorio diario de check-in para agentes (RF-17)
+// Ajuste editorial continuo de recordatorio de inicio de turno (RF-17 / pulso360-ui-craft Caso 1)
 
 export function ReminderPreferencesCard({
   reminderActive = false,
   onToggleReminder = () => {}
 }) {
+  const handleSwitchClick = () => {
+    onToggleReminder(!reminderActive);
+  };
+
   return (
-    <div className="notif-preferences-card">
-      <div className="notif-toggle-row">
-        <div>
-          <h3 style={{ margin: 0, fontSize: '15px', color: 'var(--c-texto)' }}>
-            Recordatorio diario de Check-in
-          </h3>
-          <p style={{ margin: '3px 0 0', fontSize: '13px', color: 'var(--c-texto-suave)' }}>
-            Recibir un aviso en la plataforma al inicio de tu jornada para diligenciar la encuesta de bienestar.
-          </p>
-        </div>
-        <label style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontWeight: 600, fontSize: '13.5px', minHeight: '44px' }}>
-          <input
-            type="checkbox"
-            checked={reminderActive}
-            onChange={onToggleReminder}
-            style={{ width: '18px', height: '18px', cursor: 'pointer' }}
-          />
-          <span>{reminderActive ? 'Recordatorio activo' : 'Recordatorio desactivado'}</span>
-        </label>
+    <section className="notif-pref-editorial-row" aria-label="Ajustes de avisos de turno">
+      <div className="notif-pref-editorial-info">
+        <h2 className="notif-pref-editorial-title">Recordatorio diario de inicio de turno</h2>
+        <p className="notif-pref-editorial-desc">
+          Presenta un aviso al iniciar tu jornada operativa para diligenciar el check-in de bienestar diario. Al pausar, no se emitirán avisos al comenzar.
+        </p>
       </div>
-    </div>
+
+      <div className="notif-pref-editorial-action">
+        <button
+          type="button"
+          role="switch"
+          aria-checked={reminderActive}
+          aria-label="Recordatorio diario de check-in"
+          className={`editorial-switch ${reminderActive ? 'is-active' : ''}`}
+          onClick={handleSwitchClick}
+        >
+          <span className="editorial-switch-track" aria-hidden="true">
+            <span className="editorial-switch-thumb" />
+          </span>
+          <span className="editorial-switch-text">
+            {reminderActive ? 'Activo' : 'Pausado'}
+          </span>
+        </button>
+      </div>
+    </section>
   );
 }

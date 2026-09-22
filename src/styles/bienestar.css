@@ -1,0 +1,520 @@
+/* src/styles/bienestar.css
+   Pestaña de Bienestar Acumulado del Agente (Pulso360)
+   Diseñado bajo pulso360-ui-craft: Blueprint 0 (Flujo Editorial Continuo) y Blueprint 1 (Compañero de Turno)
+   Sin card-itis, sin franjas laterales, sin badges-dots, 100% tokenizado y WCAG AA.
+   Erradicación de choque de títulos y eliminación de listas infinitas no acotadas.
+*/
+
+/* 1. Contenedor Maestro Editorial
+   Alineado exactamente con el padding lateral y eje de lectura del panel del agente: max-width 1040px */
+.wellbeing-editorial-page {
+  max-width: 1040px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 28px 0 var(--space-16);
+}
+
+/* 2. Barra de Retorno y Acciones Rápidas */
+.wellbeing-top-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+  flex-wrap: wrap;
+}
+
+.wellbeing-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: transparent;
+  border: none;
+  padding: 8px 0;
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--c-texto-suave);
+  cursor: pointer;
+  min-height: 44px;
+  transition: color var(--transition-fast);
+}
+
+.wellbeing-back-btn:hover {
+  color: var(--c-texto);
+}
+
+.wellbeing-back-btn:focus-visible {
+  outline: 2px solid var(--c-primario);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+.wellbeing-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.wellbeing-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 8px 16px;
+  font-size: 13.5px;
+  font-weight: 600;
+  min-height: 44px;
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+}
+
+.wellbeing-action-btn:focus-visible {
+  outline: 2px solid var(--c-primario);
+  outline-offset: 2px;
+}
+
+.wellbeing-action-btn--primary {
+  background-color: var(--c-primario);
+  color: #ffffff;
+  border: 1px solid var(--c-primario);
+}
+
+.wellbeing-action-btn--primary:hover {
+  background-color: var(--c-primario-hover);
+  border-color: var(--c-primario-hover);
+  color: #ffffff;
+}
+
+/* 3. Encabezado Editorial */
+.wellbeing-header {
+  padding-bottom: var(--space-6);
+  margin-bottom: var(--space-6);
+  border-bottom: 1px solid var(--c-borde-suave);
+}
+
+.wellbeing-title {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--c-texto);
+  letter-spacing: -0.025em;
+  margin: 0 0 var(--space-2);
+  line-height: 1.25;
+}
+
+.wellbeing-subtitle {
+  font-size: 14.5px;
+  color: var(--c-texto-suave);
+  line-height: 1.55;
+  margin: 0;
+  max-width: 780px;
+}
+
+/* 4. Preámbulo de Autonomía y Privacidad Integrado */
+.wellbeing-preamble {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  background-color: var(--c-calma-bg);
+  border: 1px solid var(--c-calma-border-subtle);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-8);
+}
+
+.wellbeing-preamble-icon {
+  color: var(--c-primario);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.wellbeing-preamble-text {
+  font-size: 13.5px;
+  color: var(--c-calma-text);
+  line-height: 1.55;
+}
+
+.wellbeing-preamble-text strong {
+  color: var(--c-primario);
+  font-weight: 700;
+}
+
+/* 5. Superficie de Tendencia de Batería de Turno (Sin Cajas Flotantes) */
+.wellbeing-section {
+  margin-bottom: var(--space-10, 40px);
+}
+
+.wellbeing-section + .wellbeing-section {
+  margin-top: var(--space-8, 32px);
+}
+
+.wellbeing-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--c-borde-suave);
+}
+
+.wellbeing-section-title-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.wellbeing-section-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--c-texto);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.wellbeing-section-desc {
+  font-size: 13px;
+  color: var(--c-texto-suave);
+  margin: 0;
+}
+
+.wellbeing-section-tag {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--c-primario);
+  background-color: var(--c-primario-suave);
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+}
+
+.wellbeing-trend-canvas-wrap {
+  background-color: var(--c-superficie);
+  border: 1px solid var(--c-borde-suave);
+  border-radius: var(--radius-md);
+  padding: var(--space-5) var(--space-4) var(--space-3);
+  position: relative;
+}
+
+.wellbeing-trend-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: var(--space-3);
+  margin-top: var(--space-2);
+  border-top: 1px dashed var(--c-borde-suave);
+  font-size: 12px;
+  color: var(--c-texto-suave);
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+/* 6. Selector Horizontal de Jornadas Recientes (Inspector de Turno) */
+.wellbeing-shift-selector-wrap {
+  margin-bottom: var(--space-4);
+}
+
+.wellbeing-shift-selector {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  overflow-x: auto;
+  padding-bottom: 6px;
+  scrollbar-width: thin;
+}
+
+.wellbeing-shift-tab {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 2px;
+  padding: 8px 14px;
+  min-height: 48px;
+  background-color: var(--c-superficie);
+  border: 1px solid var(--c-borde-suave);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all var(--transition-fast);
+}
+
+.wellbeing-shift-tab:hover {
+  background-color: var(--c-fondo-subtle);
+  border-color: var(--c-borde);
+}
+
+.wellbeing-shift-tab:focus-visible {
+  outline: 2px solid var(--c-primario);
+  outline-offset: 2px;
+}
+
+.wellbeing-shift-tab.is-active {
+  background-color: var(--c-primario);
+  border-color: var(--c-primario);
+  color: #ffffff;
+  box-shadow: 0 1px 3px rgba(15, 118, 110, 0.25);
+}
+
+.wellbeing-shift-tab-date {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--c-texto);
+  line-height: 1.2;
+}
+
+.wellbeing-shift-tab.is-active .wellbeing-shift-tab-date {
+  color: #ffffff;
+}
+
+.wellbeing-shift-tab-type {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--c-texto-suave);
+  line-height: 1.2;
+}
+
+.wellbeing-shift-tab.is-active .wellbeing-shift-tab-type {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.wellbeing-shift-active-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  background-color: var(--c-fondo);
+  border: 1px solid var(--c-borde-suave);
+  border-bottom: none;
+  border-top-left-radius: var(--radius-md);
+  border-top-right-radius: var(--radius-md);
+  font-size: 12.5px;
+  color: var(--c-texto-suave);
+  flex-wrap: wrap;
+}
+
+.wellbeing-shift-active-info {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-weight: 600;
+  color: var(--c-texto);
+}
+
+.wellbeing-shift-active-info svg {
+  color: var(--c-primario);
+}
+
+/* 7. Matriz Somática Editorial Continua */
+.wellbeing-matrix-list {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--c-borde-suave);
+  border-radius: var(--radius-md);
+  background-color: var(--c-superficie);
+}
+
+.wellbeing-shift-active-meta+.wellbeing-matrix-list {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.wellbeing-matrix-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--c-borde-suave);
+  transition: background-color var(--transition-fast);
+}
+
+.wellbeing-matrix-row:last-child {
+  border-bottom: none;
+}
+
+.wellbeing-matrix-row:hover {
+  background-color: var(--c-fondo-subtle);
+}
+
+.wellbeing-matrix-info {
+  flex: 1;
+  min-width: 220px;
+}
+
+.wellbeing-matrix-heading {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: 2px;
+}
+
+.wellbeing-matrix-name {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--c-texto);
+}
+
+.wellbeing-matrix-desc {
+  font-size: 12.5px;
+  color: var(--c-texto-suave);
+  line-height: 1.45;
+  margin: 0;
+}
+
+.wellbeing-matrix-gauge {
+  flex: 1;
+  max-width: 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.wellbeing-meter-track {
+  width: 100%;
+  height: 6px;
+  background-color: var(--c-borde-suave);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.wellbeing-meter-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.wellbeing-meter-fill--calm {
+  background-color: var(--c-primario);
+}
+
+.wellbeing-meter-fill--warm {
+  background-color: #d97706;
+}
+
+.wellbeing-meter-fill--alert {
+  background-color: #dc2626;
+}
+
+.wellbeing-matrix-level-hint {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--c-texto-suave);
+  display: flex;
+  justify-content: space-between;
+}
+
+.wellbeing-matrix-score {
+  flex-shrink: 0;
+  text-align: right;
+  min-width: 60px;
+}
+
+.wellbeing-matrix-val {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--c-texto);
+  line-height: 1;
+}
+
+.wellbeing-matrix-unit {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--c-texto-suave);
+  margin-left: 2px;
+}
+
+/* Nota de Ventana Acotada del Ciclo */
+.wellbeing-window-note {
+  margin-top: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background-color: var(--c-calma-bg);
+  border: 1px solid var(--c-calma-border-subtle);
+  border-radius: var(--radius-md);
+  font-size: 12.5px;
+  color: var(--c-texto-suave);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.wellbeing-window-note strong {
+  color: var(--c-texto);
+}
+
+/* 8. Estado Vacío Amigable y Respetuoso */
+.wellbeing-empty-state {
+  text-align: center;
+  padding: var(--space-12) var(--space-6);
+  background-color: var(--c-superficie);
+  border: 1px dashed var(--c-borde);
+  border-radius: var(--radius-md);
+  margin: var(--space-4) 0;
+}
+
+.wellbeing-empty-icon {
+  color: var(--c-primario);
+  margin-bottom: var(--space-3);
+}
+
+.wellbeing-empty-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--c-texto);
+  margin: 0 0 var(--space-2);
+}
+
+.wellbeing-empty-desc {
+  font-size: 13.5px;
+  color: var(--c-texto-suave);
+  line-height: 1.55;
+  max-width: 480px;
+  margin: 0 auto var(--space-6);
+}
+
+/* 9. Adaptabilidad Móvil y Ergonómica */
+@media (max-width: 900px) {
+  .wellbeing-matrix-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-3);
+  }
+
+  .wellbeing-matrix-gauge {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .wellbeing-matrix-score {
+    align-self: flex-start;
+  }
+}
+
+@media (max-width: 580px) {
+  .wellbeing-editorial-page {
+    padding: var(--space-4) var(--space-3) var(--space-12);
+  }
+
+  .wellbeing-title {
+    font-size: 22px;
+  }
+
+  .wellbeing-top-nav {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .wellbeing-section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2);
+  }
+}

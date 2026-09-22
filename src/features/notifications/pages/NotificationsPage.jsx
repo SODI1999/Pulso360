@@ -1,5 +1,5 @@
 // src/features/notifications/pages/NotificationsPage.jsx
-// Centro de Notificaciones y Avisos Operativos (RF-17)
+// Centro de Notificaciones y Avisos Operativos (RF-17 / antislop-ui)
 
 import { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -9,12 +9,14 @@ import { Icon } from '../../../core/components/Icon';
 import { NotificationItem } from '../components/NotificationItem';
 import { ReminderPreferencesCard } from '../components/ReminderPreferencesCard';
 
+import '../../../styles/agent.css';
 import '../../../styles/notifications.css';
 
 export function NotificationsPage() {
   const currentUser = authService.getCurrentUser();
   const navigate = useNavigate();
   const [version, setVersion] = useState(0);
+  const [activeFilter, setActiveFilter] = useState('all'); // 'all' | 'unread'
 
   // Almacén reactivo
   const storeData = useMemo(() => {
@@ -32,6 +34,14 @@ export function NotificationsPage() {
 
   const unreadCount = userNotifications.filter((n) => !n.read).length;
 
+  // Filtrado según pestaña seleccionada
+  const displayedNotifications = useMemo(() => {
+    if (activeFilter === 'unread') {
+      return userNotifications.filter((n) => !n.read);
+    }
+    return userNotifications;
+  }, [userNotifications, activeFilter]);
+
   // Preferencia de recordatorio de check-in para agentes (RF-17)
   const isAgent = currentUser?.role === 'agente';
   const reminderStorageKey = `pulso360_reminder_${currentUser?.id || 'usr-1'}`;
@@ -43,8 +53,8 @@ export function NotificationsPage() {
     }
   }, [isAgent, reminderStorageKey]);
 
-  const handleToggleReminder = (e) => {
-    const isChecked = e.target.checked;
+  const handleToggleReminder = (newValue) => {
+    const isChecked = typeof newValue === 'boolean' ? newValue : !reminderActive;
     setReminderActive(isChecked);
     localStorage.setItem(reminderStorageKey, isChecked ? '1' : '0');
   };
@@ -100,77 +110,136 @@ export function NotificationsPage() {
     }
   };
 
+  const roleHomePath = {
+    agente: '/agente/panel',
+    supervisor: '/supervisor/dashboard',
+    sst: '/sst/analisis',
+    admin: '/admin/configuracion',
+    auditor: '/auditor/logs'
+  }[currentUser?.role] || '/agente/panel';
+
+  const handleBack = () => {
+    navigate(roleHomePath);
+  };
+
   return (
-    <div className="notif-container">
-      {/* Cabecera */}
-      <div className="page-header">
-        <div>
-          <h1 className="page-title">Centro de notificaciones y avisos</h1>
-          <p className="page-subtitle">
-            Avisos operativos, confirmaciones de solicitudes y novedades institucionales (RF-17).
+    <div className="notif-inbox-layout">
+      {/* 1. Barra de Retorno idéntica a las demás vistas */}
+      <nav className="notif-top-nav" aria-label="Navegación secundaria">
+        <button
+          type="button"
+          className="notif-back-btn"
+          onClick={handleBack}
+          aria-label="Volver al panel principal"
+        >
+          <Icon name="arrowLeft" size={16} />
+          <span>Volver al panel</span>
+        </button>
+      </nav>
+
+      {/* 2. Cabecera sobria del Centro de Notificaciones */}
+      <header className="notif-inbox-header">
+        <div className="notif-inbox-title-wrap">
+          <h1 className="notif-inbox-title">Avisos y notificaciones</h1>
+          <p className="notif-inbox-subtitle">
+            Historial de novedades operativas, confirmaciones de solicitudes y alertas de tu jornada.
           </p>
         </div>
+
         {unreadCount > 0 && (
+          <div className="notif-inbox-actions">
+            <button
+              type="button"
+              className="btn btn-secondary btn-sm"
+              onClick={handleMarkAllRead}
+              aria-label="Marcar todas las notificaciones como leídas"
+            >
+              <Icon name="check" size={15} />
+              <span>Marcar todas como leídas</span>
+            </button>
+          </div>
+        )}
+      </header>
+
+      {/* 3. Pestañas de Filtro (Bandeja / No leídas) */}
+      <div className="notif-filter-bar">
+        <div className="notif-tabs" role="tablist" aria-label="Filtro de avisos">
           <button
             type="button"
-            className="btn btn-secondary"
-            onClick={handleMarkAllRead}
+            role="tab"
+            aria-selected={activeFilter === 'all'}
+            className={`notif-tab-btn ${activeFilter === 'all' ? 'is-active' : ''}`}
+            onClick={() => setActiveFilter('all')}
           >
-            <Icon name="check" size={16} />
-            <span>Marcar todas como leídas</span>
+            <span>Todas</span>
+            <span className="notif-tab-count">{userNotifications.length}</span>
           </button>
-        )}
-      </div>
-
-      {/* Banner Informativo */}
-      <div className="alert-banner info">
-        <Icon name="info" size={18} />
-        <div>
-          <strong>Principio de Discreción y Privacidad:</strong> Los avisos son contextuales y no exponen contenido de bitácoras ni puntajes individuales de check-ins en las vistas colectivas.
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeFilter === 'unread'}
+            className={`notif-tab-btn ${activeFilter === 'unread' ? 'is-active' : ''}`}
+            onClick={() => setActiveFilter('unread')}
+          >
+            <span>Sin leer</span>
+            {unreadCount > 0 && (
+              <span className="notif-tab-count notif-tab-count--unread">{unreadCount}</span>
+            )}
+          </button>
         </div>
+
+        <span className="notif-status-summary">
+          {unreadCount > 0
+            ? `${unreadCount} pendiente${unreadCount > 1 ? 's' : ''} de revisión`
+            : 'Todo al día'}
+        </span>
       </div>
 
-      {/* Lista de Notificaciones */}
-      <div className="card">
-        <div className="card-header">
-          <div>
-            <h2 className="card-title">Avisos recibidos</h2>
-            <div className="card-subtitle">
-              {unreadCount > 0
-                ? `Tienes ${unreadCount} aviso${unreadCount > 1 ? 's' : ''} pendiente${unreadCount > 1 ? 's' : ''} de lectura.`
-                : 'No tienes avisos no leídos.'}
+      {/* 4. Feed de Notificaciones */}
+      <section aria-label="Listado de notificaciones">
+        <div className="notif-items-feed" role="feed">
+          {displayedNotifications.length === 0 ? (
+            <div className="notif-empty-inbox">
+              <div className="notif-empty-icon-box" aria-hidden="true">
+                <Icon name="bell" size={24} />
+              </div>
+              <h2 className="notif-empty-title">
+                {activeFilter === 'unread' ? 'No tienes avisos sin leer' : 'Bandeja al día'}
+              </h2>
+              <p className="notif-empty-desc">
+                {activeFilter === 'unread'
+                  ? 'Has revisado todas las notificaciones pendientes. Puedes consultar el histórico completo en la pestaña "Todas".'
+                  : 'No hay novedades operativas registradas para tu rol en este momento.'}
+              </p>
             </div>
-          </div>
-          {unreadCount > 0 && (
-            <span className="badge badge-info">{unreadCount} no leídas</span>
-          )}
-        </div>
-
-        {userNotifications.length === 0 ? (
-          <p style={{ textAlign: 'center', padding: 'var(--space-6)', color: 'var(--c-texto-suave)' }}>
-            No tienes avisos registrados en el sistema.
-          </p>
-        ) : (
-          <div className="notif-list">
-            {userNotifications.map((n) => (
+          ) : (
+            displayedNotifications.map((n) => (
               <NotificationItem
                 key={n.id}
                 notification={n}
                 onClick={handleNotificationClick}
                 formatDate={formatDate}
               />
-            ))}
-          </div>
-        )}
-      </div>
+            ))
+          )}
+        </div>
+      </section>
 
-      {/* Preferencia Modular de Recordatorio para Agentes (RF-17) */}
+      {/* 5. Ajustes de Turno (Solo para Agentes) */}
       {isAgent && (
         <ReminderPreferencesCard
           reminderActive={reminderActive}
           onToggleReminder={handleToggleReminder}
         />
       )}
+
+      {/* 6. Nota Discreta de Privacidad y Confidencialidad */}
+      <footer className="notif-confidentiality-footer" role="contentinfo">
+        <Icon name="shield" size={16} />
+        <span>
+          <strong>Confidencialidad operativa:</strong> Los avisos son de carácter estrictamente individual. El sistema nunca expone reflexiones privadas de bitácora ni respuestas personales de bienestar.
+        </span>
+      </footer>
     </div>
   );
 }
