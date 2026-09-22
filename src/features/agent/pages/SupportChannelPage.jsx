@@ -80,9 +80,9 @@ export function SupportChannelPage() {
     // 1. Caso: Bloqueo pedagógico por falta de consentimiento C5 (Ruta pública de apoyo permanece habilitada)
     if (!consent?.c5) {
         return (
-            <div>
+            <div className="agent-page agent-page--support">
                 <div className="page-header">
-                    <div className="agent-page agent-page--support">
+                    <div>
                         <h1 className="page-title">Solicitar acompañamiento</h1>
                         <p className="page-subtitle">
                             Tu solicitud se canaliza al equipo de SST; esta vista no la presenta a tu líder ni a tu supervisor.

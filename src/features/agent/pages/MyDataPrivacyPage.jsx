@@ -21,7 +21,7 @@ export function MyDataPrivacyPage() {
 
     // Formatear fechas en formato colombiano
     const formatDate = (val) => {
-        if (!val) return '—';
+        if (!val) return '–';
         const str = val.includes('T') ? val : `${val}T12:00:00`;
         return new Intl.DateTimeFormat('es-CO', { year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date(str));
     };
@@ -143,7 +143,7 @@ export function MyDataPrivacyPage() {
         e.preventDefault();
         const detail = rectificationText.trim();
         if (detail.length < 10) {
-            alert('Describe con un poco más de detalle el dato que deseas rectificar (mínimo 10 caracteres).');
+            setRectificationFeedback('Describe con un poco más de detalle el dato que deseas rectificar (mínimo 10 caracteres).');
             return;
         }
 
@@ -185,7 +185,7 @@ export function MyDataPrivacyPage() {
                     <div className="kpi-card">
                         <div className="kpi-label">Check-ins</div>
                         <div className="kpi-value">{summary.checkins.length}</div>
-                        <div style={{ fontSize: '11px', color: 'var(--c-texto-mutado)', marginTop: '4px' }}>
+                        <div style={{ fontSize: '11px', color: 'var(--c-texto-suave)', marginTop: '4px' }}>
                             {calculateDateRange(summary.checkins, 'date')}
                         </div>
                     </div>
@@ -193,7 +193,7 @@ export function MyDataPrivacyPage() {
                     <div className="kpi-card">
                         <div className="kpi-label">Bitácoras</div>
                         <div className="kpi-value">{summary.journals.length}</div>
-                        <div style={{ fontSize: '11px', color: 'var(--c-texto-mutado)', marginTop: '4px' }}>
+                        <div style={{ fontSize: '11px', color: 'var(--c-texto-suave)', marginTop: '4px' }}>
                             {calculateDateRange(summary.journals, 'date')}
                         </div>
                     </div>
@@ -201,7 +201,7 @@ export function MyDataPrivacyPage() {
                     <div className="kpi-card">
                         <div className="kpi-label">Solicitudes de apoyo</div>
                         <div className="kpi-value">{summary.support.length}</div>
-                        <div style={{ fontSize: '11px', color: 'var(--c-texto-mutado)', marginTop: '4px' }}>
+                        <div style={{ fontSize: '11px', color: 'var(--c-texto-suave)', marginTop: '4px' }}>
                             {calculateDateRange(summary.support, 'date')}
                         </div>
                     </div>
@@ -211,7 +211,7 @@ export function MyDataPrivacyPage() {
                         <div className="kpi-value" style={{ fontSize: '16px' }}>
                             {summary.consent?.policyAccepted ? 'Vigente' : 'Pendiente'}
                         </div>
-                        <div style={{ fontSize: '11px', color: 'var(--c-texto-mutado)', marginTop: '4px' }}>
+                        <div style={{ fontSize: '11px', color: 'var(--c-texto-suave)', marginTop: '4px' }}>
                             {summary.consent?.updatedAt ? `Actualizado ${formatDate(summary.consent.updatedAt)}` : 'Sin aceptación vigente'}
                         </div>
                     </div>
@@ -283,7 +283,7 @@ export function MyDataPrivacyPage() {
 
             {/* 4. Solicitud Formal de Supresión */}
             <div style={{ marginTop: '32px', marginBottom: '8px' }}>
-                <span style={{ fontSize: '11.5px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--c-texto-mutado)' }}>
+                <span style={{ fontSize: '11.5px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--c-texto-suave)' }}>
                     Zona de gestión de derechos y supresión
                 </span>
                 <hr style={{ border: 'none', borderTop: '1px solid var(--c-borde-suave)', margin: '8px 0 16px' }} />
@@ -373,7 +373,7 @@ export function MyDataPrivacyPage() {
                                     Radicada: {formatDate(req.createdAt)} · Fecha objetivo: {formatDate(req.deadline)}
                                 </div>
                                 {req.note && (
-                                    <div style={{ fontSize: '12px', color: 'var(--c-texto-mutado)', fontStyle: 'italic', marginTop: '4px' }}>
+                                    <div style={{ fontSize: '12px', color: 'var(--c-texto-suave)', fontStyle: 'italic', marginTop: '4px' }}>
                                         Nota: {req.note}
                                     </div>
                                 )}

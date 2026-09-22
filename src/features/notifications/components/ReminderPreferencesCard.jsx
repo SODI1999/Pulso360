@@ -16,11 +16,12 @@ export function ReminderPreferencesCard({
             Recibir un aviso en la plataforma al inicio de tu jornada para diligenciar la encuesta de bienestar.
           </p>
         </div>
-        <label style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontWeight: 600, fontSize: '13.5px' }}>
+        <label style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontWeight: 600, fontSize: '13.5px', minHeight: '44px' }}>
           <input
             type="checkbox"
             checked={reminderActive}
             onChange={onToggleReminder}
+            style={{ width: '18px', height: '18px', cursor: 'pointer' }}
           />
           <span>{reminderActive ? 'Recordatorio activo' : 'Recordatorio desactivado'}</span>
         </label>

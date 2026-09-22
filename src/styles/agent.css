@@ -200,6 +200,12 @@
 .calm-mood-5:hover,
 .calm-mood-5:focus-visible { background-color: #e9f8f3; }
 
+.calm-mood-btn:hover .calm-mood-label,
+.calm-mood-btn:focus-visible .calm-mood-label {
+  color: var(--c-texto);
+  font-weight: 600;
+}
+
 /* Estado: check-in ya registrado en la jornada actual */
 .calm-done {
   display: flex;
@@ -337,7 +343,7 @@
 .calm-rail-time {
   font-size: 10.5px;
   font-weight: 600;
-  color: var(--c-texto-mutado);
+  color: var(--c-calma-text-muted);
 }
 
 .calm-rail-label {
@@ -403,7 +409,7 @@
 .calm-pause-note {
   margin: 10px 0 0;
   font-size: 10.5px;
-  color: var(--c-texto-mutado);
+  color: var(--c-calma-text-muted);
   text-align: center;
 }
 
@@ -419,7 +425,7 @@
 
 .calm-foot-note {
   font-size: 12px;
-  color: var(--c-texto-mutado);
+  color: var(--c-texto-suave);
 }
 
 .calm-foot-link {
@@ -477,6 +483,10 @@
     flex-direction: column;
     align-items: flex-start;
   }
+
+  .calm-disconnect-actions .btn {
+    min-height: 44px;
+  }
 }
 
 /* Respeto por preferencias de movimiento reducido */
@@ -501,15 +511,6 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
-}
-
-.agent-page:not(.calm-home)::before {
-  content: 'Espacio del agente';
-  display: block;
-  margin-bottom: 8px;
-  color: var(--c-calma-accent);
-  font-size: 11px;
-  font-weight: 700;
 }
 
 .agent-page .page-title {
@@ -954,7 +955,7 @@
 .field-hint {
   margin-top: 4px;
   font-size: 11.5px;
-  color: var(--c-texto-mutado);
+  color: var(--c-texto-suave);
 }
 
 .form-row-grid {
@@ -1049,6 +1050,7 @@
   gap: 24px;
   max-width: 920px;
   margin: 0 auto;
+  padding: 0 var(--space-4);
 }
 
 .crisis-hero-flex {
@@ -1136,7 +1138,7 @@
   padding: 2px 6px;
   border-radius: var(--radius-full);
   background: var(--c-fondo-subtle);
-  color: var(--c-texto-mutado);
+  color: var(--c-texto-suave);
   font-size: 10px;
   font-weight: 700;
 }
@@ -1253,7 +1255,7 @@
 
 .crisis-line-call {
   width: 100%;
-  min-height: 36px;
+  min-height: 44px;
   justify-content: center;
 }
 

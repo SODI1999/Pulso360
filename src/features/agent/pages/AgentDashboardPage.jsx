@@ -274,7 +274,6 @@ export function AgentDashboardPage() {
               title="Abrir ejercicios de respiración, descanso visual y estiramiento"
             >
               <span>Tomar una pausa</span>
-              <Icon name="arrowRight" size={16} />
             </button>
             <p className="calm-pause-note">No se registra como indicador individual.</p>
           </div>

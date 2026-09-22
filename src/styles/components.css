@@ -288,25 +288,25 @@ textarea.form-input,
 
 .badge-ok {
   background-color: var(--c-exito-bg);
-  color: var(--c-exito);
+  color: #047857;
   border: 1px solid var(--c-exito-border);
 }
 
 .badge-warn {
   background-color: var(--c-alerta-bg);
-  color: var(--c-alerta);
+  color: #b45309;
   border: 1px solid var(--c-alerta-border);
 }
 
 .badge-danger {
   background-color: var(--c-critico-bg);
-  color: var(--c-critico);
+  color: #b91c1c;
   border: 1px solid var(--c-critico-border);
 }
 
 .badge-info {
   background-color: var(--c-info-bg);
-  color: var(--c-info);
+  color: #0369a1;
   border: 1px solid var(--c-info-border);
 }
 
@@ -622,10 +622,10 @@ textarea.form-input,
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
-  min-width: 32px;
-  min-height: 32px;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
   padding: 0;
   border-radius: var(--radius-md);
   color: var(--c-texto-suave);
@@ -850,8 +850,8 @@ textarea.form-input,
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  padding: 7px 16px;
-  min-height: 34px;
+  padding: 10px 18px;
+  min-height: 44px;
   border-radius: var(--radius-full);
   background-color: var(--c-superficie);
   color: var(--c-primario);
@@ -1089,8 +1089,10 @@ textarea.form-input,
 .skip-btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: var(--space-2);
   padding: 8px 18px;
+  min-height: 44px;
   background-color: var(--c-fondo);
   border: 1px solid var(--c-borde-suave);
   border-radius: var(--radius-full);
@@ -1524,9 +1526,11 @@ textarea.form-input,
   font-weight: 700;
   border-radius: var(--radius-md);
   padding: 8px 18px;
+  min-height: 44px;
   font-size: 13.5px;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: var(--space-2);
   cursor: pointer;
   box-shadow: 0 2px 6px rgba(27, 122, 104, 0.28);
@@ -2618,7 +2622,7 @@ textarea.form-input,
 .somatic-matrix-unit {
   font-size: 13px;
   font-weight: 500;
-  color: var(--c-texto-mutado);
+  color: var(--c-texto-suave);
 }
 
 .wellbeing-timeline-section {

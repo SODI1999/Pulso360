@@ -52,9 +52,9 @@ export function JournalPage() {
         loadJournals();
     }, [loadJournals]);
 
-    // Detección de posibles nombres propios o identificaciones (regex RF-04)
+    // Detección pedagógica de datos de terceros (nombres en mitad de frase, cédulas/teléfonos de 7+ dígitos o emails)
     const hasThirdPartyData = useMemo(() => {
-        const pattern = /\b[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}\b|\b\d{7,}\b/;
+        const pattern = /(?<!(^|[.!?¿¡]\s*))\b[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}\b|\b\d{7,}\b|[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
         return pattern.test(journalText);
     }, [journalText]);
 
@@ -189,7 +189,7 @@ export function JournalPage() {
 
         const typedConfirmation = window.prompt('Para confirmar la eliminación definitiva, escribe ELIMINAR:') || '';
         if (typedConfirmation !== 'ELIMINAR') {
-            alert('Confirmación no válida. No se eliminó la entrada.');
+            setFeedback({ type: 'warn', message: 'Confirmación no válida. No se eliminó la entrada.' });
             return;
         }
 
@@ -290,7 +290,7 @@ export function JournalPage() {
         const currentConsent = storeData.consents?.[currentUser?.id];
 
         if (!currentConsent?.c5) {
-            alert('Se requiere tener activa la finalidad C5 de consentimiento para canalizar solicitudes a SST.');
+            setFeedback({ type: 'warn', message: 'Se requiere tener activa la finalidad C5 de consentimiento para canalizar solicitudes a SST.' });
             return;
         }
 
@@ -442,7 +442,7 @@ export function JournalPage() {
                                                 {preview}{ellipsis}
                                             </small>
                                             {item.context && (
-                                                <span style={{ fontSize: '11px', color: 'var(--c-texto-mutado)' }}>
+                                                <span style={{ fontSize: '11px', color: 'var(--c-texto-suave)' }}>
                                                     {item.context}
                                                 </span>
                                             )}
@@ -502,7 +502,7 @@ export function JournalPage() {
                             <div className="form-group">
                                 <label className="form-label" htmlFor="journalText" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                     <span>Espacio de reflexión y desahogo personal</span>
-                                    <span style={{ fontSize: '11.5px', color: 'var(--c-texto-mutado)', fontWeight: '500' }}>
+                                    <span style={{ fontSize: '11.5px', color: 'var(--c-texto-suave)', fontWeight: '500' }}>
                                         Espacio de escritura privado
                                     </span>
                                 </label>

@@ -89,7 +89,7 @@ export function MyWellbeingPage() {
                         <h2 style={{ fontSize: '16px', fontWeight: '700', color: 'var(--c-texto)', margin: 0 }}>
                             Último autorreporte registrado {latestCheckin.date ? `(${latestCheckin.date})` : ''}
                         </h2>
-                        <span style={{ fontSize: '12px', color: 'var(--c-texto-mutado)' }}>
+                        <span style={{ fontSize: '12px', color: 'var(--c-texto-suave)' }}>
                             Dimensiones evaluadas en tu turno más reciente
                         </span>
                     </div>
@@ -100,10 +100,10 @@ export function MyWellbeingPage() {
                     )}
                 </div>
 
-                <div id="wellbeingGrid" className="somatic-matrix-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))' }}>
+                <div id="wellbeingGrid" className="somatic-matrix-grid">
                     {DIMENSION_DEFINITIONS.map(dim => {
                         const val = latestCheckin[dim.key];
-                        const displayVal = val != null ? val : '—';
+                        const displayVal = val != null ? val : '–';
                         const hasVal = val != null;
 
                         return (
@@ -142,7 +142,7 @@ export function MyWellbeingPage() {
                             Registro ordenado cronológicamente de tus estados autorreportados por turno.
                         </p>
                     </div>
-                    <span style={{ fontSize: '12px', color: 'var(--c-texto-mutado)' }}>
+                    <span style={{ fontSize: '12px', color: 'var(--c-texto-suave)' }}>
                         {checkinRecords.length} {checkinRecords.length === 1 ? 'jornada registrada' : 'jornadas registradas'}
                     </span>
                 </div>
@@ -154,7 +154,7 @@ export function MyWellbeingPage() {
                             <h3 style={{ fontSize: '16px', fontWeight: '700', color: 'var(--c-texto)', marginBottom: '4px' }}>
                                 Aún no tienes registros de bienestar
                             </h3>
-                            <p style={{ fontSize: '12.5px', color: 'var(--c-texto-mutado)', margin: '0 0 10px' }}>
+                            <p style={{ fontSize: '12.5px', color: 'var(--c-texto-suave)', margin: '0 0 10px' }}>
                                 Aquí verás las 6 dimensiones de tu último turno
                             </p>
                             <p style={{ fontSize: '13px', color: 'var(--c-texto-suave)', margin: '0 0 16px', maxWidth: '420px', marginInline: 'auto' }}>
@@ -185,7 +185,7 @@ export function MyWellbeingPage() {
                                             <div key={dim.key} className="wellbeing-dim-chip">
                                                 <span className="wellbeing-dim-name">{dim.label}</span>
                                                 <span className="wellbeing-dim-score">
-                                                    {score != null ? `${score} / 5` : '—'}
+                                                    {score != null ? `${score} / 5` : '–'}
                                                 </span>
                                             </div>
                                         );

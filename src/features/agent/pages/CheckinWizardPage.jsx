@@ -98,6 +98,7 @@ export function CheckinWizardPage() {
     const [isEditing, setIsEditing] = useState(false);
     const [submittedSuccess, setSubmittedSuccess] = useState(false);
     const [draftNotice, setDraftNotice] = useState('');
+    const [validationError, setValidationError] = useState('');
     const [isResetModalOpen, setIsResetModalOpen] = useState(false);
     const [dismissDisconnectNotice, setDismissDisconnectNotice] = useState(false);
 
@@ -135,6 +136,7 @@ export function CheckinWizardPage() {
         });
 
         setDraftNotice('Borrador guardado localmente');
+        setValidationError('');
 
         if (stepTimerRef.current) {
             clearTimeout(stepTimerRef.current);
@@ -173,7 +175,7 @@ export function CheckinWizardPage() {
 
         const missing = QUESTIONS.some(q => !Object.prototype.hasOwnProperty.call(draft, q.key));
         if (missing) {
-            alert('Por favor responde cada dimensión o utiliza "Prefiero omitir esta pregunta hoy".');
+            setValidationError('Por favor responde cada dimensión o utiliza "Prefiero omitir esta pregunta hoy".');
             return;
         }
 
@@ -418,6 +420,14 @@ export function CheckinWizardPage() {
                     onSkip={() => updateDraftValue(currentQ.key, null)}
                 />
 
+                {/* Alerta de validación accesible en caso de dimensiones incompletas */}
+                {validationError && (
+                    <div className="alert alert-danger" role="alert" style={{ marginBottom: '16px' }}>
+                        <Icon name="warning" size={16} />
+                        <span>{validationError}</span>
+                    </div>
+                )}
+
                 {/* Botones de Navegación del Wizard con anticipación simétrica */}
                 <div className="wizard-footer-actions">
                     <button
@@ -459,7 +469,7 @@ export function CheckinWizardPage() {
                         <Icon name="shieldCheck" size={16} style={{ color: 'var(--c-primario)', flexShrink: 0, marginTop: '2px' }} />
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
                             <strong style={{ color: 'var(--c-texto)', fontSize: '12.5px' }}>
-                                Regla de agregación (N ≥ 5)
+                                Regla de agregación (k ≥ 5)
                             </strong>
                             <span style={{ fontSize: '12px', color: 'var(--c-texto-suave)', lineHeight: '1.45' }}>
                                 En los flujos definidos, las respuestas individuales quedan fuera de la vista colectiva mientras el grupo no alcanza al menos 5 personas. Los roles operativos reciben tendencias agregadas, no el detalle de cada respuesta.

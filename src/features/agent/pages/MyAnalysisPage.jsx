@@ -66,7 +66,7 @@ export function MyAnalysisPage() {
                             Procesamiento 100% Local en Navegador
                         </span>
                         <strong style={{ fontSize: '13px', color: 'var(--c-calma-text)' }}>
-                            Clasificador léxico local — sin envío a servidores externos
+                            Clasificador léxico local (sin envío a servidores externos)
                         </strong>
                     </div>
                     <p style={{ fontSize: '12.5px', color: 'var(--c-calma-text-muted)', lineHeight: '1.55', margin: 0 }}>
@@ -83,7 +83,7 @@ export function MyAnalysisPage() {
                             <Icon name="insights" size={20} style={{ color: 'var(--c-primario)' }} />
                             <span>Factores léxicos identificados en tus jornadas</span>
                         </h2>
-                        <span style={{ fontSize: '12px', color: 'var(--c-texto-mutado)' }}>
+                        <span style={{ fontSize: '12px', color: 'var(--c-texto-suave)' }}>
                             Términos asociados a sobrecarga, tensión o apoyo detectados en tus notas de bitácora
                         </span>
                     </div>
@@ -156,11 +156,25 @@ export function MyAnalysisPage() {
                                     </div>
 
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px', paddingTop: '8px', borderTop: '1px solid var(--c-borde-suave)' }}>
-                                        <span style={{ fontSize: '11.5px', color: 'var(--c-texto-mutado)' }}>
+                                        <span style={{ fontSize: '11.5px', color: 'var(--c-texto-suave)' }}>
                                             Análisis léxico local · Solo visible para ti
                                         </span>
-                                        <Link to="/agente/bitacora" style={{ fontSize: '12.5px', fontWeight: '600', color: 'var(--c-primario)' }}>
-                                            Ver o editar en bitácora &rarr;
+                                        <Link
+                                            to="/agente/bitacora"
+                                            className="btn btn-ghost btn-sm"
+                                            style={{
+                                                fontSize: '12.5px',
+                                                fontWeight: '600',
+                                                color: 'var(--c-primario)',
+                                                display: 'inline-flex',
+                                                alignItems: 'center',
+                                                gap: '6px',
+                                                minHeight: '44px',
+                                                padding: '8px 12px'
+                                            }}
+                                        >
+                                            <span>Ver o editar en bitácora</span>
+                                            <Icon name="arrowRight" size={14} />
                                         </Link>
                                     </div>
                                 </article>

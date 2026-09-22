@@ -431,7 +431,7 @@ export function BpoResetModal({ isOpen, onClose }) {
           <p className="pause-kicker">Descanso ocular</p>
           <h2 className="pause-phase-word">Aparta la vista</h2>
           <p className="pause-phase-hint">
-            Busca un punto lejano de tu entorno — una ventana, el fondo de la sala — y déjate la mirada allí.
+            Busca un punto lejano de tu entorno (una ventana, el fondo de la sala) y descansa la mirada allí.
           </p>
           <p className="pause-count">{secondsLeft}s</p>
         </div>

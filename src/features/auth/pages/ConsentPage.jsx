@@ -117,7 +117,7 @@ export function ConsentPage() {
       {!comesFromLogin && (
         <div id="backNav" className="consent-back-nav">
           <button type="button" className="btn btn-secondary" onClick={() => navigate('/agente/panel')}>
-            <Icon name="arrowLeft" />
+            <Icon name="arrowLeft" size={18} />
             <span>Volver a mi panel</span>
           </button>
         </div>
