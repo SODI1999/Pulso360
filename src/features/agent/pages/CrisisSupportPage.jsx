@@ -61,10 +61,6 @@ export function CrisisSupportPage() {
     const data = pulsoStore.get();
     const consent = data.consents?.[currentUserId];
 
-    const [isPanelOpen, setIsPanelOpen] = useState(false);
-    const [crisisMode, setCrisisMode] = useState('anonimo');
-    const [feedback, setFeedback] = useState(null);
-
     // Estado para modal de respiración guiada de emergencia
     const [isBpoResetOpen, setIsBpoResetOpen] = useState(false);
 
@@ -80,57 +76,6 @@ export function CrisisSupportPage() {
             target: 'Ruta de apoyo prioritario y primeros auxilios psicológicos'
         });
     }, [currentUserId, currentUserRole]);
-
-    const handleConfirmPriority = () => {
-        const storeData = pulsoStore.get();
-        const currentConsent = storeData.consents?.[currentUserId];
-
-        if (!currentConsent?.c5) {
-            alert('Se requiere tener activa la finalidad C5 de consentimiento para crear una solicitud a SST.');
-            return;
-        }
-
-        const now = new Date();
-        const year = now.getFullYear();
-        const isAnonymous = crisisMode === 'anonimo';
-        const prefix = isAnonymous ? 'ANON-PRI' : 'CONF-PRI';
-        storeData.supportRequests = storeData.supportRequests || [];
-        const existingCount = storeData.supportRequests.filter(r => String(r.code || '').startsWith(`${prefix}-${year}-`)).length;
-        const code = `${prefix}-${year}-${String(existingCount + 1).padStart(4, '0')}`;
-
-        const newRequest = {
-            id: `req-${Date.now()}`,
-            code,
-            mode: crisisMode,
-            ownerUserId: currentUserId,
-            identityUserId: isAnonymous ? null : currentUserId,
-            date: new Date().toISOString().slice(0, 10),
-            reason: 'Contacto prioritario solicitado por el titular',
-            description: '',
-            urgency: 'alta',
-            contactPreference: isAnonymous ? 'app' : 'directo',
-            timeWindow: isAnonymous ? 'No aplica' : 'Prioritario',
-            status: 'Recibida',
-            assignedTo: 'usr-3',
-            sla: 'Prioritario'
-        };
-
-        storeData.supportRequests = storeData.supportRequests || [];
-        storeData.supportRequests.unshift(newRequest);
-        pulsoStore.save(storeData);
-
-        pulsoStore.audit({
-            actor: `${currentUserId} (${roleLabels[currentUserRole] || currentUserRole})`,
-            action: 'SOLICITUD_CONTACTO_PRIORITARIO',
-            target: `Caso ${code} (${isAnonymous ? 'Modalidad Anónima' : 'Modalidad Confidencial Identificada'})`
-        });
-
-        setIsPanelOpen(false);
-        setFeedback({
-            code,
-            isAnonymous
-        });
-    };
 
     const currentStep = GROUNDING_STEPS[activeGroundingIndex];
 
@@ -163,8 +108,7 @@ export function CrisisSupportPage() {
                             Estás a tiempo de hacer una pausa y recibir apoyo
                         </h1>
                         <p className="crisis-hero-lead">
-                            Pulso360 no es un servicio de atención clínica ni reemplaza a un profesional especializado.
-                            Si estás sintiendo una sobrecarga desbordante, angustia aguda o riesgo físico, aquí dispones de técnicas inmediatas de regulación sensorial, líneas telefónicas oficiales de emergencia y la opción de solicitar acompañamiento profesional a SST en total reserva.
+                            Pulso360 no es atención clínica. Si estás en sobrecarga o angustia: usa la técnica de regulación, llama a una línea oficial o pide acompañamiento a SST en reserva.
                         </p>
                     </div>
                 </div>
@@ -364,19 +308,16 @@ export function CrisisSupportPage() {
                 </div>
             </div>
 
-            {/* SECCIÓN 3: Canalización Legal Diferenciada (Ley 1010/2006 vs Res. 3461/2025) */}
-            <div className="card crisis-card--borde">
-                <div className="card-header">
-                    <div>
-                        <div className="card-title crisis-card-title">
-                            <Icon name="shieldCheck" size={20} />
-                            <span>Rutas institucionales y marco normativo colombiano</span>
-                        </div>
-                        <div className="card-subtitle">
-                            Conoce las instancias legítimas y diferenciadas de protección y trámite según la naturaleza de la situación.
-                        </div>
-                    </div>
-                </div>
+            {/* Rutas legales en un bloque plegable: es contenido de consulta puntual,
+                no de acción urgente; no debe competir con el anclaje ni con las líneas */}
+            <details className="card crisis-card--borde crisis-details">
+                <summary className="crisis-details-summary">
+                    <span className="crisis-details-title">
+                        <Icon name="shieldCheck" size={20} />
+                        <span>Rutas institucionales y marco legal</span>
+                    </span>
+                    <span className="crisis-details-hint">Cuándo acudir al CCL y cuándo el caso no se concilia</span>
+                </summary>
 
                 <div className="crisis-legal-grid">
                     {/* Caja Informativa 1: Acoso Laboral (Ley 1010 de 2006 - CCL) */}
@@ -424,28 +365,29 @@ export function CrisisSupportPage() {
                         </ul>
                     </div>
                 </div>
-            </div>
+                </details>
 
-            {/* SECCIÓN 4: Contacto Prioritario con SST (Con opción Anónima y Confidencial intacta) */}
-            <div className="card">
+            {/* Contacto con SST: el formulario de solicitud vive en "Acompañamiento"
+                para no mantener dos canales que crean el mismo tipo de solicitud
+                (auditoría 015, duplicación de acompañamiento). Esta página se reserva
+                para contención inmediata: regulación, líneas oficiales y orientación legal. */}
+            <div className="card crisis-card--calma">
                 <div className="card-header">
                     <div>
                         <div className="card-title crisis-card-title crisis-card-title--tight">
-                            Contacto prioritario con el equipo de SST
+                            ¿Necesitas hablar con alguien del equipo de SST?
                         </div>
                         <div className="card-subtitle">
-                            Solo se creará una solicitud voluntaria de contacto si tú decides activarla y confirmarla expresamente.
-                            El flujo de solicitud no incorpora automáticamente el texto de tu bitácora ni las respuestas individuales.
+                            El canal de acompañamiento crea una solicitud voluntaria; no incorpora el texto de tu bitácora ni tus respuestas de check-in.
                         </div>
                     </div>
                 </div>
 
-                {/* Si C5 no está concedido */}
                 {!consent?.c5 ? (
                     <div className="alert-banner warn crisis-alert-flex">
                         <Icon name="info" size={20} />
                         <div>
-                            <strong>Finalidad C5 requerida:</strong> Para canalizar una solicitud de orientación o contacto con SST debes activar la finalidad <em>C5 (Acompañamiento)</em> en tus preferencias de consentimiento informado. Las líneas telefónicas oficiales y el ejercicio de anclaje siguen plenamente disponibles.
+                            <strong>Finalidad C5 requerida:</strong> Para solicitar contacto con SST activa la finalidad <em>C5 (Acompañamiento)</em> en tus preferencias. Las líneas telefónicas y el ejercicio de anclaje siguen disponibles sin ella.
                             <div className="crisis-consent-cta">
                                 <Link to="/consentimiento" className="btn btn-primary btn-sm">
                                     Gestionar consentimiento
@@ -454,118 +396,17 @@ export function CrisisSupportPage() {
                         </div>
                     </div>
                 ) : (
-                    <div>
-                        {!isPanelOpen ? (
-                            <button
-                                type="button"
-                                className="btn btn-primary"
-                                onClick={() => {
-                                    setIsPanelOpen(true);
-                                    setFeedback(null);
-                                }}
-                            >
-                                <Icon name="shield" size={18} />
-                                <span>Solicitar contacto prioritario de SST</span>
-                            </button>
-                        ) : (
-                            <div className="crisis-priority-panel">
-                                <div className="crisis-priority-panel-title">
-                                    Paso 2: Elige la modalidad y confirma tu solicitud
-                                </div>
-                                <p className="crisis-priority-panel-lead">
-                                    Selecciona cómo deseas que el equipo de SST gestione tu caso prioritario:
-                                </p>
-
-                                <div className="support-mode-list">
-                                    <label
-                                        className={`support-mode-capsule ${crisisMode === 'anonimo' ? 'active' : ''}`}
-                                        htmlFor="crisisAnonimo"
-                                    >
-                                        <input
-                                            type="radio"
-                                            id="crisisAnonimo"
-                                            name="crisisRadio"
-                                            className="support-mode-radio"
-                                            value="anonimo"
-                                            checked={crisisMode === 'anonimo'}
-                                            onChange={() => setCrisisMode('anonimo')}
-                                        />
-                                        <div>
-                                            <strong>
-                                                Modalidad Anónima (Recomendada si no deseas compartir datos de contacto)
-                                            </strong>
-                                            <div className="support-mode-desc">
-                                                Esta modalidad no solicita tu nombre ni tu correo institucional. Podrás consultar el estado y respuesta dentro de la app con el código generado.
-                                            </div>
-                                        </div>
-                                    </label>
-
-                                    <label
-                                        className={`support-mode-capsule ${crisisMode === 'confidencial' ? 'active' : ''}`}
-                                        htmlFor="crisisConfidencial"
-                                    >
-                                        <input
-                                            type="radio"
-                                            id="crisisConfidencial"
-                                            name="crisisRadio"
-                                            className="support-mode-radio"
-                                            value="confidencial"
-                                            checked={crisisMode === 'confidencial'}
-                                            onChange={() => setCrisisMode('confidencial')}
-                                        />
-                                        <div>
-                                            <strong>
-                                                Modalidad Confidencial Identificada
-                                            </strong>
-                                            <div className="support-mode-desc">
-                                                Tu nombre y correo institucional se muestran al profesional SST asignado para facilitar la orientación; la vista de supervisión no participa en este flujo.
-                                            </div>
-                                        </div>
-                                    </label>
-                                </div>
-
-                                <div className="alert-banner info crisis-panel-note">
-                                    <Icon name="info" size={18} />
-                                    <div><strong>Alcance de la solicitud:</strong> El flujo no envía automáticamente el texto de tu bitácora ni tus respuestas de check-in.</div>
-                                </div>
-
-                                <div className="form-actions">
-                                    <button
-                                        type="button"
-                                        className="btn btn-secondary"
-                                        onClick={() => setIsPanelOpen(false)}
-                                    >
-                                        Cancelar
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className="btn btn-primary"
-                                        onClick={handleConfirmPriority}
-                                    >
-                                        <Icon name="check" size={16} />
-                                        <span>Confirmar y enviar solicitud prioritaria</span>
-                                    </button>
-                                </div>
-                            </div>
-                        )}
-
-                        {feedback && (
-                            <div className="alert-banner ok crisis-feedback">
-                                <Icon name="check" size={20} />
-                                <div>
-                                    <span className="badge badge-ok crisis-feedback-badge">Solicitud prioritaria registrada</span>
-                                    <br />
-                                    <strong>Código de radicado:</strong> <code>{feedback.code}</code> ({feedback.isAnonymous ? 'Modalidad Anónima - Identidad protegida' : 'Modalidad Confidencial Identificada'}).
-                                    <br />
-                                    <small>
-                                        SST atenderá tu caso con carácter prioritario. No se transmitió texto de tu bitácora.
-                                    </small>
-                                </div>
-                            </div>
-                        )}
-                    </div>
+                    <Link to="/agente/apoyo" className="btn btn-primary">
+                        <Icon name="support_agent" size={18} />
+                        <span>Ir a Acompañamiento y crear la solicitud</span>
+                    </Link>
                 )}
             </div>
+            {/*
+                Bloque retirado (auditoría 015): panel de "contacto prioritario" embebido.
+                Se unificó con el canal de Acompañamiento para que exista una sola forma
+                de crear solicitudes a SST.
+            */}
 
             {/* Modal de Respiración Guiada de Emergencia (Box Breathing) */}
             <BpoResetModal

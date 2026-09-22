@@ -122,15 +122,9 @@
   line-height: 1.5;
 }
 
-/* Marcador discreto de la tarea principal; evita convertir el check-in
-   operativo en una escena decorativa de wellness. */
-.calm-breathe {
-  width: 12px;
-  height: 12px;
-  margin: 0 0 16px;
-  border-radius: 3px;
-  background: var(--c-calma-accent);
-}
+/* La tarjeta principal conserva un único marcador visual (el acento superior
+   de .calm-card::before); el punto .calm-breathe se retiró por redundancia
+   (auditoría 015, hallazgo 6). */
 
 /* Escala de energía rápida: opciones legibles y táctiles, sin apariencia
    de selector de sentimientos decorativo. */
@@ -279,22 +273,28 @@
 
 /* Timeline vertical del turno */
 .calm-rail-list {
-  --calm-progress: 0%;
   position: relative;
   display: flex;
   flex-direction: column;
 }
 
-/* Línea continua del recorrido: la porción avanzada toma el acento */
-.calm-rail-list::before {
+/* Línea del recorrido: un segmento por nodo (de este punto al siguiente), así la
+   traza nunca se desalinea cuando una etiqueta ocupa dos líneas. Antes era un
+   degradado porcentual único que podía terminar entre dos puntos (auditoría 015). */
+.calm-rail-node:not(:last-child)::after {
   content: '';
   position: absolute;
-  top: 15px;
-  bottom: 15px;
   left: 5px;
+  top: 22px;    /* borde inferior del punto (9px de padding + 1px de margen + 12px de punto) */
+  bottom: -9px; /* borde superior del punto del siguiente nodo */
   width: 2px;
   border-radius: var(--radius-full);
-  background: linear-gradient(180deg, var(--c-calma-accent) var(--calm-progress), var(--c-calma-border) var(--calm-progress));
+  background: var(--c-calma-border);
+}
+
+.calm-rail-node.done:not(:last-child)::after,
+.calm-rail-node.active:not(:last-child)::after {
+  background: var(--c-calma-accent);
 }
 
 .calm-rail-node {
@@ -504,13 +504,12 @@
 }
 
 .agent-page:not(.calm-home)::before {
-  content: 'ESPACIO DEL AGENTE';
+  content: 'Espacio del agente';
   display: block;
   margin-bottom: 8px;
   color: var(--c-calma-accent);
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.12em;
+  font-size: 11px;
+  font-weight: 700;
 }
 
 .agent-page .page-title {
@@ -832,20 +831,46 @@
   margin-bottom: 18px;
 }
 
+/* El modal de transparencia no hereda la banda calma de los modales de agente:
+   es una cabecera de lectura separada sólo por una línea, sin franja de color.
+   El contenido compacto evita el scroll interno (auditoría 015, rediseño). */
+.agent-page .agent-modal.perspective-modal .modal-header {
+  background: transparent;
+  border-bottom: 1px solid var(--c-borde-suave);
+  padding-bottom: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+/* Aviso de garantías más compacto dentro de este modal (sin scroll interno) */
+.agent-page .agent-modal.perspective-modal .agent-notice {
+  padding: 10px 14px;
+  margin: 12px 0 0;
+  font-size: 11.5px;
+  line-height: 1.45;
+}
+
+.agent-page .agent-modal.perspective-modal .modal-footer {
+  padding-top: 8px;
+}
+
+/* Evita que el margen del último elemento desborde y genere un scroll de pocos px */
+.agent-page .agent-modal.perspective-modal > :last-child {
+  margin-bottom: 0;
+}
+
 .agent-modal .modal-footer {
   padding-top: 16px;
 }
 
-/* Kicker editorial: identifica el canal institucional sobre el título.
-   Compartido por modales y superficies de formulario del módulo. */
+/* Kicker editorial: identifica el canal o sección sobre el título. En sentence
+   case — las mayúsculas sostenidas no rotulan nada que el peso y el color no hagan
+   ya (auditoría 015, hallazgo 5). */
 .agent-kicker {
   display: block;
   margin-bottom: 4px;
-  font-size: 11px;
+  font-size: 12.5px;
   font-weight: 700;
   color: var(--c-calma-accent);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
 }
 
 .agent-kicker--primario {
@@ -1268,6 +1293,49 @@
   gap: 16px;
   margin-top: 16px;
 }
+
+/* Rutas legales: bloque plegable de consulta puntual (no acción urgente) */
+.crisis-details-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.crisis-details-summary::-webkit-details-marker {
+  display: none;
+}
+
+.crisis-details-summary::after {
+  content: 'Ver rutas legales';
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--c-primario);
+  margin-top: 6px;
+}
+
+.crisis-details[open] .crisis-details-summary::after {
+  content: 'Ocultar rutas legales';
+}
+
+.crisis-details-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-weight: 700;
+  color: var(--c-texto);
+}
+
+.crisis-details-hint {
+  font-size: 12px;
+  color: var(--c-texto-mutado);
+}
+
+.crisis-details[open] .crisis-legal-grid {
+  margin-top: 16px;
+}
+
 
 .crisis-legal-box {
   padding: 18px;
@@ -1806,10 +1874,8 @@
 
 .pause-kicker {
   margin: 0;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
   color: #7ec8b2;
 }
 

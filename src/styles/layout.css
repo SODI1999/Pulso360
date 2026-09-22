@@ -10,7 +10,7 @@
 
 /* Barra Lateral de Navegación */
 .app-sidebar {
-  width: 268px;
+  width: 240px;
   background-color: var(--c-superficie);
   border-right: 1px solid var(--c-borde-suave);
   display: flex;
@@ -25,7 +25,10 @@
 }
 
 .sidebar-header {
-  padding: var(--space-5) var(--space-6);
+  /* La altura coincide con el topbar (72px) para alinear el lomo de ambas columnas */
+  height: 72px;
+  box-sizing: border-box;
+  padding: 0 var(--space-5);
   border-bottom: 1px solid var(--c-borde-suave);
   display: flex;
   align-items: center;
@@ -36,6 +39,15 @@
 .sidebar-brand-link {
   display: flex;
   align-items: center;
+  gap: var(--space-2);
+  text-decoration: none;
+}
+
+.sidebar-brand-name {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--c-texto);
+  letter-spacing: -0.01em;
 }
 
 .user-avatar.role-agente,
@@ -69,7 +81,7 @@
 }
 
 .sidebar-logo {
-  height: 38px;
+  height: 40px;
   width: auto;
   display: block;
 }
@@ -118,22 +130,25 @@
   background-color: var(--c-primario-suave);
   color: var(--c-primario);
   font-weight: 600;
-  border-left: none; /* H-01 refuerzo: sin rayas laterales, estado comunicado por fondo + color + peso */
 }
 
-/* H-01 antislop: left-stripe eliminada. Estado activo comunicado por fondo + color + peso. */
+/* H-01 antislop: sin rayas ni marcas laterales — el destino activo se comunica
+   con fondo + color + peso; añadir una marca sería una señal redundante. */
 
-/* Apoyo Inmediato — acción de emergencia en sidebar */
+/* Apoyo Inmediato — acción de emergencia en sidebar.
+   Contorno rojo (token crítico) en vez de bloque sólido: visible y reconocible
+   sin dominar la atención del resto de la navegación. */
 .nav-item.nav-crisis {
-  background-color: var(--c-critico);
-  color: var(--c-texto-invertido);
+  background-color: transparent;
+  color: var(--c-critico);
+  border: 1.5px solid var(--c-critico);
   font-weight: 700;
   border-radius: var(--radius-md);
 }
 
 .nav-item.nav-crisis:hover {
-  background-color: #b91c1c;
-  color: var(--c-texto-invertido);
+  background-color: var(--c-critico-bg);
+  color: var(--c-critico);
 }
 
 .nav-icon {
@@ -150,9 +165,10 @@
   padding: var(--space-4) var(--space-4);
   border-top: 1px solid var(--c-borde-suave);
   background-color: var(--c-superficie);
+  position: relative; /* ancla del menú de cuenta emergente */
 }
 
-/* Tarjeta del Usuario en Barra Lateral */
+/* Tarjeta del Usuario en Barra Lateral — también es el botón del menú de cuenta */
 .user-card {
   display: flex;
   align-items: center;
@@ -161,6 +177,68 @@
   border-radius: var(--radius-md);
   background: var(--c-fondo);
   border: 1px solid var(--c-borde-suave);
+}
+
+/* Reset del <button> para que la tarjeta conserve su aspecto */
+.account-trigger {
+  width: 100%;
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+
+.account-trigger:hover {
+  background: var(--c-superficie);
+  border-color: var(--c-primario);
+}
+
+.account-chevron {
+  display: inline-flex;
+  color: var(--c-texto-mutado);
+  flex-shrink: 0;
+  transition: transform var(--transition-fast);
+}
+
+.account-trigger[aria-expanded="true"] .account-chevron {
+  transform: rotate(180deg);
+}
+
+/* Menú de cuenta emergente: acciones de cuenta agrupadas sobre el pie del sidebar */
+.account-menu {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: var(--space-4);
+  right: var(--space-4);
+  background: var(--c-superficie);
+  border: 1px solid var(--c-borde-suave);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  z-index: 130;
+}
+
+.account-menu-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  padding: 8px 10px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--c-texto);
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  text-align: left;
+}
+
+.account-menu-item:hover {
+  background: var(--c-fondo);
 }
 
 .user-avatar {
@@ -212,7 +290,7 @@
 
 /* Barra Superior (Topbar) */
 .app-topbar {
-  height: 58px;
+  height: 72px;
   background-color: var(--c-superficie);
   border-bottom: 1px solid var(--c-borde-suave);
   padding: 0 var(--space-6);
@@ -225,13 +303,90 @@
   box-shadow: var(--shadow-xs);
 }
 
-.topbar-title {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--c-texto-suave);
+/* Bloque izquierdo del topbar: sólo contexto del rol (campaña o área).
+   No lleva el título de la página: éste ya existe como h1 de cada vista. */
+.topbar-heading {
   display: flex;
-  align-items: center;
-  gap: var(--space-2);
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+}
+
+.topbar-context {
+  font-size: 13px;
+  color: var(--c-texto-suave);
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Bloque de horario del turno (sólo agente): separado por un divisor sutil */
+.topbar-shift {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding-left: var(--space-4);
+  margin-right: var(--space-1);
+  border-left: 1px solid var(--c-borde-suave);
+}
+
+.topbar-shift-label {
+  font-size: 11px;
+  color: var(--c-texto-mutado);
+  line-height: 1.3;
+}
+
+.topbar-shift-hours {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--c-texto);
+  line-height: 1.3;
+}
+
+/* Acceso de emergencia "Apoyo" en el topbar: sólo visible en móvil, donde la
+   tira desplazable no podía garantizar su visibilidad. Se anida en .app-topbar
+   para ganarle la cascada a components.css (que se importa después). */
+.app-topbar .btn-topbar-crisis {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .app-topbar .btn-topbar-crisis {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 1.5px solid var(--c-critico);
+    color: var(--c-critico);
+    background: transparent;
+    border-radius: var(--radius-md);
+    padding: 5px 10px;
+    font-size: 12px;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .app-topbar .btn-topbar-crisis:hover {
+    background: var(--c-critico-bg);
+  }
+}
+
+/* Ítems marcados mobileOnly (p. ej. "Mis datos" del agente): en escritorio viven
+   en el menú de cuenta del pie del sidebar; en móvil aparecen en la tira porque
+   el pie se oculta. Doble clase para ganar la cascada sobre components.css. */
+@media (min-width: 901px) {
+  .sidebar-nav .nav-item--mobile-only {
+    display: none;
+  }
+}
+
+/* En computador "Salir" vive en el menú de cuenta del sidebar; se oculta del topbar.
+   Se anida en .app-topbar porque components.css (que se importa después) fija su
+   display a inline-flex y la clase sola perdería la cascada. */
+@media (min-width: 901px) {
+  .app-topbar .btn-topbar-logout {
+    display: none;
+  }
 }
 
 .topbar-actions {
@@ -294,11 +449,16 @@
 
   .sidebar-header {
     padding: var(--space-3) var(--space-4);
+    height: auto; /* la altura fija de 72px sólo aplica en escritorio */
     justify-content: space-between;
   }
 
   .sidebar-logo {
     height: 30px;
+  }
+
+  .sidebar-brand-name {
+    font-size: 15px;
   }
 
   .sidebar-nav {
@@ -331,7 +491,9 @@
   }
 
   .nav-item.nav-crisis {
-    margin-left: auto;
+    /* En móvil el acceso de emergencia vive fijo en el topbar (visible sin scroll),
+       así que no se repite al final de la tira desplazable */
+    display: none;
   }
 
   .sidebar-footer {
@@ -346,12 +508,15 @@
     z-index: 90;
   }
 
-  .topbar-title {
-    font-size: 13.5px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    min-width: 0;
+  /* El topbar móvil (48–52px) no lleva encabezado: el título lo da la propia vista
+     y el contexto del rol (campaña) se omite para no repetir ni saturar. */
+  .topbar-heading,
+  .topbar-shift {
+    display: none;
+  }
+
+  .topbar-actions {
+    margin-left: auto;
   }
 
   .page-container {

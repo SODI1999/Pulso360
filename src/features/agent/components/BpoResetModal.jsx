@@ -356,7 +356,8 @@ export function BpoResetModal({ isOpen, onClose }) {
       {/* Fase 0 · Entrada: una sola decisión */}
       {phase === 'entry' && (
         <div className="pause-stage">
-          <p className="pause-kicker">Pulso Calma · Pausa privada</p>
+          {/* Sin kicker de entrada: la marca "Pulso Calma · Tu espacio de recuperación"
+              ya encabeza la ventana; repetirla aquí duplicaba el rótulo (auditoría 015, hallazgo 5) */}
           <h2 className="pause-title">Tómate 2 minutos</h2>
           <p className="pause-sub">
             Un espacio breve dentro de tu turno para respirar, descansar la vista y soltar la tensión cervical.

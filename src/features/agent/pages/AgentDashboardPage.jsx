@@ -137,9 +137,7 @@ export function AgentDashboardPage() {
     ];
   }, [shiftStartHour, currentHourBogota]);
 
-  // Progreso visual del recorrido (0–100%) y hora sugerida de pausa activa
-  const doneStepCount = shiftSteps.filter((step) => step.status === 'done').length;
-  const shiftProgress = Math.min(100, Math.max(0, ((doneStepCount - 1) / (shiftSteps.length - 1)) * 100));
+  // Hora sugerida de pausa activa dentro del turno
   const breakStep = shiftSteps.find((step) => step.id === 'break');
 
   // Modales preservados
@@ -148,14 +146,12 @@ export function AgentDashboardPage() {
 
   return (
     <div className="agent-page calm-home">
-      {/* 1. Cabecera: saludo y contexto del turno en una línea */}
+      {/* 1. Cabecera: sólo el saludo. La campaña y el turno ya viven en el topbar;
+             repetirlos aquí duplicaría el mismo dato en la misma pantalla */}
       <header className="calm-home-head">
         <h1 className="calm-home-title">
           {greeting}, {currentUser?.name || 'Agente'}
         </h1>
-        <p className="calm-home-meta">
-          {currentUser?.campaign || 'Campaña Soporte Alpha'} · Turno {currentUser?.shift || 'Mañana'} ({formatHour(shiftStartHour)} a {formatHour(shiftStartHour + 8)})
-        </p>
       </header>
 
       {/* 2. Desconexión Laboral Activa (Ley 2191 de 2022) */}
@@ -217,7 +213,6 @@ export function AgentDashboardPage() {
             </div>
           ) : (
             <>
-              <div className="calm-breathe" aria-hidden="true" />
               <h2 className="calm-card-title">¿Cómo va tu energía en este turno?</h2>
               <p className="calm-card-sub">
                 Elige un nivel para iniciar tu check-in del turno.
@@ -246,10 +241,7 @@ export function AgentDashboardPage() {
         <aside className="calm-rail" aria-label="Ritmo del turno y pausa guiada">
           <div className="calm-rail-block">
             <h3 className="calm-rail-title">Tu turno hoy</h3>
-            <div
-              className="calm-rail-list"
-              style={{ '--calm-progress': `${shiftProgress}%` }}
-            >
+            <div className="calm-rail-list">
               {shiftSteps.map((step) => (
                 <div key={step.id} className={`calm-rail-node ${step.status}`}>
                   <span className="calm-rail-dot" aria-hidden="true" />

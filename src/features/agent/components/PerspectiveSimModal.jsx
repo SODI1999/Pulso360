@@ -50,13 +50,12 @@ export function PerspectiveSimModal({ isOpen, onClose }) {
                         <div className="perspective-header">
                             <div>
                                 <h3 className="perspective-card-title">
-                                    Tu Espacio Privado
+                                    Tu espacio privado
                                 </h3>
                                 <span className="perspective-card-sub">
-                                    Registros de tu espacio personal
+                                    Registros que quedan bajo tu cuenta
                                 </span>
                             </div>
-                            <span className="perspective-badge private">No es una vista operativa</span>
                         </div>
                         <ul className="perspective-list">
                             <li className="perspective-list-item">
@@ -64,7 +63,7 @@ export function PerspectiveSimModal({ isOpen, onClose }) {
                                     <Icon name="check_circle" size={15} />
                                 </span>
                                 <span>
-                                    <strong>Notas de Bitácora:</strong> La redacción íntegra, las emociones y el desahogo de turno permanecen en el espacio personal configurado por la aplicación.
+                                    <strong>Notas de Bitácora:</strong> La redacción íntegra, las emociones y el desahogo de turno permanecen sólo en tu espacio personal; nadie más los ve dentro de la aplicación.
                                 </span>
                             </li>
                             <li className="perspective-list-item">
@@ -99,13 +98,12 @@ export function PerspectiveSimModal({ isOpen, onClose }) {
                         <div className="perspective-header">
                             <div>
                                 <h3 className="perspective-card-title">
-                                    Vista de Operaciones / SST
+                                    Vista de operaciones y SST
                                 </h3>
                                 <span className="perspective-card-sub">
-                                    Reportes colectivos consolidados
+                                    Reportes colectivos, sin personas nombradas
                                 </span>
                             </div>
-                            <span className="perspective-badge supervisor">k-Anonimato (k ≥ 5)</span>
                         </div>
                         <ul className="perspective-list">
                             <li className="perspective-list-item">
@@ -129,7 +127,7 @@ export function PerspectiveSimModal({ isOpen, onClose }) {
                                     <Icon name="close" size={15} />
                                 </span>
                                 <span>
-                                    <strong>Cero acceso a texto de bitácora:</strong> Tu bitácora no existe en la base de datos de supervisión ni auditoría.
+                                    <strong>Cero acceso a texto de bitácora:</strong> Tu bitácora no forma parte de los registros que consultan supervisión ni auditoría.
                                 </span>
                             </li>
                             <li className="perspective-list-item">
@@ -144,21 +142,15 @@ export function PerspectiveSimModal({ isOpen, onClose }) {
                     </div>
                 </div>
 
-                {/* Banner de Urna Cerrada */}
-                <div className="perspective-urna-banner">
-                    <Icon name="shield" size={20} />
-                    <div>
-                        <strong>Mecanismo de Urna Cerrada Institucional:</strong>
-                        <p>
-                            Los datos personales se procesan con salvaguardas técnicas irreversibles. Ninguna métrica de bienestar puede utilizarse en evaluaciones de desempeño, amonestaciones o rankings operativos de la operación.
-                        </p>
+                {/* Garantía de separación: un solo aviso reúne lo que antes eran dos cajas
+                    (urna + aislamiento). Cada frase describe una regla comprobable en el código:
+                    agregación k ≥ 5, vistas sin identidad y ausencia de funciones de evaluación
+                    (auditoría 015, hallazgos 1 y 4). */}
+                <div className="agent-notice agent-notice--flat">
+                    <Icon name="shieldCheck" size={18} className="agent-notice-icon" />
+                    <div className="agent-notice-text">
+                        <strong>Separación de bienestar y desempeño:</strong> Las vistas de supervisión y SST reciben únicamente tendencias agregadas cuando hay al menos 5 personas (k ≥ 5) y ninguna de ellas permite consultar o filtrar a una persona concreta. La aplicación no incluye funciones de evaluación de desempeño, ranking ni amonestación: el registro de bienestar está separado de las métricas operativas como el AHT.
                     </div>
-                </div>
-
-                {/* Nota de aislamiento */}
-                <div className="perspective-isolation-notice">
-                    <Icon name="lock" size={15} />
-                    <span>Aislamiento por roles (RBAC): El módulo de supervisor no posee endpoints ni consultas de identidad individual.</span>
                 </div>
 
                 <div className="modal-footer">

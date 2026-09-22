@@ -126,7 +126,7 @@ export function ConsentPage() {
       <div className="card">
         <div className="card-header">
           <div>
-            <h1 className="card-title">Política de tratamiento y preferencias (RF-02)</h1>
+            <h1 className="card-title">Política de tratamiento y preferencias</h1>
             <p className="card-subtitle">Política vigente desde {settings.policyEffectiveDate}</p>
           </div>
           <span className="badge badge-ok">{settings.policyVersion}</span>
@@ -156,7 +156,7 @@ export function ConsentPage() {
 
           {/* Matriz C1 a C5 */}
           <form id="consentForm" onSubmit={handleSubmit}>
-            <label className={`consent-item ${consents.c1 ? 'active' : ''}`} htmlFor="c1" style={{ cursor: 'pointer' }}>
+            <label className={`consent-item ${consents.c1 ? 'active' : ''}`} htmlFor="c1">
               <div className="consent-info">
                 <div className="consent-title">C1 · Check-in diario</div>
                 <div className="consent-desc">Permite registrar seis ítems de bienestar (energía, carga, recuperación, apoyo, distanciamiento e ineficacia).</div>
@@ -172,7 +172,7 @@ export function ConsentPage() {
               />
             </label>
 
-            <label className={`consent-item ${consents.c2 ? 'active' : ''}`} htmlFor="c2" style={{ cursor: 'pointer' }}>
+            <label className={`consent-item ${consents.c2 ? 'active' : ''}`} htmlFor="c2">
               <div className="consent-info">
                 <div className="consent-title">C2 · Bitácora privada</div>
                 <div className="consent-desc">Permite guardar notas de texto libre en tu espacio personal dentro del almacenamiento configurado por el despliegue.</div>
@@ -188,7 +188,7 @@ export function ConsentPage() {
               />
             </label>
 
-            <label className={`consent-item ${consents.c3 ? 'active' : ''}`} htmlFor="c3" style={{ cursor: 'pointer' }}>
+            <label className={`consent-item ${consents.c3 ? 'active' : ''}`} htmlFor="c3">
               <div className="consent-info">
                 <div className="consent-title">C3 · Procesamiento NLP</div>
                 <div className="consent-desc">Permite analizar tus notas de bitácora mediante léxico y reglas explicables.</div>
@@ -204,7 +204,7 @@ export function ConsentPage() {
               />
             </label>
 
-            <label className={`consent-item ${consents.c4 ? 'active' : ''}`} htmlFor="c4" style={{ cursor: 'pointer' }}>
+            <label className={`consent-item ${consents.c4 ? 'active' : ''}`} htmlFor="c4">
               <div className="consent-info">
                 <div className="consent-title">C4 · Métricas agregadas</div>
                 <div className="consent-desc">Permite que tus respuestas contribuyan a indicadores colectivos protegidos por el umbral RF-07.</div>
@@ -220,7 +220,7 @@ export function ConsentPage() {
               />
             </label>
 
-            <label className={`consent-item ${consents.c5 ? 'active' : ''}`} htmlFor="c5" style={{ cursor: 'pointer' }}>
+            <label className={`consent-item ${consents.c5 ? 'active' : ''}`} htmlFor="c5">
               <div className="consent-info">
                 <div className="consent-title">C5 · Acompañamiento</div>
                 <div className="consent-desc">Habilita el canal voluntario de solicitudes de orientación a SST.</div>
@@ -236,7 +236,7 @@ export function ConsentPage() {
               />
             </label>
 
-            <label className="consent-terms-label" htmlFor="policyAccepted" style={{ cursor: 'pointer' }}>
+            <label className="consent-terms-label" htmlFor="policyAccepted">
               <input
                 type="checkbox"
                 id="policyAccepted"
@@ -248,7 +248,7 @@ export function ConsentPage() {
             </label>
 
             <div className="consent-summary" role="status" aria-live="polite">
-              Resumen de tus preferencias: [{consents.c1 ? '✓' : '—'}] Check-in {consents.c1 ? 'activo' : 'pausado'} · [{consents.c2 ? '✓' : '—'}] Bitácora {consents.c2 ? 'activa' : 'pausada'} · [{consents.c5 ? '✓' : '—'}] Apoyo {consents.c5 ? 'activo' : 'pausado'}. Podrás modificarlas cuando lo desees sin consecuencias laborales.
+              Resumen de tus preferencias: Check-in {consents.c1 ? 'activo' : 'pausado'} · Bitácora {consents.c2 ? 'activa' : 'pausada'} · Apoyo {consents.c5 ? 'activo' : 'pausado'}. Podrás modificarlas cuando lo desees sin consecuencias laborales.
             </div>
 
             <button type="submit" className="btn btn-primary consent-submit-btn" disabled={!policyAccepted}>

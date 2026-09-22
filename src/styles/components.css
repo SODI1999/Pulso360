@@ -1745,18 +1745,19 @@ textarea.form-input,
   margin: 0;
 }
 
-/* Simulador de Perspectiva (Transparencia & k-Anonimato) */
-.perspective-modal {
-  max-width: 780px !important;
-  width: 95% !important;
-  padding: var(--space-5) var(--space-6) !important;
+/* Simulador de Perspectiva (Transparencia & k-Anonimato)
+   Solo tokens del sistema; el ancho se resuelve con doble clase para no usar !important. */
+.agent-modal.perspective-modal {
+  max-width: 720px;
+  width: 95%;
+  padding: var(--space-3) var(--space-5) 10px;
 }
 
 .perspective-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: var(--space-4);
-  margin: var(--space-4) 0;
+  gap: 10px;
+  margin: var(--space-3) 0;
 }
 
 @media (max-width: 680px) {
@@ -1768,7 +1769,7 @@ textarea.form-input,
 .perspective-card {
   border: 1.5px solid var(--c-borde-suave);
   border-radius: var(--radius-lg);
-  padding: var(--space-4);
+  padding: 12px 14px;
   background-color: var(--c-superficie);
 }
 
@@ -1778,35 +1779,16 @@ textarea.form-input,
 }
 
 .perspective-card.supervisor {
-  border-color: #bfdbfe;
-  background-color: #f8fafc;
+  border-color: var(--c-borde-suave);
+  background-color: var(--c-fondo);
 }
 
 .perspective-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: var(--space-3);
-  padding-bottom: var(--space-2);
+  margin-bottom: 10px;
+  padding-bottom: 8px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-}
-
-.perspective-badge {
-  font-size: 11px;
-  font-weight: 700;
-  padding: 2px 8px;
-  border-radius: var(--radius-full);
-  letter-spacing: 0.02em;
-}
-
-.perspective-badge.private {
-  background-color: var(--c-calma-accent-soft);
-  color: var(--c-calma-accent);
-}
-
-.perspective-badge.supervisor {
-  background-color: #dbeafe;
-  color: #1d4ed8;
 }
 
 .perspective-list {
@@ -1815,15 +1797,15 @@ textarea.form-input,
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: 6px;
 }
 
 .perspective-list-item {
   display: flex;
   align-items: flex-start;
   gap: var(--space-2);
-  font-size: 12.5px;
-  line-height: 1.45;
+  font-size: 12px;
+  line-height: 1.4;
   color: var(--c-texto);
 }
 
@@ -1838,7 +1820,7 @@ textarea.form-input,
 }
 
 .perspective-item-icon--ops {
-  color: #1d4ed8;
+  color: var(--c-info);
 }
 
 .perspective-item-icon--risk {
@@ -1857,37 +1839,8 @@ textarea.form-input,
   color: var(--c-texto-suave);
 }
 
-.perspective-urna-banner {
-  background-color: #f0fdf4;
-  border: 1px solid #bbf7d0;
-  border-radius: var(--radius-md);
-  padding: var(--space-3) var(--space-4);
-  display: flex;
-  align-items: flex-start;
-  gap: var(--space-3);
-  margin-top: var(--space-4);
-  font-size: 12.5px;
-  color: #166534;
-  line-height: 1.45;
-}
-
-.perspective-urna-banner p {
-  margin: 3px 0 0;
-  font-size: 12px;
-}
-
-.perspective-isolation-notice {
-  background-color: var(--c-fondo);
-  border: 1px dashed var(--c-borde);
-  border-radius: var(--radius-md);
-  padding: 10px 14px;
-  margin-top: var(--space-3);
-  font-size: 12px;
-  color: var(--c-texto-mutado);
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-}
+/* El aviso de garantías se muestra con la clase compartida .agent-notice (agent.css);
+   aquí ya no quedan cajas propias de perspectiva. */
 
 /* ==========================================================================
    SPATIAL & ATMOSPHERIC SANCTUARY — PULSO CALMA (Erradicación de Carditis BPO)
