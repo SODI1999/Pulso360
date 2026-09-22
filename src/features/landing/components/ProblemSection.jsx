@@ -9,7 +9,6 @@ export function ProblemSection() {
       <div className="landing-container">
         {/* Cabecera Editorial abierta y serena */}
         <div className="problem-editorial-header">
-          <span className="problem-eyebrow">La Realidad en Operaciones BPO</span>
           <h2 id="problem-title">
             El agotamiento no avisa con anticipación; se acumula llamada tras llamada.
           </h2>
@@ -78,10 +77,10 @@ export function ProblemSection() {
           </div>
 
           <div className="dialogue-blindspots-col">
-            <h3 className="blindspots-heading">Los 3 Puntos Ciegos de la Gestión Tradicional:</h3>
+            <h3 className="blindspots-heading">Puntos ciegos de la gestión tradicional en piso:</h3>
 
             <div className="blindspot-row">
-              <span className="blindspot-index">01</span>
+              <span className="blindspot-index">Fricción raíz</span>
               <div>
                 <strong>El silencio por miedo a represalias</strong>
                 <p>Si el asesor cree que su supervisor va a ver lo que escribió, responde que todo está bien para no tener problemas.</p>
@@ -89,7 +88,7 @@ export function ProblemSection() {
             </div>
 
             <div className="blindspot-row">
-              <span className="blindspot-index">02</span>
+              <span className="blindspot-index">Desfase temporal</span>
               <div>
                 <strong>Mediciones retrospectivas tardías</strong>
                 <p>Las encuestas anuales entregan resultados meses después. En una campaña de llamadas, el agotamiento escala en ciclos cortos de turnos.</p>
@@ -97,7 +96,7 @@ export function ProblemSection() {
             </div>
 
             <div className="blindspot-row">
-              <span className="blindspot-index">03</span>
+              <span className="blindspot-index">Desenlace crítico</span>
               <div>
                 <strong>Gestión Humana llega tarde</strong>
                 <p>SST y operaciones se enteran cuando la persona ya no aguanta más, se incapacita o pasa su carta de renuncia.</p>

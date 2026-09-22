@@ -9,7 +9,6 @@ export function ContactCtaSection() {
       <div className="landing-container">
         <div className="contact-cta-card">
           <div className="contact-cta-content">
-            <span className="acts-eyebrow">Atención Institucional & SST</span>
             <h2 id="contact-cta-title">
               ¿Lideras una operación BPO o gestionas Seguridad y Salud en el Trabajo?
             </h2>

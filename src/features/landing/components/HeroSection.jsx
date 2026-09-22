@@ -62,7 +62,7 @@ export function HeroSection() {
           </span>
 
           <h1 id="hero-main-title" className="hero-editorial-title">
-            Detección temprana del agotamiento en Contact Centers.
+            Detección temprana del <br /> agotamiento en Contact Centers.
             <span className="hero-title-sub">
               Anticipa la fatiga y la rotación en piso, sin vulnerar la intimidad del agente.
             </span>
@@ -158,23 +158,11 @@ export function HeroSection() {
             ========================================================================= */}
         <div className="hero-teaser-col" aria-label="Ficha de Cierre de Turno y Desconexión Laboral">
           <div className="disconnection-card">
-            {/* Píldora de aclaración de muestra demostrativa */}
-            <div className="disconnection-demo-header">
-              <span className="disconnection-demo-pill">
-                <Icon name="info" size={12} />
-                Ejemplo ilustrativo de cierre de turno
-              </span>
-            </div>
-
-            {/* Cabecera de la ficha */}
+            {/* Cabecera sobria y unificada de la ficha */}
             <div className="disconnection-card-top">
               <span className="disconnection-law-badge">
                 <Icon name="shieldCheck" size={13} />
-                Ley 2191 · Desconexión Laboral
-              </span>
-              <span className="disconnection-time-badge">
-                <Icon name="clock" size={13} />
-                Ejemplo de check-in · 60 s
+                Ejemplo ilustrativo · Ley 2191 (Desconexión Laboral)
               </span>
             </div>
 

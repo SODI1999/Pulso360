@@ -1,6 +1,6 @@
 // src/features/auth/data/authData.js
 // Textos y metadatos institucionales para el acceso seguro a Pulso360
-// Dirección A: Editorial Humano & Sereno — Cero jerga burocrática ni marketing de IA
+// Dirección A: Editorial Humano & Sereno · Cero jerga burocrática ni marketing de IA
 
 /**
  * Roles disponibles para demostración y evaluación rápida de permisos (Sandbox RBAC)
@@ -99,21 +99,15 @@ export const AUTH_METADATA = {
 export const BPO_SSO_PROVIDERS = [
   {
     id: 'microsoft',
-    label: 'Continuar con Microsoft 365',
+    label: 'Probar acceso con Microsoft 365',
     shortLabel: 'Microsoft 365',
     helper: 'Directorio activo corporativo (Azure AD / Entra ID)'
   },
   {
     id: 'google',
-    label: 'Continuar con Google Workspace',
+    label: 'Probar acceso con Google Workspace',
     shortLabel: 'Google Workspace',
     helper: 'Cuentas institucionales @empresa.com'
-  },
-  {
-    id: 'magic-link',
-    label: 'Acceso con Enlace Rápido',
-    shortLabel: 'Enlace Rápido',
-    helper: 'Enlace temporal enviado a tu correo corporativo'
   }
 ];
 

@@ -8,11 +8,18 @@ import { DEMO_ROLES, DEMO_BAR_TEXTS } from '../data/authData';
 export function DemoAccountsCard({ activeEmail, onSelectDemo }) {
   const [isOpen, setIsOpen] = useState(false);
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Escape' && isOpen) {
+      setIsOpen(false);
+    }
+  };
+
   return (
     <div
       className={`demo-eval-accordion ${isOpen ? 'open' : ''}`}
       role="region"
       aria-label={DEMO_BAR_TEXTS?.rolesAriaLabel || 'Evaluación BPO por roles'}
+      onKeyDown={handleKeyDown}
     >
       <button
         type="button"
@@ -22,7 +29,7 @@ export function DemoAccountsCard({ activeEmail, onSelectDemo }) {
         aria-controls="demo-eval-collapse-panel"
       >
         <span className="demo-accordion-prompt">
-          <span className="demo-eval-academic-badge">Entorno de evaluación académica — Credenciales de prueba</span>
+          <span className="demo-eval-academic-badge">Entorno de evaluación académica · Credenciales de prueba</span>
         </span>
         <span className={`demo-accordion-chevron ${isOpen ? 'rotated' : ''}`} aria-hidden="true">
           <Icon name={isOpen ? 'chevronUp' : 'chevronDown'} size={14} />

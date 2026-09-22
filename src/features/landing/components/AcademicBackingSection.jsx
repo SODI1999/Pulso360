@@ -43,7 +43,6 @@ export function AcademicBackingSection() {
             </div>
             <Link to="/fundamentacion" className="btn-academic-dossier">
               <span>Consultar fundamentación y marco legal</span>
-              <Icon name="arrowRight" size={15} />
             </Link>
           </div>
         </div>

@@ -97,7 +97,7 @@ export function LoginPage({ initialMode }) {
         return;
       }
 
-      setFeedback({ type: 'success', message: 'Autenticacion correcta. Redirigiendo...' });
+      setFeedback({ type: 'success', message: 'Autenticación exitosa. Redirigiendo...' });
 
       setTimeout(() => {
         const user = result.user;
@@ -119,7 +119,7 @@ export function LoginPage({ initialMode }) {
     } catch (error) {
       console.error('Login error:', error);
       setLoading(false);
-      setFeedback({ type: 'error', message: 'Error al conectar con el servicio de autenticacion.' });
+      setFeedback({ type: 'error', message: 'Error al conectar con el servicio de autenticación.' });
     }
   };
 
@@ -150,7 +150,7 @@ export function LoginPage({ initialMode }) {
     } catch (err) {
       console.error('Recovery request error:', err);
       setRecoveryLoading(false);
-      setRecoveryFeedback({ type: 'error', message: 'Error inesperado al solicitar recuperacion.' });
+      setRecoveryFeedback({ type: 'error', message: 'Error inesperado al solicitar recuperación.' });
     }
   };
 
@@ -203,9 +203,9 @@ export function LoginPage({ initialMode }) {
   };
 
   const strengthScore = checkPasswordStrength(newPassword);
-  const strengthLabels = ['Debil', 'Aceptable', 'Buena', 'Fuerte'];
+  const strengthLabels = ['Débil', 'Aceptable', 'Buena', 'Fuerte'];
   const strengthClass = ['weak', 'weak', 'medium', 'strong'][Math.max(0, strengthScore - 1)] || 'weak';
-  const strengthLabel = newPassword ? strengthLabels[Math.max(0, strengthScore - 1)] : '—';
+  const strengthLabel = newPassword ? strengthLabels[Math.max(0, strengthScore - 1)] : '-';
 
   const isResetValid = tokenState.valid && passwordPolicy.valid && passwordsMatch && !resetLoading;
 
@@ -223,7 +223,7 @@ export function LoginPage({ initialMode }) {
       if (result.success) {
         setResetFeedback({
           type: 'success',
-          message: 'Contrasena actualizada con exito. Redirigiendo al inicio de sesion...'
+          message: 'Contraseña actualizada con éxito. Redirigiendo al inicio de sesión...'
         });
         setTimeout(() => {
           setMode('login');
@@ -238,7 +238,7 @@ export function LoginPage({ initialMode }) {
     } catch (err) {
       console.error('Reset password error:', err);
       setResetLoading(false);
-      setResetFeedback({ type: 'error', message: 'Ocurrio un error inesperado al guardar la contrasena.' });
+      setResetFeedback({ type: 'error', message: 'Ocurrió un error inesperado al guardar la contraseña.' });
     }
   };
 
