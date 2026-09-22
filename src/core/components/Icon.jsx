@@ -165,6 +165,28 @@ export function Icon({ name, className = '', size, ...props }) {
     play: (
       <polygon points="5 3 19 12 5 21 5 3" />
     ),
+    pause: (
+      <>
+        <rect x="6" y="4" width="4" height="16" rx="1" />
+        <rect x="14" y="4" width="4" height="16" rx="1" />
+      </>
+    ),
+    touchApp: (
+      <>
+        <path d="M12 11h1a2 2 0 0 1 2 2v1a2 2 0 0 1 2 2v1a2 2 0 0 1 2 2v2a5 5 0 0 1-5 5h-2a5 5 0 0 1-5-5v-7a2 2 0 0 1 4 0v-4a2 2 0 0 1 4 0v1" />
+        <path d="M12 7V4" />
+        <path d="M8.5 5.5l-2.1-2.1" />
+        <path d="M15.5 5.5l2.1-2.1" />
+      </>
+    ),
+    touch_app: (
+      <>
+        <path d="M12 11h1a2 2 0 0 1 2 2v1a2 2 0 0 1 2 2v1a2 2 0 0 1 2 2v2a5 5 0 0 1-5 5h-2a5 5 0 0 1-5-5v-7a2 2 0 0 1 4 0v-4a2 2 0 0 1 4 0v1" />
+        <path d="M12 7V4" />
+        <path d="M8.5 5.5l-2.1-2.1" />
+        <path d="M15.5 5.5l2.1-2.1" />
+      </>
+    ),
     plus: (
       <>
         <line x1="12" y1="5" x2="12" y2="19" />

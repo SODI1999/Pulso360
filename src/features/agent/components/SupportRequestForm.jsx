@@ -1,5 +1,6 @@
 // src/features/agent/components/SupportRequestForm.jsx
 // Formulario para registro voluntario de solicitudes de orientación psicosocial con SST (RF-10)
+// Diseñado con pulso360-ui-craft: Blueprint 0 (Flujo Editorial Continuo) y filtros anti-slop
 
 import { Icon } from '../../../core/components/Icon';
 
@@ -20,30 +21,25 @@ export function SupportRequestForm({
     feedback
 }) {
     return (
-        <div className="card agent-form-card">
-            <div className="card-header">
-                <div>
-                    <span className="agent-kicker">
-                        Canal de acompañamiento con SST
-                    </span>
-                    <div className="card-title">
-                        Nueva solicitud de orientación y acompañamiento psicosocial
-                    </div>
-                    <div className="card-subtitle">
-                        Elige la modalidad que te haga sentir en mayor seguridad y describe libremente cómo te podemos orientar.
-                    </div>
-                </div>
+        <section className="support-form-section" aria-labelledby="support-form-heading">
+            <div className="support-section-header">
+                <h2 id="support-form-heading" className="support-section-title">
+                    Nueva solicitud de orientación y acompañamiento psicosocial
+                </h2>
+                <p className="support-section-subtitle">
+                    Selecciona la modalidad de acompañamiento y describe el motivo para coordinar la orientación con el equipo de Seguridad y Salud en el Trabajo.
+                </p>
             </div>
 
             <form id="supportForm" onSubmit={onSubmit}>
-                {/* Selector de Modalidad (Anónima vs Confidencial con clarificación explícita) */}
-                <div className="form-group">
-                    <label className="form-label form-label--strong">
+                {/* Selector de Modalidad (Ergonómico, accesible y sobrio) */}
+                <fieldset className="support-mode-fieldset">
+                    <legend className="support-mode-legend">
                         Modalidad de acompañamiento
-                    </label>
-                    <div className="support-mode-grid">
+                    </legend>
+                    <div className="support-mode-selector-grid">
                         <label
-                            className={`support-mode-capsule ${isAnonymous ? 'active' : ''}`}
+                            className={`support-mode-option ${isAnonymous ? 'is-selected' : ''}`}
                             htmlFor="modeAnonimo"
                         >
                             <input
@@ -54,20 +50,21 @@ export function SupportRequestForm({
                                 value="anonimo"
                                 checked={isAnonymous}
                                 onChange={() => onSetSupportMode('anonimo')}
+                                aria-label="Modalidad Anónima (sin asociar tu identidad)"
                             />
-                            <div>
-                                <div className="support-mode-head">
-                                    <strong>Modalidad Anónima</strong>
-                                    <span className="badge badge-ok">Sin identificación en el caso</span>
+                            <div className="support-mode-text-wrap">
+                                <div className="support-mode-heading-row">
+                                    <span className="support-mode-name">Modalidad Anónima</span>
+                                    <span className="support-mode-chip">Sin asociar tu identidad</span>
                                 </div>
                                 <p className="support-mode-desc">
-                                    SST <strong>no recibe tu nombre ni tu documento de identidad</strong>. Tu caso se atiende mediante radicado seguro y consultas las respuestas y orientaciones dentro de la app con el código generado.
+                                    SST no recibe tu nombre ni tu documento de identidad. Tu solicitud se gestiona mediante radicado seguro y consultas las respuestas en esta plataforma con el código generado.
                                 </p>
                             </div>
                         </label>
 
                         <label
-                            className={`support-mode-capsule ${!isAnonymous ? 'active' : ''}`}
+                            className={`support-mode-option ${!isAnonymous ? 'is-selected' : ''}`}
                             htmlFor="modeConfidencial"
                         >
                             <input
@@ -78,139 +75,153 @@ export function SupportRequestForm({
                                 value="confidencial"
                                 checked={!isAnonymous}
                                 onChange={() => onSetSupportMode('confidencial')}
+                                aria-label="Modalidad Confidencial Identificada (con reserva profesional de SST)"
                             />
-                            <div>
-                                <div className="support-mode-head">
-                                    <strong>Modalidad Confidencial Identificada</strong>
-                                    <span className="badge badge-info">Reserva Profesional</span>
+                            <div className="support-mode-text-wrap">
+                                <div className="support-mode-heading-row">
+                                    <span className="support-mode-name">Modalidad Confidencial Identificada</span>
+                                    <span className="support-mode-chip">Reserva profesional SST</span>
                                 </div>
                                 <p className="support-mode-desc">
-                                    Tu identidad se asocia a la solicitud para que SST pueda orientarte por el canal que escojas. La vista operativa no incorpora este caso individual.
+                                    Tu identidad se asocia a la solicitud para que un profesional de SST pueda orientarte de manera personalizada por el canal escogido. Tu supervisor no recibe este caso individual.
                                 </p>
                             </div>
                         </label>
                     </div>
-                </div>
+                </fieldset>
 
                 {/* Motivo Principal */}
-                <div className="form-group">
-                    <label className="form-label" htmlFor="supportReason">Motivo principal de orientación</label>
+                <div className="support-form-group">
+                    <label className="support-label" htmlFor="supportReason">
+                        Motivo principal de orientación
+                    </label>
                     <select
                         id="supportReason"
-                        className="form-select"
+                        className="support-select"
                         value={reason}
                         onChange={(e) => onChangeReason(e.target.value)}
                     >
-                        <option value="Sobrecarga percibida">Sobrecarga percibida o fatiga por volumen</option>
-                        <option value="Exigencia emocional">Exigencia emocional o interacciones difíciles</option>
-                        <option value="Conflicto o dificultad laboral">Conflicto o dificultad en el entorno laboral</option>
-                        <option value="Orientación general">Orientación preventiva de bienestar y salud psicosocial</option>
+                        <option value="Sobrecarga percibida">Sobrecarga percibida o fatiga por volumen de llamadas</option>
+                        <option value="Exigencia emocional">Exigencia emocional o interacciones complejas en turno</option>
+                        <option value="Conflicto o dificultad laboral">Dificultad o tensión en el entorno laboral</option>
+                        <option value="Orientación general">Orientación preventiva de salud psicosocial y bienestar</option>
                     </select>
                 </div>
 
-                {/* Descripción empática */}
-                <div className="form-group">
-                    <label className="form-label" htmlFor="supportDetails">Descripción o contexto que desees compartir (Opcional pero orientador)</label>
+                {/* Descripción y contexto */}
+                <div className="support-form-group">
+                    <label className="support-label" htmlFor="supportDetails">
+                        Contexto o detalles de la situación
+                        <span className="support-label-hint">(Opcional)</span>
+                    </label>
                     <textarea
                         id="supportDetails"
-                        className="form-textarea"
+                        className="support-textarea"
                         rows={4}
                         maxLength={1000}
-                        placeholder="Comparte los detalles que consideres necesarios para que el equipo de SST comprenda tu situación y prepare la mejor orientación..."
+                        placeholder="Comparte los detalles que consideres necesarios para que el equipo de SST comprenda la situación y prepare la mejor orientación..."
                         value={details}
                         onChange={(e) => onChangeDetails(e.target.value)}
+                        aria-describedby="detailsHint"
                     />
-                    <div className="field-hint">
-                        Máximo 1000 caracteres. Recuerda que no se transmitirá ningún texto de tus bitácoras personales no autorizadas.
+                    <div id="detailsHint" className="support-field-hint">
+                        Máximo 1000 caracteres. El texto de tus bitácoras personales no se comparte con esta solicitud salvo autorización explícita.
                     </div>
                 </div>
 
-                {/* Campos de Contacto y Urgencia */}
-                <div className="form-row-grid">
-                    <div className="form-group">
-                        <label className="form-label" htmlFor="supportUrgency">Nivel de urgencia percibido</label>
+                {/* Fila de Campos de Contacto y Urgencia */}
+                <div className="support-fields-row">
+                    <div className="support-form-group">
+                        <label className="support-label" htmlFor="supportUrgency">
+                            Nivel de urgencia percibido
+                        </label>
                         <select
                             id="supportUrgency"
-                            className="form-select"
+                            className="support-select"
                             value={urgency}
                             onChange={(e) => onChangeUrgency(e.target.value)}
                         >
-                            <option value="baja">Baja - Consulta de rutina</option>
-                            <option value="media">Media - Deseo atención pronto</option>
-                            <option value="alta">Alta - Requiere atención prioritaria</option>
+                            <option value="baja">Baja (Consulta ordinaria de turno)</option>
+                            <option value="media">Media (Atención pronta sugerida)</option>
+                            <option value="alta">Alta (Atención prioritaria requerida)</option>
                         </select>
                     </div>
 
-                    <div className="form-group">
-                        <label className="form-label" htmlFor="contactPreference">Preferencia de respuesta</label>
+                    <div className="support-form-group">
+                        <label className="support-label" htmlFor="contactPreference">
+                            Canal de respuesta preferido
+                        </label>
                         <select
                             id="contactPreference"
-                            className="form-select"
+                            className="support-select"
                             value={isAnonymous ? 'app' : contactPreference}
                             onChange={(e) => onChangeContactPreference(e.target.value)}
                             disabled={isAnonymous}
                         >
-                            <option value="app">Dentro de la aplicación</option>
+                            <option value="app">Dentro de la aplicación (Radicado)</option>
                             <option value="correo">Correo institucional (Solo modo confidencial)</option>
                             <option value="llamada">Llamada telefónica (Solo modo confidencial)</option>
                         </select>
                     </div>
 
-                    <div className="form-group">
-                        <label className="form-label" htmlFor="timeWindow">Franja de disponibilidad horaria</label>
+                    <div className="support-form-group">
+                        <label className="support-label" htmlFor="timeWindow">
+                            Franja horaria de disponibilidad
+                        </label>
                         <select
                             id="timeWindow"
-                            className="form-select"
+                            className="support-select"
                             value={isAnonymous ? 'Cualquiera' : timeWindow}
                             onChange={(e) => onChangeTimeWindow(e.target.value)}
                             disabled={isAnonymous}
                         >
-                            <option value="Mañana">Mañana (Inicio de turno)</option>
-                            <option value="Tarde">Tarde (Mitad de turno)</option>
-                            <option value="Cualquiera">Cualquier momento hábil de SST</option>
+                            <option value="Mañana">Inicio de turno (Mañana)</option>
+                            <option value="Tarde">Mitad o final de turno (Tarde)</option>
+                            <option value="Cualquiera">Jornada hábil habitual de SST</option>
                         </select>
                     </div>
                 </div>
 
+                {/* Nota para modalidad anónima */}
                 {isAnonymous && (
-                    <div className="agent-note-row" role="note">
-                        <Icon name="info" size={14} className="agent-notice-icon" />
-                        <span>
-                            En modalidad anónima la respuesta se consulta directamente en este panel con tu código de radicado; no se requieren datos de contacto ni horarios.
-                        </span>
+                    <div className="support-editorial-notice" role="note">
+                        <Icon name="info" size={16} className="support-notice-icon" />
+                        <div className="support-notice-text">
+                            En <strong>modalidad anónima</strong> la respuesta se consulta de forma autónoma con tu código de radicado desde este panel; no se requieren datos de contacto ni horarios personales.
+                        </div>
                     </div>
                 )}
 
-                {/* Indicación Empática de Tiempo Estimado de Respuesta */}
-                <div className="agent-notice agent-notice--center">
-                    <Icon name="clock" size={18} className="agent-notice-icon" />
-                    <div className="agent-notice-text">
-                        <strong>Tiempo estimado de respuesta:</strong> Durante la jornada habitual de SST (o de forma prioritaria si marcas alta urgencia).
+                {/* Indicación de tiempo estimado de respuesta */}
+                <div className="support-editorial-notice">
+                    <Icon name="clock" size={16} className="support-notice-icon" />
+                    <div className="support-notice-text">
+                        <strong>Tiempo estimado de gestión:</strong> Durante la jornada hábil habitual del equipo de SST (o de forma prioritaria si marcas alta urgencia).
                     </div>
                 </div>
 
-                {/* Nota Pedagógica del Comité de Convivencia Laboral (CCL - Ley 1010 de 2006) */}
-                <div className="agent-notice agent-notice--dashed">
-                    <Icon name="info" size={18} className="agent-notice-icon" />
-                    <div className="agent-notice-text">
-                        <strong>Orientación sobre canales institucionales (Ley 1010 de 2006):</strong> Si la situación que estás viviendo corresponde a presunto acoso laboral o discrepancias interpersonales graves entre compañeros o con superiores, la instancia legal y bipartita formal en la empresa es el <strong>Comité de Convivencia Laboral (CCL)</strong>. Este formulario con SST es un canal de apoyo psicosocial, acompañamiento emocional y cuidado de la salud.
+                {/* Nota institucional sobre Comité de Convivencia Laboral (CCL - Ley 1010 de 2006) */}
+                <div className="support-editorial-notice">
+                    <Icon name="shield" size={16} className="support-notice-icon" />
+                    <div className="support-notice-text">
+                        <strong>Canal institucional complementario (Ley 1010 de 2006):</strong> Si la situación corresponde a presunto acoso laboral o discrepancias interpersonales graves, la instancia legal y bipartita es el <strong>Comité de Convivencia Laboral (CCL)</strong>. Este formulario con SST es un canal de apoyo psicosocial, acompañamiento y cuidado preventivo de la salud.
                     </div>
                 </div>
 
-                <div className="form-actions">
-                    <button className="btn btn-primary" type="submit">
+                <div className="support-form-actions">
+                    <button className="btn-support-submit" type="submit">
                         <Icon name="send" size={16} />
-                        <span>Enviar solicitud de acompañamiento</span>
+                        <span>Registrar solicitud de acompañamiento</span>
                     </button>
                 </div>
 
                 {feedback && (
-                    <div className="alert-banner ok">
+                    <div className="support-feedback-alert" role="status" aria-live="polite">
                         <Icon name="checkCircle" size={18} />
                         <span>{feedback}</span>
                     </div>
                 )}
             </form>
-        </div>
+        </section>
     );
 }

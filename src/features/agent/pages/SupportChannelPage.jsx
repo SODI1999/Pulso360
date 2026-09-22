@@ -1,15 +1,17 @@
 // src/features/agent/pages/SupportChannelPage.jsx
 // Canal voluntario de solicitudes de orientación psicosocial y acompañamiento con SST (RF-10)
+// Diseñado bajo pulso360-ui-craft: Blueprint 0 (Flujo Editorial Continuo) y Blueprint 1 (Compañero de Turno)
 
 import { useState, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { authService, roleLabels } from '../../../core/auth/authService';
 import { pulsoStore } from '../../../core/storage/pulsoStore';
 import { Icon } from '../../../core/components/Icon';
 import { SupportRequestForm } from '../components/SupportRequestForm';
-import '../../../styles/agent.css';
+import '../../../styles/apoyo.css';
 
 export function SupportChannelPage() {
+    const navigate = useNavigate();
     const currentUser = authService.getCurrentUser();
     const data = pulsoStore.get();
     const consent = data.consents?.[currentUser?.id];
@@ -80,135 +82,152 @@ export function SupportChannelPage() {
     // 1. Caso: Bloqueo pedagógico por falta de consentimiento C5 (Ruta pública de apoyo permanece habilitada)
     if (!consent?.c5) {
         return (
-            <div className="agent-page agent-page--support">
-                <div className="page-header">
-                    <div>
-                        <h1 className="page-title">Solicitar acompañamiento</h1>
-                        <p className="page-subtitle">
-                            Tu solicitud se canaliza al equipo de SST; esta vista no la presenta a tu líder ni a tu supervisor.
-                        </p>
-                    </div>
+            <div className="support-editorial-page">
+                <div className="support-top-nav">
+                    <button
+                        type="button"
+                        className="support-back-link"
+                        onClick={() => navigate('/agente/panel')}
+                    >
+                        <Icon name="arrowLeft" size={16} />
+                        <span>Volver al panel</span>
+                    </button>
+                    <Link to="/apoyo-crisis" className="support-urgent-action">
+                        <Icon name="support" size={16} />
+                        <span>Apoyo inmediato y PAP</span>
+                    </Link>
                 </div>
 
-                <div className="card center-card" style={{ border: '1.5px solid var(--c-alerta-border)' }}>
-                    <div className="center-icon-badge" style={{ backgroundColor: 'var(--c-alerta-bg)', color: 'var(--c-alerta)', border: '1px solid var(--c-alerta-border)' }}>
-                        <Icon name="shield" size={32} />
-                    </div>
-                    <h2 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '8px', color: 'var(--c-texto)' }}>
-                        Canal de acompañamiento con SST no habilitado
-                    </h2>
-                    <p style={{ color: 'var(--c-texto-suave)', marginBottom: '20px', maxWidth: '480px', margin: '0 auto 20px', lineHeight: '1.5' }}>
-                        La finalidad C5 está inactiva en tus preferencias de consentimiento informado. Puedes activarla en cualquier momento para solicitar orientación personalizada con SST. Las líneas públicas de apoyo siguen plenamente disponibles.
+                <header className="support-page-header">
+                    <h1 className="support-page-title">Canal de acompañamiento con SST</h1>
+                    <p className="support-page-subtitle">
+                        Orientación psicosocial y acompañamiento preventivo gestionado por Seguridad y Salud en el Trabajo.
                     </p>
-                    <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
-                        <Link to="/consentimiento" className="btn btn-primary">
+                </header>
+
+                <section className="support-blocked-block" aria-labelledby="blocked-heading">
+                    <h2 id="blocked-heading" className="support-blocked-title">
+                        Canal de acompañamiento individual no habilitado
+                    </h2>
+                    <p className="support-blocked-desc">
+                        La finalidad C5 está inactiva en tus preferencias de consentimiento informado. Para que el equipo de SST pueda recibir solicitudes de acompañamiento y coordinar orientación personalizada, es necesario habilitar esta autorización bajo la Ley 1581 de 2012. Las líneas públicas de apoyo psicosocial y primeros auxilios continúan plenamente disponibles.
+                    </p>
+                    <div className="support-blocked-actions">
+                        <Link to="/consentimiento" className="btn-support-submit">
                             <Icon name="shieldCheck" size={16} />
-                            <span>Activar C5 en mis preferencias</span>
+                            <span>Gestionar finalidad C5 en consentimiento</span>
                         </Link>
-                        <Link to="/apoyo-crisis" className="btn btn-secondary">
+                        <Link to="/apoyo-crisis" className="support-urgent-action">
                             <Icon name="support" size={16} />
                             <span>Ver ruta pública de apoyo y PAP</span>
                         </Link>
                     </div>
-                </div>
+                </section>
             </div>
         );
     }
 
     return (
-        <div className="agent-page agent-page--support">
-            <div className="page-header">
-                <div>
-                    <h1 className="page-title">Solicitar acompañamiento</h1>
-                    <p className="page-subtitle">
-                        Tu solicitud se canaliza al equipo de SST; esta vista no la presenta a tu líder ni a tu supervisor.
-                    </p>
-                </div>
-                <Link to="/apoyo-crisis" className="btn btn-calma-urgent">
-                    <Icon name="support" size={18} />
-                    <span>Necesito ayuda ahora (Primeros Auxilios)</span>
+        <div className="support-editorial-page">
+            {/* Navegación superior sobria */}
+            <div className="support-top-nav">
+                <button
+                    type="button"
+                    className="support-back-link"
+                    onClick={() => navigate('/agente/panel')}
+                >
+                    <Icon name="arrowLeft" size={16} />
+                    <span>Volver al panel</span>
+                </button>
+                <Link to="/apoyo-crisis" className="support-urgent-action">
+                    <Icon name="support" size={16} />
+                    <span>Apoyo inmediato y PAP</span>
                 </Link>
             </div>
 
-            <div id="supportArea" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-                {/* Formulario de Nueva Solicitud Rediseñado Empáticamente */}
-                <SupportRequestForm
-                    isAnonymous={isAnonymous}
-                    onSetSupportMode={setSupportMode}
-                    reason={reason}
-                    onChangeReason={setReason}
-                    details={details}
-                    onChangeDetails={setDetails}
-                    urgency={urgency}
-                    onChangeUrgency={setUrgency}
-                    contactPreference={contactPreference}
-                    onChangeContactPreference={setContactPreference}
-                    timeWindow={timeWindow}
-                    onChangeTimeWindow={setTimeWindow}
-                    onSubmit={handleSubmit}
-                    feedback={feedback}
-                />
+            {/* Cabecera editorial sin cajas flotantes ni gradientes */}
+            <header className="support-page-header">
+                <h1 className="support-page-title">Canal de acompañamiento con SST</h1>
+                <p className="support-page-subtitle">
+                    Orientación psicosocial y acompañamiento preventivo canalizado exclusivamente al equipo de Seguridad y Salud en el Trabajo. Esta solicitud no es visible para tu líder de equipo ni tu supervisor.
+                </p>
+            </header>
 
-                {/* Historial de Solicitudes Propias con Redacción Humanizadora */}
-                <div className="card">
-                    <div className="card-header">
-                        <div>
-                            <div className="card-title">Mis solicitudes de acompañamiento</div>
-                            <div className="card-subtitle">Seguimiento de radicados y respuestas de los profesionales de SST.</div>
-                        </div>
-                    </div>
+            {/* Formulario continuo estructurado */}
+            <SupportRequestForm
+                isAnonymous={isAnonymous}
+                onSetSupportMode={setSupportMode}
+                reason={reason}
+                onChangeReason={setReason}
+                details={details}
+                onChangeDetails={setDetails}
+                urgency={urgency}
+                onChangeUrgency={setUrgency}
+                contactPreference={contactPreference}
+                onChangeContactPreference={setContactPreference}
+                timeWindow={timeWindow}
+                onChangeTimeWindow={setTimeWindow}
+                onSubmit={handleSubmit}
+                feedback={feedback}
+            />
 
-                    <div id="requestsList" style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '16px' }}>
-                        {userRequests.length === 0 ? (
-                            <div style={{ textAlign: 'center', padding: '36px 20px', background: 'var(--c-fondo)', borderRadius: 'var(--radius-md)', border: '1px dashed var(--c-borde)' }}>
-                                <Icon name="support" size={32} style={{ color: 'var(--c-primario)', margin: '0 auto 8px' }} />
-                                <strong style={{ display: 'block', fontSize: '14.5px', color: 'var(--c-texto)', marginBottom: '4px' }}>
-                                    No tienes solicitudes registradas en este momento
-                                </strong>
-                                <p style={{ fontSize: '12.5px', color: 'var(--c-texto-suave)', margin: 0, maxWidth: '400px', marginInline: 'auto' }}>
-                                    Cuando envíes una consulta o solicitud a SST, aquí podrás hacer seguimiento seguro a su radicado y respuesta.
-                                </p>
-                            </div>
-                        ) : (
-                            userRequests.map(req => (
-                                <div
-                                    key={req.id}
-                                    style={{
-                                        padding: '16px 18px',
-                                        background: 'var(--c-calma-bg)',
-                                        borderRadius: 'var(--radius-md)',
-                                        border: '1px solid var(--c-calma-border)',
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        gap: '8px'
-                                    }}
-                                >
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
-                                        <strong style={{ fontSize: '14.5px', color: 'var(--c-calma-text)' }}>{req.code}</strong>
-                                        <span className={`badge ${req.mode === 'anonimo' ? 'badge-ok' : 'badge-info'}`}>
-                                            {req.mode === 'anonimo' ? 'Modalidad Anónima' : 'Modalidad Confidencial'}
-                                        </span>
-                                    </div>
-                                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '8px', fontSize: '12.5px', color: 'var(--c-texto-suave)', margin: '2px 0' }}>
-                                        <div><strong style={{ color: 'var(--c-texto)' }}>Motivo:</strong> {req.reason}</div>
-                                        <div><strong style={{ color: 'var(--c-texto)' }}>Estado:</strong> <span className="badge badge-neutral" style={{ marginLeft: '4px' }}>{req.status}</span></div>
-                                        <div><strong style={{ color: 'var(--c-texto)' }}>Atención estimada:</strong> {req.sla}</div>
-                                    </div>
-                                    {req.mode === 'anonimo' ? (
-                                        <div style={{ fontSize: '12px', color: 'var(--c-calma-text-muted)' }}>
-                                            Tu identidad está protegida. La orientación de SST se publica de forma interna en este caso.
-                                        </div>
-                                    ) : (
-                                        <div style={{ fontSize: '12px', color: 'var(--c-calma-text-muted)' }}>
-                                            Contacto asignado directamente a profesional de SST según la modalidad seleccionada y los controles del despliegue.
-                                        </div>
-                                    )}
-                                </div>
-                            ))
-                        )}
-                    </div>
+            {/* Historial editorial de solicitudes */}
+            <section className="support-history-section" aria-labelledby="history-heading">
+                <div className="support-history-header">
+                    <h2 id="history-heading" className="support-history-title">
+                        Mis solicitudes de acompañamiento
+                    </h2>
+                    <p className="support-history-subtitle">
+                        Seguimiento de radicados, tiempos estimados y respuestas de los profesionales de SST.
+                    </p>
                 </div>
-            </div>
+
+                {userRequests.length === 0 ? (
+                    <div className="support-empty-state">
+                        <Icon name="support" size={32} className="support-empty-icon" />
+                        <strong className="support-empty-title">
+                            No tienes solicitudes registradas en este momento
+                        </strong>
+                        <p className="support-empty-desc">
+                            Cuando envíes una consulta o solicitud a SST, aquí podrás hacer seguimiento seguro a su radicado y respuesta.
+                        </p>
+                    </div>
+                ) : (
+                    <div className="support-requests-flow" role="list">
+                        {userRequests.map(req => (
+                            <article key={req.id} className="support-request-item" role="listitem">
+                                <div className="support-request-header">
+                                    <strong className="support-request-code">{req.code}</strong>
+                                    <span className={`support-request-badge ${req.mode === 'anonimo' ? 'is-anon' : ''}`}>
+                                        {req.mode === 'anonimo' ? 'Modalidad Anónima' : 'Modalidad Confidencial'}
+                                    </span>
+                                </div>
+                                <div className="support-request-meta-grid">
+                                    <div>
+                                        <span className="support-meta-label">Motivo:</span> {req.reason}
+                                    </div>
+                                    <div>
+                                        <span className="support-meta-label">Estado:</span>
+                                        <span className="support-meta-status">{req.status}</span>
+                                    </div>
+                                    <div>
+                                        <span className="support-meta-label">Atención estimada:</span> {req.sla}
+                                    </div>
+                                </div>
+                                {req.mode === 'anonimo' ? (
+                                    <p className="support-request-clarification">
+                                        Tu identidad está protegida. La orientación de SST se consulta de forma autónoma con este radicado dentro de la plataforma.
+                                    </p>
+                                ) : (
+                                    <p className="support-request-clarification">
+                                        Contacto asignado directamente a un profesional de SST bajo reserva, según el canal y la franja horaria preferidos.
+                                    </p>
+                                )}
+                            </article>
+                        ))}
+                    </div>
+                )}
+            </section>
         </div>
     );
 }

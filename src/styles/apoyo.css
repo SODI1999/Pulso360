@@ -1,0 +1,534 @@
+/* src/styles/apoyo.css
+   Canal de Acompañamiento Psicosocial con SST (Pulso360)
+   Diseñado bajo pulso360-ui-craft: Blueprint 0 (Flujo Editorial Continuo) y Blueprint 1 (Compañero de Turno)
+   Sin card-itis, sin franjas laterales, sin badges-dots, 100% tokenizado y WCAG AA.
+*/
+
+/* 1. Contenedor Maestro Editorial (Alineado con el eje de lectura del panel del agente: max-width 1040px) */
+.support-editorial-page {
+  max-width: 1040px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 28px 0 var(--space-16);
+}
+
+/* 2. Barra de Retorno y Acción Rápida */
+.support-top-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+  flex-wrap: wrap;
+}
+
+.support-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: transparent;
+  border: none;
+  padding: 8px 0;
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--c-texto-suave);
+  cursor: pointer;
+  min-height: 44px;
+  transition: color var(--transition-fast);
+}
+
+.support-back-link:hover {
+  color: var(--c-texto);
+}
+
+.support-urgent-action {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 8px 14px;
+  background-color: var(--c-calma-bg);
+  border: 1px solid var(--c-calma-border);
+  border-radius: var(--radius-md);
+  color: var(--c-calma-text);
+  font-size: 13px;
+  font-weight: 600;
+  min-height: 44px;
+  text-decoration: none;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.support-urgent-action:hover {
+  background-color: var(--c-calma-surface-hover);
+  border-color: var(--c-calma-accent);
+  color: var(--c-calma-text);
+}
+
+/* 3. Cabecera Editorial Plana */
+.support-page-header {
+  padding-bottom: var(--space-6);
+  margin-bottom: var(--space-8);
+  border-bottom: 1px solid var(--c-borde-suave);
+}
+
+.support-page-title {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--c-texto);
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  margin-bottom: var(--space-2);
+}
+
+.support-page-subtitle {
+  font-size: 14.5px;
+  color: var(--c-texto-suave);
+  line-height: 1.6;
+  max-width: 700px;
+  margin: 0;
+}
+
+/* 4. Bloque Pedagógico de Consentimiento C5 Inactivo */
+.support-blocked-block {
+  padding: var(--space-8) 0;
+  border-bottom: 1px solid var(--c-borde-suave);
+}
+
+.support-blocked-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--c-texto);
+  margin-bottom: var(--space-2);
+}
+
+.support-blocked-desc {
+  font-size: 14px;
+  color: var(--c-texto-suave);
+  line-height: 1.6;
+  max-width: 620px;
+  margin-bottom: var(--space-5);
+}
+
+.support-blocked-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+/* 5. Sección del Formulario Continuo */
+.support-form-section {
+  padding-bottom: var(--space-10);
+  margin-bottom: var(--space-10);
+  border-bottom: 1px solid var(--c-borde-suave);
+}
+
+.support-section-header {
+  margin-bottom: var(--space-6);
+}
+
+.support-section-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--c-texto);
+  letter-spacing: -0.01em;
+  margin-bottom: var(--space-1);
+}
+
+.support-section-subtitle {
+  font-size: 13.5px;
+  color: var(--c-texto-suave);
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* 6. Selector de Modalidad (Ergonómico, sin badges con puntos) */
+.support-mode-fieldset {
+  border: none;
+  padding: 0;
+  margin: 0 0 var(--space-6) 0;
+}
+
+.support-mode-legend {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--c-texto);
+  margin-bottom: var(--space-3);
+  display: block;
+}
+
+.support-mode-selector-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-3);
+}
+
+.support-mode-option {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 1px solid var(--c-borde-suave);
+  border-radius: var(--radius-card);
+  background-color: var(--c-superficie);
+  cursor: pointer;
+  transition: border-color var(--transition-fast), background-color var(--transition-fast);
+  min-height: 44px;
+}
+
+.support-mode-option:hover {
+  border-color: var(--c-borde);
+  background-color: var(--c-fondo);
+}
+
+.support-mode-option.is-selected {
+  border-color: var(--c-primario);
+  background-color: var(--c-calma-bg);
+}
+
+.support-mode-option:focus-within {
+  outline: 2px solid var(--c-primario);
+  outline-offset: 1px;
+}
+
+.support-mode-radio {
+  margin-top: 3px;
+  accent-color: var(--c-primario);
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+}
+
+.support-mode-text-wrap {
+  flex: 1;
+}
+
+.support-mode-heading-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-bottom: var(--space-1);
+}
+
+.support-mode-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--c-texto);
+}
+
+.support-mode-chip {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--c-texto-suave);
+  background-color: var(--c-fondo-subtle);
+  border: 1px solid var(--c-borde-suave);
+  padding: 1px 6px;
+  border-radius: var(--radius-xs);
+  white-space: nowrap;
+}
+
+.support-mode-desc {
+  font-size: 12.5px;
+  color: var(--c-texto-suave);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* 7. Campos de Entrada del Formulario */
+.support-form-group {
+  margin-bottom: var(--space-5);
+}
+
+.support-label {
+  display: block;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--c-texto);
+  margin-bottom: var(--space-2);
+}
+
+.support-label-hint {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--c-texto-mutado);
+  margin-left: var(--space-1);
+}
+
+.support-select,
+.support-textarea {
+  width: 100%;
+  font-family: inherit;
+  font-size: 13.5px;
+  color: var(--c-texto);
+  background-color: var(--c-superficie);
+  border: 1px solid var(--c-borde);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  line-height: 1.5;
+}
+
+.support-select:focus,
+.support-textarea:focus {
+  border-color: var(--c-primario);
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+.support-select:disabled {
+  background-color: var(--c-fondo-subtle);
+  color: var(--c-texto-mutado);
+  border-color: var(--c-borde-suave);
+  cursor: not-allowed;
+}
+
+.support-textarea {
+  resize: vertical;
+  min-height: 96px;
+}
+
+.support-field-hint {
+  font-size: 12px;
+  color: var(--c-texto-mutado);
+  margin-top: var(--space-2);
+  line-height: 1.45;
+}
+
+.support-fields-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+/* 8. Avisos Institucionales Sobrios (Sin bordes discontinuos ni franjas de color) */
+.support-editorial-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background-color: var(--c-calma-bg);
+  border: 1px solid var(--c-calma-border);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-4);
+  font-size: 13px;
+  color: var(--c-calma-text);
+  line-height: 1.55;
+}
+
+.support-notice-icon {
+  color: var(--c-calma-accent);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.support-notice-text strong {
+  color: var(--c-calma-text);
+}
+
+/* 9. Acciones del Formulario */
+.support-form-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+  flex-wrap: wrap;
+}
+
+.btn-support-submit {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  background-color: var(--c-primario);
+  color: var(--c-texto-invertido);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px 18px;
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  min-height: 44px;
+  transition: background-color var(--transition-fast);
+}
+
+.btn-support-submit:hover {
+  background-color: var(--c-primario-hover);
+}
+
+.btn-support-submit:focus-visible {
+  outline: 2px solid var(--c-primario);
+  outline-offset: 2px;
+}
+
+.support-feedback-alert {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  background-color: var(--c-exito-bg);
+  border: 1px solid var(--c-exito-border);
+  border-radius: var(--radius-md);
+  color: var(--c-exito);
+  font-size: 13.5px;
+  font-weight: 500;
+  margin-top: var(--space-4);
+}
+
+/* 10. Sección de Historial de Solicitudes */
+.support-history-section {
+  padding-bottom: var(--space-8);
+}
+
+.support-history-header {
+  margin-bottom: var(--space-5);
+}
+
+.support-history-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--c-texto);
+  letter-spacing: -0.01em;
+  margin-bottom: var(--space-1);
+}
+
+.support-history-subtitle {
+  font-size: 13.5px;
+  color: var(--c-texto-suave);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.support-empty-state {
+  text-align: center;
+  padding: var(--space-8) var(--space-4);
+  background-color: var(--c-fondo-subtle);
+  border: 1px solid var(--c-borde-suave);
+  border-radius: var(--radius-card);
+}
+
+.support-empty-icon {
+  color: var(--c-primario);
+  margin-bottom: var(--space-2);
+}
+
+.support-empty-title {
+  display: block;
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--c-texto);
+  margin-bottom: var(--space-1);
+}
+
+.support-empty-desc {
+  font-size: 12.5px;
+  color: var(--c-texto-suave);
+  max-width: 420px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+.support-requests-flow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.support-request-item {
+  padding: var(--space-4) var(--space-5);
+  background-color: var(--c-superficie);
+  border: 1px solid var(--c-borde-suave);
+  border-radius: var(--radius-card);
+  transition: border-color var(--transition-fast);
+}
+
+.support-request-item:hover {
+  border-color: var(--c-borde);
+}
+
+.support-request-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.support-request-code {
+  font-family: var(--font-family-mono);
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--c-texto);
+}
+
+.support-request-badge {
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: var(--radius-xs);
+  border: 1px solid var(--c-borde-suave);
+  background-color: var(--c-fondo-subtle);
+  color: var(--c-texto-suave);
+}
+
+.support-request-badge.is-anon {
+  border-color: var(--c-calma-border);
+  background-color: var(--c-calma-bg);
+  color: var(--c-calma-text);
+}
+
+.support-request-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: var(--space-2);
+  font-size: 13px;
+  color: var(--c-texto-suave);
+  margin-bottom: var(--space-2);
+}
+
+.support-meta-label {
+  color: var(--c-texto);
+  font-weight: 600;
+}
+
+.support-meta-status {
+  display: inline-block;
+  font-weight: 600;
+  color: var(--c-primario);
+  margin-left: var(--space-1);
+}
+
+.support-request-clarification {
+  font-size: 12px;
+  color: var(--c-texto-mutado);
+  line-height: 1.45;
+  margin: 0;
+}
+
+/* 11. Adaptabilidad Móvil */
+@media (max-width: 768px) {
+  .support-fields-row {
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+
+  .support-mode-selector-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .support-page-title {
+    font-size: 22px;
+  }
+
+  .support-top-nav {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .support-urgent-action {
+    width: 100%;
+    justify-content: center;
+  }
+}
