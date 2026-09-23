@@ -32,11 +32,21 @@ export const authService = {
   getCurrentUser: () => {
     const raw = sessionData.getItem(SESSION_KEY);
     if (!raw) return null;
+    let stored;
     try {
-      return JSON.parse(raw);
+      stored = JSON.parse(raw);
     } catch {
+      authService.clearSession();
       return null;
     }
+    const user = pulsoStore.get().users.find((item) => item.id === stored?.id);
+    if (!user || user.status === 'Suspendido') {
+      authService.clearSession();
+      return null;
+    }
+    const session = { ...user, lastActivity: stored.lastActivity };
+    if (JSON.stringify(session) !== raw) sessionData.setItem(SESSION_KEY, JSON.stringify(session));
+    return session;
   },
 
   // Retorna el tiempo en milisegundos que le queda de bloqueo al login

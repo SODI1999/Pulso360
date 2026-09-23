@@ -2,6 +2,14 @@ import { roleLabels } from '../../../core/auth/authService';
 import { pulsoStore } from '../../../core/storage/pulsoStore';
 
 const unavailableJournal = () => ({ error: 'La entrada no está disponible para este usuario.' });
+const missingConsent = () => ({ error: 'La finalidad de bitácora no está activa para este usuario.' });
+const canUseJournal = (data, user) => {
+  const consent = data.consents?.[user?.id];
+  return Boolean(
+    consent?.policyAccepted && consent.policyVersion === data.settings.policyVersion && consent.c2
+  );
+};
+const canAnalyze = (data, user) => canUseJournal(data, user) && Boolean(data.consents?.[user?.id]?.c3);
 const ownsJournal = (journal, user) =>
   Boolean(user?.id && user.role === 'agente' && journal?.userId === user.id);
 
@@ -9,6 +17,7 @@ export function saveJournal(currentJournalId, currentUser, currentJournal, conte
   let storeData = pulsoStore.get();
   const isNew = !currentJournalId;
   if (!currentUser?.id || currentUser.role !== 'agente') return unavailableJournal();
+  if (!canUseJournal(storeData, currentUser)) return missingConsent();
   const storedJournal = isNew ? null : storeData.journals.find((journal) => journal.id === currentJournalId);
   if (!isNew && !ownsJournal(storedJournal, currentUser)) return unavailableJournal();
   // Los metadatos proceden del registro guardado, no de una copia enviada por la vista.
@@ -65,6 +74,7 @@ export function saveCorrection(currentJournalId, selectedCategories, correctionN
   const storeData = pulsoStore.get();
   const target = storeData.journals.find((j) => j.id === currentJournalId);
   if (!ownsJournal(target, currentUser)) return unavailableJournal();
+  if (!canUseJournal(storeData, currentUser)) return missingConsent();
 
   let finalCategories = selectedCategories.filter((c) => c !== 'Ninguna aplica');
   const previousCats = target.correctedCategories
@@ -103,6 +113,7 @@ export function saveJournalAnalysis(journalPayload, analysisResult, currentUser)
   const storeData = pulsoStore.get();
   const target = storeData.journals.find((j) => j.id === journalPayload.id);
   if (!ownsJournal(target, currentUser)) return unavailableJournal();
+  if (!canAnalyze(storeData, currentUser)) return missingConsent();
   if (target) {
     target.analysis = analysisResult;
     pulsoStore.save(storeData);

@@ -4,14 +4,29 @@ const isRecord = (value) => value !== null && typeof value === 'object' && !Arra
 
 // Completar la estructura conocida sin borrar campos adicionales ni arrays válidos.
 // Una lista vacía guardada es válida: nunca debe repoblarse con datos demo.
-function restoreShape(value, fallback) {
+function restoreShape(value, fallback, key = '') {
   if (Array.isArray(fallback)) {
-    return Array.isArray(value) ? value : structuredClone(fallback);
+    const items = Array.isArray(value) ? value : structuredClone(fallback);
+    if (key === 'users') {
+      return items.filter(
+        (item) =>
+          isRecord(item) &&
+          typeof item.id === 'string' &&
+          typeof item.email === 'string' &&
+          typeof item.role === 'string'
+      );
+    }
+    if (key === 'journals') {
+      return items.filter(
+        (item) => isRecord(item) && typeof item.id === 'string' && typeof item.userId === 'string'
+      );
+    }
+    return fallback.length && isRecord(fallback[0]) ? items.filter(isRecord) : items;
   }
   if (isRecord(fallback)) {
     const result = isRecord(value) ? { ...value } : {};
     for (const [key, defaultValue] of Object.entries(fallback)) {
-      result[key] = restoreShape(result[key], defaultValue);
+      result[key] = restoreShape(result[key], defaultValue, key);
     }
     return result;
   }

@@ -113,6 +113,21 @@ export function useJournal() {
     setIsAnalyzing(true);
 
     setTimeout(() => {
+      const currentData = getAgentRecords(currentUser?.id);
+      const activeConsent = currentData.consents?.[currentUser?.id];
+      if (
+        !activeConsent?.policyAccepted ||
+        activeConsent.policyVersion !== currentData.settings.policyVersion ||
+        !activeConsent.c2 ||
+        !activeConsent.c3
+      ) {
+        setIsAnalyzing(false);
+        setFeedback({
+          type: 'warn',
+          message: 'Entrada guardada sin análisis porque cambió tu consentimiento.'
+        });
+        return;
+      }
       const analysisResult = nlpEngine.analyze(trimmed);
 
       const finishProcessing = () => {
