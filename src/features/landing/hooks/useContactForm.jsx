@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { CONTACT_SUBJECTS } from '../data/landingData';
 import { validateContactForm } from '../services/contactValidation';
 
 export function useContactForm() {
-  // 1. Estados controlados del formulario (useState)
+  // Los campos se mantienen en React para validar y mostrar un resumen local.
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -16,8 +16,8 @@ export function useContactForm() {
 
   const [formErrors, setFormErrors] = useState({});
   const [hasSubmittedOnce, setHasSubmittedOnce] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [submittedData, setSubmittedData] = useState(null);
+  const formRef = useRef(null);
 
   // Manejo de cambios en los inputs controlados
   const handleChange = (e) => {
@@ -33,9 +33,7 @@ export function useContactForm() {
     }
   };
 
-  // 2. Validación básica obligatoria y Habeas Data
-
-  // 3. Evento onSubmit con foco accesible en el primer campo inválido (WCAG AA)
+  // Enfocar el primer campo inválido facilita corregir el formulario con teclado.
   const handleSubmit = (e) => {
     e.preventDefault();
     setHasSubmittedOnce(true);
@@ -44,49 +42,31 @@ export function useContactForm() {
     if (Object.keys(errors).length > 0) {
       setFormErrors(errors);
       const firstErrorKey = Object.keys(errors)[0];
-      const fieldMap = {
-        name: 'contactName',
-        email: 'contactEmail',
-        company: 'contactCompany',
-        subject: 'contactSubject',
-        message: 'contactMessage',
-        habeasData: 'contactHabeasData'
-      };
-      const targetElement = document.getElementById(fieldMap[firstErrorKey]);
-      if (targetElement) {
-        targetElement.focus();
-        targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
+      formRef.current?.elements.namedItem(firstErrorKey)?.focus();
       return;
     }
 
     setFormErrors({});
-    setIsSubmitting(true);
-
-    // Simular procesamiento y almacenamiento en estado (SPA)
-    setTimeout(() => {
-      const subjectLabel =
-        CONTACT_SUBJECTS.find((s) => s.value === formData.subject)?.label || formData.subject;
-      setSubmittedData({
-        name: formData.name.trim(),
-        email: formData.email.trim(),
-        company: formData.company.trim(),
-        phone: formData.phone.trim() || 'No especificado',
-        subject: subjectLabel,
-        message: formData.message.trim(),
-        date: new Date().toLocaleDateString('es-CO', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit'
-        })
-      });
-      setIsSubmitting(false);
-    }, 400);
+    const subjectLabel =
+      CONTACT_SUBJECTS.find((subject) => subject.value === formData.subject)?.label || formData.subject;
+    setSubmittedData({
+      name: formData.name.trim(),
+      email: formData.email.trim(),
+      company: formData.company.trim(),
+      phone: formData.phone.trim() || 'No especificado',
+      subject: subjectLabel,
+      message: formData.message.trim(),
+      date: new Date().toLocaleString('es-CO', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      })
+    });
   };
 
-  // Reiniciar formulario para enviar otro mensaje
+  // Limpiar el formulario para preparar otro resumen
   const handleReset = () => {
     setFormData({
       name: '',
@@ -104,9 +84,9 @@ export function useContactForm() {
 
   return {
     formData,
+    formRef,
     formErrors,
     hasSubmittedOnce,
-    isSubmitting,
     submittedData,
     handleChange,
     handleSubmit,

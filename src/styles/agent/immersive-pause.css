@@ -339,8 +339,7 @@
   outline-offset: 2px;
 }
 
-/* Orbe guía de respiración (pseudo-3D con gradientes CSS, sin WebGL).
-   El tamaño lo controla la curva 4-2-6 desde JS (requestAnimationFrame). */
+/* Orbe guía de respiración: cada subfase usa el tiempo de la guía en React. */
 .pause-orb-scene {
   position: relative;
   width: 300px;
@@ -372,6 +371,18 @@
   stroke-linecap: round;
 }
 
+.pause-stage--breathing .pause-orb-arc-fill {
+  stroke-dasharray: 804.25;
+  stroke-dashoffset: 804.25;
+  animation: pause-arc-progress var(--pause-phase-duration) linear both;
+}
+
+@keyframes pause-arc-progress {
+  from { stroke-dashoffset: 804.25; }
+  to { stroke-dashoffset: 0; }
+}
+
+
 .pause-orb-aura {
   position: absolute;
   width: 250px;
@@ -398,6 +409,33 @@
   transform: scale(0.78);
   will-change: transform;
 }
+
+.pause-stage--breathing .pause-orb {
+  animation: pause-orb-inhale var(--pause-phase-duration) ease-in-out both;
+}
+
+.pause-stage--breathing .pause-orb.orb-phase-1 {
+  animation-name: pause-orb-hold;
+}
+
+.pause-stage--breathing .pause-orb.orb-phase-2 {
+  animation-name: pause-orb-exhale;
+}
+
+@keyframes pause-orb-inhale {
+  from { transform: scale(0.78); }
+  to { transform: scale(1.14); }
+}
+
+@keyframes pause-orb-hold {
+  from, to { transform: scale(1.14); }
+}
+
+@keyframes pause-orb-exhale {
+  from { transform: scale(1.14); }
+  to { transform: scale(0.78); }
+}
+
 
 .pause-orb-sheen {
   position: absolute;
@@ -454,9 +492,25 @@
   background: #8fe3cf;
 }
 
-/* Sin movimiento: orbe estático centrado y barra vacía (el texto guía igual) */
+.pause-stage--breathing .pause-phase-bar-fill {
+  animation: pause-bar-progress var(--pause-phase-duration) linear both;
+}
+
+@keyframes pause-bar-progress {
+  from { width: 0%; }
+  to { width: 100%; }
+}
+
+
+/* Sin movimiento: el texto guía conserva el ritmo sin animaciones visuales. */
 @media (prefers-reduced-motion: reduce) {
-  .pause-orb {
+  .pause-stage--breathing .pause-orb,
+  .pause-stage--breathing .pause-orb-arc-fill,
+  .pause-stage--breathing .pause-phase-bar-fill {
+    animation: none;
+  }
+
+  .pause-stage--breathing .pause-orb {
     transform: scale(1);
   }
 }

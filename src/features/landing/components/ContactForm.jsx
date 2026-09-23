@@ -11,9 +11,9 @@ import '../../../styles/contactenos.css';
 export function ContactForm() {
   const {
     formData,
+    formRef,
     formErrors,
     hasSubmittedOnce,
-    isSubmitting,
     submittedData,
     handleChange,
     handleSubmit,
@@ -24,14 +24,14 @@ export function ContactForm() {
     <div className="form-panel">
       <div className="form-panel-header">
         <span className="panel-kicker">Solicitud Institucional</span>
-        <h2 className="panel-title">Envíanos tu requerimiento</h2>
+        <h2 className="panel-title">Prepara tu solicitud</h2>
         <p className="panel-sub">
-          Coordinamos sesiones técnicas y demostraciones para líderes de operaciones y SST.
+          Completa los datos para revisar una solicitud de muestra. Esta demo no envía mensajes.
         </p>
       </div>
 
       {!submittedData ? (
-        <form id="contactForm" className="landing-form" onSubmit={handleSubmit} noValidate>
+        <form id="contactForm" className="landing-form" ref={formRef} onSubmit={handleSubmit} noValidate>
           {/* Banner de Alerta moderno y sutil en caso de campos incompletos */}
           {hasSubmittedOnce && Object.keys(formErrors).length > 0 && (
             <div className="contact-alert-banner" role="alert">
@@ -58,7 +58,6 @@ export function ContactForm() {
                 placeholder="Ej. Laura Marcela Gómez"
                 value={formData.name}
                 onChange={handleChange}
-                disabled={isSubmitting}
                 aria-required="true"
                 aria-invalid={!!formErrors.name}
                 aria-describedby={formErrors.name ? 'name-error' : undefined}
@@ -83,7 +82,6 @@ export function ContactForm() {
                 placeholder="laura.gomez@contactcenter.com"
                 value={formData.email}
                 onChange={handleChange}
-                disabled={isSubmitting}
                 aria-required="true"
                 aria-invalid={!!formErrors.email}
                 aria-describedby={formErrors.email ? 'email-error' : undefined}
@@ -110,7 +108,6 @@ export function ContactForm() {
                 placeholder="Ej. BPO Solutions Medellín"
                 value={formData.company}
                 onChange={handleChange}
-                disabled={isSubmitting}
                 aria-required="true"
                 aria-invalid={!!formErrors.company}
                 aria-describedby={formErrors.company ? 'company-error' : undefined}
@@ -134,7 +131,6 @@ export function ContactForm() {
                 placeholder="Ej. +57 300 123 4567"
                 value={formData.phone}
                 onChange={handleChange}
-                disabled={isSubmitting}
               />
             </div>
           </div>
@@ -149,7 +145,6 @@ export function ContactForm() {
               className={formErrors.subject ? 'has-error' : ''}
               value={formData.subject}
               onChange={handleChange}
-              disabled={isSubmitting}
               aria-required="true"
               aria-invalid={!!formErrors.subject}
               aria-describedby={formErrors.subject ? 'subject-error' : undefined}
@@ -181,7 +176,6 @@ export function ContactForm() {
               placeholder="Describe detalladamente tu inquietud, tamaño de la operación o aspectos específicos que deseas coordinar con nuestro equipo..."
               value={formData.message}
               onChange={handleChange}
-              disabled={isSubmitting}
               aria-required="true"
               aria-invalid={!!formErrors.message}
               aria-describedby={formErrors.message ? 'message-error' : undefined}
@@ -203,7 +197,6 @@ export function ContactForm() {
                 type="checkbox"
                 checked={formData.habeasData}
                 onChange={handleChange}
-                disabled={isSubmitting}
                 aria-required="true"
                 aria-invalid={!!formErrors.habeasData}
                 aria-describedby={formErrors.habeasData ? 'habeasData-error' : undefined}
@@ -241,18 +234,9 @@ export function ContactForm() {
             </span>
           </div>
 
-          <button className="form-submit" type="submit" disabled={isSubmitting}>
-            {isSubmitting ? (
-              <>
-                <Icon name="refresh" size={18} className="spin-animation" />
-                <span>Enviando solicitud...</span>
-              </>
-            ) : (
-              <>
-                <Icon name="send" size={18} />
-                <span>Enviar mensaje</span>
-              </>
-            )}
+          <button className="form-submit" type="submit">
+            <Icon name="check" size={18} />
+            <span>Ver resumen</span>
           </button>
         </form>
       ) : (
@@ -264,15 +248,15 @@ export function ContactForm() {
                 <Icon name="check" size={20} />
               </span>
               <div>
-                <strong className="contact-success-title">¡Mensaje de contacto enviado con éxito!</strong>
-                <span className="contact-success-date">Radicado recibido el {submittedData.date}</span>
+                <strong className="contact-success-title">Resumen de solicitud (demo)</strong>
+                <span className="contact-success-date">Preparado el {submittedData.date}</span>
               </div>
             </div>
 
             <p className="contact-success-message">
-              Estimado(a) <strong>{submittedData.name}</strong>, hemos registrado tu solicitud para la empresa{' '}
-              <strong>{submittedData.company}</strong>. Un especialista de Pulso360 se pondrá en contacto
-              contigo en el correo <strong>{submittedData.email}</strong>.
+              Este es el resumen de <strong>{submittedData.name}</strong> para{' '}
+              <strong>{submittedData.company}</strong>. Los datos se muestran solo en esta pestaña; no se
+              enviaron ni se guardaron en un servidor.
             </p>
 
             <div className="contact-success-details">
@@ -297,7 +281,7 @@ export function ContactForm() {
             onClick={handleReset}
           >
             <Icon name="edit" size={15} />
-            <span>Enviar otro mensaje</span>
+            <span>Completar otro formulario</span>
           </button>
         </div>
       )}

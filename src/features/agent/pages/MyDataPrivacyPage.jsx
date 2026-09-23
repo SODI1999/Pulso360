@@ -7,6 +7,7 @@ import { useMyDataPrivacy } from '../hooks/useMyDataPrivacy';
 // Panel de Habeas Data, inventario, portabilidad y supresión de datos personales (RF-14 / Ley 1581 de 2012)
 
 import { Icon } from '../../../core/components/Icon';
+import { DownloadLink } from '../../../core/components/DownloadLink';
 import '../../../styles/agent.css';
 
 export function MyDataPrivacyPage() {
@@ -20,6 +21,7 @@ export function MyDataPrivacyPage() {
     formatDate,
     calculateDateRange,
     summary,
+    portabilityFiles,
     handleDownloadPortability,
     handleRectificationSubmit,
     handleSuppressionSubmit,
@@ -71,22 +73,26 @@ export function MyDataPrivacyPage() {
           inmutable de auditoría.
         </p>
         <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-          <button
-            type="button"
+          <DownloadLink
             className="btn btn-capsule-teal"
-            onClick={() => handleDownloadPortability('json')}
+            content={portabilityFiles.json}
+            mimeType="application/json"
+            fileName={`${portabilityFiles.fileNameBase}.json`}
+            onDownload={() => handleDownloadPortability('json')}
           >
             <Icon name="upload_file" size={16} />
             <span>Descargar JSON estructurado</span>
-          </button>
-          <button
-            type="button"
+          </DownloadLink>
+          <DownloadLink
             className="btn btn-capsule-teal"
-            onClick={() => handleDownloadPortability('csv')}
+            content={portabilityFiles.csv}
+            mimeType="text/csv"
+            fileName={`${portabilityFiles.fileNameBase}.csv`}
+            onDownload={() => handleDownloadPortability('csv')}
           >
             <Icon name="summarize" size={16} />
             <span>Descargar CSV propio</span>
-          </button>
+          </DownloadLink>
         </div>
       </div>
 

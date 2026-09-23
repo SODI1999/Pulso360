@@ -108,8 +108,8 @@ export function useReports() {
   };
 
   // Descargar archivo CSV
-  const handleDownloadCsv = () => {
-    if (!generatedReport) return;
+  const csvContent = useMemo(() => {
+    if (!generatedReport) return null;
     const { meta, hash } = generatedReport;
 
     const csvRows = [
@@ -136,24 +136,14 @@ export function useReports() {
       ]
     ];
 
-    const csvContent = csvRows
+    return csvRows
       .map((row) => row.map((val) => `"${String(val ?? '').replaceAll('"', '""')}"`).join(','))
       .join('\n');
-
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `pulso360_reporte_${selectedScopeId}_${new Date().toISOString().substring(0, 10)}.csv`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  };
+  }, [generatedReport]);
 
   // Descargar archivo JSON
-  const handleDownloadJson = () => {
-    if (!generatedReport) return;
+  const jsonContent = useMemo(() => {
+    if (!generatedReport) return null;
     const { meta, hash } = generatedReport;
 
     const exportObj = {
@@ -171,16 +161,8 @@ export function useReports() {
         'Datos agregados protegidos bajo la Ley 1581 de 2012 y lineamientos de k-anonimato N >= 5.'
     };
 
-    const blob = new Blob([JSON.stringify(exportObj, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `pulso360_reporte_${selectedScopeId}_${new Date().toISOString().substring(0, 10)}.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  };
+    return JSON.stringify(exportObj, null, 2);
+  }, [generatedReport]);
 
   // Imprimir / Guardar PDF
   const handlePrintPdf = () => {
@@ -208,8 +190,9 @@ export function useReports() {
     currentScope,
     isAllowedByPrivacy,
     handleGenerateReport,
-    handleDownloadCsv,
-    handleDownloadJson,
+    csvContent,
+    jsonContent,
+    downloadFileBaseName: `pulso360_reporte_${selectedScopeId}_${generatedReport?.date?.substring(0, 10) || new Date().toISOString().substring(0, 10)}`,
     handlePrintPdf,
     reportHistory
   };

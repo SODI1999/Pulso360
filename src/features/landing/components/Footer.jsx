@@ -13,7 +13,7 @@ export function Footer() {
       const el = document.getElementById(targetId);
       if (el) {
         el.scrollIntoView({ behavior: 'smooth' });
-        window.history.pushState(null, '', hash);
+        navigate(hash);
       }
     } else {
       navigate(`/${hash}`);
@@ -27,7 +27,10 @@ export function Footer() {
           <Link
             className="brand brand-footer"
             to="/"
-            onClick={() => handleNavClick('#inicio')}
+            onClick={(event) => {
+              event.preventDefault();
+              handleNavClick('#inicio');
+            }}
             aria-label="Pulso360, volver al inicio"
           >
             <img className="brand-logo" src="/assets/marca/logo.webp" alt="" />

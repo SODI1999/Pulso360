@@ -1,126 +1,61 @@
 # Pulso360
 
-Frontend académico de bienestar laboral para operaciones BPO / Contact Center, desarrollado con React 18, React Router, Vite y JavaScript/JSX. Incluye experiencias para agente, supervisor, SST, auditor y administrador.
+Pulso360 es una aplicación académica de bienestar laboral para operaciones BPO y Contact Center. Es una **SPA** hecha con React 18, React Router, Vite y JavaScript/JSX. Permite recorrer experiencias distintas para agente, supervisor, SST, auditor y administrador.
 
-## Ejecutar el proyecto
+Por ahora es una demostración **solo frontend**: las cuentas y los datos se simulan en el navegador. No hay servidor, envío de correos ni autorización del lado del servidor.
 
-Desde la raíz de este repositorio:
+## Instalación y ejecución
+
+Necesitas Node.js y npm. Desde la carpeta del proyecto:
 
 ```sh
-npm ci
+npm install
 npm run dev
 ```
 
-Copiar `.env.example` a `.env` si se necesita configurar el entorno local. La configuración de aplicación se lee exclusivamente desde `src/core/config/env.jsx`. No colocar secretos en variables `VITE_*`: se incluyen en el cliente.
+Abre la dirección local que muestra Vite. No hace falta crear un archivo `.env` para probar la aplicación. Si necesitas cambiar una opción local, copia `.env.example` a `.env`; las variables `VITE_*` son visibles en el navegador y no deben contener secretos.
+
+## Cómo recorrer la demostración
+
+| Ruta | Qué muestra |
+| --- | --- |
+| `/` | Inicio público, navegación y presentación del proyecto. |
+| `/contactenos` | Formulario con campos controlados, validación y resumen local. |
+| `/login` | Acceso de demostración para los cinco roles. |
+| `/agente/bitacora` | Lista dinámica de registros propios; requiere entrar como agente. |
+| `/admin/usuarios-roles` | Lista y gestión de cuentas; requiere entrar como administrador. |
+
+En `/login`, abre **Acceso rápido de evaluación** y selecciona un rol para cargar sus credenciales de prueba. Las rutas personales y administrativas respetan ese rol. Los enlaces internos cambian de pantalla sin recargar la página.
+
+## Estructura
+
+```text
+src/
+  core/       Autenticación, permisos, almacenamiento, configuración y lógica compartida
+  features/   Pantallas y funciones de cada área: agente, SST, administración, etc.
+  styles/     Tokens, estilos globales y CSS por área
+  App.jsx     Rutas públicas y protegidas
+  main.jsx    Inicio de React
+tests/        Pruebas automatizadas de regresión
+public/       Imágenes y otros recursos estáticos
+```
+
+Dentro de cada funcionalidad, `pages/` compone pantallas, `components/` contiene piezas reutilizables, `hooks/` coordina el estado y los efectos, `services/` concentra operaciones y `data/` guarda catálogos. Solo se crean las carpetas necesarias. El CSS se separa por responsabilidad en `src/styles/`; los valores compartidos viven en `tokens.css`.
+
+La navegación usa `BrowserRouter`, `Routes`, `Route` y `Link`. Los formularios y listas usan `useState`; `useEffect` carga datos locales y coordina efectos de pantalla. Los componentes de la aplicación son funciones de React. Los módulos dentro de `src/` usan `.jsx` por el requisito académico; la configuración de herramientas conserva `.js`.
+
+## Datos y límites
+
+`src/core/storage/pulsoStore.jsx` centraliza los datos de prueba en el almacenamiento del navegador. Se mantienen al recargar en el mismo origen mientras el navegador permita guardarlos; si el almacenamiento está bloqueado, los cambios duran solo durante la pestaña y aparece un aviso. El formulario de contacto muestra un resumen de demostración y **no envía** su contenido.
+
+La recuperación de contraseña, la auditoría y los permisos se simulan en el frontend. No uses datos personales reales para evaluar el proyecto. El análisis de texto es léxico y determinista; no es un diagnóstico ni utiliza una API de IA.
+
+## Comprobaciones
 
 ```sh
 npm test
 npm run lint
 npm run build
-npm run preview
 ```
 
-`npm test`, `lint` y `build` son los controles de integración. La suite usa el ejecutor de Node y Vite para cargar los módulos reales, sin dependencias adicionales. Cubre recuperación del almacenamiento y operaciones de bitácora por titular/rol. `preview` sirve la compilación para inspección; no es una prueba. No hay un pipeline TypeScript.
-
-## Organización
-
-```text
-src/
-  core/
-    auth/         Sesión, permisos, navegación por rol y acceso denegado
-    components/   UI realmente compartida entre funcionalidades
-    config/       Variables de entorno
-    layout/       Estructura de navegación autenticada
-    nlp/          Motor léxico determinista
-    storage/      Persistencia del navegador, semilla y migraciones
-  features/
-    admin/
-    agent/
-    auditor/
-    auth/
-    landing/
-    notifications/
-    reports/
-    sst/
-    supervisor/
-  styles/         Tokens, estilos globales y hojas por funcionalidad
-  App.jsx         Composición de rutas y restricciones por rol
-  main.jsx        Montaje de React y estilos globales
-```
-
-Cada funcionalidad crea solo las carpetas que necesita:
-
-| Carpeta | Responsabilidad |
-| --- | --- |
-| `pages/` | Componer una ruta, sus paneles y sus estados visibles. |
-| `components/` | Formularios, paneles o interacciones con propósito concreto. Reciben datos y acciones; el estado visual local permanece cerca de su control. |
-| `hooks/` | Coordinar estado, efectos y eventos de React. Traducir resultados de servicios a feedback y navegación. |
-| `services/` | Consultar datos y ejecutar operaciones de negocio sin modificar estado React. |
-| `data/` | Catálogos y contenido de referencia propios de la funcionalidad. |
-
-No existe una jerarquía obligatoria de atoms/molecules/organisms. Se extraen componentes cuando representan una responsabilidad comprensible. La similitud visual no basta para trasladarlos a `core`.
-
-Por requisito académico, **todos los módulos dentro de `src/` usan `.jsx`**, aunque algunos no contengan marcado. Los archivos de herramientas Vite y ESLint conservan `.js`. Los servicios y datos siguen siendo funciones y estructuras JavaScript normales; no necesitan componentes ni hooks artificiales.
-
-## Flujo y límites
-
-El flujo habitual es página → hook → servicio → `pulsoStore`. Los componentes reciben los valores y acciones que necesitan. Las páginas pequeñas pueden coordinar servicios directamente sin crear un hook vacío.
-
-- Una funcionalidad puede depender de `core` y de sus propios módulos.
-- `core` no importa funcionalidades y una funcionalidad no importa otra hermana.
-- La UI compartida de acceso denegado y bloqueo por muestra insuficiente pertenece a `core`.
-- La autenticación y las sesiones pertenecen a `core/auth`. `roleNavigation.jsx` concentra las etiquetas, menús y destinos canónicos; `authService` conserva las exportaciones anteriores para compatibilidad.
-- Los servicios de lectura personal filtran por titular antes de entregar registros a los hooks. Las vistas organizacionales mantienen sus reglas y estados de protección.
-- Las clases CSS, tokens y orden de importación se conservan. El proyecto no utiliza un nuevo sistema de estilos ni una biblioteca adicional de estado.
-
-ESLint comprueba las dependencias entre módulos, impide acceso directo al almacenamiento fuera de `core/storage`, rechaza lecturas/escrituras de `pulsoStore` en páginas, componentes y hooks, y exige centralizar `import.meta.env`. Los hooks pueden registrar eventos de auditoría mediante la API existente.
-
-## Datos locales y contratos
-
-`src/core/storage/pulsoStore.jsx` mantiene `get`, `save`, `reset` y `audit`. Se apoya en:
-
-- `seed.jsx`: datos iniciales de demostración.
-- `migrations.jsx`: normalización de datos de versiones anteriores.
-- `browserStorage.jsx`: único acceso directo a `localStorage` y `sessionStorage`. Si el navegador impide guardar, conserva cambios en memoria durante la pestaña y activa un aviso visible; no garantiza persistencia tras recargar.
-- `normalizeStoredData.jsx`: recupera la estructura conocida de datos parciales y mantiene campos adicionales y colecciones válidas, incluidas las vacías.
-- `preferences.jsx`: borradores de check-in, preferencias de audio, recordatorios y descarte del aviso de desconexión, con sus claves y formatos existentes.
-
-Las operaciones específicas viven en los servicios de cada funcionalidad: guardar un check-in, corregir una bitácora, registrar una solicitud, administrar una campaña o actualizar una intervención. Las vistas no guardan una copia completa de la BD.
-
-La persistencia sigue siendo local. Mover la carpeta del proyecto no mueve los datos del navegador: pertenecen al origen (protocolo, host y puerto). Mantener el mismo origen y la misma clave configurada conserva los datos existentes. Los puertos de pruebas utilizan datos independientes.
-
-El sistema sigue siendo una **demostración frontend**: autenticación, recuperación de acceso y auditoría tienen comportamiento local simulado. La separación por módulos y las restricciones de pantalla no sustituyen autorización en servidor, cifrado ni un servicio real de correo. El motor NLP sigue siendo léxico y determinista; no se conecta a un LLM y no constituye un diagnóstico clínico.
-
-## Estilos por responsabilidad
-
-Los estilos usan CSS normal y permanecen en `src/styles`. Las tres entradas grandes ahora importan módulos en un orden explícito:
-
-| Entrada | Módulos |
-| --- | --- |
-| `styles.css` | `landing/` para presentación pública y demostraciones; `academic/` para fundamentación. |
-| `components.css` | `shared/` para controles compartidos y `agent/` para interacciones personales. |
-| `agent.css` | Panel, patrones de página, modales, apoyo inmediato y pausa inmersiva. |
-
-Las demás hojas conservan su funcionalidad específica. `tokens.css` sigue siendo la fuente de valores comunes. Buscar la clase antes de editar; mantener sus estados y reglas responsive junto a la interacción que describen. El orden de importación importa: algunas reglas existentes se complementan o sobrescriben. No cambiarlo sin comprobar el resultado.
-
-Un componente necesita separarse cuando mezcla responsabilidades, no al alcanzar un límite arbitrario de líneas. Un catálogo, un SVG o un formulario pueden ser extensos y seguir siendo claros. Por ejemplo, la pausa delega sus efectos a `useBpoPause`, el recorrido público compone tres paneles y conserva su estado entre pestañas, y el mapa de anclaje compone escenas sensoriales independientes; el formulario de contacto delega coordinación al hook y validación a un servicio.
-
-## Punto de partida independiente
-
-La migración de maqueta a aplicación modular establece este repositorio como raíz de trabajo de Pulso360. El historial conserva los cambios correspondientes a la aplicación; los entregables académicos externos no forman parte del proyecto.
-
-Los cambios locales de análisis se incorporaron a esta base. Dependencias, compilaciones, variables de entorno y documentación interna se excluyen mediante `.gitignore`. Las siguientes entregas deben mantener los contratos de datos, las restricciones por rol y los flujos existentes.
-
-## Validación de la reorganización
-
-Se comprueban lint, compilación, límites de importación, rutas y flujos con datos demo en un navegador aislado. Las comprobaciones temporales de navegador complementan la suite reproducible de `tests/regressions.test.mjs`; no forman parte de `npm test`.
-
-La compilación conserva la advertencia previa de Vite por un paquete JavaScript superior a 500 kB. Esta reorganización no incorpora carga diferida ni altera el comportamiento de las rutas para ocultar la advertencia.
-
-Para cambios futuros, verificar acceso y consentimiento por rol, estados protegidos, persistencia al recargar, interacción por teclado y reflow, además de lint y build. Registrar las limitaciones reales de cada revisión: estos controles no certifican ausencia absoluta de deuda técnica ni accesibilidad completa.
-
-## Recursos gráficos
-
-Las fotografías utilizadas se sirven como WebP desde `public/assets/fotos/`. El logo de interfaz usa WebP y el favicon usa un PNG pequeño. Las imágenes en `public/` se descargan por separado: su tamaño no forma parte del aviso de Vite sobre el paquete JavaScript.
-
-Los cinco rostros animados APNG del check-in y sus cinco versiones estáticas para movimiento reducido siguen en PNG. Al reemplazar un recurso, comprobar primero sus usos y conservar la versión necesaria para esa preferencia.
+`npm test` ejecuta la suite de regresión. `lint` revisa también límites entre módulos y acceso a almacenamiento. `build` genera la versión de producción; puede mostrar un aviso de Vite por el tamaño del JavaScript, que no impide compilar. Para abrir esa compilación localmente, ejecuta `npm run preview`.

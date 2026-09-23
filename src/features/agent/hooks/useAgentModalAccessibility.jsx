@@ -5,6 +5,7 @@
 // BpoResetModal no lo usa: es un flujo fullscreen con foco por fase propia.
 
 import { useEffect, useRef } from 'react';
+import { useBodyScrollLock } from '../../../core/hooks/useBodyScrollLock';
 
 // Selector de elementos enfocables dentro del modal (excluye los ocultos por tabindex)
 const FOCUSABLE_SELECTOR = [
@@ -18,8 +19,9 @@ const FOCUSABLE_SELECTOR = [
 
 export function useAgentModalAccessibility({ isOpen, onClose, dialogRef }) {
   const openerRef = useRef(null);
+  useBodyScrollLock(isOpen);
 
-  // Foco inicial, trampa de foco, Escape y bloqueo de scroll mientras está abierto
+  // Foco inicial, trampa de foco y Escape mientras está abierto
   useEffect(() => {
     if (!isOpen) return undefined;
 
@@ -70,12 +72,9 @@ export function useAgentModalAccessibility({ isOpen, onClose, dialogRef }) {
     };
 
     window.addEventListener('keydown', handleKey);
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
 
     return () => {
       window.removeEventListener('keydown', handleKey);
-      document.body.style.overflow = prevOverflow;
     };
   }, [isOpen, onClose, dialogRef]);
 

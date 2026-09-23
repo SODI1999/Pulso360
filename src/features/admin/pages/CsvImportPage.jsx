@@ -4,6 +4,8 @@ import { useCsvImport } from '../hooks/useCsvImport';
 // Módulo de Importación de Métricas Operativas Agregadas por CSV (RF-15)
 
 import { Icon } from '../../../core/components/Icon';
+import { DownloadLink } from '../../../core/components/DownloadLink';
+import { CSV_TEMPLATE } from '../data/csvImportData';
 
 import '../../../styles/admin.css';
 
@@ -18,8 +20,7 @@ export function CsvImportPage() {
     isProcessing,
     feedback,
     handleFileSelected,
-    handleProcessImport,
-    handleDownloadTemplate
+    handleProcessImport
   } = useCsvImport();
 
   return (
@@ -33,10 +34,15 @@ export function CsvImportPage() {
             tiempos) sin datos individuales de trabajadores (RF-15).
           </p>
         </div>
-        <button type="button" className="btn btn-secondary" onClick={handleDownloadTemplate}>
+        <DownloadLink
+          className="btn btn-secondary"
+          content={CSV_TEMPLATE}
+          mimeType="text/csv;charset=utf-8"
+          fileName="plantilla-metricas-agregadas-pulso360.csv"
+        >
           <Icon name="download" size={16} />
           <span>Descargar plantilla CSV</span>
-        </button>
+        </DownloadLink>
       </div>
 
       {/* Banner de Privacidad por Diseño */}

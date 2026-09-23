@@ -60,41 +60,34 @@ export function useMyDataPrivacy() {
     return generatedId;
   };
 
-  // Portabilidad de datos (JSON / CSV)
-  const handleDownloadPortability = (format) => {
+  // Preparar la copia propia para los enlaces de descarga.
+  const currentUserId = currentUser?.id;
+  const currentUserEmail = currentUser?.email;
+  const currentUserName = currentUser?.name;
+  const portabilityFiles = useMemo(() => {
+    if (!currentUserId) return { json: '', csv: '', fileNameBase: 'pulso360_mis-datos' };
+
     const payload = {
-      titular: { id: currentUser.id, email: currentUser.email, name: currentUser.name },
+      titular: { id: currentUserId, email: currentUserEmail, name: currentUserName },
       generado: new Date().toISOString(),
       checkins: summary.checkins,
       bitacoras: summary.journals,
       solicitudesAcompanamiento: summary.support,
       consentimiento: summary.consent
     };
+    const rows = ['tipo,id,fecha'];
+    summary.checkins.forEach((item) => rows.push(`checkin,${item.id},${item.date}`));
+    summary.journals.forEach((item) => rows.push(`bitacora,${item.id},${item.date}`));
+    summary.support.forEach((item) => rows.push(`solicitud_acompanamiento,${item.id},${item.date}`));
 
-    let content, mimeType, fileName;
+    return {
+      json: JSON.stringify(payload, null, 2),
+      csv: rows.join('\n'),
+      fileNameBase: `pulso360_${currentUserId}`
+    };
+  }, [currentUserId, currentUserEmail, currentUserName, summary]);
 
-    if (format === 'json') {
-      content = JSON.stringify(payload, null, 2);
-      mimeType = 'application/json';
-      fileName = `pulso360_${currentUser.id}.json`;
-    } else {
-      const rows = ['tipo,id,fecha'];
-      summary.checkins.forEach((item) => rows.push(`checkin,${item.id},${item.date}`));
-      summary.journals.forEach((item) => rows.push(`bitacora,${item.id},${item.date}`));
-      summary.support.forEach((item) => rows.push(`solicitud_acompanamiento,${item.id},${item.date}`));
-      content = rows.join('\n');
-      mimeType = 'text/csv';
-      fileName = `pulso360_${currentUser.id}.csv`;
-    }
-
-    const blob = new Blob([content], { type: mimeType });
-    const blobUrl = URL.createObjectURL(blob);
-    const downloadAnchor = document.createElement('a');
-    downloadAnchor.href = blobUrl;
-    downloadAnchor.download = fileName;
-    downloadAnchor.click();
-    setTimeout(() => URL.revokeObjectURL(blobUrl), 500);
-
+  const handleDownloadPortability = (format) => {
     pulsoStore.audit({
       actor: `${currentUser.id} (${roleLabels[currentUser.role] || currentUser.role})`,
       action: 'PORTABILIDAD_DATOS',
@@ -140,6 +133,7 @@ export function useMyDataPrivacy() {
     formatDate,
     calculateDateRange,
     summary,
+    portabilityFiles,
     handleDownloadPortability,
     handleRectificationSubmit,
     handleSuppressionSubmit,

@@ -140,21 +140,6 @@ export function useCsvImport() {
     }, 400);
   };
 
-  // Descarga de Plantilla CSV
-  const handleDownloadTemplate = () => {
-    const csvContent =
-      'campana_id,semana,volumen_llamadas,tasa_ausentismo_pct,aht_segundos\ncamp-1,2026-W34,1420,4.5,285\ncamp-1,2026-W35,1510,5.1,290\ncamp-2,2026-W34,890,3.2,310';
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'plantilla-metricas-agregadas-pulso360.csv';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  };
-
   return {
     fileInputRef,
     selectedFile,
@@ -165,7 +150,6 @@ export function useCsvImport() {
     isProcessing,
     feedback,
     handleFileSelected,
-    handleProcessImport,
-    handleDownloadTemplate
+    handleProcessImport
   };
 }

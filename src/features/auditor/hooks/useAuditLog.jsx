@@ -64,6 +64,27 @@ export function useAuditLog() {
     );
   };
 
+  // El archivo contiene solo los metadatos disponibles antes de registrar su propia exportación.
+  const exportContent = useMemo(
+    () =>
+      JSON.stringify(
+        logs.map((log) => ({
+          id: log.id,
+          date: log.date,
+          actor: log.actor,
+          action: log.action,
+          target: log.target,
+          ip: log.ip,
+          status: log.status,
+          prevHash: log.prevHash,
+          hash: log.hash
+        })),
+        null,
+        2
+      ),
+    [logs]
+  );
+
   // Exportación auditada de metadatos (RF-13)
   const handleExportCrypto = () => {
     const actorLabel = `${currentUser?.name || 'Auditor'} (${currentUser?.role || 'auditor'})`;
@@ -74,29 +95,6 @@ export function useAuditLog() {
       action: 'EXPORTACION_AUDITORIA',
       target: `Metadatos de auditoría (${logs.length} registros)`
     });
-
-    // Generar archivo JSON descargable con metadatos no sensibles
-    const exportData = logs.map((l) => ({
-      id: l.id,
-      date: l.date,
-      actor: l.actor,
-      action: l.action,
-      target: l.target,
-      ip: l.ip,
-      status: l.status,
-      prevHash: l.prevHash,
-      hash: l.hash
-    }));
-
-    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `pulso360-auditoria-${new Date().toISOString().substring(0, 10)}.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
 
     setFeedback('Exportación de metadatos generada y registrada en la cadena de auditoría.');
     setVersion((v) => v + 1);
@@ -110,6 +108,7 @@ export function useAuditLog() {
     integrityStatus,
     feedback,
     filteredLogs,
+    exportContent,
     handleVerifyIntegrity,
     handleExportCrypto
   };

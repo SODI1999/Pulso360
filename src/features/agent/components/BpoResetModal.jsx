@@ -21,10 +21,7 @@ export function BpoResetModal({ isOpen, onClose }) {
     soundOn,
     exitButtonRef,
     entryButtonRef,
-    startPause,
-    arcRef,
-    orbRef,
-    barRef
+    startPause
   } = useBpoPause(isOpen, onClose);
   if (!isOpen) return null;
   const timed = TIMED_PHASES.includes(phase);
@@ -155,14 +152,17 @@ export function BpoResetModal({ isOpen, onClose }) {
 
       {/* Fase 1 · Respiración guiada: el orbe marca el ritmo 4-2-6 */}
       {phase === 'breathing' && (
-        <div className="pause-stage">
-          <div className="pause-orb-scene" aria-hidden="true">
+        <div
+          className="pause-stage pause-stage--breathing"
+          style={{ '--pause-phase-duration': `${SUB_TOTALS[breathPhaseIdx]}s` }}
+        >
+          <div className="pause-orb-scene" aria-hidden="true" key={breathPhaseIdx}>
             <svg className="pause-orb-arc" viewBox="0 0 300 300">
               <circle cx="150" cy="150" r="128" className="pause-orb-arc-track" />
-              <circle ref={arcRef} cx="150" cy="150" r="128" className="pause-orb-arc-fill" />
+              <circle cx="150" cy="150" r="128" className="pause-orb-arc-fill" />
             </svg>
             <div className="pause-orb-aura" />
-            <div ref={orbRef} className={`pause-orb orb-phase-${breathPhaseIdx}`}>
+            <div className={`pause-orb orb-phase-${breathPhaseIdx}`}>
               <span className="pause-orb-sheen" />
             </div>
           </div>
@@ -173,7 +173,7 @@ export function BpoResetModal({ isOpen, onClose }) {
               <span className="pause-phase-count">{subRemain}s</span>
             </h2>
             <div className="pause-phase-bar" aria-hidden="true">
-              <span ref={barRef} className="pause-phase-bar-fill" />
+              <span key={breathPhaseIdx} className="pause-phase-bar-fill" />
             </div>
             <p className="pause-phase-hint">{BREATH_PHASES[breathPhaseIdx].hint}</p>
           </div>

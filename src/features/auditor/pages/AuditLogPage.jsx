@@ -3,6 +3,7 @@ import { useAuditLog } from '../hooks/useAuditLog';
 // Módulo de Auditoría y Trazabilidad Inmutable (RF-13)
 
 import { Icon } from '../../../core/components/Icon';
+import { DownloadLink } from '../../../core/components/DownloadLink';
 import { AuditLogTable } from '../components/AuditLogTable';
 
 import '../../../styles/auditor.css';
@@ -16,6 +17,7 @@ export function AuditLogPage() {
     integrityStatus,
     feedback,
     filteredLogs,
+    exportContent,
     handleVerifyIntegrity,
     handleExportCrypto
   } = useAuditLog();
@@ -36,10 +38,16 @@ export function AuditLogPage() {
             <Icon name="shieldCheck" size={16} />
             <span>Verificar integridad</span>
           </button>
-          <button type="button" className="btn btn-primary" onClick={handleExportCrypto}>
+          <DownloadLink
+            className="btn btn-primary"
+            content={exportContent}
+            mimeType="application/json"
+            fileName={`pulso360-auditoria-${new Date().toISOString().substring(0, 10)}.json`}
+            onDownload={handleExportCrypto}
+          >
             <Icon name="download" size={16} />
             <span>Exportar registro auditado</span>
-          </button>
+          </DownloadLink>
         </div>
       </div>
 

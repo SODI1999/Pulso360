@@ -54,7 +54,7 @@ export function Navbar() {
       const el = document.getElementById(targetId);
       if (el) {
         el.scrollIntoView({ behavior: 'smooth' });
-        window.history.pushState(null, '', hash);
+        navigate(hash);
       }
     } else {
       navigate(`/${hash}`);
@@ -74,7 +74,7 @@ export function Navbar() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isMenuOpen]);
 
-  const isContactActive = location.pathname === '/contactenos' || location.pathname === '/formulario';
+  const isContactActive = location.pathname === '/contactenos';
   const isFoundationActive = location.pathname === '/fundamentacion';
 
   return (
@@ -86,7 +86,10 @@ export function Navbar() {
         <Link
           className="brand"
           to="/"
-          onClick={() => handleNavClick('#inicio')}
+          onClick={(event) => {
+            event.preventDefault();
+            handleNavClick('#inicio');
+          }}
           aria-label="Pulso360, volver al inicio"
         >
           <img className="brand-logo" src="/assets/marca/logo.webp" alt="" />

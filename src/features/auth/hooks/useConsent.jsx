@@ -3,6 +3,7 @@ import { saveConsent } from '../services/consentService';
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { authService } from '../../../core/auth/authService';
+import { useBodyScrollLock } from '../../../core/hooks/useBodyScrollLock';
 
 import { CONSENT_PURPOSES } from '../data/consentData';
 
@@ -27,6 +28,7 @@ export function useConsent() {
   const [statusMessage, setStatusMessage] = useState('');
   const [isSaving, setIsSaving] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  useBodyScrollLock(isModalOpen);
   const [settings, setSettings] = useState({
     policyVersion: 'v2.4',
     policyEffectiveDate: '15/08/2026'
@@ -76,7 +78,6 @@ export function useConsent() {
   // Control accesible de tecla Escape en modal
   useEffect(() => {
     if (isModalOpen) {
-      document.body.style.overflow = 'hidden';
       setTimeout(() => {
         modalCloseBtnRef.current?.focus();
       }, 50);
@@ -89,7 +90,6 @@ export function useConsent() {
 
       window.addEventListener('keydown', handleKeyDown);
       return () => {
-        document.body.style.overflow = '';
         window.removeEventListener('keydown', handleKeyDown);
       };
     }

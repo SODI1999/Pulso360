@@ -1,14 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
 import { preferences } from '../../../core/storage/preferences';
+import { useBodyScrollLock } from '../../../core/hooks/useBodyScrollLock';
 import { createAmbientSound } from '../services/ambientSound';
 import { BREATH_SECONDS, PHASE_DURATIONS, TIMED_PHASES, NEXT_PHASE } from '../data/bpoPauseData';
 export function useBpoPause(isOpen, onClose) {
   const [phase, setPhase] = useState('entry');
   const [secondsLeft, setSecondsLeft] = useState(0);
   const overlayRef = useRef(null);
-  const orbRef = useRef(null);
-  const arcRef = useRef(null);
-  const barRef = useRef(null);
   const ambientRef = useRef(null);
   const audioBreathPhaseRef = useRef(null);
   const exitButtonRef = useRef(null);
@@ -17,8 +15,7 @@ export function useBpoPause(isOpen, onClose) {
   const cycleRef = useRef(0);
   const [soundOn, setSoundOn] = useState(() => preferences.readPauseSound(true));
   const [pauseStarted, setPauseStarted] = useState(false);
-  const reducedMotion =
-    typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  useBodyScrollLock(isOpen);
 
   // Cada apertura reinicia el flujo desde la entrada
   useEffect(() => {
@@ -46,8 +43,7 @@ export function useBpoPause(isOpen, onClose) {
     exitButtonRef.current?.focus();
   }, [isOpen, phase]);
 
-  // Escape para salir en cualquier momento; bloqueo de scroll del turno detrás
-  // y trampa de foco básica (Tab cicla solo entre los controles de la pausa)
+  // Escape para salir y trampa de foco básica (Tab cicla entre los controles).
   useEffect(() => {
     if (!isOpen) return undefined;
     const handleKey = (e) => {
@@ -71,11 +67,8 @@ export function useBpoPause(isOpen, onClose) {
       }
     };
     window.addEventListener('keydown', handleKey);
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
     return () => {
       window.removeEventListener('keydown', handleKey);
-      document.body.style.overflow = prevOverflow;
     };
   }, [isOpen, onClose]);
 
@@ -142,52 +135,6 @@ export function useBpoPause(isOpen, onClose) {
     goToPhase(NEXT_PHASE[phase] ?? 'done');
   }, [isOpen, phase, secondsLeft]);
 
-  // Guía de respiración a 60fps: el orbe escala siguiendo exactamente la curva
-  // 4-2-6 con easing suave (sin saltos), y el arco + la barra muestran el
-  // avance de la sub-fase. Se escribe directo en el DOM para no re-renderizar
-  // la pantalla en cada fotograma.
-  useEffect(() => {
-    if (!isOpen || phase !== 'breathing' || reducedMotion) return undefined;
-    const ORB_ARC = 2 * Math.PI * 128;
-    const easeInOutSine = (x) => 0.5 - Math.cos(Math.PI * x) / 2;
-    const startTime = performance.now();
-    let frameId = 0;
-    const paintBreath = (now) => {
-      const t = (now - startTime) / 1000;
-      const cyclePos = t % BREATH_SECONDS;
-      let scale;
-      let subElapsed;
-      let subTotal;
-      if (cyclePos < 4) {
-        subElapsed = cyclePos;
-        subTotal = 4;
-        scale = 0.78 + 0.36 * easeInOutSine(cyclePos / 4);
-      } else if (cyclePos < 6) {
-        subElapsed = cyclePos - 4;
-        subTotal = 2;
-        scale = 1.14;
-      } else {
-        subElapsed = cyclePos - 6;
-        subTotal = 6;
-        scale = 1.14 - 0.36 * easeInOutSine((cyclePos - 6) / 6);
-      }
-      const progress = subElapsed / subTotal;
-      if (orbRef.current) orbRef.current.style.transform = `scale(${scale.toFixed(4)})`;
-      if (arcRef.current) {
-        arcRef.current.style.strokeDasharray = `${ORB_ARC}`;
-        arcRef.current.style.strokeDashoffset = `${(ORB_ARC * (1 - progress)).toFixed(1)}`;
-      }
-      if (barRef.current) barRef.current.style.width = `${(progress * 100).toFixed(1)}%`;
-      const currentBreathPhase = cyclePos < 4 ? 0 : cyclePos < 6 ? 1 : 2;
-      if (audioBreathPhaseRef.current !== currentBreathPhase) {
-        ambientRef.current?.setBreathPhase(currentBreathPhase);
-        audioBreathPhaseRef.current = currentBreathPhase;
-      }
-      frameId = requestAnimationFrame(paintBreath);
-    };
-    frameId = requestAnimationFrame(paintBreath);
-    return () => cancelAnimationFrame(frameId);
-  }, [isOpen, phase, reducedMotion]);
   const startPause = () => {
     if (soundOn) ambientRef.current?.start();
     setPauseStarted(true);
@@ -202,9 +149,6 @@ export function useBpoPause(isOpen, onClose) {
     soundOn,
     exitButtonRef,
     entryButtonRef,
-    startPause,
-    arcRef,
-    orbRef,
-    barRef
+    startPause
   };
 }

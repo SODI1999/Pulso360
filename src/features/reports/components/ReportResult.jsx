@@ -1,6 +1,13 @@
 import { Icon } from '../../../core/components/Icon';
+import { DownloadLink } from '../../../core/components/DownloadLink';
 
-export function ReportResult({ generatedReport, handleDownloadCsv, handleDownloadJson, handlePrintPdf }) {
+export function ReportResult({
+  generatedReport,
+  csvContent,
+  jsonContent,
+  downloadFileBaseName,
+  handlePrintPdf
+}) {
   return (
     <div className="reports-result-box">
       <div className="reports-result-header">
@@ -21,16 +28,26 @@ export function ReportResult({ generatedReport, handleDownloadCsv, handleDownloa
 
       <div className="reports-actions-row">
         {generatedReport.format === 'CSV' && (
-          <button type="button" className="btn btn-primary btn-sm" onClick={handleDownloadCsv}>
+          <DownloadLink
+            className="btn btn-primary btn-sm"
+            content={csvContent}
+            mimeType="text/csv;charset=utf-8"
+            fileName={`${downloadFileBaseName}.csv`}
+          >
             <Icon name="download" size={14} />
             <span>Descargar archivo CSV</span>
-          </button>
+          </DownloadLink>
         )}
         {generatedReport.format === 'JSON' && (
-          <button type="button" className="btn btn-primary btn-sm" onClick={handleDownloadJson}>
+          <DownloadLink
+            className="btn btn-primary btn-sm"
+            content={jsonContent}
+            mimeType="application/json"
+            fileName={`${downloadFileBaseName}.json`}
+          >
             <Icon name="download" size={14} />
             <span>Descargar archivo JSON</span>
-          </button>
+          </DownloadLink>
         )}
         {generatedReport.format === 'PDF' && (
           <button type="button" className="btn btn-primary btn-sm" onClick={handlePrintPdf}>

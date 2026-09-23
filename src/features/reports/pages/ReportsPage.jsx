@@ -34,8 +34,9 @@ export function ReportsPage() {
     currentScope,
     isAllowedByPrivacy,
     handleGenerateReport,
-    handleDownloadCsv,
-    handleDownloadJson,
+    csvContent,
+    jsonContent,
+    downloadFileBaseName,
     handlePrintPdf,
     reportHistory
   } = useReports();
@@ -111,8 +112,9 @@ export function ReportsPage() {
       {generatedReport && (
         <ReportResult
           generatedReport={generatedReport}
-          handleDownloadCsv={handleDownloadCsv}
-          handleDownloadJson={handleDownloadJson}
+          csvContent={csvContent}
+          jsonContent={jsonContent}
+          downloadFileBaseName={downloadFileBaseName}
           handlePrintPdf={handlePrintPdf}
         />
       )}
