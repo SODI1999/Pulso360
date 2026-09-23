@@ -107,12 +107,13 @@ export function TeamDashboardPage() {
           />
 
           {/* 2. Fila Media: Gráfico de Tendencia + Recomendación de SST */}
-          <div className="supervisor-middle-grid">
-            <div className="card">
-              <div className="card-header">
+          {/* 2. Tablero Integrado de Análisis Operativo (Sin Carditis) */}
+          <section className="supervisor-analytics-board" aria-label="Análisis operativo y directriz de SST">
+            <div className="supervisor-analytics-main">
+              <div className="supervisor-analytics-header">
                 <div>
-                  <h2 className="card-title">Tendencia Agregada del Equipo (Semanas 1 a 4)</h2>
-                  <p className="card-subtitle">Evolución del índice de bienestar colectivo</p>
+                  <h2 className="supervisor-analytics-title">Tendencia Agregada del Equipo (Semanas 1 a 4)</h2>
+                  <p className="supervisor-analytics-subtitle">Evolución del índice de bienestar colectivo</p>
                 </div>
                 <span className="badge badge-info">N = 14 Agentes</span>
               </div>
@@ -121,15 +122,19 @@ export function TeamDashboardPage() {
                   labels={['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4']}
                   values={[70, 72, 74, 76]}
                   strokeColor="#2563eb"
-                  height={200}
+                  height={220}
                 />
               </div>
             </div>
 
-            <div className="card supervisor-rec-card">
-              <div className="supervisor-rec-content">
-                <h2 className="supervisor-rec-title">Pausas &amp; Recuperación</h2>
-                <p className="supervisor-rec-text">
+            <aside className="supervisor-analytics-aside">
+              <div className="supervisor-aside-header">
+                <h3 className="supervisor-aside-title">Recomendación Preventiva</h3>
+                <span className="badge badge-info">SST</span>
+              </div>
+              <div className="supervisor-aside-body">
+                <h4 className="supervisor-aside-topic">Pausas &amp; Recuperación</h4>
+                <p className="supervisor-aside-text">
                   SST recomienda coordinar pausas de 5 min escalonadas para el turno de la tarde ante reportes
                   de alta carga de llamadas en colas críticas.
                 </p>
@@ -138,11 +143,11 @@ export function TeamDashboardPage() {
                 to="/supervisor/acciones"
                 className="btn btn-secondary supervisor-rec-action"
               >
-                <Icon name="task_alt" size={18} />
+                <Icon name="task_alt" size={16} />
                 <span>Ver intervención asignada</span>
               </Link>
-            </div>
-          </div>
+            </aside>
+          </section>
 
           {/* 3. Tabla Consolidada de Factores del Equipo */}
           <TeamFactorsTable />

@@ -1,27 +1,30 @@
 // src/features/reports/components/ReportHistoryTable.jsx
-// Tabla modular con el historial de exportaciones realizadas y hash criptográfico demo (RF-12)
+// Tabla abierta con el historial de exportaciones realizadas y hash criptográfico demo (RF-12, Sin Carditis)
 
 export function ReportHistoryTable({ reportHistory = [] }) {
   return (
-    <div className="card">
-      <div className="card-header">
+    <section className="reports-history-section" aria-labelledby="historyTableTitle">
+      <div className="reports-history-header">
         <div>
-          <h2 className="card-title">Historial de exportaciones realizadas</h2>
-          <div className="card-subtitle">
+          <h2 id="historyTableTitle" className="reports-history-title">
+            Historial de exportaciones realizadas
+          </h2>
+          <p className="reports-history-subtitle">
             Registro de reportes generados con trazabilidad de hash demo (RF-12).
-          </div>
+          </p>
         </div>
+        <span className="badge badge-neutral">{reportHistory.length} registros</span>
       </div>
 
       <div className="table-responsive">
         <table className="data-table">
           <thead>
             <tr>
-              <th>Fecha y Hora</th>
-              <th>Solicitante</th>
-              <th>Alcance / Corte</th>
-              <th>Formato</th>
-              <th>Hash de Verificación</th>
+              <th scope="col">Fecha y Hora</th>
+              <th scope="col">Solicitante</th>
+              <th scope="col">Alcance / Corte</th>
+              <th scope="col">Formato</th>
+              <th scope="col">Hash de Verificación</th>
             </tr>
           </thead>
           <tbody>
@@ -52,7 +55,7 @@ export function ReportHistoryTable({ reportHistory = [] }) {
                       <span className="badge badge-neutral">{rep.format}</span>
                     </td>
                     <td>
-                      <span className="audit-code-cell">{rep.hash}</span>
+                      <code className="audit-code-cell">{rep.hash}</code>
                     </td>
                   </tr>
                 );
@@ -61,6 +64,6 @@ export function ReportHistoryTable({ reportHistory = [] }) {
           </tbody>
         </table>
       </div>
-    </div>
+    </section>
   );
 }

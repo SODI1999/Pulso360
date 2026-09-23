@@ -1,15 +1,57 @@
 /* src/styles/supervisor.css */
-/* Estilos para el módulo de supervisión operativa y monitoreo colectivo */
+/* Estilos para el módulo de supervisión operativa y monitoreo colectivo (Sin Carditis) */
 
 .supervisor-page {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: var(--space-5);
   max-width: 1200px;
   margin: 0 auto;
   width: 100%;
 }
 
+/* Subnavegación secundaria sobria y ergonómica */
+.supervisor-subnav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-1);
+  min-height: 36px;
+  width: 100%;
+}
+
+.supervisor-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: 1px solid transparent;
+  padding: 6px 12px;
+  margin-left: -12px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--c-texto-suave);
+  cursor: pointer;
+  border-radius: var(--radius-sm, 4px);
+  text-decoration: none;
+  min-height: 32px;
+  transition: all var(--transition-fast);
+}
+
+.supervisor-back-btn:hover {
+  background: var(--c-superficie);
+  color: var(--c-texto);
+  border-color: var(--c-borde-suave);
+}
+
+.supervisor-back-btn:focus-visible {
+  outline: 2px solid var(--c-rol-supervisor, #2563eb);
+  outline-offset: 2px;
+}
+
+/* Filtros Contextuales (RF-07) */
 .supervisor-filter-bar {
   display: flex;
   gap: var(--space-3);
@@ -31,50 +73,33 @@
   cursor: not-allowed;
 }
 
-.supervisor-middle-grid {
+/* 1. Banda Ejecutiva de Métricas (Reemplaza las 3 tarjetas aisladas) */
+.supervisor-metrics-strip {
   display: grid;
-  grid-template-columns: minmax(0, 1.8fr) minmax(280px, 1.2fr);
-  gap: var(--space-4);
-  margin-bottom: var(--space-4);
-  align-items: stretch;
+  grid-template-columns: repeat(3, 1fr);
+  background: var(--c-superficie);
+  border: 1px solid var(--c-borde-suave);
+  border-radius: var(--radius-card, 6px);
+  overflow: hidden;
 }
 
-.supervisor-chart-container {
-  height: 240px;
-  width: 100%;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.supervisor-rec-card {
+.supervisor-metric-cell {
+  padding: var(--space-4) var(--space-5);
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  height: 100%;
+  gap: var(--space-1);
 }
 
-.supervisor-rec-content {
-  margin-bottom: var(--space-4);
+.supervisor-metric-cell:not(:last-child) {
+  border-right: 1px solid var(--c-borde-suave);
 }
 
-.supervisor-rec-title {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--c-texto);
-  margin-bottom: var(--space-2);
-}
-
-.supervisor-rec-text {
-  font-size: 13.5px;
-  color: var(--c-texto-suave);
-  line-height: 1.55;
-}
-
-.supervisor-rec-action {
-  width: 100%;
-  justify-content: center;
+.supervisor-metric-label {
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+  color: var(--c-texto-mutado);
 }
 
 .supervisor-kpi-highlight {
@@ -86,12 +111,141 @@
   gap: var(--space-1);
 }
 
+.supervisor-kpi-highlight.warn {
+  color: #b45309;
+}
+
 .supervisor-kpi-unit {
   font-size: 14px;
   font-weight: 500;
   color: var(--c-texto-mutado);
 }
 
+/* 2. Tablero Integrado de Análisis Operativo (Tendencia + Directriz SST en una sola superficie) */
+.supervisor-analytics-board {
+  display: grid;
+  grid-template-columns: minmax(0, 1.85fr) minmax(280px, 1.15fr);
+  background: var(--c-superficie);
+  border: 1px solid var(--c-borde-suave);
+  border-radius: var(--radius-card, 6px);
+  overflow: hidden;
+}
+
+.supervisor-analytics-main {
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.supervisor-analytics-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.supervisor-analytics-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--c-texto);
+}
+
+.supervisor-analytics-subtitle {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: var(--c-texto-suave);
+}
+
+.supervisor-chart-container {
+  height: 220px;
+  width: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.supervisor-analytics-aside {
+  padding: var(--space-5);
+  background: var(--c-fondo-subtle, #f8fafc);
+  border-left: 1px solid var(--c-borde-suave);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.supervisor-aside-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.supervisor-aside-title {
+  margin: 0;
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--c-texto);
+}
+
+.supervisor-aside-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.supervisor-aside-topic {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--c-texto);
+  margin: 0;
+}
+
+.supervisor-aside-text {
+  font-size: 13px;
+  color: var(--c-texto-suave);
+  line-height: 1.55;
+  margin: 0;
+}
+
+.supervisor-rec-action {
+  width: 100%;
+  justify-content: center;
+}
+
+/* 3. Secciones Abiertas (Para Tablas sin Carditis) */
+.supervisor-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.supervisor-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.supervisor-section-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--c-texto);
+}
+
+.supervisor-section-subtitle {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: var(--c-texto-suave);
+}
+
+/* Barras de Progreso en Intervenciones */
 .intervention-progress-wrapper {
   display: flex;
   align-items: center;
@@ -122,12 +276,37 @@
   text-align: right;
 }
 
+/* Nota contextual de corresponsabilidad (Reemplaza el alert-banner tosco) */
+.supervisor-context-note {
+  font-size: 12.5px;
+  color: var(--c-texto-suave);
+  line-height: 1.5;
+  padding: 8px 12px;
+  background: var(--c-fondo-subtle, #f8fafc);
+  border-left: 3px solid var(--c-rol-supervisor, #2563eb);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
 /* Responsive */
 @media (max-width: 900px) {
-  .supervisor-middle-grid {
+  .supervisor-analytics-board {
     grid-template-columns: 1fr;
   }
   
+  .supervisor-analytics-aside {
+    border-left: none;
+    border-top: 1px solid var(--c-borde-suave);
+  }
+  
+  .supervisor-metrics-strip {
+    grid-template-columns: 1fr;
+  }
+  
+  .supervisor-metric-cell:not(:last-child) {
+    border-right: none;
+    border-bottom: 1px solid var(--c-borde-suave);
+  }
+
   .supervisor-filter-bar {
     flex-direction: column;
     align-items: stretch;

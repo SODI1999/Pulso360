@@ -1,5 +1,5 @@
 // src/features/supervisor/components/TeamFactorsTable.jsx
-// Tabla de factores psicosociales evaluados a nivel colectivo (RF-07 / RF-11)
+// Tabla abierta de factores psicosociales evaluados a nivel colectivo (RF-07 / RF-11, Sin Carditis)
 
 export function TeamFactorsTable({
   factors = [
@@ -27,13 +27,19 @@ export function TeamFactorsTable({
   ]
 }) {
   return (
-    <div className="card">
-      <div className="card-header">
+    <section className="supervisor-section" aria-labelledby="factorsTableTitle">
+      <div className="supervisor-section-header">
         <div>
-          <h2 className="card-title">Indicadores del equipo · Consolidado semanal</h2>
-          <p className="card-subtitle">Promedios agregados de las dimensiones evaluadas para la campaña.</p>
+          <h2 id="factorsTableTitle" className="supervisor-section-title">
+            Indicadores del equipo · Consolidado semanal
+          </h2>
+          <p className="supervisor-section-subtitle">
+            Promedios agregados de las dimensiones evaluadas para la campaña.
+          </p>
         </div>
+        <span className="badge badge-neutral">SST · RF-07</span>
       </div>
+
       <div className="table-responsive">
         <table className="data-table">
           <thead>
@@ -60,6 +66,6 @@ export function TeamFactorsTable({
           </tbody>
         </table>
       </div>
-    </div>
+    </section>
   );
 }

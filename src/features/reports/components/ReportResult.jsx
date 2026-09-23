@@ -12,17 +12,17 @@ export function ReportResult({
     <div className="reports-result-box">
       <div className="reports-result-header">
         <div>
-          <h3 style={{ margin: 0, fontSize: '16px', color: 'var(--c-texto)' }}>
+          <h3 className="reports-result-title">
             Reporte preparado y certificado
           </h3>
-          <div style={{ fontSize: '13px', color: 'var(--c-texto-suave)', marginTop: '2px' }}>
+          <div className="reports-result-meta">
             {generatedReport.scope} · {generatedReport.format}
           </div>
         </div>
         <span className="badge badge-ok">Hash verificado</span>
       </div>
 
-      <p style={{ fontSize: '13px', margin: 'var(--space-2) 0' }}>
+      <p className="reports-result-hash">
         Hash criptográfico demo: <code className="audit-code-cell">{generatedReport.hash}</code>
       </p>
 

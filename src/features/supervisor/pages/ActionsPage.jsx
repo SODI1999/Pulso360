@@ -1,6 +1,7 @@
+import { Link } from 'react-router-dom';
 import { useActions } from '../hooks/useActions';
 // src/features/supervisor/pages/ActionsPage.jsx
-// Gestión y seguimiento de planes de acción e intervenciones de SST (RF-09)
+// Gestión y seguimiento de planes de acción e intervenciones de SST (RF-09, Sin Carditis)
 
 import { Icon } from '../../../core/components/Icon';
 import { ActionFollowupModal } from '../components/ActionFollowupModal';
@@ -13,6 +14,14 @@ export function ActionsPage() {
 
   return (
     <div className="supervisor-page">
+      {/* Navegación secundaria */}
+      <nav className="supervisor-subnav" aria-label="Navegación secundaria">
+        <Link to="/supervisor/panel" className="supervisor-back-btn">
+          <Icon name="arrow_back" size={16} />
+          <span>Volver al panel de equipo</span>
+        </Link>
+      </nav>
+
       {/* Cabecera */}
       <div className="page-header">
         <div>
@@ -20,16 +29,6 @@ export function ActionsPage() {
           <p className="page-subtitle">
             Seguimiento de intervenciones preventivas propuestas por SST para tu equipo de trabajo.
           </p>
-        </div>
-      </div>
-
-      {/* Banner de Corresponsabilidad Preventiva (RF-09) */}
-      <div className="alert-banner info">
-        <Icon name="info" size={20} />
-        <div>
-          <strong>Corresponsabilidad preventiva:</strong> las intervenciones buscan mitigar factores de carga
-          u optimizar pausas de forma colectiva, sin focalizaciones punitivas individuales. Pulso360 no
-          modifica enrutadores de telefonía ni turnos de forma automática.
         </div>
       </div>
 
@@ -41,12 +40,14 @@ export function ActionsPage() {
         </div>
       )}
 
-      {/* Tarjeta con Tabla de Intervenciones */}
-      <div className="card">
-        <div className="card-header">
+      {/* Sección Operativa de Intervenciones (Sin envoltorio .card) */}
+      <section className="supervisor-section" aria-labelledby="actionsTableTitle">
+        <div className="supervisor-section-header">
           <div>
-            <h2 className="card-title">Intervenciones en curso para tu equipo</h2>
-            <p className="card-subtitle">
+            <h2 id="actionsTableTitle" className="supervisor-section-title">
+              Intervenciones en curso para tu equipo
+            </h2>
+            <p className="supervisor-section-subtitle">
               Planes coordinados con el área de Seguridad y Salud en el Trabajo.
             </p>
           </div>
@@ -116,7 +117,7 @@ export function ActionsPage() {
                         style={{ whiteSpace: 'nowrap' }}
                       >
                         <Icon name="edit" size={14} />
-                        <span>Registrar avance</span>
+                        <span>{item.status === 'Cerrada' ? 'Ver avance' : 'Registrar avance'}</span>
                       </button>
                     </td>
                   </tr>
@@ -125,7 +126,14 @@ export function ActionsPage() {
             </tbody>
           </table>
         </div>
-      </div>
+
+        {/* Nota Contextual de Corresponsabilidad Preventiva (RF-09) */}
+        <div className="supervisor-context-note">
+          <strong>Corresponsabilidad preventiva:</strong> Las intervenciones buscan mitigar factores de carga
+          u optimizar descansos de forma colectiva, sin focalizaciones punitivas individuales. Pulso360 no
+          modifica enrutadores de telefonía ni turnos de forma automática.
+        </div>
+      </section>
 
       {/* Modal de Seguimiento */}
       {selectedIntervention && (

@@ -17,73 +17,69 @@ export function ReportConfiguration({
   isAllowedByPrivacy
 }) {
   return (
-    <div className="card">
-      <div className="card-header">
-        <div>
-          <h2 className="card-title">Parámetros de generación de reporte</h2>
-          <div className="card-subtitle">
-            Selecciona el alcance organizacional, periodo y dimensiones de análisis.
-          </div>
-        </div>
+    <div className="reports-controls-panel">
+      <div className="reports-controls-header">
+        <h2 className="reports-controls-title">Parámetros del reporte</h2>
+        <p className="reports-controls-subtitle">
+          Configura el alcance organizacional, periodo y dimensiones de análisis.
+        </p>
       </div>
 
       <form onSubmit={handleGenerateReport}>
-        <div className="reports-controls-grid">
-          {/* Selector de Alcance */}
-          <div className="form-group">
-            <label className="form-label" htmlFor="reportScopeSelect">
-              Alcance / Corte organizacional <span style={{ color: 'var(--c-critico)' }}>*</span>
-            </label>
-            <select
-              id="reportScopeSelect"
-              className="form-select"
-              value={selectedScopeId}
-              onChange={(e) => {
-                setSelectedScopeId(e.target.value);
-                setGeneratedReport(null);
-              }}
-            >
-              {availableScopes.map((scope) => (
-                <option key={scope.id} value={scope.id}>
-                  {scope.label} (N = {scope.n})
-                </option>
-              ))}
-            </select>
-            <span className="form-hint">
-              {currentScope?.n < minThreshold ? (
-                <strong style={{ color: 'var(--c-alerta)' }}>
-                  Corte con N = {currentScope.n} (Bajo umbral confidencial N &ge; {minThreshold})
-                </strong>
-              ) : (
-                `Corte con N = ${currentScope?.n} (Publicable)`
-              )}
-            </span>
-          </div>
+        {/* Selector de Alcance */}
+        <div className="form-group" style={{ marginBottom: 'var(--space-3)' }}>
+          <label className="form-label" htmlFor="reportScopeSelect">
+            Alcance / Corte organizacional <span style={{ color: 'var(--c-critico)' }}>*</span>
+          </label>
+          <select
+            id="reportScopeSelect"
+            className="form-select"
+            value={selectedScopeId}
+            onChange={(e) => {
+              setSelectedScopeId(e.target.value);
+              setGeneratedReport(null);
+            }}
+          >
+            {availableScopes.map((scope) => (
+              <option key={scope.id} value={scope.id}>
+                {scope.label} (N = {scope.n})
+              </option>
+            ))}
+          </select>
+          <span className="form-hint">
+            {currentScope?.n < minThreshold ? (
+              <strong style={{ color: '#b45309' }}>
+                Corte con N = {currentScope.n} (Bajo umbral confidencial N &ge; {minThreshold})
+              </strong>
+            ) : (
+              `Corte con N = ${currentScope?.n} (Publicable)`
+            )}
+          </span>
+        </div>
 
-          {/* Selector de Periodo */}
-          <div className="form-group">
-            <label className="form-label" htmlFor="reportPeriodSelect">
-              Periodo temporal
-            </label>
-            <select
-              id="reportPeriodSelect"
-              className="form-select"
-              value={selectedPeriod}
-              onChange={(e) => {
-                setSelectedPeriod(e.target.value);
-                setGeneratedReport(null);
-              }}
-            >
-              <option value="Semana 34 (18–24 Ago 2026)">Semana 34 (18–24 Ago 2026)</option>
-              <option value="Semana 33 (11–17 Ago 2026)">Semana 33 (11–17 Ago 2026)</option>
-              <option value="Mes de Agosto 2026">Mes de Agosto 2026</option>
-              <option value="Trimestre Q3 2026">Trimestre Q3 2026</option>
-            </select>
-          </div>
+        {/* Selector de Periodo */}
+        <div className="form-group" style={{ marginBottom: 'var(--space-3)' }}>
+          <label className="form-label" htmlFor="reportPeriodSelect">
+            Periodo temporal
+          </label>
+          <select
+            id="reportPeriodSelect"
+            className="form-select"
+            value={selectedPeriod}
+            onChange={(e) => {
+              setSelectedPeriod(e.target.value);
+              setGeneratedReport(null);
+            }}
+          >
+            <option value="Semana 34 (18–24 Ago 2026)">Semana 34 (18–24 Ago 2026)</option>
+            <option value="Semana 33 (11–17 Ago 2026)">Semana 33 (11–17 Ago 2026)</option>
+            <option value="Mes de Agosto 2026">Mes de Agosto 2026</option>
+            <option value="Trimestre Q3 2026">Trimestre Q3 2026</option>
+          </select>
         </div>
 
         {/* Checkboxes de Dimensiones */}
-        <div className="form-group">
+        <div className="form-group" style={{ marginBottom: 'var(--space-3)' }}>
           <label className="form-label">Dimensiones incluidas en el reporte</label>
           <div className="reports-checkbox-group">
             <label className="reports-checkbox-item">
@@ -122,7 +118,7 @@ export function ReportConfiguration({
         </div>
 
         {/* Formato de Exportación */}
-        <div className="form-group" style={{ marginTop: 'var(--space-3)' }}>
+        <div className="form-group" style={{ marginBottom: 'var(--space-4)' }}>
           <label className="form-label">Formato de exportación</label>
           <div className="reports-format-radios">
             <label className="reports-radio-label">
@@ -133,7 +129,7 @@ export function ReportConfiguration({
                 checked={format === 'CSV'}
                 onChange={() => setFormat('CSV')}
               />
-              <span>CSV delimitado</span>
+              <span>CSV</span>
             </label>
             <label className="reports-radio-label">
               <input
@@ -143,7 +139,7 @@ export function ReportConfiguration({
                 checked={format === 'PDF'}
                 onChange={() => setFormat('PDF')}
               />
-              <span>PDF imprimible</span>
+              <span>PDF</span>
             </label>
             <label className="reports-radio-label">
               <input
@@ -153,17 +149,20 @@ export function ReportConfiguration({
                 checked={format === 'JSON'}
                 onChange={() => setFormat('JSON')}
               />
-              <span>JSON estructurado</span>
+              <span>JSON</span>
             </label>
           </div>
         </div>
 
-        <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 'var(--space-4)' }}>
-          <button type="submit" className="btn btn-primary" disabled={!isAllowedByPrivacy}>
-            <Icon name="summarize" size={16} />
-            <span>Generar y exportar reporte</span>
-          </button>
-        </div>
+        <button
+          type="submit"
+          className="btn btn-primary"
+          style={{ width: '100%', justifyContent: 'center' }}
+          disabled={!isAllowedByPrivacy}
+        >
+          <Icon name="summarize" size={16} />
+          <span>Generar y exportar reporte</span>
+        </button>
       </form>
     </div>
   );

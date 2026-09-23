@@ -1,26 +1,97 @@
 /* src/styles/reports.css */
-/* Estilos específicos para el Centro de Reportes Agregados (RF-12) */
+/* Estilos para el Centro de Reportes Agregados (RF-12, Workbench sin Carditis) */
 
 .reports-container {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: var(--space-5);
   max-width: 1200px;
   margin: 0 auto;
   width: 100%;
 }
 
-.reports-controls-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+/* Subnavegación secundaria sobria y ergonómica */
+.supervisor-subnav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: var(--space-4);
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--space-1);
+  min-height: 36px;
+  width: 100%;
+}
+
+.supervisor-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: 1px solid transparent;
+  padding: 6px 12px;
+  margin-left: -12px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--c-texto-suave);
+  cursor: pointer;
+  border-radius: var(--radius-sm, 4px);
+  text-decoration: none;
+  min-height: 32px;
+  transition: all var(--transition-fast);
+}
+
+.supervisor-back-btn:hover {
+  background: var(--c-superficie);
+  color: var(--c-texto);
+  border-color: var(--c-borde-suave);
+}
+
+.supervisor-back-btn:focus-visible {
+  outline: 2px solid var(--c-rol-supervisor, #2563eb);
+  outline-offset: 2px;
+}
+
+/* Workbench en 2 Columnas (Controles + Previsualización en Vivo) */
+.reports-workspace {
+  display: grid;
+  grid-template-columns: minmax(320px, 1fr) minmax(380px, 1.2fr);
+  gap: var(--space-5);
+  align-items: start;
+}
+
+/* Panel Izquierdo: Controles de Parámetros */
+.reports-controls-panel {
+  background: var(--c-superficie);
+  border: 1px solid var(--c-borde-suave);
+  border-radius: var(--radius-card, 6px);
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.reports-controls-header {
+  border-bottom: 1px solid var(--c-borde-suave);
+  padding-bottom: var(--space-3);
+}
+
+.reports-controls-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--c-texto);
+}
+
+.reports-controls-subtitle {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: var(--c-texto-suave);
 }
 
 .reports-checkbox-group {
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-3);
+  flex-direction: column;
+  gap: var(--space-2);
   margin-top: var(--space-2);
 }
 
@@ -28,32 +99,50 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-size: 13.5px;
+  font-size: 13px;
   cursor: pointer;
-  background: var(--c-fondo-alt, rgba(0, 0, 0, 0.02));
-  padding: 6px 12px;
-  border-radius: var(--radius-sm);
+  background: var(--c-fondo-subtle, #f8fafc);
+  padding: 8px 12px;
+  border-radius: var(--radius-xs, 4px);
   border: 1px solid var(--c-borde-suave);
-  transition: all var(--transition-fast);
+  transition: border-color var(--transition-fast), background var(--transition-fast);
 }
 
 .reports-checkbox-item:hover {
-  border-color: var(--c-primario);
+  border-color: var(--c-rol-supervisor, #2563eb);
+  background: var(--c-superficie);
 }
 
 .reports-format-radios {
   display: flex;
-  gap: var(--space-4);
+  gap: var(--space-3);
   margin-top: var(--space-2);
+  flex-wrap: wrap;
 }
 
 .reports-radio-label {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 13.5px;
+  font-size: 13px;
   font-weight: 500;
   cursor: pointer;
+  padding: 6px 10px;
+  background: var(--c-fondo-subtle, #f8fafc);
+  border: 1px solid var(--c-borde-suave);
+  border-radius: var(--radius-xs, 4px);
+  transition: all var(--transition-fast);
+}
+
+.reports-radio-label:hover {
+  border-color: var(--c-rol-supervisor, #2563eb);
+}
+
+/* Panel Derecho: Previsualización en Vivo y Resultados */
+.reports-live-preview-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
 }
 
 .reports-preview-card {
@@ -61,7 +150,6 @@
   background: var(--c-superficie);
   border-radius: var(--radius-card, 6px);
   padding: var(--space-5);
-  margin-top: var(--space-4);
 }
 
 .reports-preview-header {
@@ -76,70 +164,70 @@
 }
 
 .reports-preview-eyebrow {
-  font-size: 12px;
-  color: var(--c-primario);
+  font-size: 11.5px;
+  color: var(--c-rol-supervisor, #2563eb);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
 
 .reports-preview-title {
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 700;
   margin: 2px 0 0;
   color: var(--c-texto);
 }
 
 .reports-preview-meta {
-  font-size: 13px;
+  font-size: 12.5px;
   color: var(--c-texto-suave);
   margin-top: 2px;
 }
 
 .reports-kpis-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: var(--space-3);
-  margin: var(--space-4) 0;
+  margin: var(--space-3) 0;
 }
 
 .reports-kpi-item {
-  background: var(--c-superficie);
+  background: var(--c-fondo-subtle, #f8fafc);
   padding: var(--space-3) var(--space-4);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-xs, 4px);
   border: 1px solid var(--c-borde-suave);
 }
 
 .reports-kpi-label {
-  font-size: 12px;
-  color: var(--c-texto-suave);
+  font-size: 11.5px;
+  color: var(--c-texto-mutado);
   text-transform: uppercase;
   letter-spacing: 0.04em;
   font-weight: 600;
 }
 
 .reports-kpi-value {
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 700;
   color: var(--c-texto);
   margin-top: 2px;
 }
 
 .reports-meta-footer {
-  font-size: 12px;
-  color: var(--c-texto-suave);
+  font-size: 11.5px;
+  color: var(--c-texto-mutado);
   line-height: 1.5;
   border-top: 1px dashed var(--c-borde-suave);
   padding-top: var(--space-3);
-  margin-top: var(--space-4);
+  margin-top: var(--space-3);
 }
 
+/* Caja de Resultado de Generación */
 .reports-result-box {
   background: var(--c-exito-bg);
   border: 1px solid var(--c-exito-border);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-card, 6px);
   padding: var(--space-4);
-  margin-top: var(--space-4);
 }
 
 .reports-result-header {
@@ -151,6 +239,35 @@
   margin-bottom: var(--space-2);
 }
 
+.reports-result-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--c-texto);
+}
+
+.reports-result-meta {
+  font-size: 12.5px;
+  color: var(--c-texto-suave);
+  margin-top: 2px;
+}
+
+.reports-result-hash {
+  font-size: 12.5px;
+  margin: var(--space-2) 0;
+  color: var(--c-texto);
+}
+
+.audit-code-cell {
+  font-family: var(--font-family-mono, monospace);
+  font-size: 11.5px;
+  background: var(--c-superficie);
+  padding: 2px 6px;
+  border-radius: var(--radius-xs, 4px);
+  color: var(--c-texto);
+  border: 1px solid var(--c-borde-suave);
+}
+
 .reports-actions-row {
   display: flex;
   gap: var(--space-2);
@@ -158,21 +275,67 @@
   margin-top: var(--space-3);
 }
 
+/* 3. Sección de Historial Abierta (Sin Carditis) */
+.reports-history-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.reports-history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.reports-history-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--c-texto);
+}
+
+.reports-history-subtitle {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: var(--c-texto-suave);
+}
+
 /* Optimización para impresión (PDF) */
 @media print {
   .app-sidebar,
   .app-topbar,
+  .supervisor-subnav,
   .page-header,
-  .reports-controls-grid,
+  .reports-controls-panel,
   .reports-actions-row,
+  .reports-history-section,
   .btn,
   .alert-banner {
     display: none !important;
+  }
+
+  .reports-workspace {
+    display: block !important;
   }
 
   .reports-preview-card {
     border: none !important;
     box-shadow: none !important;
     padding: 0 !important;
+  }
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .reports-workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .reports-kpis-container {
+    grid-template-columns: 1fr;
   }
 }
