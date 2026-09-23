@@ -213,8 +213,8 @@
 }
 
 .supervisor-rec-action {
-  width: 100%;
-  justify-content: center;
+  width: fit-content;
+  align-self: flex-start;
 }
 
 /* 3. Secciones Abiertas (Para Tablas sin Carditis) */

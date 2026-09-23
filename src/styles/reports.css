@@ -113,6 +113,11 @@
   background: var(--c-superficie);
 }
 
+.reports-checkbox-item:has(input:checked) {
+  border-color: rgba(37, 99, 235, 0.4);
+  background: var(--c-superficie);
+}
+
 .reports-format-radios {
   display: flex;
   gap: var(--space-3);
@@ -127,7 +132,7 @@
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
-  padding: 6px 10px;
+  padding: 6px 12px;
   background: var(--c-fondo-subtle, #f8fafc);
   border: 1px solid var(--c-borde-suave);
   border-radius: var(--radius-xs, 4px);
@@ -136,6 +141,13 @@
 
 .reports-radio-label:hover {
   border-color: var(--c-rol-supervisor, #2563eb);
+}
+
+.reports-radio-label:has(input:checked) {
+  border-color: var(--c-rol-supervisor, #2563eb);
+  background: var(--c-superficie);
+  font-weight: 600;
+  color: var(--c-texto);
 }
 
 /* Panel Derecho: Previsualización en Vivo y Resultados */
