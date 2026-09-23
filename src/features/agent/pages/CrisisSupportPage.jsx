@@ -45,23 +45,21 @@ export function CrisisSupportPage() {
   } = useCrisisSupport();
 
   return (
-    <div className="crisis-editorial-page">
+    <div className="agent-page crisis-editorial-page">
       {/* Navegación superior sobria */}
-      <div className="crisis-top-nav">
-        <button type="button" className="crisis-back-link" onClick={() => navigate('/agente/panel')}>
+      <nav className="agent-subnav" aria-label="Navegación secundaria">
+        <button type="button" className="agent-back-btn" onClick={() => navigate('/agente/panel')}>
           <Icon name="arrowLeft" size={16} />
           <span>Volver al panel</span>
         </button>
-      </div>
+      </nav>
 
       {/* Cabecera Editorial de Contención */}
       <header className="crisis-page-header">
         <h1 className="crisis-page-title">Espacio de contención y primeros auxilios psicológicos</h1>
         <p className="crisis-page-subtitle">
-          Pulso360 es una plataforma de apoyo preventivo y no sustituye la atención clínica ni psiquiátrica
-          especializada. Si estás experimentando una sobrecarga aguda o angustia en tu turno: utiliza la
-          técnica de anclaje sensorial en tu puesto, llama a una línea oficial gratuita 24/7 o solicita
-          orientación con el equipo de Seguridad y Salud en el Trabajo.
+          Herramientas de contención somática en puesto (Grounding 5-4-3-2-1), líneas oficiales de ayuda
+          gratuita 24/7 y orientación preventiva con SST.
         </p>
       </header>
 

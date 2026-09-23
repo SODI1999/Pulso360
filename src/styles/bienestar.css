@@ -11,7 +11,7 @@
   max-width: 1040px;
   width: 100%;
   margin: 0 auto;
-  padding: 28px 0 var(--space-16);
+  padding: 0 0 var(--space-8);
 }
 
 /* 2. Barra de Retorno y Acciones Rápidas */
@@ -20,28 +20,33 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--space-4);
-  margin-bottom: var(--space-6);
+  margin-bottom: var(--space-2);
+  min-height: 36px;
   flex-wrap: wrap;
 }
 
 .wellbeing-back-btn {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: 8px;
   background: transparent;
-  border: none;
-  padding: 8px 0;
+  border: 1px solid transparent;
+  padding: 6px 12px;
+  margin-left: -12px;
   font-family: inherit;
-  font-size: 13.5px;
-  font-weight: 600;
+  font-size: 13px;
+  font-weight: 500;
   color: var(--c-texto-suave);
   cursor: pointer;
-  min-height: 44px;
-  transition: color var(--transition-fast);
+  border-radius: var(--radius-sm, 4px);
+  min-height: 32px;
+  transition: all var(--transition-fast);
 }
 
 .wellbeing-back-btn:hover {
+  background: var(--c-superficie);
   color: var(--c-texto);
+  border-color: var(--c-borde-suave);
 }
 
 .wellbeing-back-btn:focus-visible {

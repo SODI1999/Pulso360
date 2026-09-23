@@ -6,7 +6,7 @@ import { QUESTIONS } from '../data/checkinWizardData';
 // src/features/agent/pages/CheckinWizardPage.jsx
 // Formulario de Check-in diario por pasos (RF-03) somático, ergonómico y restaurador
 
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { Icon } from '../../../core/components/Icon';
 
@@ -14,6 +14,7 @@ import { BpoResetModal } from '../components/BpoResetModal';
 import '../../../styles/agent.css';
 
 export function CheckinWizardPage() {
+  const navigate = useNavigate();
   const {
     data,
     consent,
@@ -42,6 +43,18 @@ export function CheckinWizardPage() {
   if (!consent?.c1) {
     return (
       <div className="agent-page agent-page--checkin">
+        <nav className="agent-subnav" aria-label="Navegación secundaria">
+          <button
+            type="button"
+            className="agent-back-btn"
+            onClick={() => navigate('/agente/panel')}
+            aria-label="Volver al panel principal del agente"
+          >
+            <Icon name="arrowLeft" size={16} />
+            <span>Volver al panel</span>
+          </button>
+        </nav>
+
         <div className="page-header">
           <div>
             <h1 className="page-title">Check-in de bienestar</h1>
@@ -108,6 +121,18 @@ export function CheckinWizardPage() {
 
     return (
       <div className="agent-page agent-page--checkin">
+        <nav className="agent-subnav" aria-label="Navegación secundaria">
+          <button
+            type="button"
+            className="agent-back-btn"
+            onClick={() => navigate('/agente/panel')}
+            aria-label="Volver al panel principal del agente"
+          >
+            <Icon name="arrowLeft" size={16} />
+            <span>Volver al panel</span>
+          </button>
+        </nav>
+
         <div className="page-header">
           <div>
             <h1 className="page-title">Check-in de bienestar</h1>
@@ -156,6 +181,18 @@ export function CheckinWizardPage() {
 
   return (
     <div className="agent-page agent-page--checkin">
+      <nav className="agent-subnav" aria-label="Navegación secundaria">
+        <button
+          type="button"
+          className="agent-back-btn"
+          onClick={() => navigate('/agente/panel')}
+          aria-label="Volver al panel principal del agente"
+        >
+          <Icon name="arrowLeft" size={16} />
+          <span>Volver al panel</span>
+        </button>
+      </nav>
+
       {/* Soporte de Desconexión Laboral (Ley 2191 de 2022) */}
       {isOutsideShift && !dismissDisconnectNotice && (
         <div className="disconnect-banner wizard-disconnect-banner">
@@ -169,9 +206,8 @@ export function CheckinWizardPage() {
                 <span className="badge badge-ok">Fuera de horario ordinario</span>
               </div>
               <p className="disconnect-desc">
-                Tu turno regular ha culminado o estás antes de tu hora de inicio. En Pulso360 respaldamos tu
-                derecho al descanso efectivo. Si te encuentras en jornada extraordinaria o deseas completar tu
-                registro voluntariamente, continúa con total tranquilidad.
+                Tu turno ordinario culminó. Registrar este check-in es voluntario y no tiene repercusiones
+                laborales.
               </p>
             </div>
           </div>

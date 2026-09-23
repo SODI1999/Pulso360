@@ -20,31 +20,25 @@ export function MyAnalysisPage() {
   }, [data.journals, currentUser?.id]);
 
   return (
-    <div className="analysis-editorial-page">
-      {/* 1. Barra de Retorno y Acciones Rápidas (Sincronizada con /agente/mi-bienestar y /notificaciones) */}
-      <nav className="analysis-top-nav" aria-label="Navegación secundaria">
+    <div className="agent-page analysis-editorial-page">
+      {/* 1. Subnavegación secundaria sobria */}
+      <nav className="agent-subnav" aria-label="Navegación secundaria">
         <button
           type="button"
-          className="analysis-back-btn"
+          className="agent-back-btn"
           onClick={() => navigate('/agente/panel')}
           aria-label="Volver al panel principal del agente"
         >
           <Icon name="arrowLeft" size={16} />
           <span>Volver al panel</span>
         </button>
-
-        <Link to="/agente/bitacora" className="analysis-action-btn analysis-action-btn--primary">
-          <Icon name="edit_note" size={18} />
-          <span>Escribir en mi bitácora</span>
-        </Link>
       </nav>
 
       {/* 2. Cabecera Editorial Limpia */}
       <header className="analysis-header">
         <h1 className="analysis-title">Análisis orientativo de mis textos</h1>
         <p className="analysis-subtitle">
-          Resultados explicables derivados de tus reflexiones personales en bitácora, disponibles dentro de tu
-          espacio de agente.
+          Factores léxicos explicables derivados de tus reflexiones personales en bitácora para tu autorreflexión.
         </p>
       </header>
 
@@ -61,10 +55,9 @@ export function MyAnalysisPage() {
             </strong>
           </div>
           <p className="analysis-scope-desc">
-            Este clasificador opera <strong>en la memoria de tu dispositivo</strong> mediante concordancia
-            determinista de términos clave. En el despliegue actual, tus reflexiones no se envían a servidores
-            de IA externos ni a terceros. Los factores identificados son orientativos para tu autorreflexión
-            personal; no constituyen un diagnóstico clínico ni una evaluación laboral.
+            Tus notas se procesan localmente sin enviarse a servidores externos ni modelos generativos de IA. Los
+            factores detectados son orientativos para tu autocuidado y no constituyen diagnósticos clínicos ni
+            evaluaciones laborales.
           </p>
         </div>
       </section>

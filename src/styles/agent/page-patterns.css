@@ -5,6 +5,47 @@
   border-bottom: 1px solid var(--c-calma-border-subtle);
 }
 
+/* Subnavegación secundaria sobria y ergonómica compartida por todas las vistas */
+.agent-subnav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-2);
+  min-height: 36px;
+  width: 100%;
+}
+
+.agent-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: 1px solid transparent;
+  padding: 6px 12px;
+  margin-left: -12px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--c-texto-suave);
+  cursor: pointer;
+  border-radius: var(--radius-sm, 4px);
+  text-decoration: none;
+  min-height: 32px;
+  transition: all var(--transition-fast);
+}
+
+.agent-back-btn:hover {
+  background: var(--c-superficie);
+  color: var(--c-texto);
+  border-color: var(--c-borde-suave);
+}
+
+.agent-back-btn:focus-visible {
+  outline: 2px solid var(--c-primario);
+  outline-offset: 2px;
+}
+
 .agent-page:not(.calm-home) {
   position: relative;
   width: 100%;
@@ -12,7 +53,7 @@
   margin-inline: auto;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 20px;
 }
 
 .agent-page .page-title {
@@ -64,22 +105,11 @@
 .agent-page .center-card {
   max-width: 720px;
   margin-inline: auto;
-  border-top: 3px solid var(--c-calma-accent);
 }
 
 .agent-work-surface {
   position: relative;
   overflow: hidden;
-}
-
-.agent-work-surface::before {
-  content: '';
-  display: block;
-  width: 44px;
-  height: 3px;
-  margin-bottom: 18px;
-  background: var(--c-calma-accent);
-  border-radius: 0 0 3px 3px;
 }
 
 .agent-work-layout {

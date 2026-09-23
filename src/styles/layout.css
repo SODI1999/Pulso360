@@ -274,7 +274,7 @@
   font-size: 10.5px;
   font-weight: 600;
   padding: 1px 8px;
-  border-radius: var(--radius-full);
+  border-radius: var(--radius-xs, 4px);
   line-height: 1.4;
   margin-top: 2px;
 }

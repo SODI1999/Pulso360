@@ -587,6 +587,24 @@ export function Icon({ name, className = '', size, ...props }) {
     )
   };
 
+  // Alias de compatibilidad semántica y normalización kebab-case / camelCase
+  iconList.arrow_back = iconList.arrowLeft;
+  iconList.arrow_left = iconList.arrowLeft;
+  iconList.arrow_forward = iconList.arrowRight;
+  iconList.arrow_right = iconList.arrowRight;
+  iconList.arrow_up = iconList.arrowUp;
+  iconList.chevron_down = iconList.chevronDown;
+  iconList.chevron_up = iconList.chevronUp;
+  iconList.check_circle = iconList.check_circle || iconList.checkCircle;
+  iconList.checkCircle = iconList.checkCircle || iconList.check_circle;
+  iconList.shield_check = iconList.shieldCheck;
+  iconList.volume_on = iconList.volumeOn;
+  iconList.volume_off = iconList.volumeOff;
+  iconList.bell_off = iconList.bellOff;
+  iconList.eye_off = iconList.eyeOff;
+  iconList.add = iconList.plus;
+  iconList.k_anonymity_shield = iconList.kAnonymityShield;
+
   const style = size ? { width: `${size}px`, height: `${size}px` } : undefined;
 
   return (

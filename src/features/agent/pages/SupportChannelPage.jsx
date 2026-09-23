@@ -32,23 +32,18 @@ export function SupportChannelPage() {
 
   if (!consent?.c5) {
     return (
-      <div className="support-editorial-page">
-        <div className="support-top-nav">
-          <button type="button" className="support-back-link" onClick={() => navigate('/agente/panel')}>
+      <div className="agent-page support-editorial-page">
+        <nav className="agent-subnav" aria-label="Navegación secundaria">
+          <button type="button" className="agent-back-btn" onClick={() => navigate('/agente/panel')}>
             <Icon name="arrowLeft" size={16} />
             <span>Volver al panel</span>
           </button>
-          <Link to="/apoyo-crisis" className="support-urgent-action">
-            <Icon name="support" size={16} />
-            <span>Apoyo inmediato y PAP</span>
-          </Link>
-        </div>
+        </nav>
 
         <header className="support-page-header">
           <h1 className="support-page-title">Canal de acompañamiento con SST</h1>
           <p className="support-page-subtitle">
-            Orientación psicosocial y acompañamiento preventivo gestionado por Seguridad y Salud en el
-            Trabajo.
+            Orientación psicosocial preventiva gestionada por Seguridad y Salud en el Trabajo.
           </p>
         </header>
 
@@ -78,25 +73,21 @@ export function SupportChannelPage() {
   }
 
   return (
-    <div className="support-editorial-page">
+    <div className="agent-page support-editorial-page">
       {/* Navegación superior sobria */}
-      <div className="support-top-nav">
-        <button type="button" className="support-back-link" onClick={() => navigate('/agente/panel')}>
+      <nav className="agent-subnav" aria-label="Navegación secundaria">
+        <button type="button" className="agent-back-btn" onClick={() => navigate('/agente/panel')}>
           <Icon name="arrowLeft" size={16} />
           <span>Volver al panel</span>
         </button>
-        <Link to="/apoyo-crisis" className="support-urgent-action">
-          <Icon name="support" size={16} />
-          <span>Apoyo inmediato y PAP</span>
-        </Link>
-      </div>
+      </nav>
 
       {/* Cabecera editorial sin cajas flotantes ni gradientes */}
       <header className="support-page-header">
         <h1 className="support-page-title">Canal de acompañamiento con SST</h1>
         <p className="support-page-subtitle">
-          Orientación psicosocial y acompañamiento preventivo canalizado exclusivamente al equipo de Seguridad
-          y Salud en el Trabajo. Esta solicitud no es visible para tu líder de equipo ni tu supervisor.
+          Orientación psicosocial preventiva canalizada exclusivamente al equipo de SST. Esta solicitud no es
+          visible para supervisores ni coordinadores de campaña.
         </p>
       </header>
 

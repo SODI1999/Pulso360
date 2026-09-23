@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { RectificationRequestForm } from '../components/RectificationRequestForm';
 import { ConsentPreferencesLink } from '../components/ConsentPreferencesLink';
 import { PrivacySummary } from '../components/PrivacySummary';
@@ -11,6 +12,7 @@ import { DownloadLink } from '../../../core/components/DownloadLink';
 import '../../../styles/agent.css';
 
 export function MyDataPrivacyPage() {
+  const navigate = useNavigate();
   const {
     rectificationText,
     setRectificationText,
@@ -29,16 +31,25 @@ export function MyDataPrivacyPage() {
   } = useMyDataPrivacy();
 
   return (
-    <div
-      className="agent-page agent-page--privacy"
-      style={{ maxWidth: '1040px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '24px' }}
-    >
+    <div className="agent-page agent-page--privacy">
+      {/* Subnavegación unificada */}
+      <nav className="agent-subnav" aria-label="Navegación secundaria">
+        <button
+          type="button"
+          className="agent-back-btn"
+          onClick={() => navigate('/agente/panel')}
+          aria-label="Volver al panel principal del agente"
+        >
+          <Icon name="arrowLeft" size={16} />
+          <span>Volver al panel</span>
+        </button>
+      </nav>
+
       <header className="page-header" style={{ marginBottom: 0 }}>
         <div>
           <h1 className="page-title">Aquí controlas tus datos personales</h1>
           <p className="page-subtitle">
-            Consulta, rectificación, portabilidad, revocación de consentimientos y solicitud de supresión (Ley
-            1581 de 2012).
+            Consulta, rectificación, portabilidad y solicitud de supresión de tus datos personales (Ley 1581 de 2012).
           </p>
         </div>
       </header>
@@ -74,23 +85,23 @@ export function MyDataPrivacyPage() {
         </p>
         <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
           <DownloadLink
-            className="btn btn-capsule-teal"
+            className="btn btn-secondary btn-sm"
             content={portabilityFiles.json}
             mimeType="application/json"
             fileName={`${portabilityFiles.fileNameBase}.json`}
             onDownload={() => handleDownloadPortability('json')}
           >
-            <Icon name="upload_file" size={16} />
+            <Icon name="download" size={15} />
             <span>Descargar JSON estructurado</span>
           </DownloadLink>
           <DownloadLink
-            className="btn btn-capsule-teal"
+            className="btn btn-secondary btn-sm"
             content={portabilityFiles.csv}
             mimeType="text/csv"
             fileName={`${portabilityFiles.fileNameBase}.csv`}
             onDownload={() => handleDownloadPortability('csv')}
           >
-            <Icon name="summarize" size={16} />
+            <Icon name="download" size={15} />
             <span>Descargar CSV propio</span>
           </DownloadLink>
         </div>

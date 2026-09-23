@@ -279,7 +279,7 @@ textarea.form-input,
   align-items: center;
   gap: var(--space-1);
   padding: 3px 9px;
-  border-radius: var(--radius-full);
+  border-radius: var(--radius-xs, 4px);
   font-size: 11.5px;
   font-weight: 600;
   line-height: 1.35;

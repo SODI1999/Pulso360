@@ -5,7 +5,7 @@ import { useJournal } from '../hooks/useJournal';
 // src/features/agent/pages/JournalPage.jsx
 // Bitácora privada con análisis NLP explicable, corrección humana y protocolo de crisis
 
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { nlpEngine } from '../../../core/nlp/nlpEngine';
 import { Icon } from '../../../core/components/Icon';
@@ -16,6 +16,7 @@ import '../../../styles/bitacora.css';
 import '../../../styles/agent.css';
 
 export function JournalPage() {
+  const navigate = useNavigate();
   const {
     consent,
     journals,
@@ -56,6 +57,18 @@ export function JournalPage() {
   if (!consent?.c2) {
     return (
       <div className="agent-page agent-page--journal">
+        <nav className="agent-subnav" aria-label="Navegación secundaria">
+          <button
+            type="button"
+            className="agent-back-btn"
+            onClick={() => navigate('/agente/panel')}
+            aria-label="Volver al panel principal del agente"
+          >
+            <Icon name="arrowLeft" size={16} />
+            <span>Volver al panel</span>
+          </button>
+        </nav>
+
         <div className="page-header">
           <div>
             <h1 className="page-title">Mi bitácora laboral</h1>
@@ -99,6 +112,18 @@ export function JournalPage() {
 
   return (
     <div className="agent-page agent-page--journal">
+      <nav className="agent-subnav" aria-label="Navegación secundaria">
+        <button
+          type="button"
+          className="agent-back-btn"
+          onClick={() => navigate('/agente/panel')}
+          aria-label="Volver al panel principal del agente"
+        >
+          <Icon name="arrowLeft" size={16} />
+          <span>Volver al panel</span>
+        </button>
+      </nav>
+
       <div className="page-header">
         <div>
           <div
@@ -122,8 +147,8 @@ export function JournalPage() {
             </span>
           </div>
           <p className="page-subtitle">
-            En esta experiencia, tus notas se muestran dentro de tu espacio personal y no forman parte de las
-            vistas operativas agregadas.
+            Espacio privado de autorreflexión y desahogo. Tus notas no forman parte de las vistas operativas
+            agregadas.
           </p>
         </div>
         <Link to="/agente/mi-analisis" className="btn btn-secondary">

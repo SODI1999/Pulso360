@@ -260,7 +260,7 @@
   min-width: 110px;
   padding: 10px 12px;
   border: 1px solid rgba(198, 226, 216, 0.22);
-  border-radius: 999px;
+  border-radius: 6px;
   background: rgba(255, 255, 255, 0.04);
   backdrop-filter: blur(6px);
 }
@@ -479,7 +479,7 @@
 .pause-phase-bar {
   width: 200px;
   height: 4px;
-  border-radius: 999px;
+  border-radius: 2px;
   background: rgba(198, 226, 216, 0.16);
   overflow: hidden;
 }
@@ -488,7 +488,7 @@
   display: block;
   width: 0%;
   height: 100%;
-  border-radius: 999px;
+  border-radius: 2px;
   background: #8fe3cf;
 }
 

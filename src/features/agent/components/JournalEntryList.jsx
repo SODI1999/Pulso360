@@ -8,9 +8,9 @@ export function JournalEntryList({ handleNewEntry, journals, currentJournalId, h
         style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
       >
         <div className="card-title">Mis entradas</div>
-        <button type="button" className="btn btn-secondary" onClick={handleNewEntry}>
-          <Icon name="edit_note" size={16} />
-          <span>Nueva</span>
+        <button type="button" className="btn btn-secondary btn-sm" onClick={handleNewEntry}>
+          <Icon name="plus" size={14} />
+          <span>Nueva entrada</span>
         </button>
       </div>
 

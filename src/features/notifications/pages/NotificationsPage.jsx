@@ -27,12 +27,12 @@ export function NotificationsPage() {
   } = useNotifications();
 
   return (
-    <div className="notif-inbox-layout">
-      {/* 1. Barra de Retorno idéntica a las demás vistas */}
-      <nav className="notif-top-nav" aria-label="Navegación secundaria">
+    <div className="agent-page notif-inbox-layout">
+      {/* 1. Subnavegación secundaria sobria */}
+      <nav className="agent-subnav" aria-label="Navegación secundaria">
         <button
           type="button"
-          className="notif-back-btn"
+          className="agent-back-btn"
           onClick={handleBack}
           aria-label="Volver al panel principal"
         >

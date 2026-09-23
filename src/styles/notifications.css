@@ -12,38 +12,43 @@
   max-width: 1040px;
   width: 100%;
   margin: 0 auto;
-  padding: 28px 0 var(--space-16);
+  padding: 0 0 var(--space-8);
 }
 
-/* 2. Barra de Retorno idéntica a las demás vistas (/agente/mi-bienestar y /agente/apoyo) */
+/* 2. Barra de Retorno idéntica a las demás vistas */
 .notif-top-nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-4);
-  margin-bottom: var(--space-6);
+  margin-bottom: var(--space-2);
+  min-height: 36px;
   flex-wrap: wrap;
 }
 
 .notif-back-btn {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: 8px;
   background: transparent;
-  border: none;
-  padding: 8px 0;
+  border: 1px solid transparent;
+  padding: 6px 12px;
+  margin-left: -12px;
   font-family: inherit;
-  font-size: 13.5px;
-  font-weight: 600;
+  font-size: 13px;
+  font-weight: 500;
   color: var(--c-texto-suave);
   cursor: pointer;
-  min-height: 44px;
+  border-radius: var(--radius-sm, 4px);
+  min-height: 32px;
   text-decoration: none;
-  transition: color var(--transition-fast);
+  transition: all var(--transition-fast);
 }
 
 .notif-back-btn:hover {
+  background: var(--c-superficie);
   color: var(--c-texto);
+  border-color: var(--c-borde-suave);
 }
 
 .notif-back-btn:focus-visible {
@@ -141,7 +146,7 @@
   font-size: 11px;
   font-weight: 700;
   padding: 1px 6px;
-  border-radius: var(--radius-full);
+  border-radius: var(--radius-xs, 4px);
   background-color: var(--c-fondo);
   color: var(--c-texto-mutado);
 }

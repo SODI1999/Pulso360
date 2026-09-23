@@ -39,15 +39,15 @@ export function ConsentPage() {
   } = useConsent();
 
   return (
-    <main className="page-container consent-editorial-page">
+    <div className="agent-page consent-editorial-page">
       {/* Retorno sobrio */}
       {!comesFromLogin && (
-        <div className="consent-top-nav">
-          <button type="button" className="consent-back-link" onClick={() => navigate('/agente/panel')}>
+        <nav className="agent-subnav" aria-label="Navegación secundaria">
+          <button type="button" className="agent-back-btn" onClick={() => navigate('/agente/panel')}>
             <Icon name="arrowLeft" size={16} />
             <span>Volver al panel</span>
           </button>
-        </div>
+        </nav>
       )}
 
       {/* Cabecera editorial plana: sin tarjetas ni cajas */}
@@ -104,6 +104,6 @@ export function ConsentPage() {
           modalCloseBtnRef={modalCloseBtnRef}
         />
       )}
-    </main>
+    </div>
   );
 }

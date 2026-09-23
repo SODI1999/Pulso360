@@ -43,7 +43,7 @@ export function AgentDashboardPage() {
              repetirlos aquí duplicaría el mismo dato en la misma pantalla */}
       <header className="calm-home-head">
         <h1 className="calm-home-title">
-          {greeting}, {currentUser?.name || 'Agente'}
+          {`${greeting}, ${currentUser?.name || 'Agente'}`}
         </h1>
       </header>
 

@@ -24,47 +24,36 @@ export function MyWellbeingPage() {
   } = useMyWellbeing();
 
   return (
-    <div className="wellbeing-editorial-page">
-      {/* 1. Barra de Retorno y Acciones Rápidas */}
-      <nav className="wellbeing-top-nav" aria-label="Navegación secundaria">
+    <div className="agent-page wellbeing-editorial-page">
+      {/* 1. Subnavegación secundaria sobria */}
+      <nav className="agent-subnav" aria-label="Navegación secundaria">
         <button
           type="button"
-          className="wellbeing-back-btn"
+          className="agent-back-btn"
           onClick={() => navigate('/agente/panel')}
           aria-label="Volver al panel principal del agente"
         >
           <Icon name="arrowLeft" size={16} />
           <span>Volver al panel</span>
         </button>
-
-        <div className="wellbeing-nav-actions">
-          <Link to="/agente/checkin" className="wellbeing-action-btn wellbeing-action-btn--primary">
-            <Icon name="edit_note" size={18} />
-            <span>Realizar check-in de turno</span>
-          </Link>
-        </div>
       </nav>
 
       {/* 2. Cabecera Editorial Limpia */}
       <header className="wellbeing-header">
-        <h1 className="wellbeing-title">Mi tendencia personal de bienestar</h1>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', marginBottom: '6px' }}>
+          <h1 className="wellbeing-title" style={{ margin: 0 }}>
+            Mi tendencia personal de bienestar
+          </h1>
+          <span className="privacy-badge-rbac" title="Espacio confidencial de uso exclusivo">
+            <Icon name="shield" size={14} />
+            <span>Uso exclusivo personal</span>
+          </span>
+        </div>
         <p className="wellbeing-subtitle">
-          Espacio confidencial para revisar tus registros somáticos y el historial de tus turnos. Esta vista
-          es de uso exclusivo personal; tus respuestas individuales no se exponen en la supervisión colectiva
-          ni se comparan con las de otros compañeros.
+          Historial confidencial de tus registros somáticos y ritmo de turnos. Tus respuestas individuales no se
+          exponen en la supervisión colectiva.
         </p>
       </header>
-
-      {/* 3. Preámbulo de Autonomía y Privacidad Integrado */}
-      <aside className="wellbeing-preamble" aria-label="Garantías de privacidad y alcance">
-        <Icon name="kAnonymityShield" size={22} className="wellbeing-preamble-icon" aria-hidden="true" />
-        <div className="wellbeing-preamble-text">
-          <strong>Garantía de autonomía y privacidad:</strong> Las seis dimensiones reflejan factores
-          operativos y fisiológicos de tu jornada en el Contact Center, no juicios de valor sobre tu persona
-          ni diagnósticos clínicos. Puedes revisar estos registros para reconocer patrones de fatiga a tiempo
-          y decidir cuándo tomar una pausa de recuperación.
-        </div>
-      </aside>
 
       {/* 4. Nivel 1: Tendencia de Batería de Turno del Ciclo Reciente */}
       {trendData.labels.length >= 2 && (
