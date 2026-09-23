@@ -164,9 +164,8 @@
 }
 
 .step-solution .step-text-wrap {
-  background: #FAF8F5;
+  background: var(--landing-cream, #FAF8F5);
   border: 1px solid var(--landing-line, #E5E0D6);
-  border-left: 3px solid var(--landing-emerald, #14705A);
   border-radius: 8px;
   padding: 12px 14px;
 }

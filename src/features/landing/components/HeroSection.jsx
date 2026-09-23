@@ -169,7 +169,7 @@ export function HeroSection() {
 
             {/* Estado principal de cierre de turno */}
             <div className="disconnection-status-block">
-              <h3 className="disconnection-title">Desconexión Laboral Activa</h3>
+              <h2 className="disconnection-title">Desconexión Laboral Activa</h2>
               <p className="disconnection-desc">
                 Ejemplo ilustrativo del cierre de turno. El registro voluntario puede alimentar una tendencia
                 agregada cuando el grupo cumple el umbral de protección.

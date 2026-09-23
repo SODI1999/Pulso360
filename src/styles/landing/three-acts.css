@@ -165,7 +165,7 @@
 
 .act-content-header {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 12px;
@@ -173,36 +173,41 @@
   border-bottom: 1px solid var(--landing-hairline);
 }
 
-.act-pill-badge {
+.act-header-lead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.act-header-title {
+  font-size: 0.88rem;
+  font-weight: 750;
+  color: var(--landing-ink);
+  letter-spacing: -0.01em;
+}
+
+.act-header-scope {
+  font-size: 0.76rem;
+  color: var(--landing-body);
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  padding: 5px 14px;
-  border-radius: 999px;
-  font-size: 0.75rem;
+  gap: 6px;
+}
+
+.act-header-scope::before {
+  content: '·';
+  color: var(--landing-line);
   font-weight: 700;
 }
 
-.act-pill-badge.agent-badge {
-  background: #F0FDF9;
-  border: 1px solid #99F6E4;
-  color: #0F766E;
-}
-
-.act-pill-badge.shield-badge {
-  background: #EFF6FF;
-  border: 1px solid #BFDBFE;
-  color: #1D4ED8;
-}
-
-.act-pill-badge.sst-badge {
-  background: #F5F3FF;
-  border: 1px solid #DDD6FE;
-  color: #6D28D9;
-}
-
-.act-step-label {
-  font-size: 0.74rem;
-  font-weight: 600;
-  color: var(--landing-body);
+@media (max-width: 600px) {
+  .act-header-scope::before {
+    display: none;
+  }
+  .act-header-lead {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
 }

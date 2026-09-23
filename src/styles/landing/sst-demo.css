@@ -34,8 +34,8 @@
 }
 
 .sst-signal-card {
-  background: #FAF8F5;
-  border: 1px solid rgba(17, 38, 35, 0.08);
+  background: var(--landing-cream, #FAF8F5);
+  border: 1px solid var(--landing-line, #E5E1DA);
   border-radius: 8px;
   padding: 20px;
   display: flex;
@@ -45,11 +45,12 @@
 }
 
 .sst-signal-card.signal-normal {
-  border-left: 4px solid var(--landing-emerald);
+  border-color: var(--landing-line, #E5E1DA);
 }
 
 .sst-signal-card.signal-warning {
-  border-left: 4px solid var(--landing-amber);
+  border-color: #FDE68A;
+  background: #FFFDF8;
 }
 
 .signal-card-header {
@@ -61,20 +62,22 @@
 }
 
 .signal-status-pill {
-  font-size: 0.68rem;
-  font-weight: 750;
-  padding: 2px 7px;
-  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
 }
 
 .signal-status-pill.pill-green {
-  background: #DCFCE7;
-  color: #166534;
+  background: rgba(15, 118, 110, 0.08);
+  color: var(--landing-green, #0F766E);
+  border: 1px solid rgba(15, 118, 110, 0.2);
 }
 
 .signal-status-pill.pill-amber {
   background: #FEF3C7;
   color: #92400E;
+  border: 1px solid #FDE68A;
 }
 
 .signal-metric-val {
@@ -112,8 +115,8 @@
   display: flex;
   align-items: center;
   gap: 16px;
-  background: #FAF8F5;
-  border: 1px solid rgba(17, 38, 35, 0.08);
+  background: var(--landing-cream, #FAF8F5);
+  border: 1px solid var(--landing-line, #E5E1DA);
   border-radius: 8px;
   padding: 16px 20px;
 }

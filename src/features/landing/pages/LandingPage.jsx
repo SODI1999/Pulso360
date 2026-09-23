@@ -29,19 +29,26 @@ export function LandingPage() {
 
   return (
     <div className="landing-page-root">
-      <button
-        type="button"
+      <a
+        href="#contenido"
         className="skip-link"
-        onClick={() => document.getElementById('contenido')?.scrollIntoView({ behavior: 'smooth' })}
+        onClick={(e) => {
+          e.preventDefault();
+          const el = document.getElementById('contenido');
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth' });
+            el.focus({ preventScroll: true });
+          }
+        }}
       >
         Saltar al contenido principal
-      </button>
+      </a>
 
       {/* Header Institucional Reutilizable */}
       <Navbar />
 
       {/* Secciones Modulares Ensambladas (Recorrido Editorial Unificado) */}
-      <main id="contenido">
+      <main id="contenido" tabIndex="-1">
         <HeroSection />
         <ProblemSection />
         <ThreeActsSection />

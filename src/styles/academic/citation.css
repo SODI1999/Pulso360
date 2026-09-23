@@ -4,10 +4,9 @@
 .citation-card {
   background: #ffffff;
   border: 1px solid var(--landing-line, #E5E0D6);
-  border-left: 4px solid var(--landing-emerald, #14705A);
   border-radius: 8px;
   padding: 32px;
-  box-shadow: 0 6px 24px rgba(17, 38, 35, 0.03);
+  box-shadow: 0 4px 20px rgba(17, 38, 35, 0.04);
 }
 
 .citation-top-row {

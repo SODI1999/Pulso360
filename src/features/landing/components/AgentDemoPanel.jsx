@@ -18,11 +18,10 @@ export function AgentDemoPanel({
       aria-labelledby="tab-agente"
     >
       <div className="act-content-header">
-        <div className="act-pill-badge agent-badge">
-          <Icon name="lock" size={14} />
-          <span>Espacio personal · Ejemplo ilustrativo · No es una evaluación de desempeño</span>
+        <div className="act-header-lead">
+          <strong className="act-header-title">Espacio personal · Ejemplo ilustrativo</strong>
+          <span className="act-header-scope">Micro-pulso voluntario de 60 segundos sin consecuencias laborales</span>
         </div>
-        <span className="act-step-label">Micro-pulso de 60 segundos · Muestra interactiva de evaluación</span>
       </div>
 
       {/* Selector de Carga Cognitiva y Emocional (1 al 5) */}
@@ -32,12 +31,35 @@ export function AgentDemoPanel({
           <p>Evalúa el ritmo de atención, la fricción técnica y la presión de llamadas consecutivas.</p>
         </div>
 
-        <div className="factor-scale-interactive" role="radiogroup" aria-label="Escala de carga del turno">
+        <div
+          className="factor-scale-interactive"
+          role="radiogroup"
+          aria-label="Escala de carga del turno"
+          onKeyDown={(e) => {
+            const factors = AGENT_SCALE_FACTORS.map((f) => f.level);
+            const currentIdx = factors.indexOf(selectedFactor);
+            let nextIdx = null;
+            if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+              e.preventDefault();
+              nextIdx = (currentIdx + 1) % factors.length;
+            } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+              e.preventDefault();
+              nextIdx = (currentIdx - 1 + factors.length) % factors.length;
+            }
+            if (nextIdx !== null) {
+              const nextLevel = factors[nextIdx];
+              setSelectedFactor(nextLevel);
+              document.getElementById(`factor-chip-${nextLevel}`)?.focus();
+            }
+          }}
+        >
           {AGENT_SCALE_FACTORS.map((f) => (
             <button
               key={f.level}
+              id={`factor-chip-${f.level}`}
               type="button"
               role="radio"
+              tabIndex={selectedFactor === f.level ? 0 : -1}
               aria-checked={selectedFactor === f.level}
               className={`factor-chip factor-level-${f.level} ${selectedFactor === f.level ? 'selected' : ''}`}
               onClick={() => setSelectedFactor(f.level)}
@@ -59,12 +81,35 @@ export function AgentDemoPanel({
             <Icon name="edit_note" size={16} />
             <span>Prueba un escenario de Contact Center:</span>
           </div>
-          <div className="situation-pills-row" role="tablist" aria-label="Escenarios de piso">
+          <div
+            className="situation-pills-row"
+            role="tablist"
+            aria-label="Escenarios de piso"
+            onKeyDown={(e) => {
+              const items = BPO_SIMULATION_SCENARIOS;
+              const currentIdx = items.findIndex((s) => s.id === selectedSituation.id);
+              let nextIdx = null;
+              if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                nextIdx = (currentIdx + 1) % items.length;
+              } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                nextIdx = (currentIdx - 1 + items.length) % items.length;
+              }
+              if (nextIdx !== null) {
+                const nextItem = items[nextIdx];
+                setSelectedSituation(nextItem);
+                document.getElementById(`situation-pill-${nextItem.id}`)?.focus();
+              }
+            }}
+          >
             {BPO_SIMULATION_SCENARIOS.map((s) => (
               <button
                 key={s.id}
+                id={`situation-pill-${s.id}`}
                 type="button"
                 role="tab"
+                tabIndex={selectedSituation.id === s.id ? 0 : -1}
                 aria-selected={selectedSituation.id === s.id}
                 className={`situation-pill ${selectedSituation.id === s.id ? 'active' : ''}`}
                 onClick={() => setSelectedSituation(s)}
@@ -87,12 +132,9 @@ export function AgentDemoPanel({
 
           <div className="nlp-guidance-area">
             <div className="nlp-guidance-top">
-              <div className="nlp-badge-group">
-                <span className="nlp-engine-tag">
-                  <Icon name="healing" size={13} />
-                  Motor Léxico Preventivo
-                </span>
-                <span className="nlp-no-dx-tag">No emite diagnósticos médicos</span>
+              <div className="nlp-meta-lead">
+                <Icon name="healing" size={13} className="nlp-meta-icon" />
+                <span className="nlp-meta-label">Motor Léxico Preventivo · Orientación no médica</span>
               </div>
               <button
                 type="button"

@@ -75,11 +75,13 @@
 
 .footer-column button,
 .footer-column a {
-  display: block;
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 3px 0;
   background: none;
   border: none;
-  padding: 0;
-  margin-bottom: 10px;
+  margin-bottom: 6px;
   font-family: inherit;
   font-size: 0.88rem;
   color: #cbd5d1;
@@ -87,11 +89,18 @@
   text-align: left;
   cursor: pointer;
   transition: color 150ms ease;
+  border-radius: 4px;
 }
 
 .footer-column button:hover,
 .footer-column a:hover {
   color: #ffffff;
+}
+
+.footer-column button:focus-visible,
+.footer-column a:focus-visible {
+  outline: 2px solid #a7f3d0;
+  outline-offset: 2px;
 }
 
 .footer-credits-paper {

@@ -9,11 +9,10 @@ export function PrivacyDemoPanel({ agentCount, setAgentCount }) {
       aria-labelledby="tab-kanonymity"
     >
       <div className="act-content-header">
-        <div className="act-pill-badge shield-badge">
-          <Icon name="shieldCheck" size={14} />
-          <span>Escudo Matemático de Privacidad · Disociación Algorítmica</span>
+        <div className="act-header-lead">
+          <strong className="act-header-title">Escudo Matemático de Privacidad · Disociación Algorítmica</strong>
+          <span className="act-header-scope">Umbral ético: k &ge; 5 respuestas para agregación</span>
         </div>
-        <span className="act-step-label">Umbral Ético: k &ge; 5 respuestas</span>
       </div>
 
       <div className="kanonymity-simulator-grid">
@@ -68,7 +67,7 @@ export function PrivacyDemoPanel({ agentCount, setAgentCount }) {
                 <Icon name="kAnonymityShield" size={24} />
               </div>
               <div className="status-copy">
-                <span className="status-pill pill-shield">Visualización Protegida por Privacidad</span>
+                <span className="status-k-lead">Protección por quórum insuficiente</span>
                 <h4>Protegido por Privacidad ({agentCount} de 5 participantes)</h4>
                 <p>
                   Este bloqueo deliberado protege la identidad de los colaboradores mientras el quórum de
@@ -88,12 +87,9 @@ export function PrivacyDemoPanel({ agentCount, setAgentCount }) {
             >
               {/* Cabecera del reporte */}
               <div className="unlocked-report-head">
-                <div className="unlocked-badge-row">
-                  <span className="unlocked-k-badge">
-                    <Icon name="shieldCheck" size={13} />
-                    k-Anonimato Activo (k = {agentCount})
-                  </span>
-                  <span className="unlocked-validity-badge">Muestra Representativa</span>
+                <div className="unlocked-report-meta">
+                  <Icon name="shieldCheck" size={13} className="meta-icon-emerald" />
+                  <span className="unlocked-meta-text">k-Anonimato Activo (k = {agentCount}) · Muestra representativa</span>
                 </div>
                 <h4 className="unlocked-report-title">Reporte Preventivo Agregado · Campaña Soporte N1</h4>
                 <p className="unlocked-report-sub">
@@ -143,7 +139,7 @@ export function PrivacyDemoPanel({ agentCount, setAgentCount }) {
               {/* Sello de Garantía y Privacidad */}
               <div className="unlocked-privacy-seal">
                 <Icon name="lock" size={13} />
-                <span>Métricas 100% desvinculadas de AHT y evaluaciones individuales de desempeño.</span>
+                <span>Métricas desvinculadas de AHT y evaluaciones de desempeño por diseño en la plataforma.</span>
               </div>
             </div>
           )}

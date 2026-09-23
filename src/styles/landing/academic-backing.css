@@ -50,13 +50,13 @@
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  padding: 6px 14px;
-  border-radius: 999px;
-  background: #FAF8F5;
-  border: 1px solid var(--landing-line);
+  padding: 6px 12px;
+  border-radius: 4px;
+  background: var(--landing-cream, #FAF8F5);
+  border: 1px solid var(--landing-line, #E5E1DA);
   font-size: 0.76rem;
   font-weight: 650;
-  color: var(--landing-ink);
+  color: var(--landing-ink, #112623);
 }
 
 .normative-item svg {

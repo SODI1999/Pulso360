@@ -4,11 +4,10 @@ export function SstDemoPanel() {
   return (
     <div className="act-tab-content act-sst-content" id="panel-sst" role="tabpanel" aria-labelledby="tab-sst">
       <div className="act-content-header">
-        <div className="act-pill-badge sst-badge">
-          <Icon name="healing" size={14} />
-          <span>Consola de Vigilancia Preventiva (SG-SST)</span>
+        <div className="act-header-lead">
+          <strong className="act-header-title">Consola de Vigilancia Preventiva (SG-SST)</strong>
+          <span className="act-header-scope">k &ge; 5 verificado · Datos consolidados</span>
         </div>
-        <span className="act-step-label">k &ge; 5 verificado · Datos consolidados</span>
       </div>
 
       <div className="sst-signals-layout">
@@ -54,7 +53,7 @@ export function SstDemoPanel() {
             <Icon name="trendingUp" size={20} />
           </div>
           <div>
-            <strong>Cero consecuencias punitivas · Trazabilidad 100% auditable</strong>
+            <strong>Cero consecuencias punitivas · Trazabilidad auditable para SST</strong>
             <p>
               La demo presenta intervenciones preventivas separadas de nómina, AHT y sanciones laborales; la
               implementación debe conservar esa separación mediante sus controles de acceso.
