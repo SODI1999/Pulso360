@@ -30,7 +30,7 @@ export function Footer() {
             onClick={() => handleNavClick('#inicio')}
             aria-label="Pulso360, volver al inicio"
           >
-            <img className="brand-logo" src="/assets/marca/logo.png" alt="" />
+            <img className="brand-logo" src="/assets/marca/logo.webp" alt="" />
             <span className="brand-name">Pulso360</span>
           </Link>
           <p>

@@ -67,7 +67,7 @@ export function ProblemSection() {
             {/* Fotografía Documental de Piso BPO Real */}
             <div className="problem-documentary-frame">
               <img
-                src="/assets/fotos/bpo-operations-reality.jpg"
+                src="/assets/fotos/bpo-operations-reality.webp"
                 alt="Operación de centro de contacto en Medellín: fatiga y sobrecarga acumulada en piso de llamadas ininterrumpidas"
                 className="problem-documentary-img"
                 loading="lazy"

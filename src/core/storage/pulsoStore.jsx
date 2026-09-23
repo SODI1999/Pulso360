@@ -1,3 +1,4 @@
+import { normalizeStoredData } from './normalizeStoredData';
 //core/storage/pulsoStore.jsx
 //Almacén central de datos en localStorage y simulación de auditoría
 import { env } from '../config/env';
@@ -7,7 +8,7 @@ import { localData } from './browserStorage';
 
 const STORAGE_KEY = env.storageKey;
 
-// 1. Semilla inicial de datos de prueba con la misma estructura para PostgreSQL
+// Datos de demostración del frontend local.
 
 // Función para clonar profundamente el objeto y evitar mutaciones no deseadas
 const cloneSeed = () => JSON.parse(JSON.stringify(initialSeed));
@@ -29,10 +30,11 @@ export const pulsoStore = {
       return seed;
     }
 
-    const migration = migrateStoredData(data);
-    if (migration.changed) pulsoStore.save(migration.data);
+    const normalized = normalizeStoredData(data);
+    const migration = migrateStoredData(normalized);
+    if (migration.changed || JSON.stringify(normalized) !== raw) pulsoStore.save(migration.data);
 
-    return data;
+    return migration.data;
   },
   // Guarda los datos actualizados
   save: (data) => {
@@ -42,7 +44,7 @@ export const pulsoStore = {
   reset: () => {
     localData.setItem(STORAGE_KEY, JSON.stringify(cloneSeed()));
   },
-  // Registra un evento en la cadena inmutable de auditoría
+  // Registra un evento en la historial local de auditoría
   audit: ({
     actor = 'sistema',
     action,

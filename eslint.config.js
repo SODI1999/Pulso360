@@ -111,5 +111,10 @@ export default [
       'react/prop-types': 'off',
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }]
     }
+  },
+  {
+    files: ['src/features/*/data/**/*.jsx'],
+    // Los catálogos usan JSX por convención académica, pero no son componentes.
+    rules: { 'react-refresh/only-export-components': 'off' }
   }
 ];

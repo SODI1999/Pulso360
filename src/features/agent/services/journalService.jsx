@@ -1,9 +1,18 @@
 import { roleLabels } from '../../../core/auth/authService';
 import { pulsoStore } from '../../../core/storage/pulsoStore';
 
+const unavailableJournal = () => ({ error: 'La entrada no está disponible para este usuario.' });
+const ownsJournal = (journal, user) =>
+  Boolean(user?.id && user.role === 'agente' && journal?.userId === user.id);
+
 export function saveJournal(currentJournalId, currentUser, currentJournal, contextTag, trimmed) {
   let storeData = pulsoStore.get();
   const isNew = !currentJournalId;
+  if (!currentUser?.id || currentUser.role !== 'agente') return unavailableJournal();
+  const storedJournal = isNew ? null : storeData.journals.find((journal) => journal.id === currentJournalId);
+  if (!isNew && !ownsJournal(storedJournal, currentUser)) return unavailableJournal();
+  // Los metadatos proceden del registro guardado, no de una copia enviada por la vista.
+  currentJournal = storedJournal;
   const now = new Date();
   const dateStr = now.toISOString().slice(0, 10);
 
@@ -39,6 +48,8 @@ export function saveJournal(currentJournalId, currentUser, currentJournal, conte
 
 export function deleteJournal(currentJournalId, currentUser) {
   const storeData = pulsoStore.get();
+  const target = storeData.journals.find((journal) => journal.id === currentJournalId);
+  if (!ownsJournal(target, currentUser)) return unavailableJournal();
   storeData.journals = storeData.journals.filter((j) => j.id !== currentJournalId);
   pulsoStore.save(storeData);
 
@@ -53,7 +64,7 @@ export function deleteJournal(currentJournalId, currentUser) {
 export function saveCorrection(currentJournalId, selectedCategories, correctionNote, currentUser) {
   const storeData = pulsoStore.get();
   const target = storeData.journals.find((j) => j.id === currentJournalId);
-  if (!target) return null;
+  if (!ownsJournal(target, currentUser)) return unavailableJournal();
 
   let finalCategories = selectedCategories.filter((c) => c !== 'Ninguna aplica');
   const previousCats = target.correctedCategories
@@ -91,6 +102,7 @@ export function saveCorrection(currentJournalId, selectedCategories, correctionN
 export function saveJournalAnalysis(journalPayload, analysisResult, currentUser) {
   const storeData = pulsoStore.get();
   const target = storeData.journals.find((j) => j.id === journalPayload.id);
+  if (!ownsJournal(target, currentUser)) return unavailableJournal();
   if (target) {
     target.analysis = analysisResult;
     pulsoStore.save(storeData);
@@ -101,6 +113,7 @@ export function saveJournalAnalysis(journalPayload, analysisResult, currentUser)
     action: 'EJECUCION_NLP',
     target: `Bitácora ${journalPayload.id}`
   });
+  return {};
 }
 
 export function createPriorityRequest(currentUser, crisisMode) {

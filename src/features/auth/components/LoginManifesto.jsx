@@ -8,7 +8,7 @@ export function LoginManifesto() {
     <aside className="login-manifesto-panel" aria-label="Principios de acceso y privacidad de Pulso360">
       <div className="manifesto-top-bar">
         <div className="manifesto-brand-lockup">
-          <img src="/assets/marca/logo.png" alt="Pulso360" className="manifesto-brand-symbol" />
+          <img src="/assets/marca/logo.webp" alt="Pulso360" className="manifesto-brand-symbol" />
           <span className="manifesto-brand-title">Pulso360</span>
         </div>
         <Link to="/" className="manifesto-back-link" title="Volver al portal público">

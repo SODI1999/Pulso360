@@ -14,12 +14,13 @@ npm run dev
 Copiar `.env.example` a `.env` si se necesita configurar el entorno local. La configuración de aplicación se lee exclusivamente desde `src/core/config/env.jsx`. No colocar secretos en variables `VITE_*`: se incluyen en el cliente.
 
 ```sh
+npm test
 npm run lint
 npm run build
 npm run preview
 ```
 
-`lint` y `build` son los controles de integración. `preview` sirve la compilación para inspección; no es una prueba. No hay un script de tests ni un pipeline TypeScript en este proyecto.
+`npm test`, `lint` y `build` son los controles de integración. La suite usa el ejecutor de Node y Vite para cargar los módulos reales, sin dependencias adicionales. Cubre recuperación del almacenamiento y operaciones de bitácora por titular/rol. `preview` sirve la compilación para inspección; no es una prueba. No hay un pipeline TypeScript.
 
 ## Organización
 
@@ -80,7 +81,8 @@ ESLint comprueba las dependencias entre módulos, impide acceso directo al almac
 
 - `seed.jsx`: datos iniciales de demostración.
 - `migrations.jsx`: normalización de datos de versiones anteriores.
-- `browserStorage.jsx`: único acceso directo a `localStorage` y `sessionStorage`.
+- `browserStorage.jsx`: único acceso directo a `localStorage` y `sessionStorage`. Si el navegador impide guardar, conserva cambios en memoria durante la pestaña y activa un aviso visible; no garantiza persistencia tras recargar.
+- `normalizeStoredData.jsx`: recupera la estructura conocida de datos parciales y mantiene campos adicionales y colecciones válidas, incluidas las vacías.
 - `preferences.jsx`: borradores de check-in, preferencias de audio, recordatorios y descarte del aviso de desconexión, con sus claves y formatos existentes.
 
 Las operaciones específicas viven en los servicios de cada funcionalidad: guardar un check-in, corregir una bitácora, registrar una solicitud, administrar una campaña o actualizar una intervención. Las vistas no guardan una copia completa de la BD.
@@ -101,7 +103,7 @@ Los estilos usan CSS normal y permanecen en `src/styles`. Las tres entradas gran
 
 Las demás hojas conservan su funcionalidad específica. `tokens.css` sigue siendo la fuente de valores comunes. Buscar la clase antes de editar; mantener sus estados y reglas responsive junto a la interacción que describen. El orden de importación importa: algunas reglas existentes se complementan o sobrescriben. No cambiarlo sin comprobar el resultado.
 
-Un componente necesita separarse cuando mezcla responsabilidades, no al alcanzar un límite arbitrario de líneas. Un catálogo, un SVG o un formulario pueden ser extensos y seguir siendo claros. Por ejemplo, el mapa de anclaje compone escenas sensoriales independientes; el formulario de contacto delega coordinación al hook y validación a un servicio.
+Un componente necesita separarse cuando mezcla responsabilidades, no al alcanzar un límite arbitrario de líneas. Un catálogo, un SVG o un formulario pueden ser extensos y seguir siendo claros. Por ejemplo, la pausa delega sus efectos a `useBpoPause`, el recorrido público compone tres paneles y conserva su estado entre pestañas, y el mapa de anclaje compone escenas sensoriales independientes; el formulario de contacto delega coordinación al hook y validación a un servicio.
 
 ## Punto de partida independiente
 
@@ -111,8 +113,14 @@ Los cambios locales de análisis se incorporaron a esta base. Dependencias, comp
 
 ## Validación de la reorganización
 
-Se comprueban lint, compilación, límites de importación, rutas y flujos con datos demo en un navegador aislado. Las comprobaciones temporales de navegador no añaden dependencias al proyecto ni constituyen una suite automatizada permanente.
+Se comprueban lint, compilación, límites de importación, rutas y flujos con datos demo en un navegador aislado. Las comprobaciones temporales de navegador complementan la suite reproducible de `tests/regressions.test.mjs`; no forman parte de `npm test`.
 
 La compilación conserva la advertencia previa de Vite por un paquete JavaScript superior a 500 kB. Esta reorganización no incorpora carga diferida ni altera el comportamiento de las rutas para ocultar la advertencia.
 
 Para cambios futuros, verificar acceso y consentimiento por rol, estados protegidos, persistencia al recargar, interacción por teclado y reflow, además de lint y build. Registrar las limitaciones reales de cada revisión: estos controles no certifican ausencia absoluta de deuda técnica ni accesibilidad completa.
+
+## Recursos gráficos
+
+Las fotografías utilizadas se sirven como WebP desde `public/assets/fotos/`. El logo de interfaz usa WebP y el favicon usa un PNG pequeño. Las imágenes en `public/` se descargan por separado: su tamaño no forma parte del aviso de Vite sobre el paquete JavaScript.
+
+Los cinco rostros animados APNG del check-in y sus cinco versiones estáticas para movimiento reducido siguen en PNG. Al reemplazar un recurso, comprobar primero sus usos y conservar la versión necesaria para esa preferencia.

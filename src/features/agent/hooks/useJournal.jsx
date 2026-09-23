@@ -88,14 +88,13 @@ export function useJournal() {
       return;
     }
 
-    const { journalPayload } = saveJournal(
-      currentJournalId,
-      currentUser,
-      currentJournal,
-      contextTag,
-      trimmed
-    );
+    const result = saveJournal(currentJournalId, currentUser, currentJournal, contextTag, trimmed);
 
+    if (result.error) {
+      setFeedback({ type: 'warn', message: result.error });
+      return;
+    }
+    const { journalPayload } = result;
     setCurrentJournalId(journalPayload.id);
     loadJournals();
 
@@ -117,7 +116,12 @@ export function useJournal() {
       const analysisResult = nlpEngine.analyze(trimmed);
 
       const finishProcessing = () => {
-        saveJournalAnalysis(journalPayload, analysisResult, currentUser);
+        const result = saveJournalAnalysis(journalPayload, analysisResult, currentUser);
+        if (result.error) {
+          setIsAnalyzing(false);
+          setFeedback({ type: 'warn', message: result.error });
+          return;
+        }
 
         setIsAnalyzing(false);
         loadJournals();
@@ -159,7 +163,11 @@ export function useJournal() {
       return;
     }
 
-    deleteJournal(currentJournalId, currentUser);
+    const result = deleteJournal(currentJournalId, currentUser);
+    if (result.error) {
+      setFeedback({ type: 'warn', message: result.error });
+      return;
+    }
 
     handleNewEntry();
     loadJournals();
@@ -202,7 +210,10 @@ export function useJournal() {
   // Guardar corrección humana
   const handleSaveCorrection = () => {
     const operationResult = saveCorrection(currentJournalId, selectedCategories, correctionNote, currentUser);
-    if (!operationResult) return;
+    if (operationResult.error) {
+      setFeedback({ type: 'warn', message: operationResult.error });
+      return;
+    }
 
     loadJournals();
     setShowCorrectionModal(false);
