@@ -13,20 +13,13 @@ export function ReportPreviewCard({
     <div className="reports-preview-card">
       <div className="reports-preview-header">
         <div>
-          <div
-            style={{
-              fontSize: '13px',
-              color: 'var(--c-primario)',
-              fontWeight: 600,
-              textTransform: 'uppercase'
-            }}
-          >
+          <div className="reports-preview-eyebrow">
             Previsualización en tiempo real
           </div>
-          <h3 style={{ fontSize: '18px', margin: '2px 0 0', color: 'var(--c-texto)' }}>
+          <h3 className="reports-preview-title">
             Pulso360 · Reporte consolidado
           </h3>
-          <div style={{ fontSize: '13px', color: 'var(--c-texto-suave)', marginTop: '2px' }}>
+          <div className="reports-preview-meta">
             {scopeLabel} · {period}
           </div>
         </div>

@@ -1,6 +1,15 @@
 /* src/styles/supervisor.css */
 /* Estilos para el módulo de supervisión operativa y monitoreo colectivo */
 
+.supervisor-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
 .supervisor-filter-bar {
   display: flex;
   gap: var(--space-3);
@@ -63,6 +72,11 @@
   line-height: 1.55;
 }
 
+.supervisor-rec-action {
+  width: 100%;
+  justify-content: center;
+}
+
 .supervisor-kpi-highlight {
   font-size: 28px;
   font-weight: 800;
@@ -88,7 +102,7 @@
   flex: 1;
   height: 8px;
   background-color: var(--c-fondo);
-  border-radius: var(--radius-full);
+  border-radius: var(--radius-xs);
   overflow: hidden;
   border: 1px solid var(--c-borde-suave);
 }
@@ -96,7 +110,7 @@
 .intervention-progress-fill {
   height: 100%;
   background-color: var(--c-primario);
-  border-radius: var(--radius-full);
+  border-radius: var(--radius-xs);
   transition: width var(--transition-normal);
 }
 

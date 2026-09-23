@@ -1,7 +1,7 @@
 // src/features/supervisor/components/ActionFollowupModal.jsx
 // Modal estándar para registrar notas operativas de seguimiento en intervenciones de SST (RF-09)
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Icon } from '../../../core/components/Icon';
 
 export function ActionFollowupModal({ intervention, onClose, onSave }) {
@@ -9,6 +9,16 @@ export function ActionFollowupModal({ intervention, onClose, onSave }) {
   const [notes, setNotes] = useState('');
   const [progress, setProgress] = useState(intervention?.progress || 55);
   const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [onClose]);
 
   if (!intervention) return null;
 
@@ -24,19 +34,26 @@ export function ActionFollowupModal({ intervention, onClose, onSave }) {
     });
   };
 
+  const handleOverlayClick = (e) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
   return (
     <div
       className="modal-overlay active"
       role="dialog"
       aria-modal="true"
       aria-labelledby="modalFollowupTitle"
+      onClick={handleOverlayClick}
     >
       <div className="modal-box" style={{ maxWidth: '520px' }}>
         {/* Cabecera del modal */}
         <div className="modal-header">
           <div>
             <h2 id="modalFollowupTitle" className="modal-title">
-              Registrar seguimiento operativo
+              Registrar avance de intervención
             </h2>
             <div className="modal-subtitle">{intervention.title}</div>
           </div>
@@ -56,6 +73,7 @@ export function ActionFollowupModal({ intervention, onClose, onSave }) {
               className="form-select"
               value={actionType}
               onChange={(e) => setActionType(e.target.value)}
+              autoFocus
             >
               <option value="Ajuste de pausas y descansos">Ajuste de pausas y descansos</option>
               <option value="Charla preventiva de inicio de turno">
@@ -124,7 +142,7 @@ export function ActionFollowupModal({ intervention, onClose, onSave }) {
               Cancelar
             </button>
             <button type="submit" className="btn btn-primary" disabled={saving}>
-              <span>{saving ? 'Guardando...' : 'Guardar seguimiento'}</span>
+              <span>{saving ? 'Guardando...' : 'Guardar avance'}</span>
             </button>
           </div>
         </form>

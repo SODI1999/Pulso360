@@ -34,7 +34,7 @@ export function TeamDashboardPage() {
   }, [scopeFilter, periodFilter, user]);
 
   return (
-    <div>
+    <div className="supervisor-page">
       {/* Cabecera del Panel */}
       <div className="page-header">
         <div>
@@ -114,13 +114,13 @@ export function TeamDashboardPage() {
                   <h2 className="card-title">Tendencia Agregada del Equipo (Semanas 1 a 4)</h2>
                   <p className="card-subtitle">Evolución del índice de bienestar colectivo</p>
                 </div>
-                <span className="privacy-badge">N = 14 Agentes</span>
+                <span className="badge badge-info">N = 14 Agentes</span>
               </div>
               <div className="supervisor-chart-container">
                 <TrendLineChart
                   labels={['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4']}
                   values={[70, 72, 74, 76]}
-                  strokeColor="#1d4ed8"
+                  strokeColor="#2563eb"
                   height={200}
                 />
               </div>
@@ -136,8 +136,7 @@ export function TeamDashboardPage() {
               </div>
               <Link
                 to="/supervisor/acciones"
-                className="btn btn-secondary"
-                style={{ width: '100%', justifyContent: 'center' }}
+                className="btn btn-secondary supervisor-rec-action"
               >
                 <Icon name="task_alt" size={18} />
                 <span>Ver intervención asignada</span>

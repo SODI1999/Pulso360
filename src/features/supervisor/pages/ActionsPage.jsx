@@ -12,7 +12,7 @@ export function ActionsPage() {
     useActions();
 
   return (
-    <div>
+    <div className="supervisor-page">
       {/* Cabecera */}
       <div className="page-header">
         <div>
@@ -24,7 +24,7 @@ export function ActionsPage() {
       </div>
 
       {/* Banner de Corresponsabilidad Preventiva (RF-09) */}
-      <div className="alert-banner info" style={{ marginBottom: 'var(--space-6)' }}>
+      <div className="alert-banner info">
         <Icon name="info" size={20} />
         <div>
           <strong>Corresponsabilidad preventiva:</strong> las intervenciones buscan mitigar factores de carga
@@ -35,7 +35,7 @@ export function ActionsPage() {
 
       {/* Mensaje de Feedback */}
       {feedback && (
-        <div className="alert-banner ok" role="status" style={{ marginBottom: 'var(--space-5)' }}>
+        <div className="alert-banner ok" role="status">
           <Icon name="checkCircle" size={18} />
           <span>{feedback}</span>
         </div>
