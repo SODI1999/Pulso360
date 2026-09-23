@@ -1,0 +1,96 @@
+/* Simulador de Perspectiva (Transparencia & k-Anonimato)
+   Solo tokens del sistema; el ancho se resuelve con doble clase para no usar !important. */
+.agent-modal.perspective-modal {
+  max-width: 720px;
+  width: 95%;
+  padding: var(--space-3) var(--space-5) 10px;
+}
+
+.perspective-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: var(--space-3) 0;
+}
+
+@media (max-width: 680px) {
+  .perspective-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.perspective-card {
+  border: 1.5px solid var(--c-borde-suave);
+  border-radius: var(--radius-lg);
+  padding: 12px 14px;
+  background-color: var(--c-superficie);
+}
+
+.perspective-card.private {
+  border-color: var(--c-calma-border);
+  background-color: var(--c-calma-bg);
+}
+
+.perspective-card.supervisor {
+  border-color: var(--c-borde-suave);
+  background-color: var(--c-fondo);
+}
+
+.perspective-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.perspective-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.perspective-list-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--c-texto);
+}
+
+.perspective-item-icon {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* Variantes de color por semántica de la fila (privado, vista operativa, riesgo) */
+.perspective-item-icon--private {
+  color: var(--c-calma-accent);
+}
+
+.perspective-item-icon--ops {
+  color: var(--c-info);
+}
+
+.perspective-item-icon--risk {
+  color: var(--c-critico);
+}
+
+.perspective-card-title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--c-texto);
+}
+
+.perspective-card-sub {
+  font-size: 11.5px;
+  color: var(--c-texto-suave);
+}
+
+/* El aviso de garantías se muestra con la clase compartida .agent-notice (agent.css);
+   aquí ya no quedan cajas propias de perspectiva. */

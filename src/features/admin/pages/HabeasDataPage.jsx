@@ -1,84 +1,25 @@
+import { useHabeasData } from '../hooks/useHabeasData';
+import { STATUS_WORKFLOW } from '../data/habeasDataData';
+
 // src/features/admin/pages/HabeasDataPage.jsx
 // Módulo de Gestión Administrativa de Solicitudes Habeas Data (RF-14 / Ley 1581)
 
-import { useState, useMemo } from 'react';
-import { authService } from '../../../core/auth/authService';
-import { pulsoStore } from '../../../core/storage/pulsoStore';
 import { Icon } from '../../../core/components/Icon';
 import { HabeasAdvanceModal } from '../components/HabeasAdvanceModal';
 
 import '../../../styles/admin.css';
 
-const STATUS_WORKFLOW = ['Recibida', 'En trámite', 'Respondida', 'Cerrada'];
-
 export function HabeasDataPage() {
-  const currentUser = authService.getCurrentUser();
-  const [version, setVersion] = useState(0);
-  const [feedback, setFeedback] = useState('');
-  const [advanceModalState, setAdvanceModalState] = useState({
-    isOpen: false,
-    request: null,
-    nextStatus: ''
-  });
-
-  const storeData = useMemo(() => {
-    void version;
-    return pulsoStore.get();
-  }, [version]);
-  const requests = storeData.habeasRequests || [];
-  const users = storeData.users || [];
-
-  const actorLabel = `${currentUser?.name || 'Administrador'} (${currentUser?.role || 'admin'})`;
-
-  // Formatear fechas
-  const formatDate = (value) => {
-    if (!value) return '—';
-    const dateStr = value.includes('T') ? value : `${value}T12:00:00`;
-    try {
-      return new Intl.DateTimeFormat('es-CO', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit'
-      }).format(new Date(dateStr));
-    } catch {
-      return value;
-    }
-  };
-
-  // Abrir modal para avanzar
-  const handleOpenAdvance = (request) => {
-    const currentIndex = STATUS_WORKFLOW.indexOf(request.status);
-    if (currentIndex >= 0 && currentIndex < STATUS_WORKFLOW.length - 1) {
-      const nextStatus = STATUS_WORKFLOW[currentIndex + 1];
-      setAdvanceModalState({
-        isOpen: true,
-        request,
-        nextStatus
-      });
-    }
-  };
-
-  // Confirmar avance
-  const handleConfirmAdvance = ({ requestId, nextStatus, note }) => {
-    const data = pulsoStore.get();
-    const req = (data.habeasRequests || []).find((item) => item.id === requestId);
-    if (!req) return;
-
-    req.status = nextStatus;
-    if (note) req.note = note;
-
-    pulsoStore.save(data);
-
-    pulsoStore.audit({
-      actor: actorLabel,
-      action: 'GESTION_HABEAS_DATA',
-      target: `${req.id} (${req.type}) -> Estado: ${nextStatus} · Constancia: ${note || 'Sin nota'}`
-    });
-
-    setFeedback(`Radicado ${req.id} actualizado exitosamente al estado "${nextStatus}".`);
-    setAdvanceModalState({ isOpen: false, request: null, nextStatus: '' });
-    setVersion((v) => v + 1);
-  };
+  const {
+    feedback,
+    advanceModalState,
+    setAdvanceModalState,
+    requests,
+    users,
+    formatDate,
+    handleOpenAdvance,
+    handleConfirmAdvance
+  } = useHabeasData();
 
   return (
     <div>
@@ -87,7 +28,8 @@ export function HabeasDataPage() {
         <div>
           <h1 className="page-title">Bandeja de solicitudes de titulares</h1>
           <p className="page-subtitle">
-            Atención de derechos de consulta, rectificación, portabilidad y supresión con trazabilidad administrativa (RF-14 / Ley 1581).
+            Atención de derechos de consulta, rectificación, portabilidad y supresión con trazabilidad
+            administrativa (RF-14 / Ley 1581).
           </p>
         </div>
       </div>
@@ -96,7 +38,9 @@ export function HabeasDataPage() {
       <div className="alert-banner info" style={{ marginBottom: 'var(--space-5)' }}>
         <Icon name="info" size={18} />
         <div>
-          <strong>Cálculo de Plazos Legales:</strong> La fecha objetivo se calcula en días hábiles institucionales. La gestión de solicitudes de portabilidad y rectificación no altera bitácoras históricas selladas, preservando la inmutabilidad de la cadena de auditoría.
+          <strong>Cálculo de Plazos Legales:</strong> La fecha objetivo se calcula en días hábiles
+          institucionales. La gestión de solicitudes de portabilidad y rectificación no altera bitácoras
+          históricas selladas, preservando la inmutabilidad de la cadena de auditoría.
         </div>
       </div>
 
@@ -113,7 +57,9 @@ export function HabeasDataPage() {
         <div className="card-header">
           <div>
             <h2 className="card-title">Solicitudes radicadas</h2>
-            <div className="card-subtitle">Control de términos, estados de atención y constancias administrativas.</div>
+            <div className="card-subtitle">
+              Control de términos, estados de atención y constancias administrativas.
+            </div>
           </div>
           <span className="badge badge-info">Toda transición queda auditada</span>
         </div>
@@ -134,7 +80,10 @@ export function HabeasDataPage() {
             <tbody>
               {requests.length === 0 ? (
                 <tr>
-                  <td colSpan="7" style={{ textAlign: 'center', padding: 'var(--space-6)', color: 'var(--c-texto-suave)' }}>
+                  <td
+                    colSpan="7"
+                    style={{ textAlign: 'center', padding: 'var(--space-6)', color: 'var(--c-texto-suave)' }}
+                  >
                     No hay solicitudes de Habeas Data radicadas en el sistema.
                   </td>
                 </tr>
@@ -146,7 +95,10 @@ export function HabeasDataPage() {
 
                   // Verificación de vencimiento
                   const dueDate = r.deadline ? new Date(`${r.deadline}T23:59:59`) : null;
-                  const isOverdue = dueDate && dueDate.getTime() < Date.now() && !['Respondida', 'Cerrada'].includes(r.status);
+                  const isOverdue =
+                    dueDate &&
+                    dueDate.getTime() < Date.now() &&
+                    !['Respondida', 'Cerrada'].includes(r.status);
 
                   let statusBadgeClass = 'badge-info';
                   if (r.status === 'Cerrada') statusBadgeClass = 'badge-ok';

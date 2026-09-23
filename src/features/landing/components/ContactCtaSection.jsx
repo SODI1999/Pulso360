@@ -13,7 +13,8 @@ export function ContactCtaSection() {
               ¿Lideras una operación BPO o gestionas Seguridad y Salud en el Trabajo?
             </h2>
             <p className="contact-cta-lead">
-              Coordinemos una demostración técnica guiada para tu equipo de operaciones y talento humano, con revisión de umbrales de k-anonimato y límites de privacidad aplicados a la operación.
+              Coordinemos una demostración técnica guiada para tu equipo de operaciones y talento humano, con
+              revisión de umbrales de k-anonimato y límites de privacidad aplicados a la operación.
             </p>
             <div className="contact-cta-buttons">
               <Link to="/contactenos" className="btn-editorial btn-editorial-primary">
@@ -21,7 +22,8 @@ export function ContactCtaSection() {
               </Link>
             </div>
             <p className="contact-cta-guarantee">
-              La demostración se centra en umbrales de k-anonimato, tendencias agregadas y límites de acceso por rol.
+              La demostración se centra en umbrales de k-anonimato, tendencias agregadas y límites de acceso
+              por rol.
             </p>
           </div>
         </div>

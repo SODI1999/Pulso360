@@ -1,0 +1,424 @@
+/* =========================================================================
+   ACTO II: ESTILOS ESCUDO K-ANONIMATO
+   ========================================================================= */
+.kanonymity-simulator-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 28px;
+  align-items: stretch;
+}
+
+@media (max-width: 900px) {
+  .kanonymity-simulator-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.kanonymity-control-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 20px;
+  background: #FAF8F5;
+  border: 1px solid rgba(17, 38, 35, 0.08);
+  border-radius: 8px;
+  padding: 24px;
+}
+
+.kanonymity-prompt h3 {
+  font-family: var(--font-family-display, 'Newsreader', Georgia, serif);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--landing-ink);
+  margin-bottom: 4px;
+}
+
+.kanonymity-prompt p {
+  font-size: 0.86rem;
+  color: var(--landing-body);
+  line-height: 1.55;
+  margin: 0;
+}
+
+.slider-interactive-box {
+  background: #FFFFFF;
+  border: 1px solid var(--landing-line);
+  border-radius: 8px;
+  padding: 18px 20px;
+  box-shadow: 0 2px 8px rgba(17, 38, 35, 0.02);
+}
+
+.slider-readout-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  margin-bottom: 12px;
+}
+
+.slider-counter {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--landing-green);
+}
+
+.kanonymity-slider {
+  width: 100%;
+  accent-color: var(--landing-green);
+  cursor: pointer;
+  margin-bottom: 8px;
+}
+
+.slider-ticks-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.68rem;
+  color: var(--landing-body);
+}
+
+@media (max-width: 600px) {
+  .slider-readout-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .slider-ticks-row {
+    font-size: 0.65rem;
+  }
+}
+
+.tick-threshold {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 800;
+  color: var(--landing-emerald);
+}
+
+.kanonymity-math-guarantee {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 0.76rem;
+  line-height: 1.5;
+  color: #475569;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(17, 38, 35, 0.06);
+  padding: 12px 14px;
+  border-radius: 4px;
+}
+
+.kanonymity-result-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.k-status-box {
+  display: flex;
+  gap: 18px;
+  padding: 24px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  transition: all 200ms ease;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.k-status-box.status-locked,
+.k-status-box.status-protected {
+  background: #FAF8F5;
+  border-color: #E2DBD0;
+}
+
+.k-status-box.status-unlocked {
+  background: #F0FDF4;
+  border-color: #BBF7D0;
+}
+
+.status-icon-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.status-icon-circle.lock,
+.status-icon-circle.shield-protected {
+  background: #E8F3EE;
+  color: var(--landing-emerald);
+  border: 1px solid #BFE3DA;
+}
+
+.status-icon-circle.check {
+  background: #DCFCE7;
+  color: #16A34A;
+}
+
+.status-copy h4 {
+  font-size: 1.05rem;
+  font-weight: 750;
+  color: var(--landing-ink);
+  margin-block: 4px 6px;
+}
+
+.status-copy p {
+  font-size: 0.84rem;
+  line-height: 1.55;
+  color: var(--landing-body);
+  margin-bottom: 10px;
+}
+
+.status-pill {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.status-pill.pill-danger,
+.status-pill.pill-shield {
+  background: #E8F3EE;
+  color: #0F766E;
+  border: 1px solid #BFE3DA;
+}
+
+.status-pill.pill-success {
+  background: #DCFCE7;
+  color: #166534;
+}
+
+.status-subnote {
+  display: block;
+  font-size: 0.72rem;
+  line-height: 1.4;
+  color: #64748B;
+}
+
+/* =========================================================================
+   Reporte Preventivo Colectivo Desbloqueado (Acto II, k >= 5)
+   Consola Preventiva SG-SST · Tendencia Colectiva Real
+   ========================================================================= */
+.sst-unlocked-report-card {
+  background: #ffffff;
+  border: 1px solid #BBF7D0;
+  border-radius: 8px;
+  padding: 22px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 4px 16px rgba(22, 101, 52, 0.06);
+  animation: actFadeIn 220ms ease;
+}
+
+.unlocked-report-head {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.unlocked-badge-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.unlocked-k-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #166534;
+  background: #DCFCE7;
+  padding: 3px 9px;
+  border-radius: 999px;
+}
+
+.unlocked-validity-badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #0F766E;
+  background: #CCFBF1;
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+
+.unlocked-report-title {
+  font-size: 1.05rem;
+  font-weight: 750;
+  color: var(--landing-ink);
+  margin: 0;
+  line-height: 1.3;
+}
+
+.unlocked-report-sub {
+  font-size: 0.78rem;
+  color: var(--landing-body);
+  line-height: 1.45;
+  margin: 0;
+}
+
+.unlocked-metric-block {
+  background: #FAF8F5;
+  border: 1px solid var(--landing-line);
+  border-radius: 8px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.energy-index-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.8rem;
+}
+
+.energy-index-label {
+  font-weight: 700;
+  color: var(--landing-ink);
+}
+
+.energy-index-val {
+  font-size: 0.85rem;
+  color: var(--landing-body);
+}
+
+.energy-index-val strong {
+  font-size: 1.05rem;
+  font-weight: 850;
+  color: var(--landing-green-dark);
+}
+
+.energy-status-text {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #166534;
+  margin-left: 3px;
+}
+
+.energy-bar-track {
+  width: 100%;
+  height: 8px;
+  border-radius: 999px;
+  background: #EAE5DC;
+  overflow: hidden;
+}
+
+.energy-bar-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #14705A, #16A34A);
+  transition: width 300ms ease;
+}
+
+.unlocked-distribution-block {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.distribution-title {
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--landing-ink);
+}
+
+.distribution-chips-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.dist-chip {
+  flex: 1;
+  min-width: 120px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 5px;
+  border: 1px solid transparent;
+}
+
+.dist-chip.chip-balanced {
+  background: #F0FDF4;
+  border-color: #BBF7D0;
+  color: #166534;
+}
+
+.dist-chip.chip-fatigue {
+  background: #FEF3C7;
+  border-color: #FDE68A;
+  color: #92400E;
+}
+
+.dist-chip-pct {
+  font-size: 1.05rem;
+  font-weight: 850;
+  line-height: 1;
+}
+
+.dist-chip-label {
+  font-size: 0.74rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.unlocked-protocol-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: #F0FDF4;
+  border: 1px solid #86EFAC;
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+
+.protocol-icon {
+  color: #16A34A;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.protocol-text strong {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 750;
+  color: #166534;
+  margin-bottom: 2px;
+}
+
+.protocol-text p {
+  font-size: 0.76rem;
+  color: #1E293B;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.unlocked-privacy-seal {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-top: 8px;
+  border-top: 1px solid var(--landing-hairline, rgba(17, 38, 35, 0.08));
+  font-size: 0.72rem;
+  color: #64748B;
+  line-height: 1.4;
+}
+
+.unlocked-privacy-seal svg {
+  color: var(--landing-emerald);
+  flex-shrink: 0;
+}

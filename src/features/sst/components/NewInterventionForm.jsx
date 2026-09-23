@@ -2,7 +2,7 @@
 // Formulario para registro de planes de acción e intervenciones colectivas (RF-09)
 
 import { useState } from 'react';
-import { pulsoStore } from '../../../core/storage/pulsoStore';
+
 import { Icon } from '../../../core/components/Icon';
 
 const SCOPES = {
@@ -13,9 +13,7 @@ const SCOPES = {
   'camp-2': { campaign: 'Campaña Retención Beta', team: '', n: 22, baseline: 64 }
 };
 
-export function NewInterventionForm({ onSaveIntervention }) {
-  const minThreshold = pulsoStore.get().settings?.umbralMinimo || 5;
-
+export function NewInterventionForm({ onSaveIntervention, minThreshold }) {
   const [title, setTitle] = useState('');
   const [type, setType] = useState('Pausas cognitivas');
   const [scopeKey, setScopeKey] = useState('team-alpha-1');
@@ -39,7 +37,9 @@ export function NewInterventionForm({ onSaveIntervention }) {
     setError('');
 
     if (!isAllowed) {
-      setError(`No es posible crear una intervención medible para este ámbito: cuenta con N=${currentScope.n} (menor al umbral de privacidad N ≥ ${minThreshold}).`);
+      setError(
+        `No es posible crear una intervención medible para este ámbito: cuenta con N=${currentScope.n} (menor al umbral de privacidad N ≥ ${minThreshold}).`
+      );
       return;
     }
 
@@ -89,7 +89,9 @@ export function NewInterventionForm({ onSaveIntervention }) {
       <form onSubmit={handleSubmit}>
         <div className="intervention-form-grid">
           <div className="form-group">
-            <label className="form-label" htmlFor="intTitle">Título de la intervención</label>
+            <label className="form-label" htmlFor="intTitle">
+              Título de la intervención
+            </label>
             <input
               id="intTitle"
               className="form-input"
@@ -101,7 +103,9 @@ export function NewInterventionForm({ onSaveIntervention }) {
           </div>
 
           <div className="form-group">
-            <label className="form-label" htmlFor="intType">Tipo de intervención</label>
+            <label className="form-label" htmlFor="intType">
+              Tipo de intervención
+            </label>
             <select
               id="intType"
               className="form-select"
@@ -116,7 +120,9 @@ export function NewInterventionForm({ onSaveIntervention }) {
           </div>
 
           <div className="form-group">
-            <label className="form-label" htmlFor="intScope">Ámbito destinatario</label>
+            <label className="form-label" htmlFor="intScope">
+              Ámbito destinatario
+            </label>
             <select
               id="intScope"
               className="form-select"
@@ -132,7 +138,9 @@ export function NewInterventionForm({ onSaveIntervention }) {
           </div>
 
           <div className="form-group">
-            <label className="form-label" htmlFor="intIndicator">Indicador objetivo</label>
+            <label className="form-label" htmlFor="intIndicator">
+              Indicador objetivo
+            </label>
             <select
               id="intIndicator"
               className="form-select"
@@ -147,10 +155,20 @@ export function NewInterventionForm({ onSaveIntervention }) {
 
           {/* Tarjeta de Línea Base */}
           <div className="baseline-preview-box">
-            <div style={{ fontSize: '12px', fontWeight: '600', color: 'var(--c-texto-suave)', textTransform: 'uppercase' }}>
+            <div
+              style={{
+                fontSize: '12px',
+                fontWeight: '600',
+                color: 'var(--c-texto-suave)',
+                textTransform: 'uppercase'
+              }}
+            >
               Línea Base Calculada
             </div>
-            <div className="baseline-score" style={{ color: isAllowed ? 'var(--c-primario)' : 'var(--c-alerta)' }}>
+            <div
+              className="baseline-score"
+              style={{ color: isAllowed ? 'var(--c-primario)' : 'var(--c-alerta)' }}
+            >
               {isAllowed ? `${currentScope.baseline} / 100` : 'No publicable'}
             </div>
             <div className="baseline-note">
@@ -161,7 +179,9 @@ export function NewInterventionForm({ onSaveIntervention }) {
           </div>
 
           <div className="form-group">
-            <label className="form-label" htmlFor="intAssignedTo">Responsable operativo</label>
+            <label className="form-label" htmlFor="intAssignedTo">
+              Responsable operativo
+            </label>
             <select
               id="intAssignedTo"
               className="form-select"
@@ -174,7 +194,9 @@ export function NewInterventionForm({ onSaveIntervention }) {
           </div>
 
           <div className="form-group">
-            <label className="form-label" htmlFor="intStartDate">Fecha de inicio</label>
+            <label className="form-label" htmlFor="intStartDate">
+              Fecha de inicio
+            </label>
             <input
               id="intStartDate"
               type="date"
@@ -186,7 +208,9 @@ export function NewInterventionForm({ onSaveIntervention }) {
           </div>
 
           <div className="form-group">
-            <label className="form-label" htmlFor="intEndDate">Fecha de cierre</label>
+            <label className="form-label" htmlFor="intEndDate">
+              Fecha de cierre
+            </label>
             <input
               id="intEndDate"
               type="date"
@@ -199,7 +223,9 @@ export function NewInterventionForm({ onSaveIntervention }) {
         </div>
 
         <div className="form-group" style={{ marginBottom: '14px' }}>
-          <label className="form-label" htmlFor="intTarget">Objetivo y meta de la intervención</label>
+          <label className="form-label" htmlFor="intTarget">
+            Objetivo y meta de la intervención
+          </label>
           <input
             id="intTarget"
             className="form-input"
@@ -210,14 +236,25 @@ export function NewInterventionForm({ onSaveIntervention }) {
         </div>
 
         <div style={{ marginBottom: '16px' }}>
-          <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '13.5px', color: 'var(--c-texto)' }}>
+          <label
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              cursor: 'pointer',
+              fontSize: '13.5px',
+              color: 'var(--c-texto)'
+            }}
+          >
             <input
               type="checkbox"
               checked={externalAction}
               onChange={(e) => setExternalAction(e.target.checked)}
               style={{ width: '16px', height: '16px', accentColor: 'var(--c-primario)' }}
             />
-            <span>Requiere acciones externas manuales (ej: coordinación logística con operaciones de campaña)</span>
+            <span>
+              Requiere acciones externas manuales (ej: coordinación logística con operaciones de campaña)
+            </span>
           </label>
         </div>
 

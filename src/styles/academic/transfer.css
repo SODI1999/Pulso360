@@ -1,0 +1,172 @@
+/* ==========================================================================
+   Tarjetas de Transferencia Tridimensionales
+   ========================================================================== */
+.transfer-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+@media (max-width: 768px) {
+  .transfer-cards-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+.transfer-flow-card {
+  background: #ffffff;
+  border: 1px solid var(--landing-line, #E5E0D6);
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 4px 18px rgba(17, 38, 35, 0.02);
+  display: flex;
+  flex-direction: column;
+}
+
+.card-top-bar {
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--landing-hairline, #E7E2D7);
+  padding-bottom: 14px;
+}
+
+.card-badge-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.card-badge-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-axis-icon-wrap {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  background: var(--landing-mint, #E8F3EE);
+  color: var(--landing-emerald, #14705A);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.card-step-number {
+  font-size: 0.72rem;
+  font-weight: 750;
+  color: var(--landing-body, #485B58);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.card-feature-badge {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--landing-emerald);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.card-flow-title {
+  font-family: var(--font-family-display, 'Newsreader', Georgia, serif);
+  font-size: 1.18rem;
+  font-weight: 700;
+  color: var(--landing-ink, #112623);
+  margin: 0;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+}
+
+/* Pila de Fases Conectadas */
+.flow-steps-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.flow-step {
+  display: flex;
+  gap: 14px;
+  position: relative;
+}
+
+.step-indicator-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 16px;
+  flex-shrink: 0;
+  padding-top: 4px;
+}
+
+.step-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.dot-social {
+  background: #8A5A2B;
+}
+
+.dot-bpo {
+  background: #D97706;
+}
+
+.dot-solution {
+  background: var(--landing-emerald, #14705A);
+  box-shadow: 0 0 0 3px rgba(20, 112, 90, 0.18);
+}
+
+.step-line {
+  width: 2px;
+  flex: 1;
+  background: var(--landing-line, #E5E0D6);
+  margin-block: 4px;
+}
+
+.step-text-wrap {
+  padding-bottom: 14px;
+  flex: 1;
+}
+
+.step-label {
+  font-size: 0.68rem;
+  font-weight: 750;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--landing-body, #485B58);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.solution-label {
+  color: var(--landing-emerald, #14705A);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.step-text-wrap p {
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--landing-ink, #112623);
+  margin: 0;
+}
+
+.step-solution .step-text-wrap {
+  background: #FAF8F5;
+  border: 1px solid var(--landing-line, #E5E0D6);
+  border-left: 3px solid var(--landing-emerald, #14705A);
+  border-radius: 8px;
+  padding: 12px 14px;
+}

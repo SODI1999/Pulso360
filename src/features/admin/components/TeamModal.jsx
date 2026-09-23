@@ -4,14 +4,7 @@
 import { useState, useEffect } from 'react';
 import { Icon } from '../../../core/components/Icon';
 
-export function TeamModal({
-  isOpen,
-  onClose,
-  onSave,
-  campaign,
-  team = null,
-  supervisorsList = []
-}) {
+export function TeamModal({ isOpen, onClose, onSave, campaign, team = null, supervisorsList = [] }) {
   const [name, setName] = useState('');
   const [n, setN] = useState(10);
   const [supervisor, setSupervisor] = useState('');
@@ -60,7 +53,7 @@ export function TeamModal({
       teamId: team?.id || null,
       name: trimmedName,
       n: parsedN,
-      supervisor: team ? (supervisor || team.supervisor) : supervisor,
+      supervisor: team ? supervisor || team.supervisor : supervisor,
       active
     });
   };
@@ -72,9 +65,7 @@ export function TeamModal({
       <div className="modal-card" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <div>
-            <h2 className="modal-title">
-              {team ? 'Editar Equipo' : 'Crear Nuevo Equipo'}
-            </h2>
+            <h2 className="modal-title">{team ? 'Editar Equipo' : 'Crear Nuevo Equipo'}</h2>
             <div className="modal-subtitle">
               Campaña: <strong>{campaign?.name}</strong>
             </div>
@@ -124,7 +115,8 @@ export function TeamModal({
               <span className="form-hint">
                 {isLowK ? (
                   <span style={{ color: 'var(--c-alerta)', fontWeight: 500 }}>
-                    Alerta de k-anonimato: con N &lt; 5, los tableros del supervisor no publicarán métricas para resguardar la identidad.
+                    Alerta de k-anonimato: con N &lt; 5, los tableros del supervisor no publicarán métricas
+                    para resguardar la identidad.
                   </span>
                 ) : (
                   'Con N &ge; 5 las métricas agregadas son publicables sin riesgo de reidentificación.'

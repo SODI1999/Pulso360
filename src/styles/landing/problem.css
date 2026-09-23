@@ -1,0 +1,429 @@
+/* ==========================================================================
+   2. Problem Section Editorial Spread
+   ========================================================================== */
+.problem-editorial-section {
+  padding-block: 100px 120px;
+  border-bottom: 1px solid var(--landing-line);
+}
+
+@media (min-width: 1024px) {
+  .problem-editorial-section {
+    padding-block: 120px 140px;
+  }
+}
+
+.problem-editorial-header {
+  max-width: 820px;
+  margin-bottom: 48px;
+}
+
+.problem-eyebrow,
+.acts-eyebrow {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 750;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--landing-emerald, #0d675e);
+  background: none;
+  border: none;
+  padding: 0;
+  margin-bottom: 12px;
+}
+
+.problem-editorial-header h2 {
+  font-family: var(--font-family-display, 'Newsreader', Georgia, serif);
+  font-size: clamp(2rem, 3.2vw, 2.7rem);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--landing-ink);
+  line-height: 1.18;
+  margin-bottom: 16px;
+}
+
+.problem-lead {
+  font-size: 1.05rem;
+  color: var(--landing-body);
+  line-height: 1.68;
+}
+
+/* =========================================================================
+   TIEMPO 1: FRANJA MÉTRICA CORRIDA (SIN ENCAJONAMIENTO ARTIFICIAL)
+   ========================================================================= */
+.problem-metric-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border-top: 1px solid var(--landing-line);
+  border-bottom: 1px solid var(--landing-line);
+  margin-bottom: 56px;
+  background: transparent;
+}
+
+@media (max-width: 639px) {
+  .problem-metric-strip {
+    grid-template-columns: 1fr;
+  }
+}
+
+.strip-metric-item {
+  padding: 28px 32px;
+  border-right: 1px solid var(--landing-line);
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 639px) {
+  .strip-metric-item {
+    border-right: none;
+    border-bottom: 1px solid var(--landing-line);
+    padding: 20px 16px;
+  }
+  .strip-metric-item:last-child {
+    border-bottom: none;
+  }
+}
+
+.strip-metric-item:last-child {
+  border-right: none;
+}
+
+.strip-metric-item.highlight-item {
+  background: #F0F7F4;
+  position: relative;
+}
+
+.strip-metric-item.highlight-item::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 3px;
+  background: var(--landing-emerald);
+}
+
+@media (max-width: 639px) {
+  .strip-metric-item.highlight-item::before {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: auto;
+    width: 100%;
+    height: 3px;
+  }
+}
+
+.strip-metric-val {
+  font-size: clamp(2rem, 3.2vw, 2.75rem);
+  font-weight: 800;
+  line-height: 1;
+  color: var(--landing-green-dark);
+  font-family: var(--font-family-display, 'Newsreader', Georgia, serif);
+  margin-bottom: 8px;
+  letter-spacing: -0.02em;
+}
+
+.strip-metric-item.highlight-item .strip-metric-val {
+  color: var(--landing-emerald);
+}
+
+.strip-metric-lbl {
+  font-size: 0.88rem;
+  font-weight: 750;
+  color: var(--landing-ink);
+  line-height: 1.35;
+  margin-bottom: 6px;
+}
+
+.strip-metric-sub {
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: var(--landing-body);
+  margin: 0;
+}
+
+.strip-metric-source {
+  font-size: 0.69rem;
+  font-weight: 600;
+  color: #718481;
+  margin-top: 8px;
+  padding-top: 6px;
+  border-top: 1px dashed var(--landing-hairline);
+  display: block;
+}
+
+/* =========================================================================
+   TIEMPO 2: DIÁLOGO EDITORIAL ABIERTO (CITA VISCERAL + 3 PUNTOS CIEGOS)
+   ========================================================================= */
+.problem-editorial-dialogue {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 48px;
+  align-items: start;
+  margin-bottom: 56px;
+}
+
+@media (max-width: 880px) {
+  .problem-editorial-dialogue {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+}
+
+.dialogue-quote-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  border-left: 3px solid var(--landing-emerald);
+  padding-left: 24px;
+}
+
+.problem-documentary-frame {
+  position: relative;
+  width: 100%;
+  height: 230px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--landing-line);
+  box-shadow: 0 6px 20px rgba(17, 38, 35, 0.05);
+  margin-bottom: 20px;
+  background: #dcd8cf;
+}
+
+.problem-documentary-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 25%;
+  display: block;
+  transition: transform 300ms ease;
+}
+
+.problem-documentary-frame:hover .problem-documentary-img {
+  transform: scale(1.02);
+}
+
+.documentary-caption-strip {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 14px;
+  background: linear-gradient(180deg, transparent 0%, rgba(5, 31, 26, 0.92) 100%);
+  font-size: 0.72rem;
+}
+
+.caption-tag {
+  font-weight: 750;
+  color: #9ee4d5;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 0.68rem;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(8, 76, 65, 0.65);
+  border: 1px solid rgba(158, 228, 213, 0.25);
+}
+
+.caption-meta {
+  color: #e2f1ee;
+  font-weight: 500;
+}
+
+.dialogue-quote-text {
+  font-family: var(--font-family, 'Plus Jakarta Sans', -apple-system, sans-serif);
+  font-size: clamp(0.96rem, 1.1vw, 1.02rem);
+  font-style: normal;
+  font-weight: 500;
+  line-height: 1.6;
+  color: var(--landing-ink);
+  margin: 0 0 12px 0;
+}
+
+.dialogue-quote-cite {
+  font-size: 0.82rem;
+  font-weight: 650;
+  color: #637b77;
+  font-style: normal;
+}
+
+.dialogue-blindspots-col {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.blindspots-heading {
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: var(--landing-ink);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+
+.blindspot-row {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--landing-hairline, rgba(17, 38, 35, 0.08));
+}
+
+.blindspot-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.blindspot-index {
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: var(--landing-emerald);
+  background: var(--landing-mint);
+  padding: 3px 8px;
+  border-radius: 4px;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.blindspot-row strong {
+  display: block;
+  font-size: 0.86rem;
+  font-weight: 750;
+  color: var(--landing-ink);
+  margin-bottom: 3px;
+}
+
+.blindspot-row p {
+  font-size: 0.78rem;
+  color: var(--landing-body);
+  line-height: 1.45;
+  margin: 0;
+}
+
+/* =========================================================================
+   TIEMPO 3: COMPARATIVA METODOLÓGICA DESATURADA (SIN CRUCES ROJAS)
+   ========================================================================= */
+.editorial-comparison-wrap {
+  background: #ffffff;
+  border: 1px solid var(--landing-line);
+  border-radius: 8px;
+  padding: 32px;
+  box-shadow: 0 4px 16px rgba(17, 38, 35, 0.03);
+}
+
+.comparison-intro {
+  margin-bottom: 24px;
+}
+
+.comparison-intro h3 {
+  font-family: var(--font-family-display, 'Newsreader', Georgia, serif);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--landing-ink);
+  margin-bottom: 4px;
+}
+
+.comparison-intro p {
+  font-size: 0.88rem;
+  color: var(--landing-body);
+  margin: 0;
+}
+
+.editorial-comparison-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+@media (max-width: 768px) {
+  .editorial-comparison-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+.comparison-side {
+  padding: 22px;
+  border-radius: 8px;
+}
+
+.side-traditional {
+  background: #FAF8F6;
+  border: 1px solid #EFE8E2;
+}
+
+.side-pulso {
+  background: #F3F9F6;
+  border: 1px solid #CDE7DC;
+}
+
+.side-label,
+.side-badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 3px 10px;
+  border-radius: 999px;
+  margin-bottom: 16px;
+}
+
+.side-traditional .side-label,
+.badge-trad {
+  background: #EAE6DF;
+  color: #485B58;
+}
+
+.side-pulso .side-label,
+.badge-pulso {
+  background: #def7ec;
+  color: #03543f;
+}
+
+.side-list {
+  list-style: none;
+  display: grid;
+  gap: 14px;
+}
+
+.side-list li {
+  display: flex;
+  gap: 10px;
+  font-size: 0.84rem;
+}
+
+.side-list strong {
+  display: block;
+  color: var(--landing-ink);
+  margin-bottom: 2px;
+}
+
+.side-list p {
+  margin: 0;
+  color: var(--landing-body);
+  line-height: 1.4;
+  font-size: 0.78rem;
+}
+
+.bullet-neutral {
+  color: #8C9E9A;
+  font-weight: 800;
+  font-size: 0.95rem;
+  line-height: 1;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.bullet-check {
+  color: #14705A;
+  margin-top: 2px;
+  flex-shrink: 0;
+}

@@ -1,10 +1,8 @@
-// src/features/notifications/pages/NotificationsPage.jsx
-// Centro de Notificaciones y Avisos Operativos (RF-17 / antislop-ui)
+import { useNotifications } from '../hooks/useNotifications';
 
-import { useState, useMemo, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { authService } from '../../../core/auth/authService';
-import { pulsoStore } from '../../../core/storage/pulsoStore';
+// src/features/notifications/pages/NotificationsPage.jsx
+// Centro de Notificaciones y Avisos Operativos (RF-17)
+
 import { Icon } from '../../../core/components/Icon';
 import { NotificationItem } from '../components/NotificationItem';
 import { ReminderPreferencesCard } from '../components/ReminderPreferencesCard';
@@ -13,114 +11,20 @@ import '../../../styles/agent.css';
 import '../../../styles/notifications.css';
 
 export function NotificationsPage() {
-  const currentUser = authService.getCurrentUser();
-  const navigate = useNavigate();
-  const [version, setVersion] = useState(0);
-  const [activeFilter, setActiveFilter] = useState('all'); // 'all' | 'unread'
-
-  // Almacén reactivo
-  const storeData = useMemo(() => {
-    void version;
-    return pulsoStore.get();
-  }, [version]);
-  const allNotifications = useMemo(() => storeData.notifications || [], [storeData]);
-
-  // Filtrar avisos pertenecientes al rol o usuario actual
-  const userNotifications = useMemo(() => {
-    return allNotifications.filter(
-      (n) => n.role === currentUser?.role || n.userId === currentUser?.id
-    );
-  }, [allNotifications, currentUser?.role, currentUser?.id]);
-
-  const unreadCount = userNotifications.filter((n) => !n.read).length;
-
-  // Filtrado según pestaña seleccionada
-  const displayedNotifications = useMemo(() => {
-    if (activeFilter === 'unread') {
-      return userNotifications.filter((n) => !n.read);
-    }
-    return userNotifications;
-  }, [userNotifications, activeFilter]);
-
-  // Preferencia de recordatorio de check-in para agentes (RF-17)
-  const isAgent = currentUser?.role === 'agente';
-  const reminderStorageKey = `pulso360_reminder_${currentUser?.id || 'usr-1'}`;
-  const [reminderActive, setReminderActive] = useState(false);
-
-  useEffect(() => {
-    if (isAgent) {
-      setReminderActive(localStorage.getItem(reminderStorageKey) === '1');
-    }
-  }, [isAgent, reminderStorageKey]);
-
-  const handleToggleReminder = (newValue) => {
-    const isChecked = typeof newValue === 'boolean' ? newValue : !reminderActive;
-    setReminderActive(isChecked);
-    localStorage.setItem(reminderStorageKey, isChecked ? '1' : '0');
-  };
-
-  // Marcar aviso como leído y navegar a su destino
-  const handleNotificationClick = (e, notif) => {
-    e.preventDefault();
-
-    if (!notif.read) {
-      const data = pulsoStore.get();
-      const target = (data.notifications || []).find((item) => item.id === notif.id);
-      if (target) {
-        target.read = true;
-        pulsoStore.save(data);
-        setVersion((v) => v + 1);
-      }
-    }
-
-    if (notif.href) {
-      navigate(notif.href);
-    }
-  };
-
-  // Marcar todas las notificaciones como leídas
-  const handleMarkAllRead = () => {
-    const data = pulsoStore.get();
-    let updated = false;
-
-    (data.notifications || []).forEach((item) => {
-      if (item.role === currentUser?.role || item.userId === currentUser?.id) {
-        if (!item.read) {
-          item.read = true;
-          updated = true;
-        }
-      }
-    });
-
-    if (updated) {
-      pulsoStore.save(data);
-      setVersion((v) => v + 1);
-    }
-  };
-
-  const formatDate = (isoString) => {
-    if (!isoString) return '';
-    try {
-      return new Intl.DateTimeFormat('es-CO', {
-        dateStyle: 'medium',
-        timeStyle: 'short'
-      }).format(new Date(isoString));
-    } catch {
-      return isoString;
-    }
-  };
-
-  const roleHomePath = {
-    agente: '/agente/panel',
-    supervisor: '/supervisor/dashboard',
-    sst: '/sst/analisis',
-    admin: '/admin/configuracion',
-    auditor: '/auditor/logs'
-  }[currentUser?.role] || '/agente/panel';
-
-  const handleBack = () => {
-    navigate(roleHomePath);
-  };
+  const {
+    activeFilter,
+    setActiveFilter,
+    userNotifications,
+    unreadCount,
+    displayedNotifications,
+    isAgent,
+    reminderActive,
+    handleToggleReminder,
+    handleNotificationClick,
+    handleMarkAllRead,
+    formatDate,
+    handleBack
+  } = useNotifications();
 
   return (
     <div className="notif-inbox-layout">
@@ -227,17 +131,15 @@ export function NotificationsPage() {
 
       {/* 5. Ajustes de Turno (Solo para Agentes) */}
       {isAgent && (
-        <ReminderPreferencesCard
-          reminderActive={reminderActive}
-          onToggleReminder={handleToggleReminder}
-        />
+        <ReminderPreferencesCard reminderActive={reminderActive} onToggleReminder={handleToggleReminder} />
       )}
 
       {/* 6. Nota Discreta de Privacidad y Confidencialidad */}
       <footer className="notif-confidentiality-footer" role="contentinfo">
         <Icon name="shield" size={16} />
         <span>
-          <strong>Confidencialidad operativa:</strong> Los avisos son de carácter estrictamente individual. El sistema nunca expone reflexiones privadas de bitácora ni respuestas personales de bienestar.
+          <strong>Confidencialidad operativa:</strong> Los avisos son de carácter estrictamente individual. El
+          sistema nunca expone reflexiones privadas de bitácora ni respuestas personales de bienestar.
         </span>
       </footer>
     </div>

@@ -2,153 +2,32 @@
 // Formulario funcional e institucional de Contáctenos con campos controlados (useState),
 // validaciones en tiempo real, foco accesible WCAG AA y autorización expresa de Habeas Data (Ley 1581)
 
-import { useState } from 'react';
+import { useContactForm } from '../hooks/useContactForm';
 import { Link } from 'react-router-dom';
 import { Icon } from '../../../core/components/Icon';
 import { CONTACT_SUBJECTS } from '../data/landingData';
 import '../../../styles/contactenos.css';
 
 export function ContactForm() {
-  // 1. Estados controlados del formulario (useState)
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    company: '',
-    phone: '',
-    subject: '',
-    message: '',
-    habeasData: false
-  });
-
-  const [formErrors, setFormErrors] = useState({});
-  const [hasSubmittedOnce, setHasSubmittedOnce] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submittedData, setSubmittedData] = useState(null);
-
-  // Manejo de cambios en los inputs controlados
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    const fieldValue = type === 'checkbox' ? checked : value;
-    setFormData(prev => ({ ...prev, [name]: fieldValue }));
-    if (formErrors[name]) {
-      setFormErrors(prev => {
-        const next = { ...prev };
-        delete next[name];
-        return next;
-      });
-    }
-  };
-
-  // 2. Validación básica obligatoria y Habeas Data
-  const validateForm = () => {
-    const errors = {};
-
-    if (!formData.name.trim()) {
-      errors.name = 'El nombre completo es obligatorio.';
-    } else if (formData.name.trim().length < 3) {
-      errors.name = 'Escribe al menos 3 caracteres.';
-    }
-
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    if (!formData.email.trim()) {
-      errors.email = 'El correo electrónico es obligatorio.';
-    } else if (!emailRegex.test(formData.email.trim())) {
-      errors.email = 'Ingresa un correo corporativo válido (ej. usuario@empresa.com).';
-    }
-
-    if (!formData.company.trim()) {
-      errors.company = 'La empresa u operación BPO es obligatoria.';
-    }
-
-    if (!formData.subject) {
-      errors.subject = 'Por favor selecciona el motivo de contacto.';
-    }
-
-    if (!formData.message.trim()) {
-      errors.message = 'El mensaje o consulta es obligatorio.';
-    } else if (formData.message.trim().length < 10) {
-      errors.message = 'Por favor ingresa al menos 10 caracteres detallando tu solicitud.';
-    }
-
-    if (!formData.habeasData) {
-      errors.habeasData = 'Debes aceptar la autorización de tratamiento de datos personales para continuar.';
-    }
-
-    return errors;
-  };
-
-  // 3. Evento onSubmit con foco accesible en el primer campo inválido (WCAG AA)
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setHasSubmittedOnce(true);
-
-    const errors = validateForm();
-    if (Object.keys(errors).length > 0) {
-      setFormErrors(errors);
-      const firstErrorKey = Object.keys(errors)[0];
-      const fieldMap = {
-        name: 'contactName',
-        email: 'contactEmail',
-        company: 'contactCompany',
-        subject: 'contactSubject',
-        message: 'contactMessage',
-        habeasData: 'contactHabeasData'
-      };
-      const targetElement = document.getElementById(fieldMap[firstErrorKey]);
-      if (targetElement) {
-        targetElement.focus();
-        targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-      return;
-    }
-
-    setFormErrors({});
-    setIsSubmitting(true);
-
-    // Simular procesamiento y almacenamiento en estado (SPA)
-    setTimeout(() => {
-      const subjectLabel = CONTACT_SUBJECTS.find(s => s.value === formData.subject)?.label || formData.subject;
-      setSubmittedData({
-        name: formData.name.trim(),
-        email: formData.email.trim(),
-        company: formData.company.trim(),
-        phone: formData.phone.trim() || 'No especificado',
-        subject: subjectLabel,
-        message: formData.message.trim(),
-        date: new Date().toLocaleDateString('es-CO', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit'
-        })
-      });
-      setIsSubmitting(false);
-    }, 400);
-  };
-
-  // Reiniciar formulario para enviar otro mensaje
-  const handleReset = () => {
-    setFormData({
-      name: '',
-      email: '',
-      company: '',
-      phone: '',
-      subject: '',
-      message: '',
-      habeasData: false
-    });
-    setFormErrors({});
-    setHasSubmittedOnce(false);
-    setSubmittedData(null);
-  };
+  const {
+    formData,
+    formErrors,
+    hasSubmittedOnce,
+    isSubmitting,
+    submittedData,
+    handleChange,
+    handleSubmit,
+    handleReset
+  } = useContactForm();
 
   return (
     <div className="form-panel">
       <div className="form-panel-header">
         <span className="panel-kicker">Solicitud Institucional</span>
         <h2 className="panel-title">Envíanos tu requerimiento</h2>
-        <p className="panel-sub">Coordinamos sesiones técnicas y demostraciones para líderes de operaciones y SST.</p>
+        <p className="panel-sub">
+          Coordinamos sesiones técnicas y demostraciones para líderes de operaciones y SST.
+        </p>
       </div>
 
       {!submittedData ? (
@@ -160,7 +39,8 @@ export function ContactForm() {
                 <Icon name="alertTriangle" size={14} />
               </span>
               <div className="contact-alert-text">
-                <strong>Por favor revisa el formulario:</strong> Hay campos obligatorios pendientes o con información incompleta.
+                <strong>Por favor revisa el formulario:</strong> Hay campos obligatorios pendientes o con
+                información incompleta.
               </div>
             </div>
           )}
@@ -274,8 +154,10 @@ export function ContactForm() {
               aria-invalid={!!formErrors.subject}
               aria-describedby={formErrors.subject ? 'subject-error' : undefined}
             >
-              {CONTACT_SUBJECTS.map(subj => (
-                <option key={subj.value} value={subj.value}>{subj.label}</option>
+              {CONTACT_SUBJECTS.map((subj) => (
+                <option key={subj.value} value={subj.value}>
+                  {subj.label}
+                </option>
               ))}
             </select>
             {formErrors.subject && (
@@ -328,10 +210,18 @@ export function ContactForm() {
               />
               <span className="checkbox-text">
                 Acepto el tratamiento de mis datos personales de contacto conforme a la Ley 1581 de 2012 y la{' '}
-                <Link to="/fundamentacion#marco-legal" className="checkbox-link" target="_blank" rel="noopener noreferrer">
+                <Link
+                  to="/fundamentacion#marco-legal"
+                  className="checkbox-link"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   Política de Tratamiento de Datos
                 </Link>{' '}
-                para atender esta solicitud institucional. <span className="required-star" aria-hidden="true">*</span>
+                para atender esta solicitud institucional.{' '}
+                <span className="required-star" aria-hidden="true">
+                  *
+                </span>
               </span>
             </label>
             {formErrors.habeasData && (
@@ -346,15 +236,12 @@ export function ContactForm() {
           <div className="contact-health-disclaimer">
             <Icon name="shieldCheck" size={15} className="disclaimer-icon" />
             <span>
-              <strong>Reserva médica y datos sensibles:</strong> Por favor abstente de incluir datos de salud, diagnósticos o información clínica en este formulario.
+              <strong>Reserva médica y datos sensibles:</strong> Por favor abstente de incluir datos de salud,
+              diagnósticos o información clínica en este formulario.
             </span>
           </div>
 
-          <button
-            className="form-submit"
-            type="submit"
-            disabled={isSubmitting}
-          >
+          <button className="form-submit" type="submit" disabled={isSubmitting}>
             {isSubmitting ? (
               <>
                 <Icon name="refresh" size={18} className="spin-animation" />
@@ -377,17 +264,15 @@ export function ContactForm() {
                 <Icon name="check" size={20} />
               </span>
               <div>
-                <strong className="contact-success-title">
-                  ¡Mensaje de contacto enviado con éxito!
-                </strong>
-                <span className="contact-success-date">
-                  Radicado recibido el {submittedData.date}
-                </span>
+                <strong className="contact-success-title">¡Mensaje de contacto enviado con éxito!</strong>
+                <span className="contact-success-date">Radicado recibido el {submittedData.date}</span>
               </div>
             </div>
 
             <p className="contact-success-message">
-              Estimado(a) <strong>{submittedData.name}</strong>, hemos registrado tu solicitud para la empresa <strong>{submittedData.company}</strong>. Un especialista de Pulso360 se pondrá en contacto contigo en el correo <strong>{submittedData.email}</strong>.
+              Estimado(a) <strong>{submittedData.name}</strong>, hemos registrado tu solicitud para la empresa{' '}
+              <strong>{submittedData.company}</strong>. Un especialista de Pulso360 se pondrá en contacto
+              contigo en el correo <strong>{submittedData.email}</strong>.
             </p>
 
             <div className="contact-success-details">
@@ -401,9 +286,7 @@ export function ContactForm() {
               </div>
               <div>
                 <span className="detail-label">Detalle del mensaje: </span>
-                <p className="detail-message-body">
-                  &ldquo;{submittedData.message}&rdquo;
-                </p>
+                <p className="detail-message-body">&ldquo;{submittedData.message}&rdquo;</p>
               </div>
             </div>
           </div>

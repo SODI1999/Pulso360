@@ -1,0 +1,134 @@
+/* Nivel 2: Transparencia & k-Anonimato (Cápsula Neutra de Confianza) */
+.btn-perspective-capsule {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 14px;
+  min-height: 34px;
+  border-radius: var(--radius-full);
+  background: var(--c-superficie);
+  color: var(--c-texto-suave);
+  border: 1px solid var(--c-borde);
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-xs);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.btn-perspective-capsule:hover {
+  background: var(--c-fondo);
+  color: var(--c-primario);
+  border-color: var(--c-primario-border);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Nivel 3: Bienestar Inmediato (Verde institucional sólido con micro-sombra) */
+.btn-decompression-highlight {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 16px;
+  min-height: 34px;
+  border-radius: var(--radius-md);
+  background-color: var(--c-primario);
+  color: #ffffff !important;
+  border: 1px solid var(--c-primario);
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(15, 118, 110, 0.22);
+  transition: all var(--transition-fast);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.btn-decompression-highlight:hover {
+  background-color: var(--c-primario-hover);
+  border-color: var(--c-primario-hover);
+  color: #ffffff !important;
+  box-shadow: 0 4px 10px rgba(15, 118, 110, 0.3);
+  transform: translateY(-1px);
+}
+
+/* Nivel 4: Modales y Urgencia */
+.btn-modal-comprendido {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 150px;
+  padding: 9px 24px;
+  background-color: var(--c-primario);
+  color: #ffffff !important;
+  border: 1px solid var(--c-primario);
+  border-radius: var(--radius-md);
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: 0 2px 6px rgba(15, 118, 110, 0.2);
+  line-height: 1.2;
+}
+
+.btn-modal-comprendido:hover {
+  background-color: var(--c-primario-hover);
+  border-color: var(--c-primario-hover);
+  color: #ffffff !important;
+  box-shadow: 0 4px 10px rgba(15, 118, 110, 0.28);
+}
+
+.btn-clinical-support {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 7px 14px;
+  min-height: 34px;
+  border-radius: var(--radius-md);
+  background-color: #fef2f2;
+  color: #991b1b !important;
+  border: 1px solid #fecaca;
+  font-size: 12.5px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.btn-clinical-support:hover {
+  background-color: #fee2e2;
+  color: #7f1d1d !important;
+  border-color: #fca5a5;
+  box-shadow: 0 1px 3px rgba(185, 28, 28, 0.12);
+}
+
+/* Cápsulas Institucionales para Datos (JSON/CSV) */
+.btn-capsule-teal {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 18px;
+  min-height: 44px;
+  border-radius: var(--radius-full);
+  background-color: var(--c-superficie);
+  color: var(--c-primario);
+  border: 1.5px solid var(--c-primario-border);
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-decoration: none;
+  box-shadow: var(--shadow-xs);
+}
+
+.btn-capsule-teal:hover {
+  background-color: var(--c-primario-suave);
+  color: var(--c-primario-hover);
+  border-color: var(--c-primario);
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-1px);
+}

@@ -4,10 +4,7 @@
 import { useMemo } from 'react';
 import '../../../styles/umbral.css';
 
-export function HeatmapGrid({
-  categories = [],
-  minThreshold = 5
-}) {
+export function HeatmapGrid({ categories = [], minThreshold = 5 }) {
   // Aplicar algoritmo estricto de privacidad y supresión secundaria (RF-07)
   const processedCategories = useMemo(() => {
     // 1. Supresión primaria: conteo < umbral mínimo
@@ -18,8 +15,8 @@ export function HeatmapGrid({
     }));
 
     // 2. Supresión secundaria: si hay al menos una categoría oculta, ocultar también la menor de las visibles
-    if (rows.some(r => r.suppressed)) {
-      const visible = rows.filter(r => !r.suppressed);
+    if (rows.some((r) => r.suppressed)) {
+      const visible = rows.filter((r) => !r.suppressed);
       if (visible.length > 0) {
         // Encontrar la visible con menor conteo
         const lowestVisible = [...visible].sort((a, b) => Number(a.count || 0) - Number(b.count || 0))[0];
@@ -30,7 +27,7 @@ export function HeatmapGrid({
     }
 
     // 3. Redondear porcentajes al entero más cercano
-    return rows.map(r => ({
+    return rows.map((r) => ({
       ...r,
       roundedPercent: r.suppressed ? null : Math.round(Number(r.percent || 0))
     }));
@@ -57,10 +54,7 @@ export function HeatmapGrid({
             >
               <div className="heatmap-dim-name">{item.name}</div>
               <div className="heatmap-score-bar">
-                <div
-                  className="heatmap-score-fill medio"
-                  style={{ width: '100%', opacity: 0.25 }}
-                />
+                <div className="heatmap-score-fill medio" style={{ width: '100%', opacity: 0.25 }} />
               </div>
               <div className="heatmap-footer">
                 <span>—</span>
@@ -86,9 +80,7 @@ export function HeatmapGrid({
               />
             </div>
             <div className="heatmap-footer">
-              <span style={{ fontWeight: '700', color: 'var(--c-texto)' }}>
-                {item.roundedPercent}%
-              </span>
+              <span style={{ fontWeight: '700', color: 'var(--c-texto)' }}>{item.roundedPercent}%</span>
               <span>Porcentaje redondeado</span>
             </div>
           </div>

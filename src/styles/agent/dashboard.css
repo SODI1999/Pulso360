@@ -1,0 +1,497 @@
+/* ==========================================================================
+   src/styles/agent.css
+   Panel del agente: una pantalla = un propósito. La identidad se apoya
+   en el contexto real del turno, no en decoración de bienestar genérica.
+   La analítica y las tendencias viven en "Mi bienestar" / "Mi análisis".
+   ========================================================================== */
+
+.calm-home {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 28px 0 32px;
+}
+
+/* Cabecera: saludo y contexto del turno en una sola línea */
+.calm-home-head {
+  padding: 6px 2px 0;
+}
+
+.calm-home-title {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--c-texto);
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.calm-home-meta {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: var(--c-texto-mutado);
+}
+
+/* Aviso de desconexión laboral (Ley 2191 de 2022) */
+.calm-disconnect {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  background-color: #f1f7f4;
+  border: 1px solid #cce3d8;
+  border-radius: 12px;
+  padding: 12px 16px;
+}
+
+.calm-disconnect-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background-color: #dcefe4;
+  color: var(--c-primario);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.calm-disconnect-text {
+  flex: 1;
+  min-width: 220px;
+}
+
+.calm-disconnect-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--c-texto);
+}
+
+.calm-disconnect-desc {
+  margin: 3px 0 0;
+  font-size: 12.5px;
+  color: var(--c-texto-suave);
+  line-height: 1.5;
+}
+
+.calm-disconnect-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* Tarjeta única principal: check-in rápido del turno */
+.calm-card {
+  position: relative;
+  background: var(--c-calma-surface);
+  border: 1px solid var(--c-calma-border-subtle);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-sm);
+  padding: 32px 34px 34px;
+  text-align: left;
+}
+
+.calm-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 28px;
+  width: 42px;
+  height: 3px;
+  background: var(--c-calma-accent);
+  border-radius: 0 0 3px 3px;
+}
+
+.calm-card-title {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--c-texto);
+}
+
+.calm-card-sub {
+  margin: 8px 0 0;
+  max-width: 460px;
+  font-size: 13px;
+  color: var(--c-texto-mutado);
+  line-height: 1.5;
+}
+
+/* La tarjeta principal conserva un único marcador visual (el acento superior
+   de .calm-card::before); el punto .calm-breathe se retiró por redundancia
+   (auditoría 015, hallazgo 6). */
+
+/* Escala de energía rápida: opciones legibles y táctiles, sin apariencia
+   de selector de sentimientos decorativo. */
+.calm-mood-row {
+  display: flex;
+  justify-content: flex-start;
+  gap: 12px;
+  margin-top: 26px;
+  flex-wrap: wrap;
+}
+
+.calm-mood-btn {
+  flex: 1 1 0;
+  min-width: 92px;
+  min-height: 112px;
+  padding: 12px 8px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 9px;
+  background: var(--c-calma-surface);
+  border: 1px solid var(--c-calma-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.calm-mood-btn:hover {
+  border-color: var(--c-calma-accent);
+}
+
+.calm-mood-btn:focus-visible {
+  outline: 2px solid var(--c-primario);
+  outline-offset: 2px;
+}
+
+.calm-mood-label {
+  max-width: 11ch;
+  font-size: 12px;
+  color: var(--c-texto-mutado);
+  line-height: 1.3;
+}
+
+.calm-mood-emoji {
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.calm-mood-emoji .energy-face {
+  width: 42px;
+  height: 42px;
+  display: block;
+}
+
+.calm-mood-1 .calm-mood-emoji { background-color: #fde7e7; }
+.calm-mood-2 .calm-mood-emoji { background-color: #fff1cf; }
+.calm-mood-3 .calm-mood-emoji { background-color: #e9eef0; }
+.calm-mood-4 .calm-mood-emoji { background-color: #dff4e8; }
+.calm-mood-5 .calm-mood-emoji { background-color: #cceee4; }
+
+.calm-mood-1:hover,
+.calm-mood-1:focus-visible { background-color: #fff3f3; }
+.calm-mood-2:hover,
+.calm-mood-2:focus-visible { background-color: #fff9e9; }
+.calm-mood-3:hover,
+.calm-mood-3:focus-visible { background-color: #f3f6f7; }
+.calm-mood-4:hover,
+.calm-mood-4:focus-visible { background-color: #effaf3; }
+.calm-mood-5:hover,
+.calm-mood-5:focus-visible { background-color: #e9f8f3; }
+
+.calm-mood-btn:hover .calm-mood-label,
+.calm-mood-btn:focus-visible .calm-mood-label {
+  color: var(--c-texto);
+  font-weight: 600;
+}
+
+/* Estado: check-in ya registrado en la jornada actual */
+.calm-done {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.calm-done-hint {
+  margin: 0;
+  max-width: 420px;
+  font-size: 12.5px;
+  color: var(--c-texto-mutado);
+  line-height: 1.5;
+}
+
+.calm-done-emoji {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.calm-done-emoji .energy-face {
+  width: 58px;
+  height: 58px;
+}
+
+.calm-done-text {
+  margin: 0;
+  font-size: 14px;
+  color: var(--c-texto-suave);
+}
+
+/* Zona principal en dos columnas: el check-in protagoniza; el carril
+   contextual (ritmo del turno + pausa) ocupa el espacio secundario.
+   En pantallas angostas colapsa a una sola columna. */
+.calm-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(280px, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+/* Carril contextual */
+.calm-rail {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.calm-rail-block {
+  flex: 1;
+  background-color: var(--c-calma-surface-subtle);
+  border: 1px solid var(--c-calma-border-subtle);
+  border-radius: var(--radius-card);
+  padding: 18px 20px;
+}
+
+.calm-rail-block--pause {
+  flex: 0 0 auto;
+  background: var(--c-calma-surface-subtle);
+  border-color: #c8e5d8;
+}
+
+.calm-rail-title {
+  margin: 0 0 12px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--c-calma-text);
+}
+
+/* Timeline vertical del turno */
+.calm-rail-list {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Línea del recorrido: un segmento por nodo (de este punto al siguiente), así la
+   traza nunca se desalinea cuando una etiqueta ocupa dos líneas. Antes era un
+   degradado porcentual único que podía terminar entre dos puntos (auditoría 015). */
+.calm-rail-node:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 22px;    /* borde inferior del punto (9px de padding + 1px de margen + 12px de punto) */
+  bottom: -9px; /* borde superior del punto del siguiente nodo */
+  width: 2px;
+  border-radius: var(--radius-full);
+  background: var(--c-calma-border);
+}
+
+.calm-rail-node.done:not(:last-child)::after,
+.calm-rail-node.active:not(:last-child)::after {
+  background: var(--c-calma-accent);
+}
+
+.calm-rail-node {
+  position: relative;
+  display: grid;
+  grid-template-columns: 12px 1fr;
+  gap: 12px;
+  padding: 9px 0;
+  align-items: start;
+}
+
+.calm-rail-dot {
+  position: relative;
+  z-index: 1;
+  width: 12px;
+  height: 12px;
+  margin-top: 1px;
+  border-radius: 50%;
+  border: 2px solid var(--c-calma-border);
+  background-color: var(--c-calma-surface-subtle);
+}
+
+.calm-rail-node.done .calm-rail-dot {
+  background-color: var(--c-calma-accent);
+  border-color: var(--c-calma-accent);
+}
+
+.calm-rail-node.active .calm-rail-dot {
+  background-color: var(--c-calma-accent);
+  border-color: var(--c-calma-accent);
+  box-shadow: 0 0 0 4px var(--c-calma-accent-soft);
+}
+
+.calm-rail-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.calm-rail-time {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--c-calma-text-muted);
+}
+
+.calm-rail-label {
+  font-size: 12.5px;
+  color: var(--c-calma-text-muted);
+  line-height: 1.3;
+}
+
+.calm-rail-node.active .calm-rail-label {
+  color: var(--c-calma-text);
+  font-weight: 700;
+}
+
+.calm-rail-desc {
+  margin: 0 0 14px;
+  font-size: 12.5px;
+  color: var(--c-calma-text-muted);
+  line-height: 1.5;
+}
+
+.calm-pause-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.calm-pause-heading .calm-rail-title {
+  margin-bottom: 2px;
+}
+
+.calm-pause-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  border-radius: var(--radius-sm);
+  color: #176653;
+  background-color: var(--c-calma-accent-soft);
+}
+
+.calm-pause-private {
+  display: block;
+  font-size: 10.5px;
+  color: var(--c-calma-accent);
+  font-weight: 700;
+}
+
+.calm-pause-btn {
+  width: 100%;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 8px 18px rgba(22, 101, 83, 0.14);
+}
+
+.calm-pause-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(22, 101, 83, 0.2);
+}
+
+.calm-pause-note {
+  margin: 10px 0 0;
+  font-size: 10.5px;
+  color: var(--c-calma-text-muted);
+  text-align: center;
+}
+
+/* Pie: una sola línea de privacidad, sin badges repetidos */
+.calm-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 0 4px;
+}
+
+.calm-foot-note {
+  font-size: 12px;
+  color: var(--c-texto-suave);
+}
+
+.calm-foot-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--c-primario);
+}
+
+.calm-foot-link:hover {
+  text-decoration: underline;
+}
+
+.calm-foot-link:focus-visible {
+  outline: 2px solid var(--c-primario);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .calm-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .calm-card {
+    padding: 26px 18px;
+  }
+
+  .calm-mood-btn {
+    min-width: 0;
+    min-height: 104px;
+    padding-inline: 4px;
+  }
+
+  .calm-mood-emoji {
+    width: 50px;
+    height: 50px;
+  }
+
+  .calm-mood-emoji .energy-face {
+    width: 32px;
+    height: 32px;
+  }
+
+  .calm-foot {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .calm-disconnect-actions .btn {
+    min-height: 44px;
+  }
+}
+
+/* Respeto por preferencias de movimiento reducido */
+@media (prefers-reduced-motion: reduce) {
+  .calm-mood-btn {
+    transition: none;
+  }
+}

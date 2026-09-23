@@ -1,0 +1,301 @@
+/* Lenguaje compartido de las rutas del agente. No fuerza una misma
+   composición: sólo da continuidad a encabezados, superficies y estados. */
+.agent-page .page-header {
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--c-calma-border-subtle);
+}
+
+.agent-page:not(.calm-home) {
+  position: relative;
+  width: 100%;
+  max-width: 1040px;
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.agent-page .page-title {
+  letter-spacing: -0.025em;
+}
+
+/* El panel y las vistas internas comparten el mismo eje de lectura. */
+.agent-page:not(.calm-home) > .page-header,
+.agent-page:not(.calm-home) > .agent-work-surface,
+.agent-page:not(.calm-home) > .card,
+.agent-page:not(.calm-home) > .alert-banner,
+.agent-page:not(.calm-home) > section {
+  width: 100%;
+}
+
+.agent-page .card {
+  border-radius: var(--radius-card);
+  border-color: var(--c-calma-border-subtle);
+  box-shadow: var(--shadow-xs);
+}
+
+.agent-page .card:hover {
+  border-color: var(--c-calma-border);
+}
+
+.agent-page .card-header {
+  border-bottom: 1px solid var(--c-calma-border-subtle);
+  padding-bottom: 12px;
+}
+
+.agent-page .form-label {
+  color: var(--c-calma-text);
+}
+
+.agent-page .form-input,
+.agent-page .form-select,
+.agent-page .form-textarea {
+  border-color: var(--c-calma-border);
+  background: var(--c-calma-surface);
+}
+
+.agent-page .form-input:focus,
+.agent-page .form-select:focus,
+.agent-page .form-textarea:focus {
+  border-color: var(--c-calma-accent);
+  box-shadow: 0 0 0 3px var(--c-calma-ring);
+}
+
+.agent-page .center-card {
+  max-width: 720px;
+  margin-inline: auto;
+  border-top: 3px solid var(--c-calma-accent);
+}
+
+.agent-work-surface {
+  position: relative;
+  overflow: hidden;
+}
+
+.agent-work-surface::before {
+  content: '';
+  display: block;
+  width: 44px;
+  height: 3px;
+  margin-bottom: 18px;
+  background: var(--c-calma-accent);
+  border-radius: 0 0 3px 3px;
+}
+
+.agent-work-layout {
+  align-items: start;
+}
+
+.agent-journal-editor {
+  min-width: 0;
+}
+
+.agent-journal-editor .card-header {
+  padding-bottom: 16px;
+}
+
+.agent-page .privacy-notice-box {
+  background: var(--c-calma-surface-subtle);
+  border-color: var(--c-calma-border);
+  border-radius: var(--radius-card);
+}
+
+.agent-page .wizard-card {
+  max-width: 1040px;
+  margin-inline: auto;
+  border-top: 0;
+}
+
+.agent-page--checkin .page-header--wizard,
+.agent-page--checkin .wizard-disconnect-banner {
+  max-width: 1040px;
+  width: 100%;
+  margin-inline: 0;
+}
+
+.agent-page--checkin .wizard-card {
+  padding-inline: clamp(24px, 4vw, 48px);
+}
+
+.agent-page--checkin .check-step {
+  max-width: 900px;
+  margin-inline: auto;
+}
+
+.agent-page--analysis {
+  gap: 24px;
+}
+
+.agent-page--analysis .page-header,
+.agent-page--analysis > section,
+.agent-page--analysis > div {
+  width: 100%;
+  margin-inline: 0;
+}
+
+.agent-page--analysis #analysisList {
+  padding-inline: 0 !important;
+}
+
+.agent-page .wizard-header-meta {
+  color: var(--c-calma-text);
+}
+
+.agent-page .progress-track {
+  background: var(--c-calma-border-subtle);
+}
+
+.agent-page .progress-fill {
+  background: var(--c-calma-accent);
+}
+
+.agent-page .check-step-title {
+  max-width: 34ch;
+  letter-spacing: -0.025em;
+}
+
+.agent-page .scale-context-note {
+  background: var(--c-calma-surface-subtle);
+  border-color: var(--c-calma-border);
+}
+
+.agent-page .scale-btn {
+  border-radius: var(--radius-card);
+  border-color: var(--c-calma-border);
+  box-shadow: none;
+}
+
+.agent-page .scale-energy-face {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  margin-bottom: 2px;
+  border-radius: 50%;
+  background: var(--c-calma-accent-soft);
+  transition: background-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.agent-page .scale-energy-face .energy-face {
+  width: 30px;
+  height: 30px;
+}
+
+.agent-page .scale-btn.active .scale-energy-face {
+  background: var(--c-calma-surface);
+}
+
+.agent-page .scale-btn--heat-1:hover,
+.agent-page .scale-btn--heat-1:focus-visible,
+.agent-page .scale-btn--heat-1.active {
+  background: #fff3f3;
+  border-color: #e7a4a4;
+}
+
+.agent-page .scale-btn--heat-2:hover,
+.agent-page .scale-btn--heat-2:focus-visible,
+.agent-page .scale-btn--heat-2.active {
+  background: #fff9e9;
+  border-color: #e7c56f;
+}
+
+.agent-page .scale-btn--heat-3:hover,
+.agent-page .scale-btn--heat-3:focus-visible,
+.agent-page .scale-btn--heat-3.active {
+  background: #f3f6f7;
+  border-color: #aebfc4;
+}
+
+.agent-page .scale-btn--heat-4:hover,
+.agent-page .scale-btn--heat-4:focus-visible,
+.agent-page .scale-btn--heat-4.active {
+  background: #effaf3;
+  border-color: #9bd1ad;
+}
+
+.agent-page .scale-btn--heat-5:hover,
+.agent-page .scale-btn--heat-5:focus-visible,
+.agent-page .scale-btn--heat-5.active {
+  background: #e9f8f3;
+  border-color: #70bfa5;
+}
+
+.agent-page .scale-btn--heat-1:hover .scale-energy-face,
+.agent-page .scale-btn--heat-1:focus-visible .scale-energy-face,
+.agent-page .scale-btn--heat-1.active .scale-energy-face { background: #f7caca; }
+.agent-page .scale-btn--heat-2:hover .scale-energy-face,
+.agent-page .scale-btn--heat-2:focus-visible .scale-energy-face,
+.agent-page .scale-btn--heat-2.active .scale-energy-face { background: #ffe3a2; }
+.agent-page .scale-btn--heat-3:hover .scale-energy-face,
+.agent-page .scale-btn--heat-3:focus-visible .scale-energy-face,
+.agent-page .scale-btn--heat-3.active .scale-energy-face { background: #d8e1e4; }
+.agent-page .scale-btn--heat-4:hover .scale-energy-face,
+.agent-page .scale-btn--heat-4:focus-visible .scale-energy-face,
+.agent-page .scale-btn--heat-4.active .scale-energy-face { background: #c5e9d3; }
+.agent-page .scale-btn--heat-5:hover .scale-energy-face,
+.agent-page .scale-btn--heat-5:focus-visible .scale-energy-face,
+.agent-page .scale-btn--heat-5.active .scale-energy-face { background: #9edfc9; }
+
+.agent-page .scale-btn:hover,
+.agent-page .scale-btn.active {
+  border-color: var(--c-calma-accent);
+  background: var(--c-calma-accent-soft);
+  box-shadow: 0 0 0 1px var(--c-calma-accent);
+}
+
+/* El mapa de calor tiene prioridad sobre el estado neutro del selector. */
+.agent-page .scale-btn--heat-1:hover,
+.agent-page .scale-btn--heat-1:focus-visible,
+.agent-page .scale-btn--heat-1.active { background: #fff3f3; border-color: #e7a4a4; }
+.agent-page .scale-btn--heat-2:hover,
+.agent-page .scale-btn--heat-2:focus-visible,
+.agent-page .scale-btn--heat-2.active { background: #fff9e9; border-color: #e7c56f; }
+.agent-page .scale-btn--heat-3:hover,
+.agent-page .scale-btn--heat-3:focus-visible,
+.agent-page .scale-btn--heat-3.active { background: #f3f6f7; border-color: #aebfc4; }
+.agent-page .scale-btn--heat-4:hover,
+.agent-page .scale-btn--heat-4:focus-visible,
+.agent-page .scale-btn--heat-4.active { background: #effaf3; border-color: #9bd1ad; }
+.agent-page .scale-btn--heat-5:hover,
+.agent-page .scale-btn--heat-5:focus-visible,
+.agent-page .scale-btn--heat-5.active { background: #e9f8f3; border-color: #70bfa5; }
+
+.agent-page .skip-btn {
+  border-radius: var(--radius-sm);
+}
+
+.agent-page .desahogo-textarea {
+  border-color: var(--c-calma-border);
+  background: #fcfefd;
+}
+
+.agent-page .journal-row {
+  border-radius: var(--radius-sm) !important;
+}
+
+.agent-page .perspective-grid {
+  gap: 12px;
+}
+
+.agent-page .perspective-card {
+  border-radius: var(--radius-card);
+  box-shadow: none;
+}
+
+.agent-page .badge {
+  border-radius: var(--radius-sm);
+}
+
+.agent-page .alert-banner--calma {
+  background: var(--c-calma-surface-subtle);
+  border-color: var(--c-calma-border);
+  color: var(--c-calma-text);
+}
+
+.agent-page .modal-box,
+.agent-page .modal-card {
+  border: 1px solid var(--c-calma-border);
+  border-radius: var(--radius-card);
+  box-shadow: 0 20px 48px rgba(15, 23, 42, 0.16);
+}

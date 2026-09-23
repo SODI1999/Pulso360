@@ -1,13 +1,9 @@
 // src/features/notifications/components/NotificationItem.jsx
-// Elemento interactivo de aviso con semántica visual sobria (RF-17 / antislop-ui)
+// Elemento interactivo de aviso con semántica visual sobria (RF-17)
 
 import { Icon } from '../../../core/components/Icon';
 
-export function NotificationItem({
-  notification = {},
-  onClick = () => {},
-  formatDate = () => ''
-}) {
+export function NotificationItem({ notification = {}, onClick = () => {}, formatDate = () => '' }) {
   const isUnread = !notification.read;
 
   // Clasificación contextual por tipo de aviso y color semántico (no arbitrario)
@@ -80,9 +76,7 @@ export function NotificationItem({
 
         <h3 className="notif-item-title">{notification.title}</h3>
 
-        {notification.context && (
-          <p className="notif-item-context">{notification.context}</p>
-        )}
+        {notification.context && <p className="notif-item-context">{notification.context}</p>}
 
         {notification.href && (
           <div className="notif-item-footer">

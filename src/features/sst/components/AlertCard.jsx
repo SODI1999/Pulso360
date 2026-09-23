@@ -4,8 +4,18 @@
 import { Icon } from '../../../core/components/Icon';
 
 export function AlertCard({ alertItem, onUpdateStatus, onDismissRequest, onCreateIntervention }) {
-  const severityClass = alertItem.severity === 'Alta' ? 'severity-alta' : alertItem.severity === 'Media' ? 'severity-media' : 'severity-baja';
-  const severityBadge = alertItem.severity === 'Alta' ? 'badge-danger' : alertItem.severity === 'Media' ? 'badge-warn' : 'badge-info';
+  const severityClass =
+    alertItem.severity === 'Alta'
+      ? 'severity-alta'
+      : alertItem.severity === 'Media'
+        ? 'severity-media'
+        : 'severity-baja';
+  const severityBadge =
+    alertItem.severity === 'Alta'
+      ? 'badge-danger'
+      : alertItem.severity === 'Media'
+        ? 'badge-warn'
+        : 'badge-info';
 
   const statusBadges = {
     GENERADA: 'badge-info',
@@ -49,7 +59,9 @@ export function AlertCard({ alertItem, onUpdateStatus, onDismissRequest, onCreat
           {alertItem.evidence.map((point, index) => (
             <span key={index} style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
               <span className="evidence-pill">{point} / 100</span>
-              {index < alertItem.evidence.length - 1 && <span style={{ color: 'var(--c-texto-mutado)' }}>→</span>}
+              {index < alertItem.evidence.length - 1 && (
+                <span style={{ color: 'var(--c-texto-mutado)' }}>→</span>
+              )}
             </span>
           ))}
         </div>

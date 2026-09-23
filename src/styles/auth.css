@@ -1,6 +1,6 @@
 /* src/styles/auth.css
  * Pulso360 Enterprise - Experiencia Unificada de Autenticación
- * Arquitectura: Zero-Scroll Invariant (100vh), Transición In-Situ, Cero AI Slop
+ * Arquitectura: Zero-Scroll Invariant (100vh), Transición In-Situ,
  */
 
 @import url('tokens.css');
@@ -100,7 +100,7 @@
   justify-content: space-between;
   width: 100%;
   background-color: #082F28;
-  background-image: 
+  background-image:
     linear-gradient(165deg, rgba(8, 47, 40, 0.82) 0%, rgba(5, 31, 26, 0.90) 100%),
     url('/assets/fotos/bpo-agent-authentic.jpg');
   background-size: cover;

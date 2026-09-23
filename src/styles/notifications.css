@@ -1,6 +1,6 @@
 /* src/styles/notifications.css
    Centro de Notificaciones y Avisos de Pulso360 (/notificaciones)
-   Diseñado bajo las reglas de /antislop-ui y antislop:
+   Estilos de la funcionalidad y sus estados.
    - Erradicación de "Excessive Accent Color" (prohibido pintar todo de verde por defecto).
    - Uso de color semántico real (ámbar para alertas, azul/slate para avisos informativos, neutro para histórico).
    - Estructura auténtica de Inbox / Bandeja operativa de avisos.
@@ -374,7 +374,7 @@
   line-height: 1.5;
 }
 
-/* 7. Sección de Ajustes de Avisos (Flujo Editorial Continuo - Sin Card / pulso360-ui-craft Caso 1) */
+/* 7. Sección de Ajustes de Avisos (Flujo Editorial Continuo - Sin Card) */
 .notif-pref-editorial-row {
   margin-top: var(--space-8);
   padding: var(--space-6) 0 8px;

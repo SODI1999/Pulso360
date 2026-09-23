@@ -57,9 +57,7 @@ export function HeroSection() {
             ========================================================================= */}
         <div className="hero-editorial-col">
           {/* Eyebrow tipográfico puro */}
-          <span className="hero-editorial-eyebrow">
-            Salud Ocupacional & Prevención en Contact Centers
-          </span>
+          <span className="hero-editorial-eyebrow">Salud Ocupacional & Prevención en Contact Centers</span>
 
           <h1 id="hero-main-title" className="hero-editorial-title">
             Detección temprana del <br /> agotamiento en Contact Centers.
@@ -69,7 +67,8 @@ export function HeroSection() {
           </h1>
 
           <p className="hero-editorial-lead">
-            Micro-pulsos voluntarios de 60 segundos y analítica agregada para que SST revise tendencias del equipo sin convertir el bienestar en una métrica de desempeño.
+            Micro-pulsos voluntarios de 60 segundos y analítica agregada para que SST revise tendencias del
+            equipo sin convertir el bienestar en una métrica de desempeño.
           </p>
 
           {/* Acciones principales */}
@@ -129,7 +128,9 @@ export function HeroSection() {
                     </div>
 
                     <p className="k-popover-text">
-                      Es el umbral matemático de privacidad: si un equipo registra menos de 5 respuestas activas, el panel de SST se bloquea automáticamente. Protege la confidencialidad individual impidiendo la deducción directa de respuestas en muestras pequeñas.
+                      Es el umbral matemático de privacidad: si un equipo registra menos de 5 respuestas
+                      activas, el panel de SST se bloquea automáticamente. Protege la confidencialidad
+                      individual impidiendo la deducción directa de respuestas en muestras pequeñas.
                     </p>
 
                     <div className="k-popover-footer">
@@ -146,8 +147,8 @@ export function HeroSection() {
                     </div>
                   </div>
                 )}
-              </span>
-              {' '}cuando la muestra es pequeña. Revisa el alcance de esta demo antes de registrar datos reales.
+              </span>{' '}
+              cuando la muestra es pequeña. Revisa el alcance de esta demo antes de registrar datos reales.
             </div>
           </div>
         </div>
@@ -168,11 +169,10 @@ export function HeroSection() {
 
             {/* Estado principal de cierre de turno */}
             <div className="disconnection-status-block">
-              <h3 className="disconnection-title">
-                Desconexión Laboral Activa
-              </h3>
+              <h3 className="disconnection-title">Desconexión Laboral Activa</h3>
               <p className="disconnection-desc">
-                Ejemplo ilustrativo del cierre de turno. El registro voluntario puede alimentar una tendencia agregada cuando el grupo cumple el umbral de protección.
+                Ejemplo ilustrativo del cierre de turno. El registro voluntario puede alimentar una tendencia
+                agregada cuando el grupo cumple el umbral de protección.
               </p>
             </div>
 
@@ -194,7 +194,9 @@ export function HeroSection() {
                 </div>
                 <div className="safeguard-text">
                   <strong className="safeguard-metric">Tendencias agregadas</strong>
-                  <span className="safeguard-label">La vista de supervisión no muestra registros individuales</span>
+                  <span className="safeguard-label">
+                    La vista de supervisión no muestra registros individuales
+                  </span>
                 </div>
               </div>
 
@@ -204,7 +206,9 @@ export function HeroSection() {
                 </div>
                 <div className="safeguard-text">
                   <strong className="safeguard-metric">Participación voluntaria</strong>
-                  <span className="safeguard-label">El agente decide si registra su experiencia del turno</span>
+                  <span className="safeguard-label">
+                    El agente decide si registra su experiencia del turno
+                  </span>
                 </div>
               </div>
             </div>

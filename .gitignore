@@ -30,14 +30,14 @@ dist-ssr
 .env.*.local
 !.env.example
 
-# Propuesta interna (invisible para GitHub)
+# Propuesta interna
 Propuesta/
 [pP]ropuesta/
 [pP]ropuesta
 **/[pP]ropuesta/**
 **/[pP]ropuesta
 
-# Contratos de gobernanza para agentes de IA (invisibles para GitHub)
+# Configuración y contratos locales de desarrollo
 AGENTS.md
 **/AGENTS.md
 GEMINI.md
@@ -55,6 +55,15 @@ docs/auditoria_ia/
 **docs/**
 **/anti-slop
 
-#docs de ia
+# Documentación y configuración local
 .gemini/
 
+
+# Exclusiones heredadas del repositorio académico
+/DESIGN.md
+/.impeccable/
+/.kilo/
+/public/assets/evidencias/
+*.zip
+*.tar.gz
+*.rar

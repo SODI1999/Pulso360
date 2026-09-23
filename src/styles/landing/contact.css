@@ -1,0 +1,66 @@
+/* =========================================================================
+   MÓDULO INSTITUCIONAL DE CONTACTO Y ACOMPAÑAMIENTO OPERATIVO
+   ========================================================================= */
+.contact-cta-section {
+  padding-block: 80px 96px;
+  background: var(--landing-cream);
+  border-bottom: 1px solid var(--landing-line);
+}
+
+.contact-cta-card {
+  background: #ffffff;
+  border: 1px solid var(--landing-line);
+  border-radius: 8px;
+  padding: 38px 40px;
+  box-shadow: 0 6px 24px rgba(17, 38, 35, 0.04);
+}
+
+@media (max-width: 768px) {
+  .contact-cta-card {
+    padding: 26px 20px;
+  }
+}
+
+.contact-cta-content h2 {
+  font-family: var(--font-family-display, 'Newsreader', Georgia, serif);
+  font-size: clamp(1.65rem, 2.4vw, 2.2rem);
+  font-weight: 700;
+  color: var(--landing-ink);
+  line-height: 1.25;
+  margin-block: 8px 12px;
+}
+
+.contact-cta-lead {
+  font-size: 0.98rem;
+  line-height: 1.68;
+  color: var(--landing-body);
+  max-width: 820px;
+  margin-bottom: 24px;
+}
+
+.contact-cta-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.btn-contact-email {
+  white-space: normal;
+  word-break: break-word;
+  text-align: center;
+}
+
+.contact-cta-guarantee {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.76rem;
+  color: var(--landing-body);
+}
+
+.contact-cta-guarantee svg {
+  color: var(--landing-emerald);
+  flex-shrink: 0;
+}

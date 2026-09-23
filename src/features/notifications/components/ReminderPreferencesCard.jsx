@@ -1,10 +1,7 @@
 // src/features/notifications/components/ReminderPreferencesCard.jsx
-// Ajuste editorial continuo de recordatorio de inicio de turno (RF-17 / pulso360-ui-craft Caso 1)
+// Ajuste editorial continuo de recordatorio de inicio de turno (RF-17)
 
-export function ReminderPreferencesCard({
-  reminderActive = false,
-  onToggleReminder = () => {}
-}) {
+export function ReminderPreferencesCard({ reminderActive = false, onToggleReminder = () => {} }) {
   const handleSwitchClick = () => {
     onToggleReminder(!reminderActive);
   };
@@ -14,7 +11,8 @@ export function ReminderPreferencesCard({
       <div className="notif-pref-editorial-info">
         <h2 className="notif-pref-editorial-title">Recordatorio diario de inicio de turno</h2>
         <p className="notif-pref-editorial-desc">
-          Presenta un aviso al iniciar tu jornada operativa para diligenciar el check-in de bienestar diario. Al pausar, no se emitirán avisos al comenzar.
+          Presenta un aviso al iniciar tu jornada operativa para diligenciar el check-in de bienestar diario.
+          Al pausar, no se emitirán avisos al comenzar.
         </p>
       </div>
 
@@ -30,9 +28,7 @@ export function ReminderPreferencesCard({
           <span className="editorial-switch-track" aria-hidden="true">
             <span className="editorial-switch-thumb" />
           </span>
-          <span className="editorial-switch-text">
-            {reminderActive ? 'Activo' : 'Pausado'}
-          </span>
+          <span className="editorial-switch-text">{reminderActive ? 'Activo' : 'Pausado'}</span>
         </button>
       </div>
     </section>

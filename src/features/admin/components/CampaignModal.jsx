@@ -43,11 +43,11 @@ export function CampaignModal({ isOpen, onClose, onSave, campaign = null }) {
       <div className="modal-card" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <div>
-            <h2 className="modal-title">
-              {campaign ? 'Editar Campaña' : 'Crear Nueva Campaña'}
-            </h2>
+            <h2 className="modal-title">{campaign ? 'Editar Campaña' : 'Crear Nueva Campaña'}</h2>
             <div className="modal-subtitle">
-              {campaign ? `Modificando: ${campaign.name}` : 'Registra una nueva unidad operativa en el sistema'}
+              {campaign
+                ? `Modificando: ${campaign.name}`
+                : 'Registra una nueva unidad operativa en el sistema'}
             </div>
           </div>
           <button type="button" className="btn btn-ghost btn-sm" onClick={onClose} aria-label="Cerrar modal">

@@ -4,13 +4,7 @@
 import { useState, useEffect } from 'react';
 import { Icon } from '../../../core/components/Icon';
 
-export function HabeasAdvanceModal({
-  isOpen,
-  onClose,
-  onConfirm,
-  request,
-  nextStatus
-}) {
+export function HabeasAdvanceModal({ isOpen, onClose, onConfirm, request, nextStatus }) {
   const [note, setNote] = useState('');
 
   useEffect(() => {
@@ -52,8 +46,8 @@ export function HabeasAdvanceModal({
         <form onSubmit={handleSubmit}>
           <div className="modal-body">
             <p style={{ fontSize: '13.5px', marginBottom: 'var(--space-3)' }}>
-              La solicitud pasará del estado <span className="badge badge-info">{request.status}</span> al estado{' '}
-              <span className="badge badge-ok">{nextStatus}</span>.
+              La solicitud pasará del estado <span className="badge badge-info">{request.status}</span> al
+              estado <span className="badge badge-ok">{nextStatus}</span>.
             </p>
 
             <div className="form-group">

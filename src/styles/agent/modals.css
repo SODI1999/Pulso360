@@ -1,0 +1,238 @@
+/* ==========================================================================
+   Capa compartida de modales del módulo de agente
+   Contrato único de superficie de decisión: ancho controlado, scroll
+   interno contenido, kicker editorial y avisos de privacidad. Las variantes
+   sólo cambian el ancho; no introducen otra gramática visual.
+   ========================================================================== */
+
+.agent-modal {
+  width: 100%;
+  max-width: 540px;
+  max-height: min(760px, calc(100vh - 40px));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--c-calma-border) transparent;
+}
+
+.agent-modal--wide {
+  max-width: 640px;
+}
+
+.agent-modal::-webkit-scrollbar {
+  width: 7px;
+}
+
+.agent-modal::-webkit-scrollbar-thumb {
+  background: var(--c-calma-border);
+  border-radius: var(--radius-full);
+}
+
+.agent-modal .modal-header {
+  margin-bottom: 18px;
+}
+
+/* El modal de transparencia no hereda la banda calma de los modales de agente:
+   es una cabecera de lectura separada sólo por una línea, sin franja de color.
+   El contenido compacto evita el scroll interno (auditoría 015, rediseño). */
+.agent-page .agent-modal.perspective-modal .modal-header {
+  background: transparent;
+  border-bottom: 1px solid var(--c-borde-suave);
+  padding-bottom: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+/* Aviso de garantías más compacto dentro de este modal (sin scroll interno) */
+.agent-page .agent-modal.perspective-modal .agent-notice {
+  padding: 10px 14px;
+  margin: 12px 0 0;
+  font-size: 11.5px;
+  line-height: 1.45;
+}
+
+.agent-page .agent-modal.perspective-modal .modal-footer {
+  padding-top: 8px;
+}
+
+/* Evita que el margen del último elemento desborde y genere un scroll de pocos px */
+.agent-page .agent-modal.perspective-modal > :last-child {
+  margin-bottom: 0;
+}
+
+.agent-modal .modal-footer {
+  padding-top: 16px;
+}
+
+/* Kicker editorial: identifica el canal o sección sobre el título. En sentence
+   case — las mayúsculas sostenidas no rotulan nada que el peso y el color no hagan
+   ya (auditoría 015, hallazgo 5). */
+.agent-kicker {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--c-calma-accent);
+}
+
+.agent-kicker--primario {
+  color: var(--c-primario);
+}
+
+/* Aviso de privacidad o de alcance: icono + texto. Variantes de superficie
+   según el contexto: calma (canal protegido), plana (sección contigua) y
+   punteada (orientación informativa, no compromiso institucional). */
+.agent-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px 16px;
+  margin: 14px 0;
+  border: 1px solid var(--c-calma-border);
+  border-radius: var(--radius-md);
+  background-color: var(--c-calma-surface-subtle);
+}
+
+.agent-notice--flat {
+  border: 1px solid var(--c-borde-suave);
+  background-color: var(--c-fondo);
+}
+
+.agent-notice--dashed {
+  margin-bottom: 20px;
+  border: 1px dashed var(--c-borde);
+  background-color: var(--c-fondo);
+}
+
+.agent-notice--dashed .agent-notice-icon {
+  color: var(--c-texto-suave);
+}
+
+.agent-notice--dashed .agent-notice-text {
+  font-size: 12px;
+  color: var(--c-texto-suave);
+}
+
+.agent-notice--center {
+  align-items: center;
+}
+
+.agent-notice--center .agent-notice-icon {
+  margin-top: 0;
+}
+
+.agent-notice-icon {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--c-calma-accent);
+}
+
+.agent-notice-text {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--c-calma-text);
+}
+
+/* Nota breve sin caja (ej. recordatorio de privacidad en modo anónimo) */
+.agent-note-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 8px 0 4px;
+  font-size: 12px;
+  color: var(--c-texto-suave);
+}
+
+.agent-note-row .agent-notice-icon {
+  margin-top: 0;
+}
+
+/* Ayudas de campo y grillas reutilizables de formulario */
+.form-label--strong {
+  font-weight: 700;
+  color: var(--c-texto);
+}
+
+.field-hint {
+  margin-top: 4px;
+  font-size: 11.5px;
+  color: var(--c-texto-suave);
+}
+
+.form-row-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.form-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.form-actions .btn-primary {
+  min-height: 42px;
+  padding: 10px 20px;
+  font-size: 14px;
+}
+
+/* Tarjeta de formulario institucional del módulo (canal de apoyo) */
+.agent-form-card {
+  border: 1.5px solid var(--c-calma-border);
+}
+
+.agent-form-card form {
+  margin-top: 16px;
+}
+
+.agent-form-card .card-title {
+  font-size: 16px;
+  color: var(--c-calma-text);
+}
+
+.agent-form-card .alert-banner {
+  margin-top: 16px;
+}
+
+/* Cápsulas de modalidad (formulario de apoyo y paso SST del canal de crisis) */
+.support-mode-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 14px;
+  margin-top: 6px;
+}
+
+.support-mode-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 16px 0 20px;
+}
+
+.support-mode-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.support-mode-head strong {
+  font-size: 13.5px;
+  color: var(--c-texto);
+}
+
+.support-mode-head .badge {
+  font-size: 10px;
+}
+
+.support-mode-desc {
+  margin: 4px 0 0;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--c-texto-suave);
+}
+
+.support-mode-list strong {
+  font-size: 13.5px;
+  color: var(--c-texto);
+}

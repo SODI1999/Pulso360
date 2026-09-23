@@ -29,7 +29,9 @@ export function DemoAccountsCard({ activeEmail, onSelectDemo }) {
         aria-controls="demo-eval-collapse-panel"
       >
         <span className="demo-accordion-prompt">
-          <span className="demo-eval-academic-badge">Entorno de evaluación académica · Credenciales de prueba</span>
+          <span className="demo-eval-academic-badge">
+            Entorno de evaluación académica · Credenciales de prueba
+          </span>
         </span>
         <span className={`demo-accordion-chevron ${isOpen ? 'rotated' : ''}`} aria-hidden="true">
           <Icon name={isOpen ? 'chevronUp' : 'chevronDown'} size={14} />
@@ -39,7 +41,8 @@ export function DemoAccountsCard({ activeEmail, onSelectDemo }) {
       {isOpen && (
         <div id="demo-eval-collapse-panel" className="demo-eval-content">
           <p className="demo-eval-helper">
-            Selecciona un rol para autocompletar credenciales de prueba en este entorno de evaluación académica:
+            Selecciona un rol para autocompletar credenciales de prueba en este entorno de evaluación
+            académica:
           </p>
 
           <div className="demo-eval-pills" role="tablist" aria-label="Perfiles de evaluación académica">
@@ -62,12 +65,12 @@ export function DemoAccountsCard({ activeEmail, onSelectDemo }) {
           </div>
 
           <div className="demo-eval-footer-note">
-            <span>Clave de demostración unificada: <code>Pulso360#2026</code></span>
+            <span>
+              Clave de demostración unificada: <code>Pulso360#2026</code>
+            </span>
           </div>
         </div>
       )}
     </div>
   );
 }
-
-

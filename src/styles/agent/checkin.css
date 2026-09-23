@@ -1,0 +1,244 @@
+/* ==========================================================================
+   Check-in Diario Wizard & Progress
+   ========================================================================== */
+
+.wizard-card {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: var(--space-5) var(--space-6);
+}
+
+.wizard-header-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.wizard-step-indicator {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--c-primario);
+}
+
+.wizard-draft-notice {
+  font-size: 12px;
+  color: var(--c-texto-mutado);
+}
+
+.progress-track {
+  height: 6px;
+  background-color: var(--c-borde-suave);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  margin-bottom: var(--space-4);
+}
+
+.progress-fill {
+  height: 100%;
+  background-color: var(--c-primario);
+  border-radius: var(--radius-full);
+  transition: width 0.25s ease;
+}
+
+.check-step {
+  display: block;
+  text-align: center;
+  margin-bottom: var(--space-4);
+}
+
+.check-step-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--c-texto);
+  margin-bottom: var(--space-3);
+  line-height: 1.35;
+}
+
+/* Micro-nota empática contextual de la pregunta */
+.scale-context-note {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  background-color: var(--c-calma-surface-subtle, #f0fdf9);
+  border: 1px solid var(--c-calma-border-subtle, #ccfbf1);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  margin-bottom: var(--space-4);
+  text-align: left;
+}
+
+.scale-context-icon-wrapper {
+  color: var(--c-calma-accent, #0f766e);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.scale-context-text {
+  font-size: 12.5px;
+  color: var(--c-texto-suave);
+  line-height: 1.45;
+  margin: 0;
+}
+
+.scale-skip-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--space-4);
+}
+
+.skip-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: 8px 18px;
+  min-height: 44px;
+  background-color: var(--c-fondo);
+  border: 1px solid var(--c-borde-suave);
+  border-radius: var(--radius-full);
+  color: var(--c-texto-mutado);
+  font-size: 12px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all var(--transition-fast);
+}
+
+.skip-btn:hover {
+  background-color: var(--c-fondo-subtle);
+  color: var(--c-texto);
+  border-color: var(--c-borde-fuerte);
+}
+
+.skip-btn.active {
+  background-color: var(--c-primario-suave);
+  color: var(--c-primario);
+  border-color: var(--c-primario-border);
+  font-weight: 600;
+}
+
+.wizard-footer-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: var(--space-4);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--c-borde-suave);
+}
+
+.privacy-notice-box {
+  margin-top: var(--space-4);
+  padding: var(--space-3);
+  background-color: var(--c-fondo-subtle);
+  border-radius: var(--radius-md);
+  font-size: 12px;
+  color: var(--c-texto-mutado);
+  line-height: 1.45;
+  text-align: left;
+}
+
+.wizard-privacy-box {
+  border: 1px solid var(--c-borde-suave);
+  background-color: var(--c-fondo);
+}
+
+.center-card {
+  text-align: center;
+  padding: 32px 20px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.center-icon-badge {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 8px auto var(--space-3);
+}
+
+/* Pantalla de Cierre Restaurador */
+.restaurador-card {
+  max-width: 620px;
+  margin: 0 auto;
+  padding: var(--space-6) var(--space-5);
+  text-align: center;
+}
+
+.restaurador-title {
+  font-size: 21px;
+  font-weight: 700;
+  color: var(--c-texto);
+  margin-bottom: var(--space-3);
+  letter-spacing: -0.01em;
+}
+
+.restaurador-somatic-box {
+  background-color: var(--c-calma-surface-subtle, #f0fdf9);
+  border: 1.5px solid var(--c-calma-border, #99f6e4);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  margin: var(--space-4) auto;
+  max-width: 520px;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  text-align: left;
+}
+
+.restaurador-somatic-icon-badge {
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
+  border-radius: var(--radius-full);
+  background-color: var(--c-calma-accent-soft, #ccfbf1);
+  color: var(--c-calma-accent, #0f766e);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.restaurador-somatic-text {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--c-calma-text, #115e59);
+  line-height: 1.45;
+  margin: 0;
+}
+
+.restaurador-privacy-note {
+  color: var(--c-texto-suave);
+  font-size: 12px;
+  line-height: 1.5;
+  max-width: 480px;
+  margin: 0 auto var(--space-5);
+}
+
+.restaurador-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.btn-restaurador-highlight {
+  padding: 10px 22px;
+  font-size: 13.5px;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  box-shadow: 0 2px 8px rgba(15, 118, 110, 0.18);
+}
+
+.restaurador-links-group {
+  display: flex;
+  gap: var(--space-3);
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: var(--space-1);
+}

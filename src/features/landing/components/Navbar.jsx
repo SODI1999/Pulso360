@@ -78,9 +78,17 @@ export function Navbar() {
   const isFoundationActive = location.pathname === '/fundamentacion';
 
   return (
-    <header className={`landing-header ${isScrolled || isContactActive || isFoundationActive ? 'scrolled' : ''}`} id="header">
+    <header
+      className={`landing-header ${isScrolled || isContactActive || isFoundationActive ? 'scrolled' : ''}`}
+      id="header"
+    >
       <div className="landing-container header-inner">
-        <Link className="brand" to="/" onClick={() => handleNavClick('#inicio')} aria-label="Pulso360, volver al inicio">
+        <Link
+          className="brand"
+          to="/"
+          onClick={() => handleNavClick('#inicio')}
+          aria-label="Pulso360, volver al inicio"
+        >
           <img className="brand-logo" src="/assets/marca/logo.png" alt="" />
           <span className="brand-name">Pulso360</span>
           <span className="brand-context">Bienestar laboral</span>
@@ -167,7 +175,9 @@ export function Navbar() {
             aria-controls="navMenu"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
-            <span></span><span></span><span></span>
+            <span></span>
+            <span></span>
+            <span></span>
           </button>
         </div>
       </div>

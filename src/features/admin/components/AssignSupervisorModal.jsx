@@ -4,14 +4,7 @@
 import { useState, useEffect } from 'react';
 import { Icon } from '../../../core/components/Icon';
 
-export function AssignSupervisorModal({
-  isOpen,
-  onClose,
-  onSave,
-  campaign,
-  team,
-  supervisorsList = []
-}) {
+export function AssignSupervisorModal({ isOpen, onClose, onSave, campaign, team, supervisorsList = [] }) {
   const [selectedSupervisor, setSelectedSupervisor] = useState('');
   const [error, setError] = useState('');
 

@@ -1,0 +1,33 @@
+import { pulsoStore } from '../../../core/storage/pulsoStore';
+
+export function saveFollowup(interventionId, actionType, notes, progress, user) {
+  const data = pulsoStore.get();
+  const intervention = (data.interventions || []).find((i) => i.id === interventionId);
+
+  if (intervention && user?.role === 'supervisor' && intervention.assignedTo === user.id) {
+    intervention.progress = progress;
+    intervention.lastFollowup = {
+      date: new Date().toISOString().substring(0, 10),
+      actionType,
+      notes,
+      supervisor: user?.name
+    };
+
+    if (progress >= 100) {
+      intervention.status = 'Cerrada';
+    } else if (intervention.status === 'Pendiente') {
+      intervention.status = 'Activa';
+    }
+
+    pulsoStore.save(data);
+
+    // Registrar el seguimiento en la auditoría local (RF-09)
+    pulsoStore.audit({
+      actor: `${user?.name || 'Supervisor'} (${user?.role || 'supervisor'})`,
+      action: 'SEGUIMIENTO_INTERVENCION',
+      target: `${intervention.title} · ${actionType} (${progress}% avance)`
+    });
+
+    return `Seguimiento guardado exitosamente para "${intervention.title}". Avance actualizado al ${progress}%.`;
+  }
+}

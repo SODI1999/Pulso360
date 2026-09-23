@@ -12,14 +12,7 @@ const CANONICAL_ROLES = [
   { value: 'admin', label: 'Administrador del Sistema' }
 ];
 
-export function ManageUserModal({
-  isOpen,
-  onClose,
-  onSave,
-  user,
-  orgScopes = [],
-  currentUserId
-}) {
+export function ManageUserModal({ isOpen, onClose, onSave, user, orgScopes = [], currentUserId }) {
   const [role, setRole] = useState('agente');
   const [orgScopeId, setOrgScopeId] = useState('');
   const [status, setStatus] = useState('Activo');
@@ -52,13 +45,17 @@ export function ManageUserModal({
 
     // Regla de Protección: no permitir auto-suspensión
     if (isSelf && status === 'Suspendido') {
-      setError('Por seguridad operativa, no puedes suspender tu propia cuenta de administrador en la sesión activa.');
+      setError(
+        'Por seguridad operativa, no puedes suspender tu propia cuenta de administrador en la sesión activa.'
+      );
       return;
     }
 
     // Regla de Protección: no auto-degradarse de administrador sin otra cuenta activa
     if (isSelf && role !== 'admin') {
-      setError('No puedes retirar tus propios privilegios de administrador para evitar el bloqueo del sistema.');
+      setError(
+        'No puedes retirar tus propios privilegios de administrador para evitar el bloqueo del sistema.'
+      );
       return;
     }
 
@@ -106,7 +103,10 @@ export function ManageUserModal({
             {isSelf && (
               <div className="alert-banner info" style={{ marginBottom: 'var(--space-4)' }}>
                 <Icon name="shield" size={16} />
-                <span>Estás gestionando tu propia cuenta activa de administrador. Algunas opciones de auto-bloqueo están deshabilitadas.</span>
+                <span>
+                  Estás gestionando tu propia cuenta activa de administrador. Algunas opciones de auto-bloqueo
+                  están deshabilitadas.
+                </span>
               </div>
             )}
 
@@ -165,7 +165,9 @@ export function ManageUserModal({
                 <option value="Suspendido">Suspendido</option>
               </select>
               {isSelf && (
-                <span className="form-hint">No puedes suspender la cuenta activa con la que has iniciado sesión.</span>
+                <span className="form-hint">
+                  No puedes suspender la cuenta activa con la que has iniciado sesión.
+                </span>
               )}
             </div>
           </div>

@@ -12,12 +12,7 @@ const CANONICAL_ROLES = [
   { value: 'admin', label: 'Administrador del Sistema' }
 ];
 
-export function CreateUserModal({
-  isOpen,
-  onClose,
-  onSave,
-  orgScopes = []
-}) {
+export function CreateUserModal({ isOpen, onClose, onSave, orgScopes = [] }) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [role, setRole] = useState('agente');
@@ -50,7 +45,9 @@ export function CreateUserModal({
     // 2. Formato de correo electrónico (estricto con dominio y TLD calificado)
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailRegex.test(trimmedEmail)) {
-      setError('El correo institucional no tiene una estructura válida con dominio calificado (ej. colaborador@pulso360.co).');
+      setError(
+        'El correo institucional no tiene una estructura válida con dominio calificado (ej. colaborador@pulso360.co).'
+      );
       return;
     }
 

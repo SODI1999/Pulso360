@@ -1,0 +1,713 @@
+/* ==========================================================================
+   SPATIAL & ATMOSPHERIC SANCTUARY — PULSO CALMA (Erradicación de Carditis BPO)
+   ========================================================================== */
+
+.agent-sanctuary {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  max-width: 1140px;
+  margin: 0 auto;
+  padding-bottom: var(--space-8);
+}
+
+/* 1. Hero Atmosférico & Acogedor */
+.sanctuary-hero {
+  background-color: var(--c-superficie);
+  border: 1px solid var(--c-calma-border-subtle);
+  border-radius: var(--radius-card, 8px);
+  padding: clamp(20px, 3vw, 32px);
+  box-shadow: var(--shadow-xs);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  position: relative;
+}
+
+.sanctuary-hero-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.sanctuary-greeting-block {
+  max-width: 640px;
+}
+
+.sanctuary-title {
+  font-family: var(--font-family);
+  font-size: clamp(24px, 2.8vw, 30px);
+  font-weight: 700;
+  color: var(--c-calma-text);
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  margin: 0 0 6px;
+}
+
+.sanctuary-name {
+  font-style: normal;
+  font-weight: 700;
+  color: var(--c-calma-accent);
+}
+
+.sanctuary-subtitle {
+  font-size: 13.5px;
+  color: var(--c-calma-text-muted);
+  line-height: 1.5;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.sanctuary-subtitle-dot {
+  color: var(--c-calma-border);
+  user-select: none;
+}
+
+.sanctuary-hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  min-height: 38px;
+}
+
+/* Desconexión Laboral Integrada en el Hero (Ley 2191 de 2022) */
+.sanctuary-disconnect-notice {
+  background-color: #f1f7f4;
+  border: 1px solid #cce3d8;
+  border-radius: var(--radius-md);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.disconnect-notice-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 740px;
+}
+
+.disconnect-notice-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  background-color: #e2f2ee;
+  color: var(--c-calma-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.disconnect-notice-text h4 {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--c-calma-text);
+  margin: 0 0 2px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.disconnect-notice-text p {
+  font-size: 12px;
+  color: var(--c-calma-text-muted);
+  margin: 0;
+  line-height: 1.45;
+}
+
+.disconnect-notice-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Shift Horizon (Horizonte del Turno Abierto) */
+.shift-horizon {
+  border-top: 1px solid var(--c-calma-border-subtle);
+  padding-top: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.shift-horizon-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--c-calma-text-muted);
+}
+
+.shift-horizon-clock {
+  font-family: inherit;
+  font-weight: 600;
+  color: var(--c-texto-mutado);
+  text-transform: none;
+  letter-spacing: normal;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.shift-horizon-track {
+  display: flex;
+  align-items: center;
+  position: relative;
+  gap: var(--space-2);
+  overflow-x: auto;
+  padding: 4px 2px 8px;
+}
+
+.horizon-node {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 145px;
+  position: relative;
+}
+
+.horizon-bullet {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  border: 1.5px solid var(--c-borde);
+  background-color: var(--c-superficie);
+  color: var(--c-texto-mutado);
+  flex-shrink: 0;
+  transition: all var(--transition-fast);
+}
+
+.horizon-node.done .horizon-bullet {
+  background-color: var(--c-calma-accent);
+  border-color: var(--c-calma-accent);
+  color: #ffffff;
+}
+
+.horizon-node.active .horizon-bullet {
+  background-color: var(--c-calma-accent-soft);
+  border-color: var(--c-calma-accent);
+  color: var(--c-calma-accent);
+  box-shadow: 0 0 0 3px var(--c-calma-ring);
+}
+
+.horizon-node-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.horizon-time {
+  font-size: 10.5px;
+  color: var(--c-texto-mutado);
+  font-weight: 600;
+}
+
+.horizon-label {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--c-texto);
+  line-height: 1.25;
+}
+
+.horizon-node.active .horizon-label {
+  color: var(--c-calma-accent);
+  font-weight: 700;
+}
+
+.horizon-connector {
+  flex: 1;
+  height: 2px;
+  background-color: var(--c-borde-suave);
+  margin-left: 6px;
+  margin-right: 6px;
+  align-self: center;
+  transform: translateY(-1px);
+}
+
+.horizon-node.done .horizon-connector,
+.horizon-node.done + .horizon-node .horizon-connector {
+  background-color: var(--c-calma-accent);
+}
+
+/* 2. Portal de Pausa Zen (Check-in Abierto) */
+.sanctuary-checkin-portal {
+  background-color: var(--c-superficie);
+  border: 1.5px solid var(--c-calma-border);
+  border-radius: var(--radius-card, 8px);
+  padding: var(--space-5) clamp(18px, 3vw, 28px);
+  box-shadow: var(--shadow-xs);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.sanctuary-checkin-portal:hover {
+  border-color: var(--c-calma-accent);
+  box-shadow: var(--shadow-sm);
+}
+
+.checkin-portal-core {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.portal-left-cluster {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  max-width: 740px;
+}
+
+.portal-zen-icon {
+  width: 50px;
+  height: 50px;
+  min-width: 50px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--c-calma-accent-soft);
+  color: var(--c-calma-accent);
+  border: 1px solid var(--c-calma-border);
+  flex-shrink: 0;
+  transition: transform var(--transition-fast);
+}
+
+.sanctuary-checkin-portal:hover .portal-zen-icon {
+  transform: scale(1.04);
+}
+
+.portal-zen-icon.done {
+  background-color: var(--c-exito-bg);
+  color: var(--c-exito);
+  border-color: var(--c-exito-border);
+}
+
+.portal-zen-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--c-texto);
+  margin: 0 0 3px;
+  letter-spacing: -0.01em;
+}
+
+.portal-zen-desc {
+  font-size: 12.8px;
+  color: var(--c-texto-suave);
+  margin: 0;
+  line-height: 1.48;
+}
+
+.portal-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* 3. Somatic Continuum (Erradicación de las 3 tarjetas vacías 1-2-3) */
+.somatic-continuum {
+  background-color: var(--c-superficie);
+  border: 1px solid var(--c-calma-border-subtle);
+  border-radius: var(--radius-card, 8px);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  box-shadow: var(--shadow-xs);
+  overflow: hidden;
+}
+
+.somatic-empty-state {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: 20px 24px;
+  background-color: var(--c-superficie);
+}
+
+.somatic-empty-cluster {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.somatic-empty-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-full);
+  background-color: var(--c-calma-accent-soft, #e8f3ee);
+  color: var(--c-calma-accent, #14705a);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.somatic-empty-body {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.somatic-empty-badge {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--c-calma-text-muted);
+}
+
+.somatic-empty-text {
+  font-size: 13px;
+  color: var(--c-calma-text);
+  margin: 0;
+  line-height: 1.45;
+}
+
+.somatic-segment {
+  padding: var(--space-4) var(--space-5);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+  position: relative;
+  transition: background-color var(--transition-fast);
+}
+
+.somatic-segment:hover {
+  background-color: var(--c-calma-surface-subtle);
+}
+
+.somatic-segment:not(:last-child) {
+  border-right: 1px solid var(--c-calma-border-subtle);
+}
+
+.somatic-segment-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.somatic-kpi-tag {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--c-calma-text-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.somatic-kpi-number {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--c-texto);
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.somatic-kpi-unit {
+  font-size: 13.5px;
+  font-weight: 400;
+  color: var(--c-texto-mutado);
+}
+
+/* Medidor somático de batería (gauge pips) */
+.somatic-energy-gauge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 4px 0 2px;
+}
+
+.gauge-pip {
+  height: 6px;
+  flex: 1;
+  border-radius: var(--radius-xs);
+  background-color: var(--c-borde-suave);
+  transition: background-color var(--transition-fast);
+}
+
+.gauge-pip.filled {
+  background-color: var(--c-calma-accent);
+}
+
+.gauge-pip.filled.warn {
+  background-color: var(--c-alerta);
+}
+
+.gauge-pip.filled.low {
+  background-color: var(--c-critico);
+}
+
+.somatic-status-desc {
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.somatic-status-desc.ok {
+  color: var(--c-exito);
+}
+
+.somatic-status-desc.warn {
+  color: var(--c-alerta);
+}
+
+.somatic-status-desc.danger {
+  color: var(--c-critico);
+}
+
+.somatic-badge-soft {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  font-size: 11.5px;
+  font-weight: 600;
+  width: fit-content;
+}
+
+.somatic-badge-soft.ok {
+  background-color: #ecfdf5;
+  color: #047857;
+}
+
+.somatic-badge-soft.warn {
+  background-color: #fffbeb;
+  color: #b45309;
+}
+
+.somatic-badge-soft.danger {
+  background-color: #fef2f2;
+  color: #b91c1c;
+}
+
+/* 4. Sanctuary Duo Flow (El Río de tu Semana & Cuaderno Íntimo) */
+.sanctuary-duo-flow {
+  display: grid;
+  grid-template-columns: 1.25fr 1fr;
+  gap: var(--space-4);
+  align-items: stretch;
+}
+
+.sanctuary-story-panel {
+  background-color: var(--c-superficie);
+  border: 1px solid var(--c-calma-border-subtle);
+  border-radius: var(--radius-card, 8px);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-xs);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.sanctuary-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.sanctuary-panel-title {
+  font-family: var(--font-family);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--c-calma-text);
+  letter-spacing: -0.01em;
+}
+
+.sanctuary-panel-subtitle {
+  font-size: 12.5px;
+  color: var(--c-calma-text-muted);
+  margin-top: 2px;
+}
+
+.sanctuary-chart-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 36px 20px;
+  gap: 14px;
+  min-height: 180px;
+  background-color: var(--c-calma-surface-subtle);
+  border-radius: var(--radius-sm);
+  border: 1px dashed var(--c-calma-border-subtle);
+  margin-top: 16px;
+}
+
+.sanctuary-chart-empty-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-full);
+  background-color: #ffffff;
+  color: var(--c-calma-text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-xs);
+}
+
+.sanctuary-chart-empty-text {
+  font-size: 12.8px;
+  color: var(--c-calma-text-muted);
+  max-width: 360px;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.sanctuary-journal-panel {
+  background-color: #faf8f5;
+  border: 1px solid #e8e3d9;
+  border-radius: var(--radius-card, 8px);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-xs);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+}
+
+.journal-quote {
+  font-family: var(--font-family);
+  font-style: italic;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--c-texto-suave);
+  margin: var(--space-3) 0 var(--space-4);
+  padding: 10px 14px;
+  background: var(--c-fondo);
+  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--c-calma-accent);
+}
+
+.btn-journal-write {
+  background-color: #ffffff;
+  color: #2b2823;
+  border: 1px solid #d4ccbf;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  align-self: flex-start;
+  transition: all var(--transition-fast);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.btn-journal-write:hover {
+  background-color: #f4efe6;
+  border-color: #b5ac9d;
+  color: #1a1714;
+}
+
+/* 5. Descompresión Operativa Rápida en el Santuario */
+.sanctuary-decompression-bar {
+  background-color: var(--c-calma-surface-subtle);
+  border: 1px solid var(--c-calma-border-subtle);
+  border-radius: var(--radius-card, 8px);
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.sanctuary-decompression-lead {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sanctuary-decompression-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-full);
+  background-color: var(--c-calma-accent-soft);
+  color: var(--c-calma-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* Responsive Support */
+@media (max-width: 900px) {
+  .sanctuary-duo-flow {
+    grid-template-columns: 1fr;
+  }
+
+  .somatic-continuum {
+    grid-template-columns: 1fr;
+  }
+
+  .somatic-segment:not(:last-child) {
+    border-right: none;
+    border-bottom: 1px solid var(--c-calma-border-subtle);
+  }
+}
+
+@media (max-width: 600px) {
+  .sanctuary-hero {
+    padding: var(--space-4);
+  }
+
+  .sanctuary-hero-top {
+    flex-direction: column;
+  }
+
+  .sanctuary-hero-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .checkin-portal-core {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .portal-left-cluster {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .portal-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}

@@ -1,0 +1,89 @@
+/* ==========================================================================
+   Mejoras y Clases Semánticas del Módulo Agente (Auditoría UI/UX)
+   ========================================================================== */
+
+/* Variantes de Header y Banners para Wizard */
+.page-header--wizard {
+  max-width: 620px;
+  margin: 0 auto 16px;
+}
+
+.wizard-disconnect-banner {
+  max-width: 620px;
+  margin: 0 auto 16px;
+}
+
+/* Descriptores del Dashboard de Agente */
+.somatic-segment-descriptor {
+  font-size: 12px;
+  color: var(--c-texto-mutado);
+}
+
+.somatic-segment-note {
+  font-size: 12px;
+  color: var(--c-calma-text-muted);
+  line-height: 1.45;
+}
+
+.sanctuary-panel-footer-note {
+  margin-top: 14px;
+  padding-top: 10px;
+  border-top: 1px solid var(--c-calma-border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--c-texto-mutado);
+}
+
+/* Soporte de Crisis & PAP */
+.crisis-hero-banner {
+  background-color: var(--c-calma-bg);
+  border: 1.5px solid var(--c-calma-border);
+  border-radius: var(--radius-card, 8px);
+  padding: 24px;
+}
+
+.crisis-hero-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-full);
+  background-color: var(--c-calma-accent-soft);
+  color: var(--c-calma-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.grounding-tab-btn {
+  flex: 1;
+  min-width: 130px;
+  min-height: 64px;
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  text-align: left;
+  transition: all var(--transition-fast);
+}
+
+/* Layout Asimétrico  para Líneas Telefónicas (Rompe 1-2-3) */
+.crisis-lines-layout {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 16px;
+  margin-top: 16px;
+  align-items: stretch;
+}
+
+.crisis-secondary-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+@media (max-width: 960px) {
+  .crisis-lines-layout {
+    grid-template-columns: 1fr;
+  }
+}

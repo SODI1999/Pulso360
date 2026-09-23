@@ -29,19 +29,15 @@ export function DismissAlertModal({ alertItem, onClose, onConfirm }) {
               {alertItem.rule} · {alertItem.campaign}
             </div>
           </div>
-          <button
-            type="button"
-            className="modal-close-btn"
-            onClick={onClose}
-            aria-label="Cerrar modal"
-          >
+          <button type="button" className="modal-close-btn" onClick={onClose} aria-label="Cerrar modal">
             <Icon name="close" size={18} />
           </button>
         </div>
 
         <form onSubmit={handleSubmit}>
           <p style={{ fontSize: '13.5px', color: 'var(--c-texto)', lineHeight: '1.5', marginBottom: '14px' }}>
-            Para garantizar la trazabilidad de seguridad y salud en el trabajo, debes registrar una justificación técnica o contextual para descartar esta alerta.
+            Para garantizar la trazabilidad de seguridad y salud en el trabajo, debes registrar una
+            justificación técnica o contextual para descartar esta alerta.
           </p>
 
           <div className="form-group" style={{ marginBottom: '14px', width: '100%' }}>
@@ -66,7 +62,15 @@ export function DismissAlertModal({ alertItem, onClose, onConfirm }) {
               required
               autoFocus
             />
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '6px', fontSize: '12px' }}>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginTop: '6px',
+                fontSize: '12px'
+              }}
+            >
               <span style={{ color: 'var(--c-texto-mutado)' }}>
                 Requisito RF-08: mínimo 20 caracteres (máx. 500)
               </span>
@@ -76,12 +80,18 @@ export function DismissAlertModal({ alertItem, onClose, onConfirm }) {
             </div>
           </div>
 
-          <div className="alert-banner info" style={{ padding: '10px 14px', fontSize: '12.5px', marginBottom: '16px' }}>
+          <div
+            className="alert-banner info"
+            style={{ padding: '10px 14px', fontSize: '12.5px', marginBottom: '16px' }}
+          >
             <Icon name="info" size={16} />
             <span>Esta justificación se registrará de manera inmutable en la cadena de auditoría.</span>
           </div>
 
-          <div className="modal-footer" style={{ marginTop: '16px', display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+          <div
+            className="modal-footer"
+            style={{ marginTop: '16px', display: 'flex', justifyContent: 'flex-end', gap: '10px' }}
+          >
             <button type="button" className="btn btn-secondary" onClick={onClose}>
               Cancelar
             </button>

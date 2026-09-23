@@ -1,0 +1,145 @@
+/* =========================================================================
+   ACTO III: ESTILOS VIGILANCIA SST
+   ========================================================================= */
+.sst-signals-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.sst-intro-block h3 {
+  font-family: var(--font-family-display, 'Newsreader', Georgia, serif);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--landing-ink);
+  margin-bottom: 4px;
+}
+
+.sst-intro-block p {
+  font-size: 0.88rem;
+  color: var(--landing-body);
+  margin: 0;
+}
+
+.sst-shift-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+@media (max-width: 768px) {
+  .sst-shift-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.sst-signal-card {
+  background: #FAF8F5;
+  border: 1px solid rgba(17, 38, 35, 0.08);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.sst-signal-card.signal-normal {
+  border-left: 4px solid var(--landing-emerald);
+}
+
+.sst-signal-card.signal-warning {
+  border-left: 4px solid var(--landing-amber);
+}
+
+.signal-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.82rem;
+  color: var(--landing-ink);
+}
+
+.signal-status-pill {
+  font-size: 0.68rem;
+  font-weight: 750;
+  padding: 2px 7px;
+  border-radius: 999px;
+}
+
+.signal-status-pill.pill-green {
+  background: #DCFCE7;
+  color: #166534;
+}
+
+.signal-status-pill.pill-amber {
+  background: #FEF3C7;
+  color: #92400E;
+}
+
+.signal-metric-val {
+  font-size: 1.8rem;
+  font-weight: 850;
+  color: var(--landing-ink);
+  line-height: 1;
+  margin-right: 8px;
+}
+
+.signal-metric-sub {
+  font-size: 0.72rem;
+  color: var(--landing-body);
+}
+
+.signal-summary-text {
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--landing-body);
+  margin: 0;
+}
+
+.signal-protocol-applied {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: 0.74rem;
+  line-height: 1.4;
+  color: var(--landing-green-dark);
+  padding-top: 10px;
+  border-top: 1px solid #EAE5DC;
+}
+
+.sst-traceability-callout {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: #FAF8F5;
+  border: 1px solid rgba(17, 38, 35, 0.08);
+  border-radius: 8px;
+  padding: 16px 20px;
+}
+
+.callout-icon-wrap {
+  width: 38px;
+  height: 38px;
+  border-radius: 4px;
+  background: var(--landing-mint);
+  color: var(--landing-green-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.sst-traceability-callout strong {
+  display: block;
+  font-size: 0.86rem;
+  color: var(--landing-ink);
+  margin-bottom: 2px;
+}
+
+.sst-traceability-callout p {
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: var(--landing-body);
+  margin: 0;
+}

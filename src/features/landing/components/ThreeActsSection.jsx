@@ -1,6 +1,6 @@
 // src/features/landing/components/ThreeActsSection.jsx
 // Recorrido interactivo unificado de los Tres Actos de Pulso360
-// Dirección A: Editorial Humano & Sereno — Fusión Elegante y Respiración, Cero AI Slop
+// Dirección A: Editorial Humano & Sereno — Fusión Elegante y Respiración,
 
 import { useState } from 'react';
 import { Icon } from '../../../core/components/Icon';
@@ -24,11 +24,7 @@ export function ThreeActsSection() {
   const currentScaleScenario = AGENT_SCALE_SCENARIOS[selectedFactor] || AGENT_SCALE_SCENARIOS[4];
 
   return (
-    <section
-      className="three-acts-section"
-      id="los-tres-actos"
-      aria-labelledby="acts-main-title"
-    >
+    <section className="three-acts-section" id="los-tres-actos" aria-labelledby="acts-main-title">
       {/* Ancla para enlaces directos desde el Hero */}
       <span id="demostracion" className="section-anchor-offset" aria-hidden="true" />
 
@@ -36,11 +32,11 @@ export function ThreeActsSection() {
         {/* Encabezado Editorial del Recorrido */}
         <div className="three-acts-header">
           <span className="acts-eyebrow">Arquitectura Ética & Demostración Interactiva</span>
-          <h2 id="acts-main-title">
-            Los Tres Actos de Pulso360
-          </h2>
+          <h2 id="acts-main-title">Los Tres Actos de Pulso360</h2>
           <p className="acts-lead">
-            Un único recorrido sereno que articula el cuidado en tiempo real: desde el micro-pulso voluntario de 60 segundos del agente hasta la intervención oportuna de SST, respaldado por el muro matemático de k-anonimato.
+            Un único recorrido sereno que articula el cuidado en tiempo real: desde el micro-pulso voluntario
+            de 60 segundos del agente hasta la intervención oportuna de SST, respaldado por el muro matemático
+            de k-anonimato.
           </p>
         </div>
 
@@ -50,7 +46,7 @@ export function ThreeActsSection() {
           role="tablist"
           aria-label="Recorrido interactivo de los tres actos"
           onKeyDown={(e) => {
-            const tabs = UNIFIED_SHOWCASE_TABS.map(t => t.id);
+            const tabs = UNIFIED_SHOWCASE_TABS.map((t) => t.id);
             const currentIndex = tabs.indexOf(activeTab);
             if (e.key === 'ArrowRight') {
               e.preventDefault();
@@ -92,7 +88,6 @@ export function ThreeActsSection() {
 
         {/* Tarjeta Unificada de Demostración */}
         <div className="unified-showcase-viewport">
-          
           {/* =========================================================================
               ACTO I: ESPACIO ÍNTIMO DEL AGENTE
               ========================================================================= */}
@@ -108,17 +103,25 @@ export function ThreeActsSection() {
                   <Icon name="lock" size={14} />
                   <span>Espacio personal · Ejemplo ilustrativo · No es una evaluación de desempeño</span>
                 </div>
-                <span className="act-step-label">Micro-pulso de 60 segundos · Muestra interactiva de evaluación</span>
+                <span className="act-step-label">
+                  Micro-pulso de 60 segundos · Muestra interactiva de evaluación
+                </span>
               </div>
 
               {/* Selector de Carga Cognitiva y Emocional (1 al 5) */}
               <div className="agent-eval-block">
                 <div className="agent-eval-prompt">
                   <h3>¿Cómo percibes la carga cognitiva y emocional al cierre del turno?</h3>
-                  <p>Evalúa el ritmo de atención, la fricción técnica y la presión de llamadas consecutivas.</p>
+                  <p>
+                    Evalúa el ritmo de atención, la fricción técnica y la presión de llamadas consecutivas.
+                  </p>
                 </div>
 
-                <div className="factor-scale-interactive" role="radiogroup" aria-label="Escala de carga del turno">
+                <div
+                  className="factor-scale-interactive"
+                  role="radiogroup"
+                  aria-label="Escala de carga del turno"
+                >
                   {AGENT_SCALE_FACTORS.map((f) => (
                     <button
                       key={f.level}
@@ -167,7 +170,8 @@ export function ThreeActsSection() {
                     <p className="journal-entry-text">{selectedSituation.agentQuote}</p>
                     <span className="journal-privacy-notice">
                       <Icon name="lock" size={12} />
-                      En esta demo, el texto permanece en la bitácora individual y no aparece en la vista agregada
+                      En esta demo, el texto permanece en la bitácora individual y no aparece en la vista
+                      agregada
                     </span>
                   </div>
 
@@ -194,7 +198,9 @@ export function ThreeActsSection() {
 
                     {showNlpAdvice && (
                       <div className="nlp-extra-advice" role="note">
-                        <p><strong>Pauta ergonómica preventiva:</strong> {currentScaleScenario.advice}</p>
+                        <p>
+                          <strong>Pauta ergonómica preventiva:</strong> {currentScaleScenario.advice}
+                        </p>
                       </div>
                     )}
 
@@ -255,8 +261,7 @@ export function ThreeActsSection() {
                     <div className="slider-ticks-row">
                       <span className="tick-min">1 (Mínimo)</span>
                       <span className="tick-threshold">
-                        <Icon name="shield" size={12} />
-                        k = 5 (Umbral)
+                        <Icon name="shield" size={12} />k = 5 (Umbral)
                       </span>
                       <span className="tick-max">12 (Óptimo)</span>
                     </div>
@@ -265,7 +270,9 @@ export function ThreeActsSection() {
                   <div className="kanonymity-math-guarantee">
                     <Icon name="fileShield" size={15} />
                     <span>
-                      En grupos menores a 5 participantes, cualquier reporte permitiría inferir respuestas individuales. Pulso360 protege deliberadamente la visualización para salvaguardar la privacidad.
+                      En grupos menores a 5 participantes, cualquier reporte permitiría inferir respuestas
+                      individuales. Pulso360 protege deliberadamente la visualización para salvaguardar la
+                      privacidad.
                     </span>
                   </div>
                 </div>
@@ -281,19 +288,23 @@ export function ThreeActsSection() {
                         <span className="status-pill pill-shield">
                           Visualización Protegida por Privacidad
                         </span>
-                        <h4>
-                          Protegido por Privacidad ({agentCount} de 5 participantes)
-                        </h4>
+                        <h4>Protegido por Privacidad ({agentCount} de 5 participantes)</h4>
                         <p>
-                          Este bloqueo deliberado protege la identidad de los colaboradores mientras el quórum de participantes sea menor a 5 personas.
+                          Este bloqueo deliberado protege la identidad de los colaboradores mientras el quórum
+                          de participantes sea menor a 5 personas.
                         </p>
                         <small className="status-subnote">
-                          Al alcanzar k &ge; 5 participantes distintos, SG-SST visualiza promedios colectivos sin identificar registros individuales.
+                          Al alcanzar k &ge; 5 participantes distintos, SG-SST visualiza promedios colectivos
+                          sin identificar registros individuales.
                         </small>
                       </div>
                     </div>
                   ) : (
-                    <div className="sst-unlocked-report-card" role="region" aria-label="Reporte Preventivo Colectivo Desbloqueado">
+                    <div
+                      className="sst-unlocked-report-card"
+                      role="region"
+                      aria-label="Reporte Preventivo Colectivo Desbloqueado"
+                    >
                       {/* Cabecera del reporte */}
                       <div className="unlocked-report-head">
                         <div className="unlocked-badge-row">
@@ -301,9 +312,7 @@ export function ThreeActsSection() {
                             <Icon name="shieldCheck" size={13} />
                             k-Anonimato Activo (k = {agentCount})
                           </span>
-                          <span className="unlocked-validity-badge">
-                            Muestra Representativa
-                          </span>
+                          <span className="unlocked-validity-badge">Muestra Representativa</span>
                         </div>
                         <h4 className="unlocked-report-title">
                           Reporte Preventivo Agregado · Campaña Soporte N1
@@ -328,7 +337,9 @@ export function ThreeActsSection() {
 
                       {/* Métrica 2: Distribución Grupal Disociada */}
                       <div className="unlocked-distribution-block">
-                        <span className="distribution-title">Distribución anónima del equipo ({agentCount} respuestas):</span>
+                        <span className="distribution-title">
+                          Distribución anónima del equipo ({agentCount} respuestas):
+                        </span>
                         <div className="distribution-chips-row">
                           <div className="dist-chip chip-balanced">
                             <span className="dist-chip-pct">67%</span>
@@ -353,7 +364,9 @@ export function ThreeActsSection() {
                       {/* Sello de Garantía y Privacidad */}
                       <div className="unlocked-privacy-seal">
                         <Icon name="lock" size={13} />
-                        <span>Métricas 100% desvinculadas de AHT y evaluaciones individuales de desempeño.</span>
+                        <span>
+                          Métricas 100% desvinculadas de AHT y evaluaciones individuales de desempeño.
+                        </span>
                       </div>
                     </div>
                   )}
@@ -384,7 +397,8 @@ export function ThreeActsSection() {
                 <div className="sst-intro-block">
                   <h3>Intervención oportuna sobre condiciones de trabajo</h3>
                   <p>
-                    Seguridad y Salud en el Trabajo interviene sobre los ritmos de piso, turnos y pausas activas, sin vigilar individualmente a los colaboradores.
+                    Seguridad y Salud en el Trabajo interviene sobre los ritmos de piso, turnos y pausas
+                    activas, sin vigilar individualmente a los colaboradores.
                   </p>
                 </div>
 
@@ -397,7 +411,9 @@ export function ThreeActsSection() {
                     >
                       <div className="signal-card-header">
                         <strong>{sig.shift}</strong>
-                        <span className={`signal-status-pill ${sig.statusType === 'warning' ? 'pill-amber' : 'pill-green'}`}>
+                        <span
+                          className={`signal-status-pill ${sig.statusType === 'warning' ? 'pill-amber' : 'pill-green'}`}
+                        >
                           {sig.status}
                         </span>
                       </div>
@@ -422,14 +438,15 @@ export function ThreeActsSection() {
                   <div>
                     <strong>Cero consecuencias punitivas · Trazabilidad 100% auditable</strong>
                     <p>
-                      La demo presenta intervenciones preventivas separadas de nómina, AHT y sanciones laborales; la implementación debe conservar esa separación mediante sus controles de acceso.
+                      La demo presenta intervenciones preventivas separadas de nómina, AHT y sanciones
+                      laborales; la implementación debe conservar esa separación mediante sus controles de
+                      acceso.
                     </p>
                   </div>
                 </div>
               </div>
             </div>
           )}
-
         </div>
       </div>
     </section>

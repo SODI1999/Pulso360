@@ -1,3 +1,8 @@
+import { AcademicLegalFramework } from '../components/AcademicLegalFramework';
+import { AcademicCitation } from '../components/AcademicCitation';
+import { AcademicTransfer } from '../components/AcademicTransfer';
+import { AcademicEvidence } from '../components/AcademicEvidence';
+import { AcademicHeader } from '../components/AcademicHeader';
 // src/features/landing/pages/AcademicFoundationPage.jsx
 // Pagina publica institucional: Fundamentación Cientifica, Evidencia Empírica y Transferencia Tecnologica
 
@@ -7,15 +12,7 @@ import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { ScrollToTopButton } from '../components/ScrollToTopButton';
 import { Icon } from '../../../core/components/Icon';
-import {
-  FOUNDATION_META,
-  AUTHORS_MATRIX,
-  EMPIRICAL_DATA,
-  TRANSFER_CARDS,
-  CITATION_DATA,
-  LEGAL_FRAMEWORK_DATA,
-  ANTI_SURVEILLANCE_PILLARS,
-} from '../data/academicFoundationData';
+import { CITATION_DATA, ANTI_SURVEILLANCE_PILLARS } from '../data/academicFoundationData';
 
 export function AcademicFoundationPage() {
   const [citationFormat, setCitationFormat] = useState('apa7');
@@ -45,347 +42,65 @@ export function AcademicFoundationPage() {
   };
 
   return (
-    <div className='landing-page-root academic-page-root'>
+    <div className="landing-page-root academic-page-root">
       <Navbar />
 
-      <main className='academic-page-main' id='contenido-principal'>
-        <div className='landing-container'>
-
+      <main className="academic-page-main" id="contenido-principal">
+        <div className="landing-container">
           {/* Migas de Pan */}
-          <nav className='academic-breadcrumb' aria-label='Migas de pan'>
-            <Link to='/' className='breadcrumb-link'>
-              <Icon name='arrowLeft' size={14} className='breadcrumb-icon' />
+          <nav className="academic-breadcrumb" aria-label="Migas de pan">
+            <Link to="/" className="breadcrumb-link">
+              <Icon name="arrowLeft" size={14} className="breadcrumb-icon" />
               <span>Volver al inicio</span>
             </Link>
-            <span className='breadcrumb-separator' aria-hidden='true'>/</span>
-            <span className='breadcrumb-current'>Fundamentación científica y origen</span>
+            <span className="breadcrumb-separator" aria-hidden="true">
+              /
+            </span>
+            <span className="breadcrumb-current">Fundamentación científica y origen</span>
           </nav>
 
-          <article className='academic-article-shell'>
-
+          <article className="academic-article-shell">
             {/* HERO EDITORIAL */}
-            <header className='academic-hero-header'>
-              <div className='academic-kicker-row'>
-                <div className='kicker-badges-group'>
-                  <span className='academic-editorial-kicker'>
-                    {FOUNDATION_META.badge}
-                  </span>
-                  <span className='kicker-separator' aria-hidden='true'>·</span>
-                  <span className='academic-meta-date'>
-                    {FOUNDATION_META.kicker}
-                  </span>
-                </div>
-                <button
-                  type='button'
-                  onClick={handlePrint}
-                  className='btn-print-dossier no-print'
-                  title='Imprimir o guardar ficha en PDF'
-                  aria-label='Imprimir ficha metodológica'
-                >
-                  <Icon name='fileText' size={14} />
-                  <span>Guardar / Imprimir Ficha</span>
-                </button>
-              </div>
-
-              <h1 className='academic-hero-title'>
-                {FOUNDATION_META.title}
-              </h1>
-
-              <p className='academic-hero-lead'>
-                {FOUNDATION_META.lead}
-              </p>
-
-              {/* ÍNDICE EDITORIAL DE SECCIONES (JUMP LINKS / TOC ACCESIBLE A15) */}
-              <nav className='academic-toc-strip' aria-label='Índice temático del dossier'>
-                <div className='toc-header-label'>
-                  <Icon name='bookmark' size={14} />
-                  <span>Secciones del documento:</span>
-                </div>
-                <div className='toc-links-row'>
-                  <a href='#autores' className='toc-pill-link'>
-                    <Icon name='users' size={13} />
-                    <span>Equipo</span>
-                  </a>
-                  <a href='#evidencia-empirica' className='toc-pill-link'>
-                    <Icon name='insights' size={13} />
-                    <span>1. Evidencia</span>
-                  </a>
-                  <a href='#transferencia' className='toc-pill-link'>
-                    <Icon name='fileShield' size={13} />
-                    <span>2. Transferencia</span>
-                  </a>
-                  <a href='#antivigilancia' className='toc-pill-link'>
-                    <Icon name='shieldCheck' size={13} />
-                    <span>3. Principios de diseño</span>
-                  </a>
-                  <a href='#citacion' className='toc-pill-link'>
-                    <Icon name='fileText' size={13} />
-                    <span>4. Citación</span>
-                  </a>
-                  <a href='#marco-legal' className='toc-pill-link'>
-                    <Icon name='lock' size={13} />
-                    <span>5. Marco Legal</span>
-                  </a>
-                </div>
-              </nav>
-
-              {/* MATRIZ DE AUTORIA INTERDISCIPLINARIA */}
-              <div className='academic-authorship-showcase' id='autores' aria-label='Autoría interdisciplinaria'>
-                {/* Trabajo Social */}
-                <article className='authorship-card authorship-social'>
-                  <div className='authorship-card-top'>
-                    <div className='authorship-icon-wrap social-accent'>
-                      <Icon name='users' size={20} />
-                    </div>
-                    <div className='authorship-meta-headings'>
-                      <span className='authorship-kicker'>{AUTHORS_MATRIX.socialResearch.badge}</span>
-                      <h2 className='authorship-faculty'>{AUTHORS_MATRIX.socialResearch.faculty}</h2>
-                      <span className='authorship-inst'>{AUTHORS_MATRIX.socialResearch.institution}</span>
-                    </div>
-                  </div>
-                  <div className='authorship-body'>
-                    <div className='author-lead-item'>
-                      <span className='author-role-label'>Asesoría & Docencia Líder:</span>
-                      <p className='author-principal-name'>{AUTHORS_MATRIX.socialResearch.leadAuthor}</p>
-                    </div>
-                    <div className='author-coauthors-wrap'>
-                      <span className='author-role-label'>Semillero de Investigación en Trabajo Social:</span>
-                      <div className='coauthors-chips'>
-                        {AUTHORS_MATRIX.socialResearch.coauthors.map((author) => (
-                          <span key={author} className='coauthor-chip'>{author}</span>
-                        ))}
-                      </div>
-                    </div>
-                    <div className='authorship-footer-note'>
-                      <span className='note-dot' aria-hidden='true'>•</span>
-                      <p className='note-text'>{AUTHORS_MATRIX.socialResearch.focus}</p>
-                    </div>
-                  </div>
-                </article>
-
-                {/* Ingeniería de Software */}
-                <article className='authorship-card authorship-tech'>
-                  <div className='authorship-card-top'>
-                    <div className='authorship-icon-wrap tech-accent'>
-                      <Icon name='fileShield' size={20} />
-                    </div>
-                    <div className='authorship-meta-headings'>
-                      <span className='authorship-kicker'>{AUTHORS_MATRIX.softwareEngineering.badge}</span>
-                      <h2 className='authorship-faculty'>{AUTHORS_MATRIX.softwareEngineering.faculty}</h2>
-                      <span className='authorship-inst'>{AUTHORS_MATRIX.softwareEngineering.institution}</span>
-                    </div>
-                  </div>
-                  <div className='authorship-body'>
-                    <div className='author-lead-item'>
-                      <span className='author-role-label'>{AUTHORS_MATRIX.softwareEngineering.leadAuthorRole}:</span>
-                      <p className='author-principal-name'>{AUTHORS_MATRIX.softwareEngineering.leadAuthor}</p>
-                    </div>
-                    <div className='author-coauthors-wrap'>
-                      <span className='author-role-label'>Naturaleza Jurídica & Adscripción:</span>
-                      <div className='coauthors-chips'>
-                        {AUTHORS_MATRIX.softwareEngineering.coauthors.map((dev) => (
-                          <span key={dev} className='coauthor-chip tech-chip'>{dev}</span>
-                        ))}
-                      </div>
-                    </div>
-                    <div className='authorship-footer-note'>
-                      <span className='note-dot' aria-hidden='true'>•</span>
-                      <p className='note-text'>{AUTHORS_MATRIX.softwareEngineering.focus}</p>
-                    </div>
-                  </div>
-                </article>
-              </div>
-            </header>
+            <AcademicHeader handlePrint={handlePrint} />
 
             {/* SECCION 1: EVIDENCIA EMPIRICA */}
-            <section className='academic-editorial-section' id='evidencia-empirica' aria-labelledby='sec-evidencia-titulo'>
-              <div className='section-title-wrap'>
-                <span className='section-tag'>Evidencia Empírica de Campo</span>
-                <h2 id='sec-evidencia-titulo'>Radiografía del agotamiento en centros de contacto locales</h2>
-              </div>
-              <p className='section-prose'>
-                {EMPIRICAL_DATA.sampleContext} La investigación reporta el uso de los siguientes instrumentos; sus resultados y condiciones de aplicación pertenecen al estudio original:
-              </p>
-              <div className='instruments-row'>
-                {EMPIRICAL_DATA.instruments.map((inst) => (
-                  <div key={inst.acronym} className='instrument-pill'>
-                    <span className='inst-acronym'>{inst.acronym}</span>
-                    <div className='inst-info'>
-                      <strong className='inst-name'>{inst.name}</strong>
-                      <p className='inst-desc'>{inst.purpose}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <div className='empirical-dossier-grid'>
-                {/* Tarjeta Principal */}
-                <div className='empirical-dossier-main'>
-                  <div className='dossier-stat-header'>
-                    <span className='dossier-tag'>{EMPIRICAL_DATA.mainMetric.tag}</span>
-                    <div className='dossier-big-number'>
-                      <span className='number-val'>{EMPIRICAL_DATA.mainMetric.percentage}</span>
-                      <span className='number-label'>{EMPIRICAL_DATA.mainMetric.label}</span>
-                    </div>
-                  </div>
-                  <div className='distribution-visual-container'>
-                    <div className='distribution-bar-track' role='progressbar' aria-label='Distribución de niveles de fatiga emocional' aria-valuenow='84.3'>
-                      {EMPIRICAL_DATA.distribution.map((dist) => (
-                        <div
-                          key={dist.level}
-                          className={'dist-segment ' + dist.toneClass + (dist.percentage < 20 ? ' dist-segment-small' : '')}
-                          style={{ width: dist.percentage + '%' }}
-                          title={dist.level + ': ' + dist.percentage + '%'}
-                        >
-                          <span className='dist-bar-text'>{dist.percentage + '%'}</span>
-                        </div>
-                      ))}
-                    </div>
-                    <div className='distribution-legend-grid'>
-                      {EMPIRICAL_DATA.distribution.map((dist) => (
-                        <div key={dist.level} className='legend-item'>
-                          <span className={'legend-dot ' + dist.toneClass} aria-hidden='true'></span>
-                          <div className='legend-content'>
-                            <strong className='legend-title'>{dist.label}</strong>
-                            <p className='legend-sub'>{dist.summary}</p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                  <p className='dossier-context'>
-                    {EMPIRICAL_DATA.mainMetric.description}
-                  </p>
-                </div>
-                {/* Tarjetas Laterales */}
-                <div className='empirical-dossier-aside'>
-                  {EMPIRICAL_DATA.secondaryMetrics.map((sec) => (
-                    <div
-                      key={sec.id}
-                      className={'dossier-aside-card ' + (sec.id === 'protective' ? 'aside-protective-card' : '')}
-                    >
-                      <div className='aside-card-header'>
-                        <span className='aside-tag'>{sec.tag}</span>
-                        <span className='aside-metric'>{sec.value}</span>
-                      </div>
-                      <h3 className='aside-title'>{sec.title}</h3>
-                      <p className='aside-desc'>{sec.description}</p>
-                      {sec.id === 'protective' && (
-                        <div className='correlation-vector-box' aria-label='Relación de amortiguación psicométrica'>
-                          <div className='correlation-node node-support'>
-                            <span className='node-label'>Apoyo Social</span>
-                            <span className='node-arrow' aria-hidden='true'>&uarr;</span>
-                          </div>
-                          <div className='correlation-vector-arrow' aria-hidden='true'>
-                            <span className='vector-line' />
-                            <span className='vector-tag'>amortigua</span>
-                            <span className='vector-line' />
-                          </div>
-                          <div className='correlation-node node-burnout'>
-                            <span className='node-label'>Agotamiento</span>
-                            <span className='node-arrow' aria-hidden='true'>&darr;</span>
-                          </div>
-                          <span className='correlation-sig-badge'>p &lt; 0.01</span>
-                        </div>
-                      )}
-                      {sec.operationalMeaning && (
-                        <div className='aside-highlight-box'>
-                          <Icon name='info' size={14} className='highlight-icon' />
-                          <span><strong>Traducción Operativa:</strong> {sec.operationalMeaning}</span>
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </section>
+            <AcademicEvidence />
 
             {/* SECCION 2: MATRIZ DE TRANSFERENCIA METODOLOGICA */}
-            <section className='academic-editorial-section' id='transferencia' aria-labelledby='sec-transferencia-titulo'>
-              <div className='section-title-wrap'>
-                <span className='section-tag'>Transferencia Metodológica</span>
-                <h2 id='sec-transferencia-titulo'>De la problemática social a los requerimientos de software</h2>
-              </div>
-              <p className='section-prose'>
-                Pulso360 no pretendió digitalizar un formulario pasivo, sino responder a las fricciones reales del piso de operación de los centros de contacto:
-              </p>
-              <div className='transfer-cards-grid'>
-                {TRANSFER_CARDS.map((card) => (
-                  <article key={card.id} className='transfer-flow-card'>
-                    <div className='card-top-bar'>
-                      <div className='card-badge-row'>
-                        <div className='card-badge-left'>
-                          <span className='card-axis-icon-wrap' aria-hidden='true'>
-                            <Icon name={card.icon || 'shieldCheck'} size={15} />
-                          </span>
-                          <span className='card-step-number'>{'Eje ' + card.number}</span>
-                        </div>
-                        <span className='card-feature-badge'>{card.featureBadge}</span>
-                      </div>
-                      <h3 className='card-flow-title'>{card.title}</h3>
-                    </div>
-                    <div className='flow-steps-stack'>
-                      <div className='flow-step step-social'>
-                        <div className='step-indicator-col'>
-                          <span className='step-dot dot-social' aria-hidden='true'></span>
-                          <span className='step-line' aria-hidden='true'></span>
-                        </div>
-                        <div className='step-text-wrap'>
-                          <span className='step-label'>Diagnóstico Social (TdeA)</span>
-                          <p>{card.socialProblem}</p>
-                        </div>
-                      </div>
-                      <div className='flow-step step-bpo'>
-                        <div className='step-indicator-col'>
-                          <span className='step-dot dot-bpo' aria-hidden='true'></span>
-                          <span className='step-line' aria-hidden='true'></span>
-                        </div>
-                        <div className='step-text-wrap'>
-                          <span className='step-label'>Fricción en Call Center</span>
-                          <p>{card.bpoBarrier}</p>
-                        </div>
-                      </div>
-                      <div className='flow-step step-solution'>
-                        <div className='step-indicator-col'>
-                          <span className='step-dot dot-solution' aria-hidden='true'></span>
-                        </div>
-                        <div className='step-text-wrap'>
-                          <span className='step-label solution-label'>
-                            <Icon name='checkCircle' size={13} />
-                            <span>Solución en Pulso360</span>
-                          </span>
-                          <p>{card.pulsoSolution}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </article>
-                ))}
-              </div>
-            </section>
+            <AcademicTransfer />
 
             {/* SECCION 3: PRINCIPIOS ETICOS & NO-VIGILANCIA */}
-            <section className='academic-editorial-section anti-surveillance-section' id='antivigilancia' aria-labelledby='sec-privacidad-titulo'>
-              <div className='anti-surveillance-card'>
-                <div className='anti-surveillance-header'>
-                  <div className='shield-icon-badge'>
-                    <Icon name='shieldCheck' size={24} />
+            <section
+              className="academic-editorial-section anti-surveillance-section"
+              id="antivigilancia"
+              aria-labelledby="sec-privacidad-titulo"
+            >
+              <div className="anti-surveillance-card">
+                <div className="anti-surveillance-header">
+                  <div className="shield-icon-badge">
+                    <Icon name="shieldCheck" size={24} />
                   </div>
-                  <div className='anti-surveillance-titles'>
-                    <span className='section-tag-light'>Salvaguardas de Seguridad Psicológica</span>
-                    <h2 id='sec-privacidad-titulo' className='anti-surveillance-heading'>Principios de diseño anti-vigilancia</h2>
-                    <p className='anti-surveillance-sub'>
-                      El bienestar laboral no debe convertirse en vigilancia, control disciplinario ni persecución. Esta sección documenta salvaguardas y límites de diseño; su alcance depende de los controles activos en cada despliegue:
+                  <div className="anti-surveillance-titles">
+                    <span className="section-tag-light">Salvaguardas de Seguridad Psicológica</span>
+                    <h2 id="sec-privacidad-titulo" className="anti-surveillance-heading">
+                      Principios de diseño anti-vigilancia
+                    </h2>
+                    <p className="anti-surveillance-sub">
+                      El bienestar laboral no debe convertirse en vigilancia, control disciplinario ni
+                      persecución. Esta sección documenta salvaguardas y límites de diseño; su alcance depende
+                      de los controles activos en cada despliegue:
                     </p>
                   </div>
                 </div>
-                <div className='surveillance-pillars-grid'>
+                <div className="surveillance-pillars-grid">
                   {ANTI_SURVEILLANCE_PILLARS.map((pillar) => (
-                    <div key={pillar.title} className='pillar-item'>
-                      <div className='pillar-icon-box'>
+                    <div key={pillar.title} className="pillar-item">
+                      <div className="pillar-icon-box">
                         <Icon name={pillar.icon} size={16} />
                       </div>
-                      <div className='pillar-content'>
-                        <strong className='pillar-title'>{pillar.title}</strong>
-                        <p className='pillar-desc'>{pillar.description}</p>
+                      <div className="pillar-content">
+                        <strong className="pillar-title">{pillar.title}</strong>
+                        <p className="pillar-desc">{pillar.description}</p>
                       </div>
                     </div>
                   ))}
@@ -394,118 +109,30 @@ export function AcademicFoundationPage() {
             </section>
 
             {/* SECCION 4: CITACION ACADEMICA FORMAL */}
-            <section className='academic-editorial-section citation-section' id='citacion' aria-labelledby='sec-citacion-titulo'>
-              <div className='citation-card'>
-                <div className='citation-top-row'>
-                  <div>
-                    <span className='citation-type'>Citación Formal de la Investigación Base</span>
-                    <h2 id='sec-citacion-titulo' className='citation-card-title'>Referencia Académica Oficial</h2>
-                  </div>
-                  <div className='citation-actions-group'>
-                    <div className='citation-tabs' role='tablist' aria-label='Formato de citación académica'>
-                      <button
-                        type='button'
-                        role='tab'
-                        aria-selected={citationFormat === 'apa7'}
-                        className={'tab-btn ' + (citationFormat === 'apa7' ? 'is-active' : '')}
-                        onClick={() => setCitationFormat('apa7')}
-                      >
-                        Normas APA (7.ª ed.)
-                      </button>
-                      <button
-                        type='button'
-                        role='tab'
-                        aria-selected={citationFormat === 'bibtex'}
-                        className={'tab-btn ' + (citationFormat === 'bibtex' ? 'is-active' : '')}
-                        onClick={() => setCitationFormat('bibtex')}
-                      >
-                        BibTeX
-                      </button>
-                    </div>
-                    <button
-                      type='button'
-                      className={'btn-copy-citation ' + (copied ? 'is-copied' : '')}
-                      onClick={handleCopyCitation}
-                      aria-label='Copiar referencia bibliográfica al portapapeles'
-                    >
-                      <Icon name={copied ? 'check' : 'copy'} size={15} />
-                      <span aria-live='polite'>
-                        {copied ? '¡Cita copiada!' : copyFailed ? 'No se pudo copiar' : 'Copiar cita'}
-                      </span>
-                    </button>
-                  </div>
-                </div>
-                <div className='citation-body-box'>
-                  {citationFormat === 'apa7' ? (
-                    <blockquote className='apa-citation-text'>
-                      {CITATION_DATA.apa7}
-                    </blockquote>
-                  ) : (
-                    <pre className='bibtex-citation-code'>
-                      <code>{CITATION_DATA.bibtex}</code>
-                    </pre>
-                  )}
-                </div>
-                <p className='citation-note'>
-                  <Icon name='info' size={13} className='note-icon' />
-                  <span>{CITATION_DATA.academicNote}</span>
-                </p>
-              </div>
-            </section>
+            <AcademicCitation
+              citationFormat={citationFormat}
+              setCitationFormat={setCitationFormat}
+              copied={copied}
+              handleCopyCitation={handleCopyCitation}
+              copyFailed={copyFailed}
+            />
 
             {/* SECCION 5: MARCO JURIDICO COLOMBIANO */}
-            <section className='academic-editorial-section legal-framework-section' id='marco-legal' aria-labelledby='sec-legal-titulo'>
-              <div className='section-title-wrap'>
-                <span className='section-tag'>Marco Normativo Colombiano</span>
-                <h2 id='sec-legal-titulo'>Deslinde de Responsabilidad & Marco Normativo de Referencia</h2>
-              </div>
-              <p className='section-prose'>
-                Esta página reúne referencias del ordenamiento jurídico colombiano relacionadas con derechos de autor, SST, desconexión laboral y protección de datos. No constituye certificación de cumplimiento legal:
-              </p>
-              <div className='legal-dossier-shell'>
-                {LEGAL_FRAMEWORK_DATA.map((item) => {
-                  let themeClass = 'theme-sst';
-                  if (item.tag === 'Derechos Morales') themeClass = 'theme-copyright';
-                  else if (item.tag === 'Datos Sensibles') themeClass = 'theme-privacy';
-                  else if (item.tag === 'Desconexión Laboral' || item.tag === 'Desconexion Laboral') themeClass = 'theme-disconnection';
-                  else if (item.tag === 'SG-SST') themeClass = 'theme-sgsst';
-
-                  return (
-                    <article key={item.code} className={'legal-dossier-row ' + themeClass}>
-                      <div className='legal-row-meta'>
-                        <div className='legal-meta-head'>
-                          <span className='legal-icon-wrap' aria-hidden='true'>
-                            <Icon name={item.icon || 'shieldCheck'} size={18} />
-                          </span>
-                          <span className='legal-tag-badge'>{item.tag}</span>
-                        </div>
-                        <strong className='legal-code-pill'>{item.code}</strong>
-                      </div>
-                      <div className='legal-row-content'>
-                        <h3 className='legal-item-title'>{item.title}</h3>
-                        <p className='legal-item-body'>{item.body}</p>
-                      </div>
-                    </article>
-                  );
-                })}
-              </div>
-            </section>
+            <AcademicLegalFramework />
 
             {/* CIERRE Y RETORNO */}
-            <footer className='academic-article-footer no-print'>
-              <div className='footer-actions-left'>
-                <Link to='/' className='btn-return-primary'>
-                  <Icon name='arrowLeft' size={16} />
+            <footer className="academic-article-footer no-print">
+              <div className="footer-actions-left">
+                <Link to="/" className="btn-return-primary">
+                  <Icon name="arrowLeft" size={16} />
                   <span>Volver al inicio</span>
                 </Link>
-                <Link to='/login' className='btn-action-secondary'>
-                  <Icon name='lock' size={15} />
+                <Link to="/login" className="btn-action-secondary">
+                  <Icon name="lock" size={15} />
                   <span>Iniciar sesión</span>
                 </Link>
               </div>
-
             </footer>
-
           </article>
         </div>
       </main>

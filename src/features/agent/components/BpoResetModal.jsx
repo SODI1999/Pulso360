@@ -1,3 +1,4 @@
+import { preferences } from '../../../core/storage/preferences';
 // src/features/agent/components/BpoResetModal.jsx
 // Modo Pausa inmersivo: secuencia guiada full-screen bajo el principio
 // "una cosa por pantalla" (Calm Technology). El agente toma una sola
@@ -8,7 +9,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { Icon } from '../../../core/components/Icon';
-import { createAmbientSound } from './ambientSound';
+import { createAmbientSound } from '../services/ambientSound';
 
 // Respiración: ciclo completo de 12s (inhala 4 · sostén 2 · exhala 6).
 // Las pistas enseñan el gesto correcto; el orbe lo marca con precisión.
@@ -23,7 +24,10 @@ const BREATH_PHASES = [
 const EYE_REST_SECONDS = 20;
 const STRETCH_SECONDS = 12;
 const STRETCHES = [
-  { title: 'Descarga cervical', desc: 'Inclina la cabeza suave hacia un hombro y cambia de lado sin forzar.' },
+  {
+    title: 'Descarga cervical',
+    desc: 'Inclina la cabeza suave hacia un hombro y cambia de lado sin forzar.'
+  },
   { title: 'Alivio de muñecas', desc: 'Brazo extendido: flexiona los dedos hacia atrás con la otra mano.' },
   { title: 'Apertura dorsal', desc: 'Manos entrelazadas detrás de la espalda; eleva el pecho al inhalar.' }
 ];
@@ -42,17 +46,6 @@ const NEXT_PHASE = { breathing: 'eyes', eyes: 'stretch', stretch: 'done' };
 
 // Preferencias de audio del agente (no son datos personales: solo un interruptor).
 // localStorage guarda la elección para no tener que silenciar en cada pausa.
-const SOUND_PREF_KEY = 'pulso360_pause_ambient';
-
-const readBoolPref = (key, fallback) => {
-  try {
-    const stored = localStorage.getItem(key);
-    return stored == null ? fallback : stored === 'true';
-  } catch {
-    return fallback;
-  }
-};
-
 export function BpoResetModal({ isOpen, onClose }) {
   const [phase, setPhase] = useState('entry');
   const [secondsLeft, setSecondsLeft] = useState(0);
@@ -66,11 +59,11 @@ export function BpoResetModal({ isOpen, onClose }) {
   const entryButtonRef = useRef(null);
   const openerRef = useRef(null);
   const cycleRef = useRef(0);
-  const [soundOn, setSoundOn] = useState(() => readBoolPref(SOUND_PREF_KEY, true));
+  const [soundOn, setSoundOn] = useState(() => preferences.readPauseSound(true));
   const [pauseStarted, setPauseStarted] = useState(false);
 
-  const reducedMotion = typeof window !== 'undefined'
-    && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  const reducedMotion =
+    typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 
   // Cada apertura reinicia el flujo desde la entrada
   useEffect(() => {
@@ -112,7 +105,9 @@ export function BpoResetModal({ isOpen, onClose }) {
         return;
       }
       if (e.key !== 'Tab' || !overlayRef.current) return;
-      const focusables = Array.from(overlayRef.current.querySelectorAll('button')).filter((el) => !el.disabled);
+      const focusables = Array.from(overlayRef.current.querySelectorAll('button')).filter(
+        (el) => !el.disabled
+      );
       if (focusables.length === 0) return;
       const first = focusables[0];
       const last = focusables[focusables.length - 1];
@@ -180,7 +175,7 @@ export function BpoResetModal({ isOpen, onClose }) {
 
   useEffect(() => {
     try {
-      localStorage.setItem(SOUND_PREF_KEY, String(soundOn));
+      preferences.savePauseSound(soundOn);
     } catch {
       // La preferencia no es crítica: si el almacenamiento está restringido, se ignora
     }
@@ -259,39 +254,31 @@ export function BpoResetModal({ isOpen, onClose }) {
 
   const timed = TIMED_PHASES.includes(phase);
   const elapsed = timed ? PHASE_DURATIONS[phase] - secondsLeft : 0;
-  const phaseOffset = phase === 'eyes'
-    ? BREATH_TOTAL
-    : phase === 'stretch'
-      ? BREATH_TOTAL + EYE_REST_SECONDS
-      : 0;
+  const phaseOffset =
+    phase === 'eyes' ? BREATH_TOTAL : phase === 'stretch' ? BREATH_TOTAL + EYE_REST_SECONDS : 0;
   const overallElapsed = timed ? phaseOffset + elapsed : 0;
 
   // Sub-fases derivadas del tiempo transcurrido (sin estado extra)
-  const breathPhaseIdx = phase === 'breathing'
-    ? (elapsed % BREATH_SECONDS < 4 ? 0 : elapsed % BREATH_SECONDS < 6 ? 1 : 2)
-    : 2;
-  const breathCycle = phase === 'breathing'
-    ? Math.min(BREATH_CYCLES, Math.floor(elapsed / BREATH_SECONDS) + 1)
-    : 1;
-  const stretchIdx = phase === 'stretch'
-    ? Math.min(STRETCHES.length - 1, Math.floor(elapsed / STRETCH_SECONDS))
-    : 0;
-  const stretchRemain = phase === 'stretch'
-    ? STRETCH_SECONDS - (elapsed % STRETCH_SECONDS)
-    : STRETCH_SECONDS;
+  const breathPhaseIdx =
+    phase === 'breathing' ? (elapsed % BREATH_SECONDS < 4 ? 0 : elapsed % BREATH_SECONDS < 6 ? 1 : 2) : 2;
+  const breathCycle =
+    phase === 'breathing' ? Math.min(BREATH_CYCLES, Math.floor(elapsed / BREATH_SECONDS) + 1) : 1;
+  const stretchIdx =
+    phase === 'stretch' ? Math.min(STRETCHES.length - 1, Math.floor(elapsed / STRETCH_SECONDS)) : 0;
+  const stretchRemain = phase === 'stretch' ? STRETCH_SECONDS - (elapsed % STRETCH_SECONDS) : STRETCH_SECONDS;
 
   // Sub-fase de respiración (texto guía): inhala 4s · sostén 2s · exhala 6s
   const SUB_TOTALS = [4, 2, 6];
-  const subElapsed = phase === 'breathing'
-    ? (breathPhaseIdx === 0
-      ? elapsed % BREATH_SECONDS
-      : breathPhaseIdx === 1
-        ? (elapsed % BREATH_SECONDS) - 4
-        : (elapsed % BREATH_SECONDS) - 6)
-    : 0;
-  const subRemain = phase === 'breathing'
-    ? Math.max(1, Math.ceil(SUB_TOTALS[breathPhaseIdx] - subElapsed))
-    : 0;
+  const subElapsed =
+    phase === 'breathing'
+      ? breathPhaseIdx === 0
+        ? elapsed % BREATH_SECONDS
+        : breathPhaseIdx === 1
+          ? (elapsed % BREATH_SECONDS) - 4
+          : (elapsed % BREATH_SECONDS) - 6
+      : 0;
+  const subRemain =
+    phase === 'breathing' ? Math.max(1, Math.ceil(SUB_TOTALS[breathPhaseIdx] - subElapsed)) : 0;
 
   const RING_LENGTH = 2 * Math.PI * 15;
   const ringProgress = timed ? overallElapsed / PAUSE_TOTAL : 0;
@@ -303,7 +290,9 @@ export function BpoResetModal({ isOpen, onClose }) {
 
       <div className="pause-brand" aria-label="Pulso Calma, espacio de recuperación">
         <span className="pause-brand-name">Pulso Calma</span>
-        <span className="pause-brand-divider" aria-hidden="true">·</span>
+        <span className="pause-brand-divider" aria-hidden="true">
+          ·
+        </span>
         <span>Tu espacio de recuperación</span>
       </div>
 
@@ -360,7 +349,8 @@ export function BpoResetModal({ isOpen, onClose }) {
               ya encabeza la ventana; repetirla aquí duplicaba el rótulo (auditoría 015, hallazgo 5) */}
           <h2 className="pause-title">Tómate 2 minutos</h2>
           <p className="pause-sub">
-            Un espacio breve dentro de tu turno para respirar, descansar la vista y soltar la tensión cervical.
+            Un espacio breve dentro de tu turno para respirar, descansar la vista y soltar la tensión
+            cervical.
           </p>
 
           <div className="pause-entry-list" aria-label="Resumen de la pausa guiada">

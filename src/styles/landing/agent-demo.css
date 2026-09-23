@@ -1,0 +1,367 @@
+/* =========================================================================
+   ACTO I: ESTILOS AGENTE
+   ========================================================================= */
+.agent-eval-prompt h3 {
+  font-family: var(--font-family-display, 'Newsreader', Georgia, serif);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--landing-ink);
+  margin-bottom: 4px;
+}
+
+.agent-eval-prompt p {
+  font-size: 0.88rem;
+  color: var(--landing-body);
+  margin-bottom: 18px;
+}
+
+.factor-scale-interactive {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 768px) {
+  .factor-scale-interactive {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .factor-scale-interactive .factor-chip:last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+.factor-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--landing-line);
+  background: #FAF8F5;
+  cursor: pointer;
+  transition: all 160ms ease;
+  font-family: inherit;
+  text-align: center;
+}
+
+.factor-chip:hover {
+  border-color: var(--landing-emerald);
+  background: #FFFFFF;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(17, 38, 35, 0.05);
+}
+
+.factor-chip.selected {
+  color: #FFFFFF;
+  box-shadow: 0 4px 14px rgba(8, 47, 40, 0.22);
+}
+
+.factor-chip .chip-mood-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--landing-mint, #e8f5f1);
+  color: var(--landing-emerald, #14705A);
+  margin-bottom: 6px;
+  transition: all 160ms ease;
+}
+
+/* Nivel 1: Despejado (Verde esmeralda saludable / calma / óptimo) */
+.factor-level-1 .chip-mood-icon {
+  color: #059669;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+}
+.factor-level-1:hover {
+  border-color: #059669;
+}
+.factor-level-1.selected {
+  background: #065f46;
+  border-color: #047857;
+  color: #ffffff;
+}
+
+/* Nivel 2: Equilibrado (Teal calmo / estable / fluido) */
+.factor-level-2 .chip-mood-icon {
+  color: #0d9488;
+  background: #f0fdfa;
+  border: 1px solid #99f6e4;
+}
+.factor-level-2:hover {
+  border-color: #0d9488;
+}
+.factor-level-2.selected {
+  background: #0f766e;
+  border-color: #115e59;
+  color: #ffffff;
+}
+
+/* Nivel 3: Exigente (Ámbar / dorado preventivo / tensión moderada) */
+.factor-level-3 .chip-mood-icon {
+  color: #d97706;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+}
+.factor-level-3:hover {
+  border-color: #d97706;
+}
+.factor-level-3.selected {
+  background: #b45309;
+  border-color: #92400e;
+  color: #ffffff;
+}
+
+/* Nivel 4: Saturado (Naranja quemado / terracota / fatiga acumulada) */
+.factor-level-4 .chip-mood-icon {
+  color: #ea580c;
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+}
+.factor-level-4:hover {
+  border-color: #ea580c;
+}
+.factor-level-4.selected {
+  background: #c2410c;
+  border-color: #9a3412;
+  color: #ffffff;
+}
+
+/* Nivel 5: Desbordado (Rojo carmesí preventivo / sobrecarga crítica) */
+.factor-level-5 .chip-mood-icon {
+  color: #dc2626;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+}
+.factor-level-5:hover {
+  border-color: #dc2626;
+}
+.factor-level-5.selected {
+  background: #b91c1c;
+  border-color: #991b1b;
+  color: #ffffff;
+}
+
+/* Estados seleccionados unificados */
+.factor-chip.selected .chip-mood-icon {
+  background: rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+  border-color: transparent;
+  transform: scale(1.05);
+}
+
+.factor-chip .chip-level {
+  font-size: 1.25rem;
+  font-weight: 800;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.factor-chip .chip-label {
+  font-size: 0.82rem;
+  font-weight: 750;
+  margin-bottom: 3px;
+}
+
+.factor-chip .chip-hint {
+  font-size: 0.68rem;
+  line-height: 1.3;
+  color: var(--landing-body);
+}
+
+.factor-chip.selected .chip-hint {
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.situation-row-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.situation-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--landing-ink);
+}
+
+.situation-pills-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.situation-pill {
+  padding: 6px 14px;
+  border-radius: 4px;
+  border: 1px solid var(--landing-line);
+  background: #FAF8F5;
+  font-size: 0.76rem;
+  font-weight: 650;
+  color: var(--landing-body);
+  cursor: pointer;
+  transition: all 150ms ease;
+  font-family: inherit;
+}
+
+.situation-pill:hover {
+  border-color: var(--landing-green);
+  color: var(--landing-green-dark);
+}
+
+.situation-pill.active {
+  background: var(--landing-green);
+  border-color: var(--landing-green);
+  color: #FFFFFF;
+}
+
+.journal-harmonious-card {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 24px;
+  background: #FAF8F5;
+  border: 1px solid rgba(17, 38, 35, 0.08);
+  border-radius: 8px;
+  padding: 24px;
+}
+
+@media (max-width: 860px) {
+  .journal-harmonious-card {
+    grid-template-columns: 1fr;
+  }
+}
+
+.journal-entry-area {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.journal-entry-area .quote-mark {
+  display: none;
+}
+
+.journal-entry-text {
+  font-family: var(--font-family, 'Plus Jakarta Sans', -apple-system, sans-serif);
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--landing-ink);
+  font-style: normal;
+  font-weight: 500;
+  margin: 0 0 16px 0;
+}
+
+.journal-privacy-notice {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #0F766E;
+  padding-top: 10px;
+  border-top: 1px solid #EAE5DC;
+}
+
+.nlp-guidance-area {
+  display: flex;
+  flex-direction: column;
+  background: #FFFFFF;
+  border: 1px solid rgba(17, 38, 35, 0.07);
+  border-radius: 5px;
+  padding: 18px 20px;
+  box-shadow: 0 2px 10px rgba(17, 38, 35, 0.02);
+}
+
+.nlp-guidance-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.nlp-badge-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.nlp-engine-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.7rem;
+  font-weight: 750;
+  color: var(--landing-green);
+  background: var(--landing-mint);
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.nlp-no-dx-tag {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #92400E;
+  background: #FEF3C7;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.nlp-expand-btn {
+  background: none;
+  border: none;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--landing-green);
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+}
+
+.nlp-feedback-title {
+  font-size: 0.95rem;
+  font-weight: 750;
+  color: var(--landing-ink);
+  margin-bottom: 6px;
+}
+
+.nlp-feedback-desc {
+  font-size: 0.84rem;
+  line-height: 1.55;
+  color: var(--landing-body);
+  margin: 0 0 12px 0;
+}
+
+.nlp-extra-advice {
+  background: #F0FDF9;
+  border-left: 3px solid var(--landing-green);
+  padding: 10px 12px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: var(--landing-green-dark);
+  margin-bottom: 12px;
+}
+
+.domain-context-strip {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: 0.73rem;
+  line-height: 1.45;
+  color: #6C7A77;
+  padding-top: 10px;
+  border-top: 1px solid var(--landing-hairline);
+}

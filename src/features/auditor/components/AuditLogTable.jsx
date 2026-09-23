@@ -60,7 +60,10 @@ export function AuditLogTable({
           <tbody>
             {logs.length === 0 ? (
               <tr>
-                <td colSpan="7" style={{ textAlign: 'center', padding: 'var(--space-6)', color: 'var(--c-texto-suave)' }}>
+                <td
+                  colSpan="7"
+                  style={{ textAlign: 'center', padding: 'var(--space-6)', color: 'var(--c-texto-suave)' }}
+                >
                   No se encontraron registros de auditoría que coincidan con los filtros.
                 </td>
               </tr>
@@ -84,9 +87,7 @@ export function AuditLogTable({
                       <span className="audit-code-cell">{log.ip}</span>
                     </td>
                     <td>
-                      <span className={`badge ${isDeny ? 'badge-danger' : 'badge-ok'}`}>
-                        {log.status}
-                      </span>
+                      <span className={`badge ${isDeny ? 'badge-danger' : 'badge-ok'}`}>{log.status}</span>
                     </td>
                   </tr>
                 );

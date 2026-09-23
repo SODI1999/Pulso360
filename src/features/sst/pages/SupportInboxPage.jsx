@@ -1,49 +1,14 @@
+import { useSupportInbox } from '../hooks/useSupportInbox';
+
 // src/features/sst/pages/SupportInboxPage.jsx
 // Buzón confidencial de atención y acompañamiento para SST (RF-10)
 
-import { useState, useMemo } from 'react';
-import { authService } from '../../../core/auth/authService';
-import { pulsoStore } from '../../../core/storage/pulsoStore';
 import { Icon } from '../../../core/components/Icon';
 
 import '../../../styles/sst.css';
 
-const WORKFLOW_STATES = ['Recibida', 'Asignada', 'En contacto', 'Cerrada'];
-
 export function SupportInboxPage() {
-  const user = authService.getCurrentUser();
-  const [version, setVersion] = useState(0);
-  const [feedback, setFeedback] = useState('');
-
-  const storeData = pulsoStore.get();
-
-  const requests = useMemo(() => {
-    void version;
-    return pulsoStore.get().supportRequests || [];
-  }, [version]);
-
-  // Avanzar estado del caso según flujo predefinido
-  const handleAdvanceStatus = (requestId) => {
-    const data = pulsoStore.get();
-    const req = (data.supportRequests || []).find(r => r.id === requestId);
-    if (!req) return;
-
-    const currentIndex = WORKFLOW_STATES.indexOf(req.status);
-    const nextStatus = WORKFLOW_STATES[Math.min(currentIndex + 1, WORKFLOW_STATES.length - 1)];
-
-    req.status = nextStatus;
-    pulsoStore.save(data);
-
-    // Registro inmutable de auditoría (RF-10)
-    pulsoStore.audit({
-      actor: `${user?.name || 'Profesional SST'} (${user?.role || 'sst'})`,
-      action: 'GESTION_CASO_ACOMPANAMIENTO',
-      target: `Caso ${req.code || req.id} -> ${nextStatus}`
-    });
-
-    setFeedback(`Caso ${req.code || req.id} actualizado a estado "${nextStatus}".`);
-    setVersion(v => v + 1);
-  };
+  const { feedback, storeData, requests, handleAdvanceStatus } = useSupportInbox();
 
   return (
     <div>
@@ -61,7 +26,9 @@ export function SupportInboxPage() {
       <div className="alert-banner info" style={{ marginBottom: 'var(--space-6)' }}>
         <Icon name="shield" size={20} />
         <div>
-          <strong>Privacidad y reserva:</strong> En la modalidad anónima, el flujo no solicita datos de contacto y muestra un código de seguimiento. En la modalidad identificada, el detalle de contacto se presenta al profesional SST asignado según los controles activos del despliegue.
+          <strong>Privacidad y reserva:</strong> En la modalidad anónima, el flujo no solicita datos de
+          contacto y muestra un código de seguimiento. En la modalidad identificada, el detalle de contacto se
+          presenta al profesional SST asignado según los controles activos del despliegue.
         </div>
       </div>
 
@@ -101,20 +68,26 @@ export function SupportInboxPage() {
             <tbody>
               {requests.length === 0 ? (
                 <tr>
-                  <td colSpan="9" style={{ textAlign: 'center', padding: '24px', color: 'var(--c-texto-suave)' }}>
+                  <td
+                    colSpan="9"
+                    style={{ textAlign: 'center', padding: '24px', color: 'var(--c-texto-suave)' }}
+                  >
                     No hay solicitudes de acompañamiento pendientes.
                   </td>
                 </tr>
               ) : (
                 requests.map((item) => {
                   const isAnon = item.mode === 'anonimo';
-                  const identityUser = (!isAnon && item.identityUserId)
-                    ? storeData.users.find(u => u.id === item.identityUserId)?.name
-                    : null;
+                  const identityUser =
+                    !isAnon && item.identityUserId
+                      ? storeData.users.find((u) => u.id === item.identityUserId)?.name
+                      : null;
 
                   return (
                     <tr key={item.id}>
-                      <td><strong>{item.code || item.id}</strong></td>
+                      <td>
+                        <strong>{item.code || item.id}</strong>
+                      </td>
                       <td>
                         <span className={`badge ${isAnon ? 'badge-neutral' : 'badge-info'}`}>
                           {isAnon ? 'Anónimo' : 'Identificado'}
@@ -127,7 +100,9 @@ export function SupportInboxPage() {
                           <span style={{ color: 'var(--c-texto-mutado)' }}>— Reserva anónima</span>
                         ) : (
                           <div>
-                            <strong style={{ color: 'var(--c-texto)' }}>{identityUser || item.userName || 'Agente Registrado'}</strong>
+                            <strong style={{ color: 'var(--c-texto)' }}>
+                              {identityUser || item.userName || 'Agente Registrado'}
+                            </strong>
                             <div style={{ fontSize: '11px', color: 'var(--c-primario)', marginTop: '2px' }}>
                               Uso reservado SST
                             </div>
@@ -141,7 +116,9 @@ export function SupportInboxPage() {
                       </td>
                       <td>{item.sla || '24 h hábiles'}</td>
                       <td>
-                        <span className={`badge badge-${item.status === 'Cerrada' ? 'muted' : item.status === 'En contacto' ? 'ok' : 'info'}`}>
+                        <span
+                          className={`badge badge-${item.status === 'Cerrada' ? 'muted' : item.status === 'En contacto' ? 'ok' : 'info'}`}
+                        >
                           {item.status}
                         </span>
                       </td>
@@ -157,7 +134,9 @@ export function SupportInboxPage() {
                             <span>Avanzar estado</span>
                           </button>
                         ) : (
-                          <span style={{ fontSize: '12px', color: 'var(--c-texto-mutado)' }}>Caso cerrado</span>
+                          <span style={{ fontSize: '12px', color: 'var(--c-texto-mutado)' }}>
+                            Caso cerrado
+                          </span>
                         )}
                       </td>
                     </tr>

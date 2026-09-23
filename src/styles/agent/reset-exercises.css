@@ -1,0 +1,202 @@
+/* Modal BPO Reset & Descompresión (2 minutos) */
+.bpo-reset-modal {
+  max-width: 640px !important;
+  width: 95% !important;
+  padding: var(--space-5) var(--space-6) !important;
+  background-color: var(--c-superficie) !important;
+}
+
+.reset-tabs {
+  display: flex;
+  gap: var(--space-2);
+  border-bottom: 1px solid var(--c-borde-suave);
+  padding-bottom: var(--space-2);
+  margin-bottom: var(--space-5);
+  overflow-x: auto;
+}
+
+.reset-tab-btn {
+  background: transparent;
+  border: none;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--c-texto-suave);
+  padding: 8px 14px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.reset-tab-btn:hover {
+  background-color: var(--c-fondo-subtle);
+  color: var(--c-texto);
+}
+
+.reset-tab-btn.active {
+  background-color: var(--c-calma-accent-soft);
+  color: var(--c-calma-accent);
+  font-weight: 700;
+}
+
+/* Animación Box Breathing 4-4-4-4 */
+.breathe-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4) 0;
+  text-align: center;
+}
+
+.breath-ring-wrapper {
+  position: relative;
+  width: 210px;
+  height: 210px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: var(--space-4) auto;
+}
+
+.breath-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-full);
+  background-color: var(--c-calma-accent-soft);
+  border: 2px solid var(--c-calma-accent);
+  animation: breathe-box 16s ease-in-out infinite;
+  will-change: transform, box-shadow;
+}
+
+@keyframes breathe-box {
+  0% {
+    transform: scale(0.76);
+    box-shadow: 0 0 0 0 rgba(27, 122, 104, 0.12);
+  }
+  25% {
+    transform: scale(1.15);
+    box-shadow: 0 0 0 18px rgba(27, 122, 104, 0.16);
+  }
+  50% {
+    transform: scale(1.15);
+    box-shadow: 0 0 0 24px rgba(27, 122, 104, 0.22);
+  }
+  75% {
+    transform: scale(0.76);
+    box-shadow: 0 0 0 6px rgba(27, 122, 104, 0.10);
+  }
+  100% {
+    transform: scale(0.76);
+    box-shadow: 0 0 0 0 rgba(27, 122, 104, 0.12);
+  }
+}
+
+.breath-inner-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.breath-phase-text {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--c-calma-text);
+  letter-spacing: -0.01em;
+}
+
+.breath-countdown-number {
+  font-size: 34px;
+  font-weight: 800;
+  color: var(--c-calma-accent);
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  margin-top: 2px;
+}
+
+.breath-guide-label {
+  font-size: 11.5px;
+  color: var(--c-calma-text-muted);
+  margin-top: 2px;
+}
+
+/* Ejercicio Visual 20-20-20 */
+.eye-rest-panel {
+  text-align: center;
+  padding: var(--space-4) 0;
+}
+
+.eye-rest-target {
+  width: 140px;
+  height: 140px;
+  margin: var(--space-4) auto;
+  border-radius: var(--radius-full);
+  border: 3px dashed var(--c-calma-accent);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--c-calma-bg);
+  color: var(--c-calma-accent);
+  transition: transform var(--transition-normal);
+}
+
+.eye-rest-timer-val {
+  font-size: 36px;
+  font-weight: 800;
+  color: var(--c-calma-text);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+/* Estiramientos Físicos BPO */
+.stretch-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: var(--space-3);
+  margin: var(--space-4) 0;
+}
+
+.stretch-item {
+  background-color: var(--c-calma-bg);
+  border: 1px solid var(--c-calma-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  text-align: left;
+}
+
+.stretch-item-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: var(--radius-full);
+  background-color: var(--c-calma-accent);
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.stretch-item-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--c-texto);
+  margin-bottom: 4px;
+}
+
+.stretch-item-desc {
+  font-size: 11.5px;
+  color: var(--c-texto-suave);
+  line-height: 1.4;
+  margin: 0;
+}

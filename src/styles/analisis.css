@@ -1,0 +1,404 @@
+/* src/styles/analisis.css
+   Página de Análisis Orientativo de Textos del Agente (/agente/mi-analisis)
+   Estilos de la funcionalidad y sus estados.
+   Sin card-itis, sin franjas laterales, sin badges-dots, 100% tokenizado y WCAG AA.
+   Alineado exactamente con el eje de lectura de 1040px y métricas de /agente/mi-bienestar.
+*/
+
+/* 1. Contenedor Maestro Editorial */
+.analysis-editorial-page {
+  max-width: 1040px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 28px 0 var(--space-16);
+}
+
+/* 2. Barra de Retorno y Acciones Rápidas (Idéntica a /agente/mi-bienestar y /notificaciones) */
+.analysis-top-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+  flex-wrap: wrap;
+}
+
+.analysis-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: transparent;
+  border: none;
+  padding: 8px 0;
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--c-texto-suave);
+  cursor: pointer;
+  min-height: 44px;
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.analysis-back-btn:hover {
+  color: var(--c-texto);
+}
+
+.analysis-back-btn:focus-visible {
+  outline: 2px solid var(--c-primario);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+.analysis-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 8px 16px;
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  min-height: 44px;
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+}
+
+.analysis-action-btn:focus-visible {
+  outline: 2px solid var(--c-primario);
+  outline-offset: 2px;
+}
+
+.analysis-action-btn--primary {
+  background-color: var(--c-primario);
+  color: #ffffff;
+  border: 1px solid var(--c-primario);
+}
+
+.analysis-action-btn--primary:hover {
+  background-color: var(--c-primario-hover);
+  border-color: var(--c-primario-hover);
+  color: #ffffff;
+}
+
+/* 3. Encabezado Editorial */
+.analysis-header {
+  padding-bottom: var(--space-6);
+  margin-bottom: var(--space-6);
+  border-bottom: 1px solid var(--c-borde-suave);
+}
+
+.analysis-title {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--c-texto);
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  margin: 0 0 4px;
+}
+
+.analysis-subtitle {
+  font-size: 13.5px;
+  color: var(--c-texto-suave);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* 4. Bloque Pedagógico de Alcance Local */
+.analysis-scope-banner {
+  background-color: var(--c-fondo-subtle);
+  border: 1px solid var(--c-borde-suave);
+  border-radius: var(--radius-card);
+  padding: 18px 20px;
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: var(--space-8);
+}
+
+.analysis-scope-icon-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-sm);
+  background-color: var(--c-superficie);
+  border: 1px solid var(--c-borde-suave);
+  color: var(--c-primario);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.analysis-scope-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.analysis-scope-heading-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+
+.analysis-scope-badge {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  background-color: var(--c-primario-suave);
+  color: var(--c-primario);
+  border: 1px solid var(--c-primario-border);
+}
+
+.analysis-scope-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--c-texto);
+}
+
+.analysis-scope-desc {
+  font-size: 12.5px;
+  color: var(--c-texto-suave);
+  line-height: 1.55;
+  margin: 0;
+}
+
+.analysis-scope-desc strong {
+  color: var(--c-texto);
+}
+
+/* 5. Sección de Histórico de Factores */
+.analysis-feed-section {
+  width: 100%;
+}
+
+.analysis-feed-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.analysis-feed-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--c-texto);
+  margin: 0 0 2px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.analysis-feed-title .analysis-title-icon {
+  color: var(--c-primario);
+}
+
+.analysis-feed-subtitle {
+  font-size: 12.5px;
+  color: var(--c-texto-mutado);
+  margin: 0;
+}
+
+/* 6. Listado Editorial Continuo (Cero Card-itis) */
+.analysis-entries-list {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--c-superficie);
+  border: 1px solid var(--c-borde-suave);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+}
+
+.analysis-entry-item {
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--c-borde-suave);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: background-color var(--transition-fast);
+}
+
+.analysis-entry-item:last-child {
+  border-bottom: none;
+}
+
+.analysis-entry-item:hover {
+  background-color: var(--c-fondo-subtle);
+}
+
+.analysis-entry-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.analysis-entry-date-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--c-texto);
+  font-size: 13.5px;
+  font-weight: 700;
+}
+
+.analysis-entry-date-icon {
+  color: var(--c-primario);
+}
+
+.analysis-entry-adjusted-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  background-color: var(--c-calma-accent-soft);
+  color: var(--c-primario);
+  border: 1px solid var(--c-calma-border);
+}
+
+.analysis-entry-factors-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.analysis-entry-factors-label {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--c-texto-suave);
+}
+
+.analysis-factor-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  background-color: var(--c-fondo-subtle);
+  color: var(--c-texto);
+  border: 1px solid var(--c-borde-suave);
+  transition: all var(--transition-fast);
+}
+
+.analysis-factor-tag:hover {
+  border-color: var(--c-borde-fuerte);
+}
+
+.analysis-factor-empty-note {
+  font-size: 12.5px;
+  color: var(--c-texto-mutado);
+  font-style: italic;
+}
+
+.analysis-entry-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--c-borde-suave);
+}
+
+.analysis-entry-privacy-note {
+  font-size: 12px;
+  color: var(--c-texto-mutado);
+}
+
+.analysis-entry-action-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--c-primario);
+  text-decoration: none;
+  padding: 4px 0;
+  transition: color var(--transition-fast);
+}
+
+.analysis-entry-action-link:hover {
+  color: var(--c-primario-hover);
+  text-decoration: underline;
+}
+
+/* 7. Estado Vacío */
+.analysis-empty-state {
+  text-align: center;
+  padding: 56px 20px;
+  background-color: var(--c-superficie);
+  border-radius: var(--radius-card);
+  border: 1px dashed var(--c-borde);
+}
+
+.analysis-empty-icon {
+  margin: 0 auto 12px;
+  color: var(--c-primario);
+}
+
+.analysis-empty-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--c-texto);
+  margin: 0 0 6px;
+}
+
+.analysis-empty-desc {
+  font-size: 13px;
+  color: var(--c-texto-suave);
+  margin: 0 0 16px;
+  max-width: 440px;
+  margin-inline: auto;
+  line-height: 1.5;
+}
+
+/* 8. Pie de Confidencialidad Discreto */
+.analysis-confidentiality-footer {
+  margin-top: var(--space-8);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background-color: var(--c-fondo-subtle);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--c-borde-suave);
+  font-size: 12px;
+  color: var(--c-texto-mutado);
+  line-height: 1.45;
+}
+
+.analysis-confidentiality-footer strong {
+  color: var(--c-texto);
+}
+
+/* 9. Adaptabilidad Móvil */
+@media (max-width: 640px) {
+  .analysis-editorial-page {
+    padding-top: 16px;
+  }
+
+  .analysis-scope-banner {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .analysis-entry-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+}

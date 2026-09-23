@@ -13,7 +13,14 @@ export function ReportPreviewCard({
     <div className="reports-preview-card">
       <div className="reports-preview-header">
         <div>
-          <div style={{ fontSize: '13px', color: 'var(--c-primario)', fontWeight: 600, textTransform: 'uppercase' }}>
+          <div
+            style={{
+              fontSize: '13px',
+              color: 'var(--c-primario)',
+              fontWeight: 600,
+              textTransform: 'uppercase'
+            }}
+          >
             Previsualización en tiempo real
           </div>
           <h3 style={{ fontSize: '18px', margin: '2px 0 0', color: 'var(--c-texto)' }}>
@@ -55,7 +62,9 @@ export function ReportPreviewCard({
       </div>
 
       <div className="reports-meta-footer">
-        Documento institucional confidencial · Indicadores agregados · Solicitado por: <strong>{requesterName}</strong> · Modelo de análisis: {nlpVersion}. No contiene bitácoras privadas, check-ins individuales ni solicitudes de acompañamiento.
+        Documento institucional confidencial · Indicadores agregados · Solicitado por:{' '}
+        <strong>{requesterName}</strong> · Modelo de análisis: {nlpVersion}. No contiene bitácoras privadas,
+        check-ins individuales ni solicitudes de acompañamiento.
       </div>
     </div>
   );

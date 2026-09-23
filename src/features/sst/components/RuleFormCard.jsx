@@ -59,7 +59,9 @@ export function RuleFormCard({ onSaveRule }) {
 
       <form onSubmit={handleSubmit}>
         <div className="form-group" style={{ marginBottom: '14px' }}>
-          <label className="form-label" htmlFor="ruleMetric">Métrica o dimensión observada</label>
+          <label className="form-label" htmlFor="ruleMetric">
+            Métrica o dimensión observada
+          </label>
           <select
             id="ruleMetric"
             className="form-select"
@@ -76,7 +78,9 @@ export function RuleFormCard({ onSaveRule }) {
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', marginBottom: '14px' }}>
           <div className="form-group">
-            <label className="form-label" htmlFor="ruleOperator">Condición</label>
+            <label className="form-label" htmlFor="ruleOperator">
+              Condición
+            </label>
             <select
               id="ruleOperator"
               className="form-select"
@@ -88,7 +92,9 @@ export function RuleFormCard({ onSaveRule }) {
             </select>
           </div>
           <div className="form-group">
-            <label className="form-label" htmlFor="ruleValue">Valor umbral (%)</label>
+            <label className="form-label" htmlFor="ruleValue">
+              Valor umbral (%)
+            </label>
             <input
               id="ruleValue"
               type="number"
@@ -104,7 +110,9 @@ export function RuleFormCard({ onSaveRule }) {
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', marginBottom: '14px' }}>
           <div className="form-group">
-            <label className="form-label" htmlFor="rulePersistence">Persistencia temporal</label>
+            <label className="form-label" htmlFor="rulePersistence">
+              Persistencia temporal
+            </label>
             <select
               id="rulePersistence"
               className="form-select"
@@ -117,7 +125,9 @@ export function RuleFormCard({ onSaveRule }) {
             </select>
           </div>
           <div className="form-group">
-            <label className="form-label" htmlFor="ruleSeverity">Severidad resultante</label>
+            <label className="form-label" htmlFor="ruleSeverity">
+              Severidad resultante
+            </label>
             <select
               id="ruleSeverity"
               className="form-select"
@@ -132,7 +142,9 @@ export function RuleFormCard({ onSaveRule }) {
         </div>
 
         <div className="form-group" style={{ marginBottom: '16px' }}>
-          <label className="form-label" htmlFor="ruleScope">Alcance de la regla</label>
+          <label className="form-label" htmlFor="ruleScope">
+            Alcance de la regla
+          </label>
           <select
             id="ruleScope"
             className="form-select"
@@ -147,7 +159,16 @@ export function RuleFormCard({ onSaveRule }) {
 
         {/* Vista previa en lenguaje natural */}
         <div className="rule-sentence-box">
-          <strong style={{ display: 'block', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.04em', color: 'var(--c-primario)', marginBottom: '4px' }}>
+          <strong
+            style={{
+              display: 'block',
+              fontSize: '12px',
+              textTransform: 'uppercase',
+              letterSpacing: '0.04em',
+              color: 'var(--c-primario)',
+              marginBottom: '4px'
+            }}
+          >
             Vista previa de la regla:
           </strong>
           &ldquo;{ruleSentence}&rdquo;
@@ -161,19 +182,11 @@ export function RuleFormCard({ onSaveRule }) {
         )}
 
         <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-          <button
-            type="button"
-            className="btn btn-secondary"
-            onClick={handleSimulate}
-          >
+          <button type="button" className="btn btn-secondary" onClick={handleSimulate}>
             <Icon name="play" size={16} />
             <span>Simular impacto</span>
           </button>
-          <button
-            type="submit"
-            className="btn btn-primary"
-            disabled={submitting}
-          >
+          <button type="submit" className="btn btn-primary" disabled={submitting}>
             <Icon name="save" size={16} />
             <span>Proponer regla a Administrador</span>
           </button>

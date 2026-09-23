@@ -1,0 +1,613 @@
+/* ==========================================================================
+   Ruta de apoyo inmediato (/apoyo-crisis)
+   Columna de lectura, banner de contención y anclaje 5-4-3-2-1.
+   El color de cada paso llega como variable CSS (--step-color) desde los
+   datos del ejercicio; el estilo sigue definido en CSS, no en JSX.
+   ========================================================================== */
+
+.crisis-page-col {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 0 var(--space-4);
+}
+
+.crisis-hero-flex {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.crisis-hero-body {
+  flex: 1;
+}
+
+.crisis-hero-title {
+  margin: 0 0 8px;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--c-calma-text);
+}
+
+.crisis-hero-lead {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--c-calma-text-muted);
+}
+
+.crisis-card--calma {
+  border: 1.5px solid var(--c-calma-border);
+}
+
+.crisis-card--borde {
+  border-color: var(--c-borde);
+}
+
+.crisis-card-title {
+  font-size: 16px;
+  color: var(--c-texto);
+}
+
+.crisis-card-title--calma {
+  color: var(--c-calma-text);
+}
+
+.crisis-card-title--tight {
+  margin-bottom: 4px;
+}
+
+.grounding-tabs-wrap {
+  margin-top: 16px;
+}
+
+.grounding-tabs {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  margin-bottom: 16px;
+}
+
+.grounding-tab-btn {
+  border: 1px solid var(--c-calma-border);
+  background: var(--c-superficie);
+}
+
+.grounding-tab-btn.active {
+  border: 2px solid var(--step-color, var(--c-calma-accent));
+  background: var(--c-calma-surface-subtle);
+}
+
+.grounding-tab-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.grounding-tab-num {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--step-color, var(--c-calma-accent));
+}
+
+.grounding-tab-badge {
+  padding: 2px 6px;
+  border-radius: var(--radius-full);
+  background: var(--c-fondo-subtle);
+  color: var(--c-texto-suave);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.grounding-tab-btn.active .grounding-tab-badge {
+  background: var(--step-color, var(--c-calma-accent));
+  color: #ffffff;
+}
+
+.grounding-tab-sense {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--c-calma-text);
+}
+
+.grounding-step-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px 20px;
+  border: 1px solid var(--c-calma-border);
+  border-radius: var(--radius-lg);
+  background: var(--c-calma-bg);
+}
+
+.grounding-step-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.grounding-step-num {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  background: var(--step-color, var(--c-calma-accent));
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.grounding-step-title {
+  margin: 0;
+  font-size: 15px;
+  color: var(--c-calma-text);
+}
+
+.grounding-step-guide {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--c-calma-text-muted);
+}
+
+.grounding-step-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+}
+
+.grounding-step-source {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--c-texto-mutado);
+}
+
+/* Líneas oficiales, canalización legal y panel de contacto prioritario */
+.crisis-line-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 16px;
+}
+
+.crisis-line-card--destacada {
+  padding: 22px;
+  border: 1.5px solid var(--c-calma-border);
+  background: var(--c-calma-surface);
+}
+
+.crisis-line-card--suave {
+  border-color: var(--c-borde-suave);
+}
+
+.crisis-line-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.crisis-line-name {
+  font-size: 16px;
+  color: var(--c-texto);
+}
+
+.crisis-line-label {
+  margin-bottom: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--c-texto);
+}
+
+.crisis-line-desc {
+  margin: 0 0 12px;
+  font-size: 11.5px;
+  line-height: 1.4;
+  color: var(--c-texto-suave);
+}
+
+.crisis-line-call {
+  width: 100%;
+  min-height: 44px;
+  justify-content: center;
+}
+
+.crisis-line-call--critico {
+  font-weight: 700;
+  border-color: var(--c-critico);
+  color: var(--c-critico);
+}
+
+.crisis-line-card--destacada .crisis-line-head {
+  margin-bottom: 8px;
+}
+
+.crisis-line-card--destacada .crisis-line-name {
+  font-size: 18px;
+  color: var(--c-calma-accent);
+}
+
+.crisis-line-card--destacada .crisis-line-label {
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+
+.crisis-line-card--destacada .crisis-line-desc {
+  font-size: 12.5px;
+  line-height: 1.5;
+  margin: 0 0 20px;
+}
+
+.crisis-line-call--destacada {
+  min-height: 44px;
+}
+
+.crisis-legal-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+/* Rutas legales: bloque plegable de consulta puntual (no acción urgente) */
+.crisis-details-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.crisis-details-summary::-webkit-details-marker {
+  display: none;
+}
+
+.crisis-details-summary::after {
+  content: 'Ver rutas legales';
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--c-primario);
+  margin-top: 6px;
+}
+
+.crisis-details[open] .crisis-details-summary::after {
+  content: 'Ocultar rutas legales';
+}
+
+.crisis-details-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-weight: 700;
+  color: var(--c-texto);
+}
+
+.crisis-details-hint {
+  font-size: 12px;
+  color: var(--c-texto-mutado);
+}
+
+.crisis-details[open] .crisis-legal-grid {
+  margin-top: 16px;
+}
+
+
+.crisis-legal-box {
+  padding: 18px;
+  border: 1px solid var(--c-borde);
+  border-radius: var(--radius-lg);
+  background: var(--c-superficie);
+}
+
+.crisis-legal-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.crisis-legal-badge-capsule {
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.crisis-legal-title {
+  margin: 0;
+  font-size: 14.5px;
+  color: var(--c-texto);
+}
+
+.crisis-legal-desc {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--c-texto-suave);
+}
+
+.crisis-legal-list {
+  margin: 4px 0 0;
+  padding-left: 18px;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--c-texto-mutado);
+}
+
+.crisis-legal-badge-orange {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--c-legal-orange-text);
+}
+
+.crisis-legal-title--orange {
+  color: var(--c-legal-orange-text);
+}
+
+.crisis-legal-desc--orange {
+  color: var(--c-legal-orange-text-dark);
+}
+
+.crisis-legal-list--orange {
+  color: var(--c-legal-orange-text);
+}
+
+.crisis-legal-box--acoso {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px 18px;
+  border: 1.5px solid var(--c-borde);
+  border-radius: var(--radius-lg);
+  background: var(--c-fondo);
+}
+
+.crisis-legal-box--naranja {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px 18px;
+  border: 1.5px solid var(--c-legal-orange-border);
+  border-radius: var(--radius-lg);
+  background: var(--c-legal-orange-bg);
+}
+
+.crisis-legal-badge-pill {
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  background: var(--c-legal-orange);
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.crisis-line-name--sm {
+  font-size: 15px;
+}
+
+.crisis-alert-flex {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.crisis-priority-panel {
+  padding: 20px;
+  border: 1px solid var(--c-borde);
+  border-radius: var(--radius-lg);
+  background: var(--c-fondo);
+}
+
+.crisis-priority-panel-title {
+  margin-bottom: 8px;
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--c-texto);
+}
+
+.crisis-priority-panel-lead {
+  margin: 0 0 16px;
+  font-size: 13px;
+  color: var(--c-texto-suave);
+}
+
+.crisis-priority-panel .support-mode-list {
+  gap: 12px;
+  margin: 0 0 20px;
+}
+
+.crisis-consent-cta {
+  margin-top: 12px;
+}
+
+.crisis-panel-note {
+  margin-bottom: 20px;
+  font-size: 12.5px;
+}
+
+.crisis-feedback {
+  margin-top: 16px;
+}
+
+.crisis-feedback small {
+  color: var(--c-texto-suave);
+}
+
+.crisis-feedback .badge {
+  margin-bottom: 4px;
+}
+
+/* Fila de accesos rápidos de contención (teléfono, canal prioritario) */
+.agent-modal-quick {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 16px 0;
+}
+
+/* Footer dividido: acción de navegación a la izquierda, salida a la derecha */
+.agent-modal .modal-footer--split {
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Banner de consentimiento / advertencia dentro de un modal de agente */
+.agent-modal .alert-banner {
+  margin: 16px 0;
+}
+
+/* Grilla de categorías del modal de corrección, con scroll contenido */
+.agent-modal-catgrid {
+  max-height: 240px;
+  overflow-y: auto;
+  margin-bottom: 16px;
+}
+
+/* Estado seleccionado de la grilla, definido en CSS (antes inline en JSX) */
+.agent-modal .category-grid label:has(input:checked) {
+  background: var(--c-primario-suave);
+  border-color: var(--c-primario);
+}
+
+.agent-modal-quick-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--c-texto-suave);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.agent-modal-quick-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.agent-modal-quick-actions .btn,
+.agent-modal-quick-actions .btn-clinical-support {
+  flex: 1;
+  min-width: 200px;
+  justify-content: center;
+}
+
+/* Lista interna desplazable (historial de correcciones) */
+.agent-modal-scroll {
+  max-height: 300px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.agent-modal-history-item {
+  padding: 12px;
+  border: 1px solid var(--c-borde-suave);
+  border-radius: var(--radius-sm);
+  background: var(--c-fondo);
+  font-size: 12.5px;
+}
+
+.agent-modal-history-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.agent-modal-history-title {
+  font-size: 13px;
+  color: var(--c-texto);
+}
+
+.agent-modal-history-date {
+  font-size: 11px;
+  color: var(--c-texto-mutado);
+}
+
+.agent-modal-history-badges {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin: 4px 0;
+}
+
+.agent-modal-history-previous {
+  font-size: 11.5px;
+  color: var(--c-texto-mutado);
+  margin-top: 4px;
+}
+
+.agent-modal-history-note {
+  margin-top: 6px;
+  padding: 6px 10px;
+  border-radius: var(--radius-xs);
+  background: var(--c-superficie);
+  color: var(--c-texto-suave);
+  font-style: italic;
+}
+
+.agent-page .modal-header {
+  background: var(--c-calma-surface-subtle);
+  border-bottom-color: var(--c-calma-border-subtle);
+}
+
+.agent-page .modal-title {
+  letter-spacing: -0.02em;
+}
+
+.agent-page .modal-footer {
+  border-top: 1px solid var(--c-calma-border-subtle);
+}
+
+.agent-page .support-mode-capsule {
+  border: 1px solid var(--c-calma-border);
+  border-radius: var(--radius-card);
+  background: var(--c-calma-surface);
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.agent-page .support-mode-capsule:hover,
+.agent-page .support-mode-capsule.active {
+  border-color: var(--c-calma-accent);
+  background: var(--c-calma-accent-soft);
+}
+
+.agent-page .privacy-badge-rbac {
+  border-radius: var(--radius-sm);
+}
+
+.agent-page .analysis-chip,
+.agent-page .keyword-tag {
+  border-radius: var(--radius-sm);
+}
+
+@media (max-width: 640px) {
+  .modal-overlay {
+    align-items: flex-start;
+    padding: 16px;
+    overflow-y: auto;
+  }
+
+  .agent-modal {
+    max-width: 100%;
+    max-height: calc(100vh - 32px);
+    padding: 20px;
+  }
+
+  .agent-modal .modal-footer {
+    align-items: stretch;
+  }
+
+  .agent-modal .modal-footer .btn,
+  .agent-modal .modal-footer a {
+    width: 100%;
+    justify-content: center;
+  }
+}

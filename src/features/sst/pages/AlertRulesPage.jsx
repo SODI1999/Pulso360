@@ -1,3 +1,5 @@
+import { getSstData } from '../services/sstQueries';
+import { saveRule } from '../services/alertRulesService';
 // src/features/sst/pages/AlertRulesPage.jsx
 // Configuración, simulación y propuesta de reglas de alertas tempranas (RF-08)
 
@@ -16,14 +18,11 @@ export function AlertRulesPage() {
 
   const rules = useMemo(() => {
     void version;
-    return pulsoStore.get().rules || [];
+    return getSstData().rules || [];
   }, [version]);
 
   const handleSaveRule = (newRule) => {
-    const storeData = pulsoStore.get();
-    storeData.rules = storeData.rules || [];
-    storeData.rules.unshift(newRule);
-    pulsoStore.save(storeData);
+    saveRule(newRule);
 
     // Registro inmutable de auditoría (RF-08)
     pulsoStore.audit({
@@ -32,8 +31,10 @@ export function AlertRulesPage() {
       target: newRule.sentence || `${newRule.metric} ${newRule.operator} ${newRule.value}%`
     });
 
-    setFeedback(`Regla propuesta con éxito. Quedó registrada con estado "Pendiente de aprobación" para autorización administrativa.`);
-    setVersion(v => v + 1);
+    setFeedback(
+      `Regla propuesta con éxito. Quedó registrada con estado "Pendiente de aprobación" para autorización administrativa.`
+    );
+    setVersion((v) => v + 1);
   };
 
   return (
@@ -43,7 +44,8 @@ export function AlertRulesPage() {
         <div>
           <h1 className="page-title">Configuración de reglas preventivas</h1>
           <p className="page-subtitle">
-            SST propone umbrales y condiciones estadísticas; la activación oficial requiere autorización administrativa (RF-08).
+            SST propone umbrales y condiciones estadísticas; la activación oficial requiere autorización
+            administrativa (RF-08).
           </p>
         </div>
       </div>
@@ -52,7 +54,9 @@ export function AlertRulesPage() {
       <div className="alert-banner info" style={{ marginBottom: 'var(--space-6)' }}>
         <Icon name="info" size={20} />
         <div>
-          <strong>Gobernanza de Reglas:</strong> La separación de funciones asegura que ninguna regla se active unilateralmente. SST simula y propone; el Administrador autoriza tras verificar la pertinencia institucional.
+          <strong>Gobernanza de Reglas:</strong> La separación de funciones asegura que ninguna regla se
+          active unilateralmente. SST simula y propone; el Administrador autoriza tras verificar la
+          pertinencia institucional.
         </div>
       </div>
 
@@ -73,7 +77,9 @@ export function AlertRulesPage() {
           <div className="card-header">
             <div>
               <h2 className="card-title">Catálogo de reglas vigentes y propuestas</h2>
-              <p className="card-subtitle">Reglas configuradas para el monitoreo preventivo de la organización.</p>
+              <p className="card-subtitle">
+                Reglas configuradas para el monitoreo preventivo de la organización.
+              </p>
             </div>
             <span className="badge badge-info">{rules.length} reglas</span>
           </div>
@@ -82,14 +88,15 @@ export function AlertRulesPage() {
             {rules.length === 0 ? (
               <p style={{ color: 'var(--c-texto-suave)', fontSize: '13.5px' }}>No hay reglas registradas.</p>
             ) : (
-              rules.map(rule => (
+              rules.map((rule) => (
                 <div key={rule.id} className="rule-list-item">
                   <div className="rule-list-info">
                     <div className="rule-list-title">
                       <strong>{rule.metric}</strong> {rule.operator} {rule.value}%
                     </div>
                     <div className="rule-list-meta">
-                      Persistencia: {rule.persistence} {rule.unit || 'semanas'} · Ámbito: {rule.scope} · Severidad: {rule.severity}
+                      Persistencia: {rule.persistence} {rule.unit || 'semanas'} · Ámbito: {rule.scope} ·
+                      Severidad: {rule.severity}
                     </div>
                   </div>
                   <span className={`badge ${rule.active ? 'badge-ok' : 'badge-warn'}`}>

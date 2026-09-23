@@ -1,0 +1,304 @@
+/* ==========================================================================
+   BPO Ergonomía Operativa: Pulso Calma & Micro-Pausas (RF Anti-Burnout)
+   ========================================================================== */
+
+/* Tarjeta Hero de Check-in Ergonómico */
+.hero-checkin-card {
+  background-color: var(--c-superficie);
+  border: 1.5px solid var(--c-calma-border);
+  border-radius: var(--radius-card, 8px);
+  padding: var(--space-5) var(--space-6);
+  box-shadow: var(--shadow-xs);
+  margin-bottom: var(--space-4);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.hero-checkin-card:hover {
+  border-color: var(--c-calma-accent);
+  box-shadow: var(--shadow-sm);
+}
+
+.hero-checkin-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.hero-checkin-info {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  max-width: 680px;
+}
+
+.hero-checkin-icon {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--c-calma-accent-soft);
+  color: var(--c-calma-accent);
+  border: 1px solid var(--c-calma-border);
+  flex-shrink: 0;
+}
+
+.hero-checkin-icon.done {
+  background-color: var(--c-exito-bg);
+  color: var(--c-exito);
+  border-color: var(--c-exito-border);
+}
+
+/* Shift Rhythm Tracker (Cronología del Turno BPO) */
+.shift-tracker {
+  background-color: var(--c-superficie);
+  border: 1px solid var(--c-borde-suave);
+  border-radius: var(--radius-card, 8px);
+  padding: 14px 18px;
+  margin-bottom: var(--space-4);
+}
+
+.shift-tracker-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.shift-tracker-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--c-calma-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.shift-tracker-steps {
+  display: flex;
+  align-items: center;
+  position: relative;
+  gap: var(--space-2);
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.shift-step {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 140px;
+  position: relative;
+}
+
+.shift-step-bullet {
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  border: 1.5px solid var(--c-borde);
+  background-color: var(--c-superficie);
+  color: var(--c-texto-mutado);
+  flex-shrink: 0;
+  transition: all var(--transition-fast);
+}
+
+.shift-step.done .shift-step-bullet {
+  background-color: var(--c-calma-accent);
+  border-color: var(--c-calma-accent);
+  color: #ffffff;
+}
+
+.shift-step.active .shift-step-bullet {
+  background-color: var(--c-calma-accent-soft);
+  border-color: var(--c-calma-accent);
+  color: var(--c-calma-accent);
+  box-shadow: 0 0 0 3px var(--c-calma-ring);
+}
+
+.shift-step-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.shift-step-time {
+  font-size: 10.5px;
+  color: var(--c-texto-mutado);
+  font-weight: 600;
+}
+
+.shift-step-name {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--c-texto);
+  line-height: 1.25;
+}
+
+.shift-step.active .shift-step-name {
+  color: var(--c-calma-accent);
+  font-weight: 700;
+}
+
+.shift-step-connector {
+  flex: 1;
+  height: 2px;
+  background-color: var(--c-borde-suave);
+  margin-left: 6px;
+  margin-right: 6px;
+}
+
+.shift-step.done + .shift-step .shift-step-connector,
+.shift-step.done .shift-step-connector {
+  background-color: var(--c-calma-accent);
+}
+
+/* Banner de Desconexión Laboral Activa (Ley 2191 de 2022) */
+.disconnect-banner {
+  background-color: #f1f7f4;
+  border: 1px solid #cce3d8;
+  border-radius: var(--radius-card, 8px);
+  padding: var(--space-4) var(--space-5);
+  margin-bottom: var(--space-4);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.disconnect-info {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  max-width: 720px;
+}
+
+.disconnect-icon-wrapper {
+  color: var(--c-calma-accent);
+  background-color: #e2f2ee;
+  border: 1px solid #b8dfd4;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.disconnect-title {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--c-calma-text);
+  margin-bottom: 3px;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.disconnect-desc {
+  font-size: 12.5px;
+  color: var(--c-calma-text-muted);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.disconnect-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  align-self: center;
+}
+
+/* Botón y Estación de Descompresión */
+.decompression-banner {
+  background-color: var(--c-calma-surface-subtle);
+  border: 1px solid var(--c-calma-border-subtle);
+  border-radius: var(--radius-card, 8px);
+  padding: var(--space-3) var(--space-4);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.btn-calma {
+  background-color: var(--c-calma-accent);
+  color: #ffffff;
+  border: 1px solid var(--c-calma-accent);
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  padding: 8px 16px;
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-calma:hover {
+  background-color: var(--c-calma-accent-hover);
+  border-color: var(--c-calma-accent-hover);
+  color: #ffffff;
+}
+
+.btn-calma-outline {
+  background-color: transparent;
+  color: var(--c-calma-accent);
+  border: 1.5px solid var(--c-calma-accent);
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  padding: 7px 15px;
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-calma-outline:hover {
+  background-color: var(--c-calma-accent-soft);
+  color: var(--c-calma-accent-hover);
+}
+
+.btn-calma-urgent {
+  background-color: var(--c-calma-accent);
+  color: #ffffff !important;
+  border: 1px solid var(--c-calma-accent);
+  font-weight: 700;
+  border-radius: var(--radius-md);
+  padding: 8px 18px;
+  min-height: 44px;
+  font-size: 13.5px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(27, 122, 104, 0.28);
+  transition: all var(--transition-fast);
+  text-decoration: none;
+}
+
+.btn-calma-urgent:hover {
+  background-color: var(--c-calma-accent-hover);
+  border-color: var(--c-calma-accent-hover);
+  color: #ffffff !important;
+  box-shadow: 0 4px 10px rgba(27, 122, 104, 0.38);
+  transform: translateY(-1px);
+}

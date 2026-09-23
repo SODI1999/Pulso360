@@ -1,3 +1,5 @@
+import { getSstData } from '../services/sstQueries';
+import { saveIntervention } from '../services/interventionsService';
 // src/features/sst/pages/InterventionsPage.jsx
 // Gestión macro de intervenciones colectivas y planes de acción preventivos (RF-09)
 
@@ -10,20 +12,18 @@ import { NewInterventionForm } from '../components/NewInterventionForm';
 import '../../../styles/sst.css';
 
 export function InterventionsPage() {
+  const minThreshold = getSstData().settings?.umbralMinimo || 5;
   const user = authService.getCurrentUser();
   const [version, setVersion] = useState(0);
   const [feedback, setFeedback] = useState('');
 
   const interventions = useMemo(() => {
     void version;
-    return pulsoStore.get().interventions || [];
+    return getSstData().interventions || [];
   }, [version]);
 
   const handleSaveIntervention = (newIntervention) => {
-    const storeData = pulsoStore.get();
-    storeData.interventions = storeData.interventions || [];
-    storeData.interventions.unshift(newIntervention);
-    pulsoStore.save(storeData);
+    saveIntervention(newIntervention);
 
     // Registro inmutable de auditoría (RF-09)
     pulsoStore.audit({
@@ -32,8 +32,10 @@ export function InterventionsPage() {
       target: `${newIntervention.title} · ${newIntervention.campaign}${newIntervention.team ? ' / ' + newIntervention.team : ''} · línea base ${newIntervention.baseline}`
     });
 
-    setFeedback(`Intervención "${newIntervention.title}" registrada exitosamente y sincronizada con el módulo de supervisión operativa.`);
-    setVersion(v => v + 1);
+    setFeedback(
+      `Intervención "${newIntervention.title}" registrada exitosamente y sincronizada con el módulo de supervisión operativa.`
+    );
+    setVersion((v) => v + 1);
   };
 
   return (
@@ -52,7 +54,10 @@ export function InterventionsPage() {
       <div className="alert-banner info" style={{ marginBottom: 'var(--space-6)' }}>
         <Icon name="info" size={20} />
         <div>
-          <strong>Trazabilidad metodológica:</strong> Las intervenciones definen línea base, indicador objetivo y ventana de evaluación. La variación observada en los datos refleja correlación de bienestar colectivo, no causalidad clínica directa. Pulso360 no ejecuta cambios automáticos en enrutadores ni turnos.
+          <strong>Trazabilidad metodológica:</strong> Las intervenciones definen línea base, indicador
+          objetivo y ventana de evaluación. La variación observada en los datos refleja correlación de
+          bienestar colectivo, no causalidad clínica directa. Pulso360 no ejecuta cambios automáticos en
+          enrutadores ni turnos.
         </div>
       </div>
 
@@ -65,7 +70,7 @@ export function InterventionsPage() {
       )}
 
       {/* Formulario de Nueva Intervención */}
-      <NewInterventionForm onSaveIntervention={handleSaveIntervention} />
+      <NewInterventionForm onSaveIntervention={handleSaveIntervention} minThreshold={minThreshold} />
 
       {/* Tabla de Seguimiento de Intervenciones */}
       <div className="card">
@@ -94,7 +99,10 @@ export function InterventionsPage() {
             <tbody>
               {interventions.length === 0 ? (
                 <tr>
-                  <td colSpan="8" style={{ textAlign: 'center', padding: '24px', color: 'var(--c-texto-suave)' }}>
+                  <td
+                    colSpan="8"
+                    style={{ textAlign: 'center', padding: '24px', color: 'var(--c-texto-suave)' }}
+                  >
                     No hay intervenciones registradas en el sistema.
                   </td>
                 </tr>
@@ -127,14 +135,31 @@ export function InterventionsPage() {
                     </td>
                     <td>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: '100px' }}>
-                        <div style={{ flex: 1, height: '6px', background: 'var(--c-fondo)', borderRadius: '10px', overflow: 'hidden', border: '1px solid var(--c-borde-suave)' }}>
-                          <div style={{ width: `${item.progress || 0}%`, height: '100%', background: 'var(--c-primario)' }} />
+                        <div
+                          style={{
+                            flex: 1,
+                            height: '6px',
+                            background: 'var(--c-fondo)',
+                            borderRadius: '10px',
+                            overflow: 'hidden',
+                            border: '1px solid var(--c-borde-suave)'
+                          }}
+                        >
+                          <div
+                            style={{
+                              width: `${item.progress || 0}%`,
+                              height: '100%',
+                              background: 'var(--c-primario)'
+                            }}
+                          />
                         </div>
                         <span style={{ fontSize: '12px', fontWeight: '600' }}>{item.progress || 0}%</span>
                       </div>
                     </td>
                     <td>
-                      <span className={`badge badge-${item.status === 'Activa' ? 'ok' : item.status === 'Cerrada' ? 'muted' : 'info'}`}>
+                      <span
+                        className={`badge badge-${item.status === 'Activa' ? 'ok' : item.status === 'Cerrada' ? 'muted' : 'info'}`}
+                      >
                         {item.status}
                       </span>
                     </td>

@@ -100,15 +100,9 @@ export function Icon({ name, className = '', size, ...props }) {
         <polyline points="5 12 12 5 19 12" />
       </>
     ),
-    chevronDown: (
-      <polyline points="6 9 12 15 18 9" />
-    ),
-    chevronUp: (
-      <polyline points="18 15 12 9 6 15" />
-    ),
-    check: (
-      <polyline points="20 6 9 17 4 12" />
-    ),
+    chevronDown: <polyline points="6 9 12 15 18 9" />,
+    chevronUp: <polyline points="18 15 12 9 6 15" />,
+    check: <polyline points="20 6 9 17 4 12" />,
     info: (
       <>
         <circle cx="12" cy="12" r="10" />
@@ -116,9 +110,7 @@ export function Icon({ name, className = '', size, ...props }) {
         <line x1="12" y1="8" x2="12.01" y2="8" />
       </>
     ),
-    shield: (
-      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-    ),
+    shield: <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />,
     copy: (
       <>
         <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
@@ -162,9 +154,7 @@ export function Icon({ name, className = '', size, ...props }) {
         <path d="m9 12 2 2 4-4" />
       </>
     ),
-    play: (
-      <polygon points="5 3 19 12 5 21 5 3" />
-    ),
+    play: <polygon points="5 3 19 12 5 21 5 3" />,
     pause: (
       <>
         <rect x="6" y="4" width="4" height="16" rx="1" />
@@ -219,9 +209,7 @@ export function Icon({ name, className = '', size, ...props }) {
         <path d="m15 5 4 4" />
       </>
     ),
-    insights: (
-      <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-    ),
+    insights: <path d="M22 12h-4l-3 9L9 3l-3 9H2" />,
     monitoring: (
       <>
         <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
@@ -304,9 +292,7 @@ export function Icon({ name, className = '', size, ...props }) {
         <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
       </>
     ),
-    policy: (
-      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-    ),
+    policy: <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />,
     audit: (
       <>
         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
@@ -459,11 +445,9 @@ export function Icon({ name, className = '', size, ...props }) {
         <path d="M8 14h.01" />
       </>
     ),
-    zap: (
-      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-    ),
+    zap: <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />,
 
-    // Especializados Dominio BPO & k-Anonimato (Anti-AI Slop)
+    // Especializados Dominio BPO & k-Anonimato
     headsetBpo: (
       <>
         <path d="M3 13v-3a9 9 0 0 1 18 0v3" />
@@ -600,7 +584,7 @@ export function Icon({ name, className = '', size, ...props }) {
         <path d="M14.5 2A4.5 4.5 0 0 1 19 6.5c0 1.25-.5 2.38-1.32 3.2A4.5 4.5 0 0 1 18 12.5a4.5 4.5 0 0 1-2 3.73V19a2 2 0 0 1-2 2" />
         <circle cx="12" cy="10" r="1.5" />
       </>
-    ),
+    )
   };
 
   const style = size ? { width: `${size}px`, height: `${size}px` } : undefined;

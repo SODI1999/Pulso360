@@ -1,0 +1,259 @@
+/* ==========================================================================
+   Cierre y Navegación Inferior
+   ========================================================================== */
+.academic-article-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 32px;
+  border-top: 1px solid var(--landing-line, #E5E0D6);
+  flex-wrap: wrap;
+}
+
+.footer-actions-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.btn-return-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--landing-green, #082F28);
+  color: #ffffff;
+  padding: 11px 22px;
+  border-radius: 6px;
+  font-size: 0.86rem;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  box-shadow: 0 4px 14px rgba(8, 47, 40, 0.16);
+  transition: all 180ms ease;
+}
+
+.btn-return-primary:hover {
+  background: var(--landing-green-dark, #051F1A);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(8, 47, 40, 0.22);
+}
+
+.btn-action-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: #ffffff;
+  color: var(--landing-ink, #112623);
+  border: 1px solid var(--landing-line, #E5E0D6);
+  padding: 11px 20px;
+  border-radius: 6px;
+  font-size: 0.86rem;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  transition: all 180ms ease;
+}
+
+.btn-action-secondary:hover {
+  background: var(--landing-cream, #F5F2EB);
+  border-color: var(--landing-emerald, #14705A);
+  color: var(--landing-emerald, #14705A);
+}
+
+.btn-print-footer {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: transparent;
+  color: var(--landing-body, #485B58);
+  border: 1px dashed var(--landing-line, #E5E0D6);
+  border-radius: 6px;
+  padding: 11px 18px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 180ms ease;
+  font-family: inherit;
+}
+
+.btn-print-footer:hover {
+  background: #FAF8F5;
+  color: var(--landing-emerald, #14705A);
+  border-color: var(--landing-emerald, #14705A);
+}
+
+/* === Responsive & Ergonomía en Terminales BPO === */
+@media (max-width: 1024px) {
+  .surveillance-pillars-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .academic-article-shell {
+    padding: 44px 36px;
+  }
+
+  .academic-authorship-showcase {
+    grid-template-columns: 1fr;
+  }
+
+  .authorship-divider {
+    flex-direction: row;
+    padding-block: 10px;
+  }
+
+  .divider-line {
+    height: 1px;
+    width: 100%;
+  }
+
+  .divider-chip {
+    writing-mode: horizontal-tb;
+    transform: none;
+    margin-block: 0;
+    margin-inline: 12px;
+  }
+
+  .empirical-dossier-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .instruments-row {
+    grid-template-columns: 1fr;
+  }
+
+  .transfer-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .surveillance-pillars-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .transfer-cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .empirical-dossier-main {
+    padding: 20px 16px;
+  }
+
+  .academic-article-shell {
+    padding: 28px 18px;
+    border-radius: var(--radius-card, 16px);
+  }
+
+  .academic-hero-title {
+    font-size: 1.55rem;
+  }
+
+  .number-val {
+    font-size: 2.8rem;
+  }
+
+  .anti-surveillance-card {
+    padding: 24px 20px;
+  }
+
+  .anti-surveillance-header {
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .citation-card {
+    padding: 20px;
+  }
+
+  .citation-top-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .citation-actions-group {
+    justify-content: space-between;
+  }
+
+  .academic-article-footer {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+  }
+
+  .footer-actions-left {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .btn-return-primary,
+  .btn-action-secondary,
+  .btn-print-footer {
+    justify-content: center;
+  }
+}
+
+/* Soporte de Impresión (Clean Paper Layout) */
+@media print {
+
+  .no-print,
+  .landing-navbar,
+  .landing-footer,
+  .academic-breadcrumb,
+  .btn-print-dossier,
+  .citation-tabs,
+  .btn-copy-citation,
+  .academic-article-footer {
+    display: none !important;
+  }
+
+  .academic-page-root {
+    background: #ffffff !important;
+    padding: 0 !important;
+  }
+
+  .academic-article-shell {
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    max-width: 100% !important;
+  }
+
+  .authorship-card,
+  .empirical-dossier-main,
+  .dossier-aside-card,
+  .transfer-flow-card,
+  .legal-dossier-row,
+  .citation-card,
+  .anti-surveillance-card {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .anti-surveillance-card {
+    background: #ffffff !important;
+    color: #000000 !important;
+    border: 2px solid #000000 !important;
+    box-shadow: none !important;
+  }
+
+  .anti-surveillance-heading,
+  .pillar-title {
+    color: #000000 !important;
+  }
+
+  .anti-surveillance-sub,
+  .pillar-desc {
+    color: #333333 !important;
+  }
+}
+
+
+@media (max-width: 640px) {
+  .screen-header.sst-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}

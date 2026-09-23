@@ -1,4 +1,4 @@
-﻿// src/features/landing/components/ScrollToTopButton.jsx
+// src/features/landing/components/ScrollToTopButton.jsx
 // Botón flotante accesible con transición de opacidad suave para volver al inicio
 
 import { useState, useEffect } from 'react';

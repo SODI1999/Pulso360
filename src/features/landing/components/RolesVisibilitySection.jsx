@@ -26,13 +26,18 @@ export function RolesVisibilitySection() {
   };
 
   return (
-    <section className="roles-transparency-section" id="transparencia-roles" aria-labelledby="transparency-title">
+    <section
+      className="roles-transparency-section"
+      id="transparencia-roles"
+      aria-labelledby="transparency-title"
+    >
       <div className="landing-container">
         <div className="transparency-header">
           <span className="acts-eyebrow">Matriz de Gobernanza & Privacidad</span>
           <h2 id="transparency-title">Transparencia Radical por Rol</h2>
           <p className="transparency-lead">
-            La confianza se construye con reglas explícitas. Selecciona un perfil para revisar qué información puede consultar la aplicación en esta experiencia y qué queda fuera de su alcance:
+            La confianza se construye con reglas explícitas. Selecciona un perfil para revisar qué información
+            puede consultar la aplicación en esta experiencia y qué queda fuera de su alcance:
           </p>
         </div>
 
@@ -56,7 +61,12 @@ export function RolesVisibilitySection() {
         </div>
 
         {/* Ficha Editorial de Especificación del Rol */}
-        <div className="role-specification-card" id="role-specification-card" role="tabpanel" aria-labelledby={`role-tab-${selectedRole.id}`}>
+        <div
+          className="role-specification-card"
+          id="role-specification-card"
+          role="tabpanel"
+          aria-labelledby={`role-tab-${selectedRole.id}`}
+        >
           <div className="role-spec-head">
             <div>
               <span className={`role-spec-badge ${selectedRole.badgeClass}`}>{selectedRole.roleTag}</span>

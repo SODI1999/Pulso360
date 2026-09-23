@@ -7,7 +7,9 @@ export function ReportHistoryTable({ reportHistory = [] }) {
       <div className="card-header">
         <div>
           <h2 className="card-title">Historial de exportaciones realizadas</h2>
-          <div className="card-subtitle">Registro de reportes generados con trazabilidad de hash demo (RF-12).</div>
+          <div className="card-subtitle">
+            Registro de reportes generados con trazabilidad de hash demo (RF-12).
+          </div>
         </div>
       </div>
 
@@ -25,7 +27,10 @@ export function ReportHistoryTable({ reportHistory = [] }) {
           <tbody>
             {reportHistory.length === 0 ? (
               <tr>
-                <td colSpan="5" style={{ textAlign: 'center', padding: 'var(--space-6)', color: 'var(--c-texto-suave)' }}>
+                <td
+                  colSpan="5"
+                  style={{ textAlign: 'center', padding: 'var(--space-6)', color: 'var(--c-texto-suave)' }}
+                >
                   Aún no se han generado exportaciones de reportes en esta sesión.
                 </td>
               </tr>

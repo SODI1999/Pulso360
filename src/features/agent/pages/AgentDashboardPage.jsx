@@ -1,13 +1,14 @@
+import { useAgentDashboard } from '../hooks/useAgentDashboard';
+import { QUICK_ENERGY_SCALE, formatHour } from '../services/agentDashboardHelpers';
+
 // src/features/agent/pages/AgentDashboardPage.jsx
 // Panel principal del agente (Pulso Calma) bajo principios de Calm Technology:
 // una pantalla = un propósito. Saludo + un único check-in rápido + ritmo del turno.
 // La analítica vive en "Mi bienestar" / "Mi análisis"; el menú lateral conserva
 // los destinos de bitácora, apoyo y privacidad para mantener la home despejada.
 
-import { useState, useMemo } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { authService } from '../../../core/auth/authService';
-import { pulsoStore } from '../../../core/storage/pulsoStore';
+import { Link } from 'react-router-dom';
+
 import { Icon } from '../../../core/components/Icon';
 import { BpoResetModal } from '../components/BpoResetModal';
 import { PerspectiveSimModal } from '../components/PerspectiveSimModal';
@@ -16,133 +17,25 @@ import '../../../styles/agent.css';
 
 // Escala rápida de energía: reutiliza las etiquetas de la dimensión "energia"
 // del Check-in Wizard (no se inventa un concepto ni una escala paralela).
-const QUICK_ENERGY_SCALE = [
-  { value: 1, label: 'Sin batería' },
-  { value: 2, label: 'Baja energía' },
-  { value: 3, label: 'Justa para el turno' },
-  { value: 4, label: 'Buena energía' },
-  { value: 5, label: 'Plena y enfocado' }
-];
-
-const formatHour = (hourNumber) => {
-  const h = ((hourNumber % 24) + 24) % 24;
-  return `${String(h).padStart(2, '0')}:00`;
-};
 
 export function AgentDashboardPage() {
-  const currentUser = authService.getCurrentUser();
-  const storeData = pulsoStore.get();
-  const navigate = useNavigate();
-  const consent = storeData.consents?.[currentUser?.id] || {};
-
-  // 1. Partes de fecha y hora local en Bogotá
-  const { dateParts, currentHourBogota } = useMemo(() => {
-    const now = new Date();
-    const parts = Object.fromEntries(
-      new Intl.DateTimeFormat('en-US', {
-        timeZone: 'America/Bogota',
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        hourCycle: 'h23'
-      })
-        .formatToParts(now)
-        .filter((item) => item.type !== 'literal')
-        .map((item) => [item.type, item.value])
-    );
-    return {
-      dateParts: parts,
-      currentHourBogota: Number(parts.hour)
-    };
-  }, []);
-
-  const greeting = useMemo(() => {
-    if (currentHourBogota >= 5 && currentHourBogota < 12) return 'Buenos días';
-    if (currentHourBogota >= 12 && currentHourBogota < 19) return 'Buenas tardes';
-    return 'Buenas noches';
-  }, [currentHourBogota]);
-
-  // 2. Jornada laboral en Bogotá (lógica inquebrantable compartida con el wizard)
-  const shiftStartHour = Number(currentUser?.shiftStartHour ?? 8);
-
-  const journeyKey = useMemo(() => {
-    let key = `${dateParts.year}-${dateParts.month}-${dateParts.day}`;
-
-    if (currentHourBogota < shiftStartHour) {
-      const previousDate = new Date(`${key}T12:00:00Z`);
-      previousDate.setUTCDate(previousDate.getUTCDate() - 1);
-      key = previousDate.toISOString().slice(0, 10);
-    }
-
-    return key;
-  }, [dateParts, currentHourBogota, shiftStartHour]);
-
-  // 3. Detección de Desconexión Laboral Activa (Ley 2191 de 2022)
-  const isOutsideShift = useMemo(() => {
-    const hoursSinceStart = (currentHourBogota - shiftStartHour + 24) % 24;
-    return hoursSinceStart >= 9 && hoursSinceStart <= 23;
-  }, [currentHourBogota, shiftStartHour]);
-
-  // Persistencia del descarte del aviso de desconexión por jornada
-  const [dismissedDisconnect, setDismissedDisconnect] = useState(() => {
-    try {
-      return sessionStorage.getItem(`pulso360_dismiss_disconnect_${journeyKey}`) === 'true';
-    } catch {
-      return false;
-    }
-  });
-
-  const handleDismissDisconnect = () => {
-    try {
-      sessionStorage.setItem(`pulso360_dismiss_disconnect_${journeyKey}`, 'true');
-    } catch {
-      // Manejo seguro ante restricciones de almacenamiento
-    }
-    setDismissedDisconnect(true);
-  };
-
-  // 4. Estado del check-in de la jornada actual
-  const todayCheckin = useMemo(() => {
-    return (storeData.checkins || []).find(
-      (c) => c.userId === currentUser?.id && c.journeyKey === journeyKey
-    );
-  }, [storeData.checkins, currentUser?.id, journeyKey]);
-
-  // 5. Check-in rápido: el emoji pre-rellena el borrador del wizard usando el
-  // MISMO draftKey que CheckinWizardPage lee al montar. No se duplica la
-  // persistencia de registros: el wizard sigue siendo quien guarda en el store.
-  const draftKey = `pulso360_checkin_draft_${currentUser?.id}_${journeyKey}`;
-
-  const handleQuickEnergy = (value) => {
-    try {
-      const savedDraft = JSON.parse(localStorage.getItem(draftKey) || '{}');
-      localStorage.setItem(draftKey, JSON.stringify({ ...savedDraft, energia: value }));
-    } catch {
-      // Si el almacenamiento está restringido, el wizard completo sigue disponible.
-    }
-    navigate('/agente/checkin');
-  };
-
-  // 6. Ritmo del turno (pasos de la jornada según hora de inicio)
-  const shiftSteps = useMemo(() => {
-    const hoursSinceStart = (currentHourBogota - shiftStartHour + 24) % 24;
-
-    return [
-      { id: 'start', time: formatHour(shiftStartHour), title: 'Inicio de turno', status: hoursSinceStart > 1 ? 'done' : 'active' },
-      { id: 'block1', time: formatHour(shiftStartHour + 2), title: 'Bloque 1 (Línea)', status: hoursSinceStart > 3 ? 'done' : hoursSinceStart >= 2 ? 'active' : 'upcoming' },
-      { id: 'break', time: formatHour(shiftStartHour + 4), title: 'Pausa Activa', status: hoursSinceStart > 5 ? 'done' : hoursSinceStart >= 4 ? 'active' : 'upcoming' },
-      { id: 'block2', time: formatHour(shiftStartHour + 6), title: 'Bloque 2 (Línea)', status: hoursSinceStart > 7 ? 'done' : hoursSinceStart >= 6 ? 'active' : 'upcoming' },
-      { id: 'close', time: formatHour(shiftStartHour + 8), title: 'Cierre & Desconexión', status: hoursSinceStart >= 8 ? 'done' : 'upcoming' }
-    ];
-  }, [shiftStartHour, currentHourBogota]);
-
-  // Hora sugerida de pausa activa dentro del turno
-  const breakStep = shiftSteps.find((step) => step.id === 'break');
-
-  // Modales preservados
-  const [isResetModalOpen, setIsResetModalOpen] = useState(false);
-  const [isPerspectiveModalOpen, setIsPerspectiveModalOpen] = useState(false);
+  const {
+    currentUser,
+    consent,
+    greeting,
+    shiftStartHour,
+    isOutsideShift,
+    dismissedDisconnect,
+    handleDismissDisconnect,
+    todayCheckin,
+    handleQuickEnergy,
+    shiftSteps,
+    breakStep,
+    isResetModalOpen,
+    setIsResetModalOpen,
+    isPerspectiveModalOpen,
+    setIsPerspectiveModalOpen
+  } = useAgentDashboard();
 
   return (
     <div className="agent-page calm-home">
@@ -205,7 +98,8 @@ export function AgentDashboardPage() {
               </span>
               <p className="calm-done-text">Ya registraste tu turno de hoy.</p>
               <p className="calm-done-hint">
-                Tu pausa activa está sugerida para las {breakStep?.time || formatHour(shiftStartHour + 4)}. Respira profundo, estira hombros y cuello antes de volver a la línea.
+                Tu pausa activa está sugerida para las {breakStep?.time || formatHour(shiftStartHour + 4)}.
+                Respira profundo, estira hombros y cuello antes de volver a la línea.
               </p>
               <Link to="/agente/checkin" className="btn btn-secondary btn-sm" style={{ marginTop: '6px' }}>
                 Ver o editar mi registro
@@ -297,15 +191,9 @@ export function AgentDashboardPage() {
       </footer>
 
       {/* Modales preservados */}
-      <BpoResetModal
-        isOpen={isResetModalOpen}
-        onClose={() => setIsResetModalOpen(false)}
-      />
+      <BpoResetModal isOpen={isResetModalOpen} onClose={() => setIsResetModalOpen(false)} />
 
-      <PerspectiveSimModal
-        isOpen={isPerspectiveModalOpen}
-        onClose={() => setIsPerspectiveModalOpen(false)}
-      />
+      <PerspectiveSimModal isOpen={isPerspectiveModalOpen} onClose={() => setIsPerspectiveModalOpen(false)} />
     </div>
   );
 }

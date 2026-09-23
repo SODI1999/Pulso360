@@ -1,6 +1,6 @@
 /* src/styles/consentimiento.css
    Estilos editoriales continuos para el consentimiento informado de Pulso360 (/consentimiento)
-   Construido mediante pulso360-ui-craft: Blueprint 0 (Documento Editorial Continuo)
+   Estilos de la funcionalidad y sus estados.
    Filosofía Anti-Slop: CERO card-itis, CERO franjas laterales de color, CERO puntos decorativos en badges.
 */
 
@@ -521,7 +521,7 @@
   font-size: 13px;
 }
 
-/* 7. Modal accesible (Blueprint 3 / C de pulso360-ui-craft) */
+/* 7. Modal accesible */
 .consent-modal-scrim {
   position: fixed;
   inset: 0;

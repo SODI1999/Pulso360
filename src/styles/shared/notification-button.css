@@ -1,0 +1,86 @@
+/* Botón de notificaciones: icono neutro, badge ámbar, sin fondo de marca ---
+   Razón: el verde (primario) no tiene semántica de notificación. El botón no
+   compite visualmente con acciones primarias; el badge ámbar indica atención
+   pendiente sin la urgencia del rojo crítico. */
+.btn-topbar-notifications {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 10px;
+  min-height: 36px;
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  line-height: 1;
+  white-space: nowrap;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+  background-color: transparent;
+  color: var(--c-texto-suave);
+  border: 1px solid transparent;
+  position: relative;
+}
+
+.btn-topbar-notifications:hover {
+  background-color: var(--c-fondo-subtle);
+  color: var(--c-texto);
+  border-color: var(--c-borde-suave);
+}
+
+/* Animación de campana cuando hay avisos no leídos */
+@keyframes ring {
+  0%   { transform: rotate(0deg); }
+  10%  { transform: rotate(14deg); }
+  20%  { transform: rotate(-10deg); }
+  30%  { transform: rotate(14deg); }
+  40%  { transform: rotate(-6deg); }
+  50%  { transform: rotate(10deg); }
+  60%  { transform: rotate(0deg); }
+  100% { transform: rotate(0deg); }
+}
+
+.btn-topbar-notifications.has-unread .topbar-bell-icon {
+  animation: ring 1.8s ease-in-out 0.5s 3; /* 3 repeticiones al cargar, luego se detiene */
+  transform-origin: top center;
+  display: inline-flex;
+}
+
+.topbar-pill-badge {
+  background-color: var(--c-alerta); /* ámbar: semántica de atención, no de urgencia crítica */
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: var(--radius-full);
+  line-height: 1.4;
+  min-width: 18px;
+  text-align: center;
+}
+
+.btn-topbar-logout {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  min-height: 34px;
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  line-height: 1;
+  white-space: nowrap;
+  transition: all var(--transition-fast);
+  background-color: transparent;
+  color: var(--c-texto-suave);
+  border: 1px solid transparent;
+}
+
+.btn-topbar-logout:hover {
+  background-color: var(--c-fondo-subtle);
+  color: var(--c-texto);
+  border-color: var(--c-borde-suave);
+}

@@ -1,10 +1,9 @@
+import { useSstDashboard } from '../hooks/useSstDashboard';
 // src/features/sst/pages/SstDashboardPage.jsx
 // Panel Principal de Vigilancia Epidemiológica y Analítica Agregada para SST (RF-07 / RF-11)
 
-import { useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { authService } from '../../../core/auth/authService';
-import { pulsoStore } from '../../../core/storage/pulsoStore';
+
 import { Icon } from '../../../core/components/Icon';
 import { HeatmapGrid } from '../components/HeatmapGrid';
 
@@ -12,43 +11,7 @@ import '../../../styles/sst.css';
 import '../../../styles/umbral.css';
 
 export function SstDashboardPage() {
-  const user = authService.getCurrentUser();
-  const storeData = pulsoStore.get();
-  const minThreshold = storeData.settings?.umbralMinimo || 5;
-
-  // Alertas activas pendientes de atención
-  const pendingAlerts = useMemo(() => {
-    return (storeData.alerts || []).filter(
-      a => a.status !== 'CERRADA' && a.status !== 'DESCARTADA'
-    );
-  }, [storeData.alerts]);
-
-  // Solicitudes de acompañamiento en gestión
-  const activeRequests = useMemo(() => {
-    return (storeData.supportRequests || []).filter(r => r.status !== 'Cerrada');
-  }, [storeData.supportRequests]);
-
-  // Distribución agregada de las 8 categorías léxicas de NLP
-  const nlpCategories = useMemo(() => [
-    { name: 'Sobrecarga percibida', count: 12, percent: 37 },
-    { name: 'Recuperación insuficiente', count: 10, percent: 31 },
-    { name: 'Exigencia emocional', count: 9, percent: 28 },
-    { name: 'Conflicto de rol', count: 7, percent: 19 },
-    { name: 'Bajo apoyo organizacional', count: 4, percent: 11 }, // Cuenta < 5 -> supresión primaria
-    { name: 'Distanciamiento laboral', count: 8, percent: 23 },
-    { name: 'Frustración por métricas operativas', count: 6, percent: 17 },
-    { name: 'Percepción de ineficacia', count: 5, percent: 14 }
-  ], []);
-
-  // Registro de auditoría preventiva (RF-07 / RF-11)
-  useEffect(() => {
-    if (!user) return;
-    pulsoStore.audit({
-      actor: `${user.name} (${user.role})`,
-      action: 'CONSULTA_AGREGADA',
-      target: 'SST · Vigilancia epidemiológica y distribución agregada NLP'
-    });
-  }, [user]);
+  const { minThreshold, pendingAlerts, activeRequests, nlpCategories } = useSstDashboard();
 
   return (
     <div>
@@ -57,7 +20,8 @@ export function SstDashboardPage() {
         <div>
           <h1 className="page-title">Tendencias agregadas por campaña</h1>
           <p className="page-subtitle">
-            Consolidado organizacional de bienestar para gestión preventiva. Pulso360 es complementario y no sustituye evaluaciones clínicas individuales.
+            Consolidado organizacional de bienestar para gestión preventiva. Pulso360 es complementario y no
+            sustituye evaluaciones clínicas individuales.
           </p>
         </div>
 
@@ -71,7 +35,9 @@ export function SstDashboardPage() {
       <div className="alert-banner info" style={{ marginBottom: 'var(--space-4)' }}>
         <Icon name="info" size={20} />
         <div>
-          <strong>Vigilancia epidemiológica preventiva:</strong> La información agregada permite a SST coordinar acciones de apoyo colectivo sin mostrar la identidad ni las respuestas individuales en esta vista.
+          <strong>Vigilancia epidemiológica preventiva:</strong> La información agregada permite a SST
+          coordinar acciones de apoyo colectivo sin mostrar la identidad ni las respuestas individuales en
+          esta vista.
         </div>
       </div>
 
@@ -80,7 +46,8 @@ export function SstDashboardPage() {
         <div className="kpi-card">
           <div className="kpi-label">Índice agregado de bienestar</div>
           <div className="kpi-value" style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-            64.2 <span style={{ fontSize: '14px', fontWeight: '500', color: 'var(--c-texto-mutado)' }}>/ 100</span>
+            64.2{' '}
+            <span style={{ fontSize: '14px', fontWeight: '500', color: 'var(--c-texto-mutado)' }}>/ 100</span>
           </div>
           <div className="kpi-delta warn">
             <Icon name="alertTriangle" size={16} />
@@ -99,7 +66,10 @@ export function SstDashboardPage() {
         <div className="kpi-card">
           <div className="kpi-label">Solicitudes de acompañamiento</div>
           <div className="kpi-value" style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-            {activeRequests.length} <span style={{ fontSize: '14px', fontWeight: '500', color: 'var(--c-texto-mutado)' }}>en gestión</span>
+            {activeRequests.length}{' '}
+            <span style={{ fontSize: '14px', fontWeight: '500', color: 'var(--c-texto-mutado)' }}>
+              en gestión
+            </span>
           </div>
           <div className="kpi-delta ok">
             <Icon name="checkCircle" size={16} />
@@ -148,30 +118,46 @@ export function SstDashboardPage() {
             </thead>
             <tbody>
               <tr>
-                <td><strong>Recuperación agregada</strong></td>
+                <td>
+                  <strong>Recuperación agregada</strong>
+                </td>
                 <td>58 / 100</td>
-                <td><span className="badge badge-warn">Medio-Bajo</span></td>
+                <td>
+                  <span className="badge badge-warn">Medio-Bajo</span>
+                </td>
                 <td>Descenso del 3.2% en 3 semanas</td>
                 <td>Coordinación de pausas activas y descansos escalonados</td>
               </tr>
               <tr>
-                <td><strong>Carga emocional agregada</strong></td>
+                <td>
+                  <strong>Carga emocional agregada</strong>
+                </td>
                 <td>74 / 100</td>
-                <td><span className="badge badge-danger">Alto</span></td>
+                <td>
+                  <span className="badge badge-danger">Alto</span>
+                </td>
                 <td>Estable en nivel elevado</td>
                 <td>Taller de contención emocional en colas de retención</td>
               </tr>
               <tr>
-                <td><strong>Apoyo social entre pares</strong></td>
+                <td>
+                  <strong>Apoyo social entre pares</strong>
+                </td>
                 <td>82 / 100</td>
-                <td><span className="badge badge-ok">Favorable</span></td>
+                <td>
+                  <span className="badge badge-ok">Favorable</span>
+                </td>
                 <td>Incremento positivo (+1.8%)</td>
                 <td>Mantener dinámicas de inicio de jornada</td>
               </tr>
               <tr>
-                <td><strong>Conflicto y ambigüedad de rol</strong></td>
+                <td>
+                  <strong>Conflicto y ambigüedad de rol</strong>
+                </td>
                 <td>48 / 100</td>
-                <td><span className="badge badge-info">Medio</span></td>
+                <td>
+                  <span className="badge badge-info">Medio</span>
+                </td>
                 <td>Estable</td>
                 <td>Alineación de criterios operativos con supervisores</td>
               </tr>

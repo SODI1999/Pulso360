@@ -1,0 +1,125 @@
+/* Escala de seleccion somatica y ergonomica BPO */
+.scale-selector {
+  display: flex;
+  gap: var(--space-2);
+  justify-content: center;
+  margin-top: var(--space-3);
+  margin-bottom: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.scale-btn {
+  flex: 1;
+  max-width: 104px;
+  min-width: 80px;
+  min-height: 76px;
+  padding: 10px 8px;
+  border: 1.5px solid var(--c-borde-suave);
+  border-radius: var(--radius-md);
+  background-color: var(--c-superficie);
+  color: var(--c-texto-suave);
+  cursor: pointer;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all var(--transition-fast);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  position: relative;
+}
+
+.scale-shortcut {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--c-texto-mutado);
+  background-color: var(--c-fondo);
+  border: 1px solid var(--c-borde-suave);
+  border-radius: var(--radius-sm, 4px);
+  padding: 1px 5px;
+  line-height: 1.2;
+  transition: all var(--transition-fast);
+}
+
+.scale-number {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--c-texto);
+  line-height: 1.1;
+  margin: 1px 0 2px;
+}
+
+.scale-label {
+  font-size: 11.5px;
+  line-height: 1.3;
+  color: var(--c-texto-suave);
+  text-align: center;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.scale-btn:hover {
+  background-color: var(--c-fondo);
+  border-color: var(--c-primario-400);
+  transform: translateY(-1px);
+}
+
+.scale-btn:focus-visible {
+  outline: 2px solid var(--c-primario);
+  outline-offset: 2px;
+}
+
+.scale-btn.active {
+  background-color: var(--c-primario-suave);
+  border-color: var(--c-primario);
+  color: var(--c-primario);
+  box-shadow: 0 0 0 2px rgba(15, 118, 110, 0.18);
+}
+
+.scale-btn.active .scale-shortcut {
+  background-color: var(--c-primario);
+  color: #ffffff;
+  border-color: var(--c-primario);
+}
+
+.scale-btn.active .scale-number,
+.scale-btn.active .scale-label {
+  color: var(--c-primario);
+  font-weight: 700;
+}
+
+@media (max-width: 620px) {
+  .scale-selector {
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .scale-btn {
+    min-height: 52px;
+    max-width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: var(--space-2) var(--space-4);
+  }
+
+  .scale-btn .scale-shortcut {
+    order: 1;
+  }
+
+  .scale-btn .scale-number {
+    order: 2;
+    font-size: 18px;
+    margin: 0 var(--space-2);
+  }
+
+  .scale-btn .scale-label {
+    order: 3;
+    flex: 1;
+    text-align: left;
+    font-size: 12.5px;
+  }
+}
