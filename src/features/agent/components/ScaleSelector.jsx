@@ -25,16 +25,16 @@ export function ScaleSelector({ question, currentValue, onSelectValue, onSkip })
       {/* Micro-nota empática contextual de la pregunta (desculpabilizadora) */}
       {question.contextNote && (
         <div className="scale-context-note" role="note">
-          <div className="scale-context-icon-wrapper">
-            <Icon name="info" size={15} />
-          </div>
+          <span className="scale-context-icon-wrapper" aria-hidden="true">
+            <Icon name="info" size={16} />
+          </span>
           <p className="scale-context-text">{question.contextNote}</p>
         </div>
       )}
 
-      {/* Escala somática, ergonómica y táctil del 1 al 5 */}
+      {/* Escala somática, ergonómica y táctil del 1 al 5 en pista continua */}
       <div
-        className="scale-selector"
+        className="scale-selector scale-selector-track"
         role="radiogroup"
         aria-label={question.title}
         aria-keyshortcuts="1 2 3 4 5"

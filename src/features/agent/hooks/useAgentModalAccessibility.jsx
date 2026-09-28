@@ -19,13 +19,35 @@ const FOCUSABLE_SELECTOR = [
 
 export function useAgentModalAccessibility({ isOpen, onClose, dialogRef }) {
   const openerRef = useRef(null);
+  const hasFocusedRef = useRef(false);
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
   useBodyScrollLock(isOpen);
 
-  // Foco inicial, trampa de foco y Escape mientras está abierto
+  // Foco inicial solo una vez al abrir el modal (evita que cada click resetee el scroll al botón superior)
+  useEffect(() => {
+    if (!isOpen) {
+      hasFocusedRef.current = false;
+      return;
+    }
+
+    if (!hasFocusedRef.current) {
+      openerRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+
+      const closeBtn = dialogRef.current?.querySelector('.modal-close-btn');
+      if (closeBtn) {
+        closeBtn.focus();
+      } else {
+        const firstFocusable = dialogRef.current?.querySelector(FOCUSABLE_SELECTOR);
+        firstFocusable?.focus();
+      }
+      hasFocusedRef.current = true;
+    }
+  }, [isOpen, dialogRef]);
+
+  // Trampa de foco (Tab) y Escape mientras está abierto
   useEffect(() => {
     if (!isOpen) return undefined;
-
-    openerRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
 
     const getFocusables = () => {
       const dialog = dialogRef.current;
@@ -33,18 +55,9 @@ export function useAgentModalAccessibility({ isOpen, onClose, dialogRef }) {
       return Array.from(dialog.querySelectorAll(FOCUSABLE_SELECTOR));
     };
 
-    // El foco inicial va al botón de cierre cuando existe: garantiza una
-    // salida visible por teclado sin depender de recordar el Escape.
-    const closeBtn = dialogRef.current?.querySelector('.modal-close-btn');
-    if (closeBtn) {
-      closeBtn.focus();
-    } else {
-      getFocusables()[0]?.focus();
-    }
-
     const handleKey = (e) => {
       if (e.key === 'Escape') {
-        onClose();
+        onCloseRef.current?.();
         return;
       }
       if (e.key !== 'Tab') return;
@@ -76,7 +89,7 @@ export function useAgentModalAccessibility({ isOpen, onClose, dialogRef }) {
     return () => {
       window.removeEventListener('keydown', handleKey);
     };
-  }, [isOpen, onClose, dialogRef]);
+  }, [isOpen, dialogRef]);
 
   // Al cerrar, el foco vuelve al elemento que abrió el modal
   useEffect(() => {

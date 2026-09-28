@@ -2,6 +2,45 @@ import { useRef } from 'react';
 import { Icon } from '../../../core/components/Icon';
 import { useAgentModalAccessibility } from '../hooks/useAgentModalAccessibility';
 
+const FACTOR_METADATA = {
+  'Sobrecarga percibida': {
+    icon: 'phone',
+    desc: 'Alto volumen de llamadas, ritmo acelerado o presión continua en colas.'
+  },
+  'Recuperación insuficiente': {
+    icon: 'battery_low',
+    desc: 'Agotamiento acumulado, pausas omitidas o descanso no reparador.'
+  },
+  'Exigencia emocional': {
+    icon: 'shieldAlert',
+    desc: 'Interacciones tensas con usuarios, clientes difíciles o angustia.'
+  },
+  'Conflicto de rol': {
+    icon: 'sliders',
+    desc: 'Instrucciones contradictorias o desalineación de pautas operativas.'
+  },
+  'Bajo apoyo organizacional': {
+    icon: 'users',
+    desc: 'Falta de respaldo de líderes de equipo o aislamiento en el turno.'
+  },
+  'Distanciamiento laboral': {
+    icon: 'eyeOff',
+    desc: 'Sensación de apatía o desconexión emocional con la jornada.'
+  },
+  'Frustración por métricas operativas': {
+    icon: 'lineChart',
+    desc: 'Presión por tiempos AHT, metas inalcanzables o control estricto.'
+  },
+  'Percepción de ineficacia': {
+    icon: 'alertTriangle',
+    desc: 'Dificultad para resolver casos, fallas en sistemas o sensación de estancamiento.'
+  },
+  'Ninguna aplica': {
+    icon: 'checkCircle',
+    desc: 'Mi jornada transcurrió con normalidad o estos factores no describen mi turno.'
+  }
+};
+
 export function NlpCorrectionModal({
   isOpen,
   allCategories,
@@ -17,6 +56,10 @@ export function NlpCorrectionModal({
 
   if (!isOpen) return null;
 
+  const standardCategories = allCategories.filter((c) => c !== 'Ninguna aplica');
+  const hasNoneOption = allCategories.includes('Ninguna aplica');
+  const isNoneChecked = selectedCategories.includes('Ninguna aplica');
+
   return (
     <div
       className="modal-overlay active"
@@ -27,15 +70,15 @@ export function NlpCorrectionModal({
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div ref={dialogRef} className="modal-box agent-modal">
+      <div ref={dialogRef} className="modal-box agent-modal agent-modal--correction">
         <div className="modal-header">
           <div>
+            <span className="agent-kicker">Corrección humana</span>
             <h2 id="nlp-correction-title" className="modal-title">
               Corregir clasificación orientativa
             </h2>
             <p className="modal-subtitle">
-              Tú eres quien mejor sabe cómo viviste tu turno. Tu criterio siempre prima sobre cualquier
-              clasificación léxica automática.
+              Tú eres quien mejor sabe cómo viviste tu turno. Tu criterio siempre prima sobre la clasificación automática.
             </p>
           </div>
           <button type="button" className="modal-close-btn" onClick={onClose} aria-label="Cerrar">
@@ -43,28 +86,72 @@ export function NlpCorrectionModal({
           </button>
         </div>
 
-        {/* Garantía de privacidad BPO sin reporte punitivo */}
-        <div className="agent-notice agent-notice--flat">
-          <Icon name="lock" size={16} className="agent-notice-icon" />
-          <span className="agent-notice-text">
-            Esta corrección queda almacenada en tu bitácora personal y se utiliza para ajustar tu registro. No
-            se incorpora a las vistas agregadas de supervisión.
-          </span>
-        </div>
+        {/* Selector interactivo de factores */}
+        <div className="correction-selector-section">
+          <div className="correction-options-grid">
+            {standardCategories.map((categoryName) => {
+              const isChecked = selectedCategories.includes(categoryName);
+              const meta = FACTOR_METADATA[categoryName] || {
+                icon: 'sliders',
+                desc: 'Factor orientativo de la jornada.'
+              };
 
-        <div className="category-grid agent-modal-catgrid">
-          {allCategories.map((categoryName) => {
-            const isChecked = selectedCategories.includes(categoryName);
-            return (
-              <label key={categoryName}>
-                <input type="checkbox" checked={isChecked} onChange={() => onToggleCategory(categoryName)} />
-                <span>{categoryName}</span>
+              return (
+                <label
+                  key={categoryName}
+                  className={`correction-option-tile ${isChecked ? 'is-selected' : ''}`}
+                >
+                  <input
+                    type="checkbox"
+                    className="correction-hidden-checkbox"
+                    checked={isChecked}
+                    onChange={() => onToggleCategory(categoryName)}
+                  />
+                  <div className="correction-option-icon">
+                    <Icon name={meta.icon} size={18} />
+                  </div>
+                  <div className="correction-option-content">
+                    <span className="correction-option-name">{categoryName}</span>
+                    <span className="correction-option-desc">{meta.desc}</span>
+                  </div>
+                  <div className="correction-check-indicator" aria-hidden="true">
+                    {isChecked && <Icon name="check" size={12} strokeWidth={2.5} />}
+                  </div>
+                </label>
+              );
+            })}
+          </div>
+
+          {/* Opción exclusiva "Ninguna aplica" */}
+          {hasNoneOption && (
+            <div className="correction-none-wrapper">
+              <label
+                className={`correction-option-tile correction-option-tile--none ${isNoneChecked ? 'is-selected' : ''}`}
+              >
+                <input
+                  type="checkbox"
+                  className="correction-hidden-checkbox"
+                  checked={isNoneChecked}
+                  onChange={() => onToggleCategory('Ninguna aplica')}
+                />
+                <div className="correction-option-icon">
+                  <Icon name={FACTOR_METADATA['Ninguna aplica'].icon} size={18} />
+                </div>
+                <div className="correction-option-content">
+                  <span className="correction-option-name">Ninguna aplica</span>
+                  <span className="correction-option-desc">
+                    {FACTOR_METADATA['Ninguna aplica'].desc}
+                  </span>
+                </div>
+                <div className="correction-check-indicator" aria-hidden="true">
+                  {isNoneChecked && <Icon name="check" size={12} strokeWidth={2.5} />}
+                </div>
               </label>
-            );
-          })}
+            </div>
+          )}
         </div>
 
-        <div className="form-group">
+        <div className="form-group" style={{ marginTop: '14px' }}>
           <label className="form-label" htmlFor="nlpCorrectionNote">
             Comentario o motivo de tu ajuste (opcional)
           </label>
@@ -79,6 +166,14 @@ export function NlpCorrectionModal({
           />
           <div className="char-count">
             <span>{correctionNote.length}</span> / 200 caracteres
+          </div>
+        </div>
+
+        {/* Garantía de privacidad BPO: ubicada al pie como en PerspectiveSimModal */}
+        <div className="agent-notice agent-notice--flat">
+          <Icon name="shieldCheck" size={16} className="agent-notice-icon" />
+          <div className="agent-notice-text">
+            <strong>Privacidad de tu registro:</strong> Este ajuste queda registrado exclusivamente en tu bitácora personal. No se incorpora a las vistas agregadas de supervisión.
           </div>
         </div>
 

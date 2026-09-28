@@ -32,18 +32,18 @@
   margin-bottom: 18px;
 }
 
-/* El modal de transparencia no hereda la banda calma de los modales de agente:
-   es una cabecera de lectura separada sólo por una línea, sin franja de color.
-   El contenido compacto evita el scroll interno (auditoría 015, rediseño). */
-.agent-page .agent-modal.perspective-modal .modal-header {
+/* Cabeceras de lectura separadas sólo por una línea, sin franja de color que choque con el texto */
+.agent-page .agent-modal.perspective-modal .modal-header,
+.agent-page .agent-modal.agent-modal--correction .modal-header {
   background: transparent;
   border-bottom: 1px solid var(--c-borde-suave);
   padding-bottom: var(--space-3);
   margin-bottom: var(--space-3);
 }
 
-/* Aviso de garantías más compacto dentro de este modal (sin scroll interno) */
-.agent-page .agent-modal.perspective-modal .agent-notice {
+/* Aviso de garantías compacto dentro del modal */
+.agent-page .agent-modal.perspective-modal .agent-notice,
+.agent-page .agent-modal.agent-modal--correction .agent-notice {
   padding: 10px 14px;
   margin: 12px 0 0;
   font-size: 11.5px;

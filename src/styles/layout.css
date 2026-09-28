@@ -1,10 +1,16 @@
 /* Estilos de estructura, navegación y distribución general - Pulso360
    Diseño Clean Clay / Soft Minimalist (ergonómico BPO) */
 
+html {
+  scrollbar-gutter: stable;
+}
+
 /* Layout Principal */
 .app-layout {
   display: flex;
   min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
   width: 100%;
   background-color: var(--c-fondo-subtle);
 }
@@ -29,13 +35,14 @@
   transition: width 260ms cubic-bezier(0.2, 0, 0, 1), min-width 260ms cubic-bezier(0.2, 0, 0, 1);
   will-change: width, min-width;
   user-select: none;
-  overflow-x: hidden;
+  overflow: visible;
 }
 
 /* Modo Compacto / Solo Iconos (~72px) */
 .app-sidebar.is-collapsed {
   width: 72px;
   min-width: 72px;
+  overflow: visible;
 }
 
 /* Cabecera del Sidebar: exclusivamente reservada para la identidad de Pulso360 */
@@ -414,16 +421,35 @@
 }
 
 .nav-item.nav-crisis {
-  background-color: var(--c-critico-bg);
-  color: var(--c-critico);
-  border: 1px solid var(--c-critico-border);
-  font-weight: 600;
+  background-color: transparent;
+  color: var(--c-texto-suave);
+  border: 1px solid transparent;
+  font-weight: 500;
+  box-shadow: none;
 }
 
-.nav-item.nav-crisis:hover {
-  background-color: #fee2e2;
-  border-color: var(--c-critico);
+.nav-item.nav-crisis .nav-icon {
   color: var(--c-critico);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-item.nav-crisis:hover,
+.app-sidebar.is-collapsed .nav-item.nav-crisis:hover,
+.nav-item.nav-crisis:active,
+.app-sidebar.is-collapsed .nav-item.nav-crisis:active,
+.nav-item.nav-crisis.active,
+.app-sidebar.is-collapsed .nav-item.nav-crisis.active {
+  background-color: transparent !important;
+  border-color: transparent !important;
+  color: var(--c-texto) !important;
+  box-shadow: none !important;
+}
+
+.nav-item.nav-crisis:hover .nav-icon,
+.app-sidebar.is-collapsed .nav-item.nav-crisis:hover .nav-icon {
+  color: var(--c-critico) !important;
 }
 
 /* Pie de barra lateral (Menú de Cuenta) */
@@ -443,16 +469,16 @@
   align-items: center;
 }
 
-/* Tarjeta del Usuario en Barra Lateral */
+/* Perfil del Usuario en Barra Lateral */
 .user-card {
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  padding: 5px 6px;
+  padding: 6px 8px;
   height: 44px;
   border-radius: var(--radius-md);
-  background: var(--c-superficie);
-  border: 1px solid var(--c-borde-suave);
+  background: transparent;
+  border: 1px solid transparent;
   width: 100%;
   box-sizing: border-box;
   font: inherit;
@@ -462,9 +488,11 @@
   transition: background-color var(--transition-fast), border-color var(--transition-fast), width 260ms cubic-bezier(0.2, 0, 0, 1), padding 260ms cubic-bezier(0.2, 0, 0, 1);
 }
 
-.user-card:hover {
-  background: var(--c-superficie);
-  border-color: var(--c-borde-fuerte);
+.user-card:hover,
+.user-card:active {
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
 }
 
 .user-card:focus-visible {
@@ -474,25 +502,37 @@
 
 .user-card.is-compact,
 .app-sidebar.is-collapsed .user-card {
-  width: 44px;
-  height: 44px;
-  padding: 0 6px;
+  width: 36px;
+  height: 36px;
+  padding: 0;
   gap: 0;
-  justify-content: flex-start;
+  justify-content: center;
+  align-items: center;
   margin: 0 auto;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: var(--radius-full);
+}
+
+.user-card.is-compact:hover,
+.app-sidebar.is-collapsed .user-card:hover {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 .user-avatar {
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   border-radius: var(--radius-full);
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  font-size: 12px;
+  font-size: 13px;
   flex-shrink: 0;
-  box-shadow: var(--shadow-xs);
+  box-shadow: none;
   border: 1.5px solid currentColor;
 }
 
@@ -593,64 +633,224 @@
   transform: rotate(180deg);
 }
 
-/* Menú de cuenta emergente */
+/* Ventana sutil y pequeña de usuario (Popover de Cuenta) */
+.account-popover,
 .account-menu {
-  position: absolute;
-  bottom: calc(100% + 6px);
-  left: var(--space-3);
-  right: var(--space-3);
   background: var(--c-superficie);
   border: 1px solid var(--c-borde-suave);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-md);
-  padding: 4px;
+  border-radius: var(--radius-md, 10px);
+  box-shadow: 0 10px 25px -4px rgba(15, 23, 42, 0.08), 0 4px 6px -2px rgba(15, 23, 42, 0.03);
+  padding: 7px 8px;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
+  box-sizing: border-box;
+  animation: accountPopoverIn 140ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes accountPopoverIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Modo dentro del menú abierto (embedded) */
+.account-popover.account-popover--embedded,
+.account-menu:not(.account-menu--collapsed):not(.account-popover--floating) {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 12px;
+  right: 12px;
+  width: auto;
   z-index: 130;
 }
 
+/* Modo flotante cuando el menú está cerrado (collapsed) */
+.account-popover.account-popover--floating,
 .account-menu.account-menu--collapsed {
-  left: calc(100% + 10px);
+  position: absolute;
+  left: calc(100% + 8px);
   bottom: 8px;
   right: auto;
-  min-width: 210px;
-  box-shadow: var(--shadow-lg);
-  z-index: 220;
+  width: 224px;
+  min-width: 220px;
+  z-index: 250;
+  box-shadow: 0 12px 28px -4px rgba(15, 23, 42, 0.12), 0 6px 10px -3px rgba(15, 23, 42, 0.05);
 }
 
+/* Encabezado del popover con identidad del usuario */
+.account-popover-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 4px 5px;
+}
+
+.account-popover-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 11px;
+  flex-shrink: 0;
+  box-shadow: var(--shadow-xs);
+  border: 1.5px solid currentColor;
+}
+
+.account-popover-avatar.role-agente {
+  background: var(--c-rol-agente-bg);
+  color: var(--c-rol-agente);
+}
+
+.account-popover-avatar.role-supervisor {
+  background: var(--c-rol-supervisor-bg);
+  color: var(--c-rol-supervisor);
+}
+
+.account-popover-avatar.role-sst {
+  background: var(--c-rol-sst-bg);
+  color: var(--c-rol-sst);
+}
+
+.account-popover-avatar.role-auditor {
+  background: var(--c-rol-auditor-bg);
+  color: var(--c-rol-auditor);
+}
+
+.account-popover-avatar.role-admin {
+  background: var(--c-rol-admin-bg);
+  color: var(--c-rol-admin);
+}
+
+.account-popover-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 1px;
+}
+
+.account-popover-name {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--c-texto);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.25;
+}
+
+.account-popover-meta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+.account-popover-badge {
+  display: inline-block;
+  font-size: 9.5px;
+  font-weight: 600;
+  padding: 1px 5px;
+  border-radius: var(--radius-xs, 4px);
+  line-height: 1.3;
+}
+
+.account-popover-badge.role-agente {
+  background: var(--c-rol-agente-bg);
+  color: var(--c-rol-agente);
+}
+
+.account-popover-badge.role-supervisor {
+  background: var(--c-rol-supervisor-bg);
+  color: var(--c-rol-supervisor);
+}
+
+.account-popover-badge.role-sst {
+  background: var(--c-rol-sst-bg);
+  color: var(--c-rol-sst);
+}
+
+.account-popover-badge.role-auditor {
+  background: var(--c-rol-auditor-bg);
+  color: var(--c-rol-auditor);
+}
+
+.account-popover-badge.role-admin {
+  background: var(--c-rol-admin-bg);
+  color: var(--c-rol-admin);
+}
+
+.account-popover-context {
+  font-size: 10.5px;
+  color: var(--c-texto-mutado);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.account-popover-divider {
+  height: 1px;
+  background-color: var(--c-borde-suave);
+  margin: 3px 0;
+  border: none;
+  width: 100%;
+}
+
+.account-popover-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+}
+
+.account-popover-item,
 .account-menu-item {
   display: flex;
   align-items: center;
   gap: var(--space-2);
   width: 100%;
-  padding: 8px 10px;
+  padding: 6px 8px;
   border: none;
   border-radius: var(--radius-sm);
-  background: none;
+  background: transparent;
   color: var(--c-texto);
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 500;
   text-decoration: none;
   cursor: pointer;
   text-align: left;
-  transition: background-color var(--transition-fast);
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+  box-sizing: border-box;
 }
 
+.account-popover-item:hover,
 .account-menu-item:hover {
-  background: var(--c-fondo);
+  background-color: var(--c-fondo);
+  color: var(--c-texto-fuerte);
 }
 
+.account-popover-item:focus-visible,
 .account-menu-item:focus-visible {
   outline: 2px solid var(--c-primario);
 }
 
+.account-popover-logout,
 .account-menu-logout {
   color: var(--c-critico);
 }
 
+.account-popover-logout:hover,
 .account-menu-logout:hover {
-  background: var(--c-critico-bg);
+  background-color: var(--c-critico-bg);
+  color: var(--c-critico);
 }
 
 /* =========================================================================
@@ -662,6 +862,9 @@
   display: flex;
   flex-direction: column;
   min-width: 0;
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
   background-color: var(--c-superficie);
   border-top-left-radius: 28px;
   border-left: 1px solid var(--c-borde-suave);
@@ -673,6 +876,7 @@
 /* Barra Superior (Topbar) */
 .app-topbar {
   height: 72px;
+  flex-shrink: 0;
   background-color: var(--c-superficie);
   border-top-left-radius: 28px;
   border-bottom: 1px solid var(--c-borde-suave);
@@ -824,6 +1028,8 @@
   .app-layout {
     flex-direction: column;
     min-height: 100vh;
+    height: auto;
+    overflow: visible;
   }
 
   .app-sidebar,
@@ -936,6 +1142,9 @@
   }
 
   .app-main {
+    height: auto;
+    overflow-y: visible;
+    overflow-x: visible;
     border-top-left-radius: 0;
     border-left: none;
     border-top: none;

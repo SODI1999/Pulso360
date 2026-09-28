@@ -18,8 +18,6 @@ export function CheckinWizardPage() {
   const {
     data,
     consent,
-    journeyKey,
-    shiftStartHour,
     isOutsideShift,
     currentStep,
     setCurrentStep,
@@ -58,7 +56,6 @@ export function CheckinWizardPage() {
         <div className="page-header">
           <div>
             <h1 className="page-title">Check-in de bienestar</h1>
-            <p className="page-subtitle">Jornada actual · America/Bogota</p>
           </div>
         </div>
 
@@ -98,10 +95,21 @@ export function CheckinWizardPage() {
   if (submittedSuccess) {
     return (
       <div className="agent-page agent-page--checkin">
+        <nav className="agent-subnav" aria-label="Navegación secundaria">
+          <button
+            type="button"
+            className="agent-back-btn"
+            onClick={() => navigate('/agente/panel')}
+            aria-label="Volver al panel principal del agente"
+          >
+            <Icon name="arrowLeft" size={16} />
+            <span>Volver al panel</span>
+          </button>
+        </nav>
+
         <div className="page-header page-header--wizard">
           <div>
             <h1 className="page-title">Check-in de bienestar</h1>
-            <p className="page-subtitle">Jornada {journeyKey} · Completado exitosamente</p>
           </div>
         </div>
 
@@ -133,12 +141,9 @@ export function CheckinWizardPage() {
           </button>
         </nav>
 
-        <div className="page-header">
+        <div className="page-header page-header--wizard">
           <div>
             <h1 className="page-title">Check-in de bienestar</h1>
-            <p className="page-subtitle">
-              Jornada {journeyKey} · inicio de turno {String(shiftStartHour).padStart(2, '0')}:00
-            </p>
           </div>
         </div>
 
@@ -226,10 +231,6 @@ export function CheckinWizardPage() {
       <div className="page-header page-header--wizard">
         <div>
           <h1 className="page-title">Check-in de bienestar</h1>
-          <p className="page-subtitle">
-            Jornada {journeyKey} · inicio de turno {String(shiftStartHour).padStart(2, '0')}:00 ·
-            America/Bogota
-          </p>
         </div>
       </div>
 

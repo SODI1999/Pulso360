@@ -227,7 +227,7 @@ export function AppLayout() {
                 aria-label={sidebarCollapsed ? 'Apoyo inmediato' : undefined}
               >
                 <span className="nav-icon" aria-hidden="true">
-                  <Icon name="LifeBuoy" size={18} />
+                  <Icon name="Siren" size={18} />
                 </span>
                 <span className="nav-item-label" aria-hidden={sidebarCollapsed}>
                   Apoyo inmediato
@@ -237,35 +237,62 @@ export function AppLayout() {
           )}
         </nav>
 
-        {/* Pie de barra lateral: Menú de cuenta */}
+        {/* Pie de barra lateral: Ventana sutil y pequeña de usuario */}
         <div className="sidebar-footer" ref={accountRef}>
           {accountOpen && (
             <div
-              className={`account-menu${sidebarCollapsed ? ' account-menu--collapsed' : ''}`}
+              className={`account-popover account-menu${
+                sidebarCollapsed ? ' account-popover--floating account-menu--collapsed' : ' account-popover--embedded'
+              }`}
               role="menu"
               aria-label="Opciones de cuenta"
             >
-              {/* "Mis datos y privacidad" es un módulo exclusivo del rol agente (Habeas Data) */}
-              {user.role === 'agente' && (
-                <Link
-                  to="/agente/mis-datos"
-                  className="account-menu-item"
+              {/* Encabezado sutil de identidad del usuario */}
+              <div className="account-popover-header">
+                <div className={`account-popover-avatar role-${user.role}`} aria-hidden="true">
+                  {user.name.charAt(0).toUpperCase()}
+                </div>
+                <div className="account-popover-info">
+                  <div className="account-popover-name" title={user.name}>
+                    {user.name}
+                  </div>
+                  <div className="account-popover-meta">
+                    <span className={`account-popover-badge role-${user.role}`}>{roleLabel}</span>
+                    {contextLabel && (
+                      <span className="account-popover-context" title={contextLabel}>
+                        • {contextLabel}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div className="account-popover-divider" role="separator" />
+
+              {/* Acciones de cuenta */}
+              <div className="account-popover-actions">
+                {/* "Mis datos y privacidad" es un módulo exclusivo del rol agente (Habeas Data) */}
+                {user.role === 'agente' && (
+                  <Link
+                    to="/agente/mis-datos"
+                    className="account-popover-item account-menu-item"
+                    role="menuitem"
+                    onClick={() => setAccountOpen(false)}
+                  >
+                    <Icon name="ShieldCheck" size={15} />
+                    <span>Mis datos y privacidad</span>
+                  </Link>
+                )}
+                <button
+                  type="button"
+                  className="account-popover-item account-popover-logout account-menu-item account-menu-logout"
                   role="menuitem"
-                  onClick={() => setAccountOpen(false)}
+                  onClick={handleLogout}
                 >
-                  <Icon name="ShieldCheck" size={16} />
-                  <span>Mis datos y privacidad</span>
-                </Link>
-              )}
-              <button
-                type="button"
-                className="account-menu-item account-menu-logout"
-                role="menuitem"
-                onClick={handleLogout}
-              >
-                <Icon name="LogOut" size={16} />
-                <span>Cerrar sesión</span>
-              </button>
+                  <Icon name="LogOut" size={15} />
+                  <span>Cerrar sesión</span>
+                </button>
+              </div>
             </div>
           )}
 
@@ -320,7 +347,7 @@ export function AppLayout() {
             {/* Acceso de emergencia visible sin scroll en móvil */}
             {user.role === 'agente' && (
               <Link to="/apoyo-crisis" className="btn btn-topbar-crisis" aria-label="Apoyo inmediato">
-                <Icon name="LifeBuoy" size={16} />
+                <Icon name="Siren" size={16} />
                 <span>Apoyo</span>
               </Link>
             )}

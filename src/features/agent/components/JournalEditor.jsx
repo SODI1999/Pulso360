@@ -32,16 +32,13 @@ export function JournalEditor({
       >
         <div>
           <div className="card-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Icon name="spa" size={18} style={{ color: 'var(--c-primario, #0f766e)' }} />
+            <Icon name="feather" size={18} style={{ color: 'var(--c-primario, #0f766e)' }} />
             <span>Modo Desahogo</span>
           </div>
           <div className="card-subtitle">
             Escribe con libertad para procesar tu jornada operativa sin juicios.
           </div>
         </div>
-        <span className="badge badge-info" id="nlpModeBadge">
-          {consent?.c3 ? 'NLP Activo' : 'NLP desactivado'}
-        </span>
       </div>
 
       {/* Alerta de Datos de Terceros (Reformulada pedagógicamente) */}

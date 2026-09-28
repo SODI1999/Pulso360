@@ -126,26 +126,7 @@ export function JournalPage() {
 
       <div className="page-header">
         <div>
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '10px',
-              flexWrap: 'wrap',
-              marginBottom: '6px'
-            }}
-          >
-            <h1 className="page-title" style={{ margin: 0 }}>
-              Mi bitácora laboral
-            </h1>
-            <span
-              className="privacy-badge-rbac"
-              title="Espacio de Acceso Exclusivo del Titular (Aislamiento RBAC)"
-            >
-              <Icon name="shield" size={14} />
-              <span>Acceso exclusivo</span>
-            </span>
-          </div>
+          <h1 className="page-title">Mi bitácora laboral</h1>
           <p className="page-subtitle">
             Espacio privado de autorreflexión y desahogo. Tus notas no forman parte de las vistas operativas
             agregadas.

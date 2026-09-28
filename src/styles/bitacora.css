@@ -3,7 +3,124 @@
    Diseñado bajo principios de ergonomía BPO: prevención de fatiga visual y descanso cognitivo
 */
 
-/* 1. Chips de análisis empático y factores identificados */
+/* 1. Tags modernos con formato # para factores identificados y términos */
+.analysis-tag-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 11px;
+  border-radius: var(--radius-full, 9999px);
+  font-size: 12.5px;
+  font-weight: 600;
+  transition: all var(--transition-fast, 140ms ease);
+}
+
+.analysis-tag-badge .tag-hash {
+  font-weight: 700;
+  opacity: 0.65;
+}
+
+/* Factor tag (verde salvia / acento calma sobrio) */
+.analysis-tag-badge--factor {
+  background: var(--c-calma-accent-soft, #e2f2ee);
+  color: var(--c-calma-text, #112623);
+  border: 1px solid var(--c-calma-border, #d5e0dc);
+}
+
+.analysis-tag-badge--factor .tag-hash {
+  color: var(--c-calma-accent, #1b7a68);
+}
+
+.analysis-tag-badge--factor.is-adjusted {
+  background: var(--c-primario-50, #f0fdfa);
+  color: var(--c-primario, #0f766e);
+  border-color: var(--c-primario-border, #99f6e4);
+}
+
+.analysis-tag-badge--factor.is-adjusted .tag-hash {
+  color: var(--c-primario, #0f766e);
+}
+
+.tag-adjusted-pill {
+  font-size: 10px;
+  font-weight: 600;
+  background: var(--c-primario, #0f766e);
+  color: #ffffff;
+  padding: 1px 6px;
+  border-radius: var(--radius-full, 9999px);
+  margin-left: 2px;
+}
+
+/* Term tag (gris neutro sutil con # teal) */
+.analysis-tag-badge--term {
+  background: var(--c-fondo-subtle, #f1f5f9);
+  color: var(--c-texto, #0f172a);
+  border: 1px solid var(--c-borde-suave, #e2e8f0);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.analysis-tag-badge--term .tag-hash {
+  color: var(--c-primario, #0f766e);
+  font-weight: 700;
+  opacity: 0.9;
+}
+
+.analysis-tag-badge--neutral {
+  background: var(--c-fondo-subtle, #f1f5f9);
+  color: var(--c-texto-suave, #64748b);
+  border: 1px solid var(--c-borde-suave, #e2e8f0);
+}
+
+/* Badges limpios para factores orientativos: icono + nombre con radio contenido sobrio (sin cápsulas/círculos) */
+.analysis-factor-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: var(--radius-xs, 4px);
+  background: var(--c-calma-accent-soft, #e2f2ee);
+  color: var(--c-calma-text, #112623);
+  border: 1px solid var(--c-calma-border, #d5e0dc);
+  font-size: 12.5px;
+  font-weight: 600;
+  transition: all var(--transition-fast, 140ms ease);
+}
+
+.analysis-factor-badge svg {
+  color: var(--c-calma-accent, #1b7a68);
+  flex-shrink: 0;
+}
+
+.analysis-factor-badge.factor-chip-adjusted {
+  background: var(--c-primario-50, #f0fdfa);
+  color: var(--c-primario, #0f766e);
+  border-color: var(--c-primario-border, #99f6e4);
+}
+
+.analysis-factor-badge.factor-chip-adjusted svg {
+  color: var(--c-primario, #0f766e);
+}
+
+.factor-chip-subtext {
+  font-size: 11px;
+  font-weight: 500;
+  opacity: 0.85;
+}
+
+/* Términos de la nota: texto plano tipo hashtag sin badge ni recuadros */
+.analysis-term-hash {
+  display: inline-block;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--c-primario, #0f766e);
+  margin-right: 10px;
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+/* Compatibilidad con chips anteriores */
 .analysis-chip {
   display: inline-flex;
   align-items: center;
@@ -95,14 +212,16 @@
   line-height: 1.55;
 }
 
-/* 4b. Bloques internos del panel de análisis (antes estilos inline en JSX) */
+/* 4b. Bloques internos del panel de análisis */
 .analysis-panel-head {
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
   gap: 8px;
-  margin-bottom: 14px;
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--c-borde-suave, #e2e8f0);
 }
 
 .analysis-panel-title {
@@ -111,55 +230,41 @@
   gap: 8px;
 }
 
-.analysis-panel-title svg {
-  color: var(--c-calma-accent, #1b7a68);
+.analysis-title-icon {
+  color: var(--c-primario, #0f766e);
 }
 
 .analysis-panel-title strong {
-  font-size: 14px;
+  font-size: 14.5px;
+  font-weight: 700;
   color: var(--c-texto, #0f172a);
 }
 
-.analysis-panel-head .badge {
+.analysis-version-tag {
   font-size: 11px;
-}
-
-.analysis-card .local-seal {
-  margin-bottom: 12px;
-}
-
-.analysis-card .local-seal svg {
-  color: var(--c-calma-accent, #1b7a68);
-  margin-top: 2px;
-}
-
-.analysis-card .analysis-calm-banner {
-  margin-bottom: 16px;
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-}
-
-.analysis-card .analysis-calm-banner svg {
-  color: var(--c-calma-accent, #1b7a68);
-  margin-top: 2px;
+  font-weight: 500;
+  color: var(--c-texto-mutado, #64748b);
+  background: var(--c-fondo-subtle, #f1f5f9);
+  padding: 2px 8px;
+  border-radius: var(--radius-xs, 4px);
+  border: 1px solid var(--c-borde-suave, #e2e8f0);
 }
 
 .analysis-panel-factors {
-  margin-bottom: 14px;
+  margin-bottom: 16px;
 }
 
 .analysis-panel-label {
   margin-bottom: 8px;
   font-size: 12.5px;
   font-weight: 600;
-  color: var(--c-texto-suave, #475569);
+  color: var(--c-texto, #0f172a);
 }
 
 .analysis-panel-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 8px;
 }
 
 .analysis-panel-evidence {
@@ -191,13 +296,37 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  padding-top: 8px;
-  border-top: 1px solid var(--c-calma-border, #d5e0dc);
+  padding-top: 10px;
+  border-top: 1px solid var(--c-borde-suave, #e2e8f0);
 }
 
 .analysis-panel-actions .btn {
   font-size: 12.5px;
   padding: 6px 12px;
+}
+
+/* Nota sutil unificada de privacidad y alcance (sin cajas apiladas) */
+.analysis-panel-footer-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--c-borde-suave, #e2e8f0);
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--c-texto-suave, #64748b);
+}
+
+.analysis-panel-footer-note svg {
+  color: var(--c-primario, #0f766e);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.analysis-panel-footer-note strong {
+  color: var(--c-texto, #0f172a);
+  font-weight: 600;
 }
 
 /* 5. Área de escritura ergonómica: "Modo Desahogo" */
@@ -236,6 +365,156 @@
 }
 
 /* 6. Grilla de selección en modal de corrección */
+.agent-modal--correction {
+  max-width: 600px;
+}
+
+.correction-selector-section {
+  margin: 16px 0;
+}
+
+.correction-section-label {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--c-texto, #0f172a);
+  margin-bottom: 10px;
+}
+
+.correction-options-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.correction-hidden-checkbox {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  pointer-events: none;
+}
+
+.correction-option-tile {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px 10px;
+  background: var(--c-superficie, #ffffff);
+  border: 1.5px solid var(--c-borde-suave, #e2e8f0);
+  border-radius: var(--radius-md, 5px);
+  cursor: pointer;
+  user-select: none;
+  transition: all var(--transition-fast, 140ms ease);
+  position: relative;
+}
+
+.correction-option-tile:hover {
+  background: var(--c-fondo, #f8fafc);
+  border-color: var(--c-primario-border, #99f6e4);
+}
+
+.correction-option-tile:focus-within {
+  outline: none;
+  border-color: var(--c-primario, #0f766e);
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.15);
+}
+
+.correction-option-tile.is-selected {
+  background: var(--c-primario-50, #f0fdfa);
+  border-color: var(--c-primario, #0f766e);
+}
+
+.correction-option-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-xs, 4px);
+  background: var(--c-fondo-subtle, #f1f5f9);
+  color: var(--c-texto-suave, #475569);
+  flex-shrink: 0;
+  transition: all var(--transition-fast, 140ms ease);
+}
+
+.correction-option-tile:hover .correction-option-icon {
+  background: var(--c-calma-accent-soft, #e2f2ee);
+  color: var(--c-calma-accent, #1b7a68);
+}
+
+.correction-option-tile.is-selected .correction-option-icon {
+  background: var(--c-primario-suave, #e6f7f5);
+  color: var(--c-primario, #0f766e);
+}
+
+.correction-option-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.correction-option-name {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--c-texto, #0f172a);
+  line-height: 1.35;
+}
+
+.correction-option-tile.is-selected .correction-option-name {
+  color: var(--c-primario, #0f766e);
+}
+
+.correction-option-desc {
+  display: block;
+  font-size: 11.5px;
+  color: var(--c-texto-suave, #64748b);
+  line-height: 1.4;
+  margin-top: 3px;
+}
+
+.correction-check-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: var(--radius-xs, 4px);
+  border: 1.5px solid var(--c-borde, #cbd5e1);
+  background: var(--c-superficie, #ffffff);
+  color: #ffffff;
+  flex-shrink: 0;
+  margin-top: 2px;
+  transition: all var(--transition-fast, 140ms ease);
+}
+
+.correction-option-tile:hover .correction-check-indicator {
+  border-color: var(--c-primario, #0f766e);
+}
+
+.correction-option-tile.is-selected .correction-check-indicator {
+  border-color: var(--c-primario, #0f766e);
+  background: var(--c-primario, #0f766e);
+}
+
+/* Opción exclusiva "Ninguna aplica" */
+.correction-none-wrapper {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--c-borde-suave, #e2e8f0);
+}
+
+.correction-option-tile--none {
+  background: var(--c-fondo-subtle, #f1f5f9);
+}
+
+.correction-option-tile--none.is-selected {
+  background: var(--c-primario-50, #f0fdfa);
+}
+
 .category-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -404,7 +683,8 @@
 }
 
 @media (max-width: 540px) {
-  .category-grid {
+  .category-grid,
+  .correction-options-grid {
     grid-template-columns: 1fr;
   }
 

@@ -39,12 +39,37 @@ export function AgentDashboardPage() {
 
   return (
     <div className="agent-page calm-home">
-      {/* 1. Cabecera: sólo el saludo. La campaña y el turno ya viven en el topbar;
-             repetirlos aquí duplicaría el mismo dato en la misma pantalla */}
-      <header className="calm-home-head">
-        <h1 className="calm-home-title">
-          {`${greeting}, ${currentUser?.name || 'Agente'}`}
-        </h1>
+      {/* 1. Cabecera / Hero Banner: Bienvenida y pausa del turno */}
+      <header className="calm-hero-banner" aria-label="Bienvenida y pausa del turno">
+        <div className="calm-hero-content">
+          <h1 className="calm-hero-title">{greeting}, {currentUser?.name || 'Agente'}</h1>
+          <p className="calm-hero-desc">
+            Haz una pausa breve cuando el turno te dé espacio. Aflojar los hombros y respirar un minuto ayuda a soltar la carga de la línea.
+          </p>
+          <div className="calm-hero-actions">
+            <button
+              type="button"
+              className="btn btn-hero-pause"
+              onClick={() => setIsResetModalOpen(true)}
+              title="Abrir ejercicio guiado de respiración y estiramiento de 2 minutos"
+              aria-label="Tomar un respiro: abrir ejercicio guiado de 2 minutos"
+            >
+              <span className="btn-hero-pause-icon" aria-hidden="true">
+                <Icon name="respiro" size={16} />
+              </span>
+              <span className="btn-hero-pause-label">Tomar un respiro</span>
+              <span className="btn-hero-pause-tag">2 min</span>
+            </button>
+          </div>
+        </div>
+        <div className="calm-hero-media">
+          <img
+            src="/assets/fotos/bpo-agent-calm-pause.jpg"
+            alt="Operadora de centro de contacto en una pausa de su turno, sosteniendo una taza tibia junto a su estación de trabajo con luz suave"
+            className="calm-hero-img"
+            loading="eager"
+          />
+        </div>
       </header>
 
       {/* 2. Desconexión Laboral Activa (Ley 2191 de 2022) */}
@@ -56,7 +81,6 @@ export function AgentDashboardPage() {
           <div className="calm-disconnect-text">
             <h4 className="calm-disconnect-title">
               <span>Desconexión Laboral Activa</span>
-              <span className="badge badge-ok">Fuera de turno</span>
             </h4>
             <p className="calm-disconnect-desc">
               Tu turno ordinario culminó. Registrar o usar la app es voluntario y no tiene consecuencias.
@@ -107,24 +131,24 @@ export function AgentDashboardPage() {
             </div>
           ) : (
             <>
-              <h2 className="calm-card-title">¿Cómo va tu energía en este turno?</h2>
+              <h2 className="calm-card-title">Sintoniza con tu momento</h2>
               <p className="calm-card-sub">
-                Elige un nivel para iniciar tu check-in del turno.
-                {isOutsideShift && ' Estás fuera de tu turno: registrar es voluntario.'}
+                Un segundo para reconocer cómo te sientes hoy antes de continuar en la línea.
+                {isOutsideShift && ' · Registro voluntario fuera de turno'}
               </p>
-              <div className="calm-mood-row" role="group" aria-label="Escala rápida de energía del turno">
+              <div className="calm-energy-track" role="group" aria-label="Escala de energía del turno">
                 {QUICK_ENERGY_SCALE.map((option) => (
                   <button
                     key={option.value}
                     type="button"
-                    className={`calm-mood-btn calm-mood-${option.value}`}
+                    className={`calm-energy-segment calm-energy-${option.value}`}
                     onClick={() => handleQuickEnergy(option.value)}
                     aria-label={`Energía ${option.value} de 5: ${option.label}`}
                   >
-                    <span className="calm-mood-emoji" aria-hidden="true">
+                    <span className="calm-energy-emoji-wrap" aria-hidden="true">
                       <EnergyFace value={option.value} />
                     </span>
-                    <span className="calm-mood-label">{option.label}</span>
+                    <span className="calm-energy-label">{option.label}</span>
                   </button>
                 ))}
               </div>
@@ -132,7 +156,7 @@ export function AgentDashboardPage() {
           )}
         </section>
 
-        <aside className="calm-rail" aria-label="Ritmo del turno y pausa guiada">
+        <aside className="calm-rail" aria-label="Ritmo del turno">
           <div className="calm-rail-block">
             <h3 className="calm-rail-title">Tu turno hoy</h3>
             <div className="calm-rail-list">
@@ -146,30 +170,6 @@ export function AgentDashboardPage() {
                 </div>
               ))}
             </div>
-          </div>
-
-          <div className="calm-rail-block calm-rail-block--pause">
-            <div className="calm-pause-heading">
-              <span className="calm-pause-mark" aria-hidden="true">
-                <Icon name="self_improvement" size={17} />
-              </span>
-              <div>
-                <h3 className="calm-rail-title">Un respiro para ti</h3>
-                <span className="calm-pause-private">Privada · 2 minutos</span>
-              </div>
-            </div>
-            <p className="calm-rail-desc">
-              Respiración, descanso visual y estiramientos suaves para soltar la tensión de la línea.
-            </p>
-            <button
-              type="button"
-              className="btn btn-decompression-highlight calm-pause-btn"
-              onClick={() => setIsResetModalOpen(true)}
-              title="Abrir ejercicios de respiración, descanso visual y estiramiento"
-            >
-              <span>Tomar una pausa</span>
-            </button>
-            <p className="calm-pause-note">No se registra como indicador individual.</p>
           </div>
         </aside>
       </div>

@@ -14,17 +14,162 @@
   padding: 28px 0 32px;
 }
 
-/* Cabecera: saludo y contexto del turno en una sola línea */
-.calm-home-head {
-  padding: 6px 2px 0;
+/* ==========================================================================
+   Hero Banner: Bienvenida y pausa del turno (Ergonomía BPO)
+   Superficie limpia, foto documental de calma y botón accesible de respiro.
+   ========================================================================== */
+
+.calm-hero-banner {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  background-color: var(--c-calma-surface);
+  border: 1px solid var(--c-calma-border-subtle);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  min-height: 184px;
 }
 
+.calm-hero-content {
+  flex: 1 1 58%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 28px 32px;
+  z-index: 2;
+  position: relative;
+}
+
+.calm-hero-title,
 .calm-home-title {
-  font-size: 26px;
+  font-size: 24px;
   font-weight: 800;
-  color: var(--c-texto);
+  color: var(--c-calma-text);
   margin: 0;
   letter-spacing: -0.02em;
+  line-height: 1.25;
+}
+
+.calm-hero-desc {
+  margin: 10px 0 0;
+  max-width: 500px;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--c-calma-text-muted);
+}
+
+.calm-hero-actions {
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+}
+
+/* Botón de respiro: cuidado institucional, jerarquía nítida y ergonomía táctil */
+.btn.btn-hero-pause,
+.calm-hero-banner .btn-hero-pause {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 42px;
+  padding: 8px 16px 8px 12px;
+  background-color: var(--c-primario);
+  border: 1px solid var(--c-primario-hover);
+  border-radius: var(--radius-md);
+  color: var(--c-texto-invertido);
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: background-color var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.btn.btn-hero-pause:hover,
+.calm-hero-banner .btn-hero-pause:hover {
+  background-color: var(--c-primario-hover);
+  border-color: var(--c-primario-active);
+  color: var(--c-texto-invertido);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.btn.btn-hero-pause:focus-visible,
+.calm-hero-banner .btn-hero-pause:focus-visible {
+  outline: 2px solid var(--c-primario);
+  outline-offset: 2px;
+}
+
+.btn.btn-hero-pause:active,
+.calm-hero-banner .btn-hero-pause:active {
+  background-color: var(--c-primario-active);
+  transform: translateY(0);
+}
+
+.btn-hero-pause-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-xs);
+  background-color: rgba(255, 255, 255, 0.16);
+  color: var(--c-texto-invertido);
+  flex-shrink: 0;
+}
+
+.btn-hero-pause-label {
+  letter-spacing: -0.01em;
+  line-height: 1;
+}
+
+.btn-hero-pause-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 7px;
+  border-radius: var(--radius-xs);
+  background-color: rgba(255, 255, 255, 0.22);
+  color: var(--c-texto-invertido);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1;
+}
+
+/* Columna multimedia: foto documental BPO con fundido sutil hacia el fondo blanco */
+.calm-hero-media {
+  flex: 1 1 42%;
+  position: relative;
+  overflow: hidden;
+  min-height: 100%;
+}
+
+.calm-hero-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 72% 28%;
+  display: block;
+}
+
+.calm-hero-media::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to right,
+    var(--c-calma-surface) 0%,
+    rgba(255, 255, 255, 0.8) 18%,
+    rgba(255, 255, 255, 0.15) 45%,
+    transparent 72%
+  );
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Alias retrocompatible para cabecera ligera */
+.calm-home-head {
+  padding: 6px 2px 0;
 }
 
 .calm-home-meta {
@@ -37,20 +182,20 @@
 .calm-disconnect {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   flex-wrap: wrap;
-  background-color: #f1f7f4;
-  border: 1px solid #cce3d8;
-  border-radius: 12px;
-  padding: 12px 16px;
+  background-color: var(--c-fondo-subtle);
+  border: 1px solid var(--c-borde-suave);
+  border-radius: var(--radius-card);
+  padding: 14px 20px;
 }
 
 .calm-disconnect-icon {
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  background-color: #dcefe4;
-  color: var(--c-primario);
+  background-color: #e2e8f0;
+  color: var(--c-texto-suave);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -85,114 +230,167 @@
   gap: 8px;
 }
 
-/* Tarjeta única principal: check-in rápido del turno */
+/* Tarjeta única principal: check-in rápido del turno (Ergonomía BPO) */
 .calm-card {
   position: relative;
   background: var(--c-calma-surface);
   border: 1px solid var(--c-calma-border-subtle);
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-sm);
-  padding: 32px 34px 34px;
+  padding: 30px 32px 32px;
   text-align: left;
 }
 
 .calm-card-title {
   margin: 0;
-  font-size: 19px;
+  font-size: 20px;
   font-weight: 700;
-  color: var(--c-texto);
+  color: var(--c-calma-text);
+  letter-spacing: -0.015em;
 }
 
 .calm-card-sub {
   margin: 8px 0 0;
-  max-width: 460px;
-  font-size: 13px;
-  color: var(--c-texto-mutado);
+  max-width: 520px;
+  font-size: 13.5px;
+  color: var(--c-calma-text-muted);
   line-height: 1.5;
 }
 
-/* La tarjeta principal conserva un único marcador visual (el acento superior
-   de .calm-card::before); el punto .calm-breathe se retiró por redundancia
-   (auditoría 015, hallazgo 6). */
+/* ==========================================================================
+   Barra Integrada de Pulso (Check-in de energía sin cajas aisladas)
+   Superficie continua ergonómica tipo pill-track con segmentos interactivos.
+   ========================================================================== */
 
-/* Escala de energía rápida: opciones legibles y táctiles, sin apariencia
-   de selector de sentimientos decorativo. */
+.calm-energy-track,
 .calm-mood-row {
   display: flex;
-  justify-content: flex-start;
-  gap: 12px;
-  margin-top: 26px;
-  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 6px;
+  margin-top: 24px;
+  padding: 8px;
+  background-color: var(--c-calma-surface-subtle);
+  border: 1px solid var(--c-calma-border-subtle);
+  border-radius: var(--radius-lg);
+  position: relative;
 }
 
+/* Segmento interactivo (sin cajas duras aisladas, fluido dentro de la pista) */
+.calm-energy-segment,
 .calm-mood-btn {
   flex: 1 1 0;
-  min-width: 92px;
-  min-height: 112px;
-  padding: 12px 8px 10px;
+  min-width: 0;
+  min-height: 114px;
+  padding: 12px 6px 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 9px;
-  background: var(--c-calma-surface);
-  border: 1px solid var(--c-calma-border);
-  border-radius: var(--radius-sm);
+  justify-content: center;
+  gap: 10px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
   cursor: pointer;
-  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+  position: relative;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 
-.calm-mood-btn:hover {
-  border-color: var(--c-calma-accent);
+.calm-energy-segment:hover,
+.calm-energy-segment:focus-visible,
+.calm-mood-btn:hover,
+.calm-mood-btn:focus-visible {
+  background-color: var(--c-calma-surface);
+  border-color: var(--c-calma-border);
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-2px);
+  z-index: 2;
 }
 
+.calm-energy-segment:focus-visible,
 .calm-mood-btn:focus-visible {
   outline: 2px solid var(--c-primario);
-  outline-offset: 2px;
+  outline-offset: 1px;
 }
 
-.calm-mood-label {
-  max-width: 11ch;
-  font-size: 12px;
-  color: var(--c-texto-mutado);
-  line-height: 1.3;
+.calm-energy-segment:active,
+.calm-mood-btn:active {
+  transform: translateY(0);
 }
 
+/* Contenedor del avatar de energía */
+.calm-energy-emoji-wrap,
 .calm-mood-emoji {
-  width: 62px;
-  height: 62px;
+  width: 58px;
+  height: 58px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: transform var(--transition-fast), background-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
+.calm-energy-emoji-wrap .energy-face,
 .calm-mood-emoji .energy-face {
-  width: 42px;
-  height: 42px;
+  width: 40px;
+  height: 40px;
   display: block;
 }
 
-.calm-mood-1 .calm-mood-emoji { background-color: #fde7e7; }
-.calm-mood-2 .calm-mood-emoji { background-color: #fff1cf; }
-.calm-mood-3 .calm-mood-emoji { background-color: #e9eef0; }
-.calm-mood-4 .calm-mood-emoji { background-color: #dff4e8; }
-.calm-mood-5 .calm-mood-emoji { background-color: #cceee4; }
+.calm-energy-segment:hover .calm-energy-emoji-wrap,
+.calm-energy-segment:focus-visible .calm-energy-emoji-wrap,
+.calm-mood-btn:hover .calm-mood-emoji,
+.calm-mood-btn:focus-visible .calm-mood-emoji {
+  transform: scale(1.08);
+}
 
-.calm-mood-1:hover,
-.calm-mood-1:focus-visible { background-color: #fff3f3; }
-.calm-mood-2:hover,
-.calm-mood-2:focus-visible { background-color: #fff9e9; }
-.calm-mood-3:hover,
-.calm-mood-3:focus-visible { background-color: #f3f6f7; }
-.calm-mood-4:hover,
-.calm-mood-4:focus-visible { background-color: #effaf3; }
-.calm-mood-5:hover,
-.calm-mood-5:focus-visible { background-color: #e9f8f3; }
+/* Cromatismo reactivo suave por nivel (halo cálido de acompañamiento BPO) */
+.calm-energy-1 .calm-energy-emoji-wrap,
+.calm-mood-1 .calm-mood-emoji { background-color: #fee2e2; }
 
+.calm-energy-2 .calm-energy-emoji-wrap,
+.calm-mood-2 .calm-mood-emoji { background-color: #fef3c7; }
+
+.calm-energy-3 .calm-energy-emoji-wrap,
+.calm-mood-3 .calm-mood-emoji { background-color: #f1f5f9; }
+
+.calm-energy-4 .calm-energy-emoji-wrap,
+.calm-mood-4 .calm-mood-emoji { background-color: #e2f2ee; }
+
+.calm-energy-5 .calm-energy-emoji-wrap,
+.calm-mood-5 .calm-mood-emoji { background-color: #ccfbf1; }
+
+.calm-energy-1:hover .calm-energy-emoji-wrap,
+.calm-mood-1:hover .calm-mood-emoji { box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.15); }
+
+.calm-energy-2:hover .calm-energy-emoji-wrap,
+.calm-mood-2:hover .calm-mood-emoji { box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.18); }
+
+.calm-energy-3:hover .calm-energy-emoji-wrap,
+.calm-mood-3:hover .calm-mood-emoji { box-shadow: 0 0 0 4px rgba(100, 116, 139, 0.15); }
+
+.calm-energy-4:hover .calm-energy-emoji-wrap,
+.calm-mood-4:hover .calm-mood-emoji { box-shadow: 0 0 0 4px rgba(27, 122, 104, 0.18); }
+
+.calm-energy-5:hover .calm-energy-emoji-wrap,
+.calm-mood-5:hover .calm-mood-emoji { box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.22); }
+
+/* Etiqueta del nivel */
+.calm-energy-label,
+.calm-mood-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--c-calma-text-muted);
+  text-align: center;
+  line-height: 1.25;
+  transition: color var(--transition-fast), font-weight var(--transition-fast);
+}
+
+.calm-energy-segment:hover .calm-energy-label,
+.calm-energy-segment:focus-visible .calm-energy-label,
 .calm-mood-btn:hover .calm-mood-label,
 .calm-mood-btn:focus-visible .calm-mood-label {
-  color: var(--c-texto);
-  font-weight: 600;
+  color: var(--c-calma-text);
+  font-weight: 700;
 }
 
 /* Estado: check-in ya registrado en la jornada actual */
@@ -247,23 +445,24 @@
 
 .calm-rail-block {
   flex: 1;
-  background-color: var(--c-calma-surface-subtle);
-  border: 1px solid var(--c-calma-border-subtle);
+  background-color: var(--c-superficie);
+  border: 1px solid var(--c-borde-suave);
   border-radius: var(--radius-card);
-  padding: 18px 20px;
+  box-shadow: var(--shadow-sm);
+  padding: 22px 24px;
 }
 
 .calm-rail-block--pause {
   flex: 0 0 auto;
-  background: var(--c-calma-surface-subtle);
-  border-color: #c8e5d8;
+  background: var(--c-superficie);
+  border-color: var(--c-borde-suave);
 }
 
 .calm-rail-title {
-  margin: 0 0 12px;
-  font-size: 13px;
+  margin: 0 0 14px;
+  font-size: 13.5px;
   font-weight: 700;
-  color: var(--c-calma-text);
+  color: var(--c-texto);
 }
 
 /* Timeline vertical del turno */
@@ -284,12 +483,12 @@
   bottom: -9px; /* borde superior del punto del siguiente nodo */
   width: 2px;
   border-radius: var(--radius-full);
-  background: var(--c-calma-border);
+  background: var(--c-borde-suave);
 }
 
 .calm-rail-node.done:not(:last-child)::after,
 .calm-rail-node.active:not(:last-child)::after {
-  background: var(--c-calma-accent);
+  background: var(--c-primario);
 }
 
 .calm-rail-node {
@@ -308,13 +507,13 @@
   height: 12px;
   margin-top: 1px;
   border-radius: 50%;
-  border: 2px solid var(--c-calma-border);
-  background-color: var(--c-calma-surface-subtle);
+  border: 2px solid var(--c-borde);
+  background-color: var(--c-superficie);
 }
 
 .calm-rail-node.done .calm-rail-dot {
-  background-color: var(--c-calma-accent);
-  border-color: var(--c-calma-accent);
+  background-color: var(--c-primario);
+  border-color: var(--c-primario);
 }
 
 .calm-rail-node.active .calm-rail-dot {
@@ -447,25 +646,100 @@
   }
 }
 
-@media (max-width: 640px) {
-  .calm-card {
-    padding: 26px 18px;
+@media (max-width: 768px) {
+  .calm-hero-banner {
+    display: block;
+    position: relative;
+    min-height: auto;
   }
 
+  .calm-hero-content {
+    padding: 24px 22px;
+    max-width: 100%;
+    z-index: 2;
+  }
+
+  .calm-hero-media {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    opacity: 0.18;
+  }
+
+  .calm-hero-media::before {
+    background: linear-gradient(
+      to right,
+      var(--c-calma-surface) 0%,
+      rgba(255, 255, 255, 0.94) 50%,
+      rgba(255, 255, 255, 0.75) 100%
+    );
+  }
+
+  .calm-hero-img {
+    object-position: 80% 25%;
+  }
+}
+
+@media (max-width: 640px) {
+  .calm-hero-content {
+    padding: 20px 18px;
+  }
+
+  .calm-hero-title {
+    font-size: 21px;
+  }
+
+  .calm-hero-desc {
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .calm-hero-actions {
+    margin-top: 14px;
+  }
+
+  .btn.btn-hero-pause,
+  .calm-hero-banner .btn-hero-pause {
+    min-height: 44px; /* Blanco táctil ergonómico en móvil (antislop-layoutmobile) */
+    padding: 9px 16px;
+    width: auto;
+    max-width: 100%;
+  }
+
+  .calm-card {
+    padding: 24px 16px;
+  }
+
+  .calm-energy-track,
+  .calm-mood-row {
+    gap: 4px;
+    padding: 6px;
+  }
+
+  .calm-energy-segment,
   .calm-mood-btn {
     min-width: 0;
-    min-height: 104px;
-    padding-inline: 4px;
+    min-height: 98px;
+    padding: 8px 3px 6px;
   }
 
+  .calm-energy-emoji-wrap,
   .calm-mood-emoji {
-    width: 50px;
-    height: 50px;
+    width: 48px;
+    height: 48px;
   }
 
+  .calm-energy-emoji-wrap .energy-face,
   .calm-mood-emoji .energy-face {
     width: 32px;
     height: 32px;
+  }
+
+  .calm-energy-label,
+  .calm-mood-label {
+    font-size: 11px;
   }
 
   .calm-foot {
@@ -480,7 +754,11 @@
 
 /* Respeto por preferencias de movimiento reducido */
 @media (prefers-reduced-motion: reduce) {
-  .calm-mood-btn {
+  .calm-energy-segment,
+  .calm-energy-emoji-wrap,
+  .calm-mood-btn,
+  .btn-hero-pause {
     transition: none;
+    transform: none;
   }
 }
