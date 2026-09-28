@@ -14,7 +14,6 @@ export function WellbeingHistory({ trendData, averageEnergy }) {
             Evolución de vitalidad autorreportada en tus turnos recientes.
           </p>
         </div>
-        <span className="wellbeing-section-tag">Ciclo de {trendData.labels.length} turnos</span>
       </div>
 
       <div className="wellbeing-trend-canvas-wrap">
@@ -27,7 +26,7 @@ export function WellbeingHistory({ trendData, averageEnergy }) {
         <div className="wellbeing-trend-footer">
           <span>Escala: 1 (Sin batería) a 5 (Plena y enfocado)</span>
           <span>
-            Promedio registrado en el ciclo: <strong>{averageEnergy} / 5</strong>
+            Promedio en los últimos {trendData.labels.length} turnos: <strong>{averageEnergy} / 5</strong>
           </span>
         </div>
       </div>

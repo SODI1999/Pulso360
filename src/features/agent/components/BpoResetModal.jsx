@@ -211,6 +211,13 @@ export function BpoResetModal({ isOpen, onClose }) {
       {/* Fase 4 · Cierre */}
       {phase === 'done' && (
         <div className="pause-stage pause-stage--completion">
+          <div className="pause-completion-avatar-wrap" aria-hidden="true">
+            <img
+              src="/assets/fotos/bpo-agent-pause-completed.jpg"
+              alt=""
+              className="pause-completion-avatar"
+            />
+          </div>
           <p className="pause-kicker">Pausa completada</p>
           <h2 className="pause-title">Pausa completada.</h2>
           <p className="pause-sub">

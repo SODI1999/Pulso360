@@ -136,7 +136,8 @@ export function SupportChannelPage() {
                 <div className="support-request-header">
                   <strong className="support-request-code">{req.code}</strong>
                   <span className={`support-request-badge ${req.mode === 'anonimo' ? 'is-anon' : ''}`}>
-                    {req.mode === 'anonimo' ? 'Modalidad Anónima' : 'Modalidad Confidencial'}
+                    <Icon name={req.mode === 'anonimo' ? 'eyeOff' : 'shieldCheck'} size={13} />
+                    <span>{req.mode === 'anonimo' ? 'Modalidad Anónima' : 'Modalidad Confidencial'}</span>
                   </span>
                 </div>
                 <div className="support-request-meta-grid">
@@ -151,17 +152,6 @@ export function SupportChannelPage() {
                     <span className="support-meta-label">Atención estimada:</span> {req.sla}
                   </div>
                 </div>
-                {req.mode === 'anonimo' ? (
-                  <p className="support-request-clarification">
-                    Tu identidad está protegida. La orientación de SST se consulta de forma autónoma con este
-                    radicado dentro de la plataforma.
-                  </p>
-                ) : (
-                  <p className="support-request-clarification">
-                    Contacto asignado directamente a un profesional de SST bajo reserva, según el canal y la
-                    franja horaria preferidos.
-                  </p>
-                )}
               </article>
             ))}
           </div>

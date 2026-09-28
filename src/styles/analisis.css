@@ -1,8 +1,7 @@
 /* src/styles/analisis.css
-   Página de Análisis Orientativo de Textos del Agente (/agente/mi-analisis)
-   Estilos de la funcionalidad y sus estados.
-   Sin card-itis, sin franjas laterales, sin badges-dots, 100% tokenizado y WCAG AA.
-   Alineado exactamente con el eje de lectura de 1040px y métricas de /agente/mi-bienestar.
+   Página de Temas y Factores del Agente (/agente/mi-analisis)
+   Estilos optimizados: sobrios, comprensibles, con radios contenidos (4px),
+   sin badges circulares, sin triple redundancia de avisos y WCAG AA.
 */
 
 /* 1. Contenedor Maestro Editorial */
@@ -37,7 +36,7 @@
   font-weight: 500;
   color: var(--c-texto-suave);
   cursor: pointer;
-  border-radius: var(--radius-sm, 4px);
+  border-radius: var(--radius-xs, 4px);
   min-height: 32px;
   text-decoration: none;
   transition: all var(--transition-fast);
@@ -52,55 +51,31 @@
 .analysis-back-btn:focus-visible {
   outline: 2px solid var(--c-primario);
   outline-offset: 2px;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-xs, 4px);
 }
 
-.analysis-action-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: 8px 16px;
-  font-family: inherit;
-  font-size: 13.5px;
-  font-weight: 600;
-  min-height: 44px;
-  border-radius: var(--radius-md);
-  text-decoration: none;
-  cursor: pointer;
-  transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
-}
-
-.analysis-action-btn:focus-visible {
-  outline: 2px solid var(--c-primario);
-  outline-offset: 2px;
-}
-
-.analysis-action-btn--primary {
-  background-color: var(--c-primario);
-  color: #ffffff;
-  border: 1px solid var(--c-primario);
-}
-
-.analysis-action-btn--primary:hover {
-  background-color: var(--c-primario-hover);
-  border-color: var(--c-primario-hover);
-  color: #ffffff;
-}
-
-/* 3. Encabezado Editorial */
+/* 3. Encabezado */
 .analysis-header {
-  padding-bottom: var(--space-6);
-  margin-bottom: var(--space-6);
+  padding-bottom: var(--space-5);
+  margin-bottom: var(--space-5);
   border-bottom: 1px solid var(--c-borde-suave);
 }
 
+.analysis-header-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
 .analysis-title {
-  font-size: 26px;
+  font-size: 24px;
   font-weight: 700;
   color: var(--c-texto);
   letter-spacing: -0.02em;
   line-height: 1.25;
-  margin: 0 0 4px;
+  margin: 0 0 6px;
 }
 
 .analysis-subtitle {
@@ -108,77 +83,97 @@
   color: var(--c-texto-suave);
   line-height: 1.5;
   margin: 0;
+  max-width: 65ch;
 }
 
-/* 4. Bloque Pedagógico de Alcance Local */
-.analysis-scope-banner {
-  background-color: var(--c-fondo-subtle);
-  border: 1px solid var(--c-borde-suave);
-  border-radius: var(--radius-card);
-  padding: 18px 20px;
-  display: flex;
-  gap: 16px;
-  align-items: flex-start;
-  margin-bottom: var(--space-8);
-}
-
-.analysis-scope-icon-wrap {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 38px;
-  height: 38px;
-  border-radius: var(--radius-sm);
-  background-color: var(--c-superficie);
-  border: 1px solid var(--c-borde-suave);
-  color: var(--c-primario);
+.analysis-header-btn {
+  font-size: 13px;
+  padding: 8px 14px;
   flex-shrink: 0;
-  margin-top: 2px;
 }
 
-.analysis-scope-content {
-  flex: 1;
-  min-width: 0;
+/* 4. Aviso de Privacidad Sobrio Integrado (agent-notice--flat) */
+.analysis-privacy-notice {
+  margin: 0 0 var(--space-6);
+  padding: 12px 16px;
 }
 
-.analysis-scope-heading-row {
+/* 5. Síntesis de Factores Recurrentes (De un vistazo) */
+.analysis-summary-section {
+  margin-bottom: var(--space-7);
+}
+
+.analysis-summary-head {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 6px;
-  flex-wrap: wrap;
+  margin-bottom: 12px;
 }
 
-.analysis-scope-badge {
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  padding: 2px 8px;
-  border-radius: var(--radius-sm);
-  background-color: var(--c-primario-suave);
+.analysis-summary-icon {
   color: var(--c-primario);
-  border: 1px solid var(--c-primario-border);
 }
 
-.analysis-scope-title {
-  font-size: 13.5px;
+.analysis-summary-title {
+  font-size: 14px;
   font-weight: 700;
   color: var(--c-texto);
-}
-
-.analysis-scope-desc {
-  font-size: 12.5px;
-  color: var(--c-texto-suave);
-  line-height: 1.55;
   margin: 0;
 }
 
-.analysis-scope-desc strong {
-  color: var(--c-texto);
+.analysis-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 10px;
 }
 
-/* 5. Sección de Histórico de Factores */
+.analysis-summary-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background-color: var(--c-superficie);
+  border: 1px solid var(--c-borde-suave);
+  border-radius: var(--radius-xs, 4px);
+  transition: border-color var(--transition-fast, 140ms ease);
+}
+
+.analysis-summary-card:hover {
+  border-color: var(--c-primario-border, #99f6e4);
+}
+
+.analysis-summary-card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-xs, 4px);
+  background-color: var(--c-fondo-subtle);
+  color: var(--c-primario);
+  flex-shrink: 0;
+}
+
+.analysis-summary-card-body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.analysis-summary-card-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--c-texto);
+  line-height: 1.35;
+}
+
+.analysis-summary-card-count {
+  font-size: 11.5px;
+  color: var(--c-texto-suave);
+  margin-top: 2px;
+}
+
+/* 6. Sección de Histórico de Factores */
 .analysis-feed-section {
   width: 100%;
 }
@@ -187,16 +182,16 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
   flex-wrap: wrap;
   gap: 8px;
 }
 
 .analysis-feed-title {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
   color: var(--c-texto);
-  margin: 0 0 2px;
+  margin: 0 0 3px;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -208,26 +203,26 @@
 
 .analysis-feed-subtitle {
   font-size: 12.5px;
-  color: var(--c-texto-mutado);
+  color: var(--c-texto-suave);
   margin: 0;
 }
 
-/* 6. Listado Editorial Continuo (Cero Card-itis) */
+/* 7. Listado Editorial Continuo */
 .analysis-entries-list {
   display: flex;
   flex-direction: column;
   background-color: var(--c-superficie);
   border: 1px solid var(--c-borde-suave);
-  border-radius: var(--radius-card);
+  border-radius: var(--radius-xs, 4px);
   overflow: hidden;
 }
 
 .analysis-entry-item {
-  padding: 18px 20px;
+  padding: 16px 20px;
   border-bottom: 1px solid var(--c-borde-suave);
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
   transition: background-color var(--transition-fast);
 }
 
@@ -247,17 +242,27 @@
   gap: 8px;
 }
 
-.analysis-entry-date-group {
+.analysis-entry-meta {
   display: flex;
   align-items: center;
   gap: 8px;
-  color: var(--c-texto);
-  font-size: 13.5px;
-  font-weight: 700;
+  flex-wrap: wrap;
 }
 
-.analysis-entry-date-icon {
-  color: var(--c-primario);
+.analysis-entry-date {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--c-texto);
+}
+
+.analysis-entry-context-tag {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: var(--radius-xs, 4px);
+  background-color: var(--c-fondo-subtle);
+  color: var(--c-texto-suave);
+  border: 1px solid var(--c-borde-suave);
 }
 
 .analysis-entry-adjusted-badge {
@@ -267,12 +272,26 @@
   font-size: 11.5px;
   font-weight: 600;
   padding: 2px 8px;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-xs, 4px);
   background-color: var(--c-calma-accent-soft);
   color: var(--c-primario);
   border: 1px solid var(--c-calma-border);
 }
 
+/* Extracto de la nota del agente */
+.analysis-entry-snippet {
+  margin: 2px 0 4px;
+  padding: 6px 12px;
+  border-left: 2.5px solid var(--c-primario-border, #99f6e4);
+  background-color: var(--c-fondo-subtle, #f8fafc);
+  border-radius: 0 var(--radius-xs, 4px) var(--radius-xs, 4px) 0;
+  font-size: 12.5px;
+  color: var(--c-texto-suave);
+  font-style: italic;
+  line-height: 1.5;
+}
+
+/* Factores identificados con icono y radio contenido (4px) */
 .analysis-entry-factors-row {
   display: flex;
   align-items: center;
@@ -281,47 +300,81 @@
 }
 
 .analysis-entry-factors-label {
-  font-size: 12.5px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--c-texto-suave);
 }
 
-.analysis-factor-tag {
+.analysis-entry-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.analysis-factor-badge {
   display: inline-flex;
   align-items: center;
+  gap: 6px;
   padding: 4px 10px;
   font-size: 12px;
   font-weight: 600;
-  border-radius: var(--radius-sm);
-  background-color: var(--c-fondo-subtle);
-  color: var(--c-texto);
-  border: 1px solid var(--c-borde-suave);
+  border-radius: var(--radius-xs, 4px);
+  background-color: var(--c-calma-accent-soft, #e2f2ee);
+  color: var(--c-calma-text, #112623);
+  border: 1px solid var(--c-calma-border, #d5e0dc);
   transition: all var(--transition-fast);
 }
 
-.analysis-factor-tag:hover {
-  border-color: var(--c-borde-fuerte);
+.analysis-factor-badge svg {
+  color: var(--c-calma-accent, #1b7a68);
+  flex-shrink: 0;
 }
 
 .analysis-factor-empty-note {
-  font-size: 12.5px;
+  font-size: 12px;
   color: var(--c-texto-mutado);
   font-style: italic;
 }
 
-.analysis-entry-bottom {
+/* Términos guía de la nota */
+.analysis-entry-evidence-row {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
   gap: 8px;
-  padding-top: 8px;
-  border-top: 1px dashed var(--c-borde-suave);
+  flex-wrap: wrap;
+  margin-top: 2px;
 }
 
-.analysis-entry-privacy-note {
-  font-size: 12px;
+.analysis-entry-evidence-label {
+  font-size: 11.5px;
+  font-weight: 600;
   color: var(--c-texto-mutado);
+}
+
+.analysis-entry-terms {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.analysis-term-hash {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--c-primario, #0f766e);
+  margin-right: 6px;
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+.analysis-entry-bottom {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding-top: 6px;
+  border-top: 1px dashed var(--c-borde-suave);
 }
 
 .analysis-entry-action-link {
@@ -332,7 +385,7 @@
   font-weight: 600;
   color: var(--c-primario);
   text-decoration: none;
-  padding: 4px 0;
+  padding: 2px 0;
   transition: color var(--transition-fast);
 }
 
@@ -341,12 +394,12 @@
   text-decoration: underline;
 }
 
-/* 7. Estado Vacío */
+/* 8. Estado Vacío */
 .analysis-empty-state {
   text-align: center;
-  padding: 56px 20px;
+  padding: 48px 20px;
   background-color: var(--c-superficie);
-  border-radius: var(--radius-card);
+  border-radius: var(--radius-xs, 4px);
   border: 1px dashed var(--c-borde);
 }
 
@@ -356,7 +409,7 @@
 }
 
 .analysis-empty-title {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
   color: var(--c-texto);
   margin: 0 0 6px;
@@ -371,39 +424,32 @@
   line-height: 1.5;
 }
 
-/* 8. Pie de Confidencialidad Discreto */
-.analysis-confidentiality-footer {
-  margin-top: var(--space-8);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 16px;
-  background-color: var(--c-fondo-subtle);
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--c-borde-suave);
-  font-size: 12px;
-  color: var(--c-texto-mutado);
-  line-height: 1.45;
-}
-
-.analysis-confidentiality-footer strong {
-  color: var(--c-texto);
-}
-
 /* 9. Adaptabilidad Móvil */
 @media (max-width: 640px) {
   .analysis-editorial-page {
-    padding-top: 16px;
+    padding-top: 12px;
   }
 
-  .analysis-scope-banner {
+  .analysis-header-main {
     flex-direction: column;
-    gap: 12px;
+    align-items: stretch;
   }
 
-  .analysis-entry-bottom {
+  .analysis-header-btn {
+    align-self: flex-start;
+  }
+
+  .analysis-summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .analysis-entry-top {
     flex-direction: column;
     align-items: flex-start;
     gap: 6px;
+  }
+
+  .analysis-entry-bottom {
+    justify-content: flex-start;
   }
 }

@@ -4,6 +4,14 @@ import { Icon } from '../../../core/components/Icon';
 export function CheckinConfirmation({ setIsResetModalOpen }) {
   return (
     <div className="card restaurador-card">
+      <div className="restaurador-media">
+        <img
+          src="/assets/fotos/bpo-agent-checkin-ready.jpg"
+          alt="Operadora de Contact Center estirando suavemente cuello y hombros antes de iniciar llamadas"
+          className="restaurador-hero-img"
+          loading="eager"
+        />
+      </div>
       <h2 className="restaurador-title">¡Turno registrado!</h2>
       <p className="restaurador-subtitle">
         Tus respuestas quedaron guardadas. Puedes continuar con tu jornada o tomar una pausa breve antes de continuar en la línea.

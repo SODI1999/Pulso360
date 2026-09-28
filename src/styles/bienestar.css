@@ -94,13 +94,21 @@
 
 /* 3. Encabezado Editorial */
 .wellbeing-header {
-  padding-bottom: var(--space-6);
+  padding-bottom: var(--space-5);
   margin-bottom: var(--space-6);
   border-bottom: 1px solid var(--c-borde-suave);
 }
 
+.wellbeing-header-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
 .wellbeing-title {
-  font-size: 26px;
+  font-size: 24px;
   font-weight: 700;
   color: var(--c-texto);
   letter-spacing: -0.025em;
@@ -109,11 +117,18 @@
 }
 
 .wellbeing-subtitle {
-  font-size: 14.5px;
+  font-size: 13.5px;
   color: var(--c-texto-suave);
-  line-height: 1.55;
+  line-height: 1.5;
   margin: 0;
-  max-width: 780px;
+  max-width: 720px;
+}
+
+.wellbeing-header-btn {
+  font-size: 13px;
+  padding: 8px 14px;
+  flex-shrink: 0;
+  margin-top: 2px;
 }
 
 /* 4. Preámbulo de Autonomía y Privacidad Integrado */
@@ -199,7 +214,7 @@
 .wellbeing-trend-canvas-wrap {
   background-color: var(--c-superficie);
   border: 1px solid var(--c-borde-suave);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-xs, 4px);
   padding: var(--space-5) var(--space-4) var(--space-3);
   position: relative;
 }
@@ -241,7 +256,7 @@
   min-height: 48px;
   background-color: var(--c-superficie);
   border: 1px solid var(--c-borde-suave);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-xs, 4px);
   cursor: pointer;
   font-family: inherit;
   white-space: nowrap;
@@ -297,8 +312,8 @@
   background-color: var(--c-fondo);
   border: 1px solid var(--c-borde-suave);
   border-bottom: none;
-  border-top-left-radius: var(--radius-md);
-  border-top-right-radius: var(--radius-md);
+  border-top-left-radius: var(--radius-xs, 4px);
+  border-top-right-radius: var(--radius-xs, 4px);
   font-size: 12.5px;
   color: var(--c-texto-suave);
   flex-wrap: wrap;
@@ -316,12 +331,19 @@
   color: var(--c-primario);
 }
 
+.wellbeing-latest-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--c-primario);
+  margin-left: 4px;
+}
+
 /* 7. Matriz Somática Editorial Continua */
 .wellbeing-matrix-list {
   display: flex;
   flex-direction: column;
   border: 1px solid var(--c-borde-suave);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-xs, 4px);
   background-color: var(--c-superficie);
 }
 
@@ -426,6 +448,18 @@
   font-weight: 800;
   color: var(--c-texto);
   line-height: 1;
+}
+
+.wellbeing-matrix-val--empty {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--c-texto-mutado, #94a3b8);
+}
+
+.wellbeing-hint-empty {
+  color: var(--c-texto-mutado, #94a3b8);
+  font-style: italic;
+  font-weight: 500;
 }
 
 .wellbeing-matrix-unit {

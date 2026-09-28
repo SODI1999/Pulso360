@@ -40,19 +40,19 @@ export function MyWellbeingPage() {
 
       {/* 2. Cabecera Editorial Limpia */}
       <header className="wellbeing-header">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', marginBottom: '6px' }}>
-          <h1 className="wellbeing-title" style={{ margin: 0 }}>
-            Mi tendencia personal de bienestar
-          </h1>
-          <span className="privacy-badge-rbac" title="Espacio confidencial de uso exclusivo">
-            <Icon name="shield" size={14} />
-            <span>Uso exclusivo personal</span>
-          </span>
+        <div className="wellbeing-header-main">
+          <div>
+            <h1 className="wellbeing-title">Mi tendencia personal de bienestar</h1>
+            <p className="wellbeing-subtitle">
+              Historial confidencial de tus registros somáticos y ritmo de turnos. Tus respuestas individuales no se
+              exponen en la supervisión colectiva.
+            </p>
+          </div>
+          <Link to="/agente/checkin" className="btn btn-secondary wellbeing-header-btn">
+            <Icon name="heartPulse" size={16} />
+            <span>Nuevo check-in</span>
+          </Link>
         </div>
-        <p className="wellbeing-subtitle">
-          Historial confidencial de tus registros somáticos y ritmo de turnos. Tus respuestas individuales no se
-          exponen en la supervisión colectiva.
-        </p>
       </header>
 
       {/* 4. Nivel 1: Tendencia de Batería de Turno del Ciclo Reciente */}
@@ -65,7 +65,7 @@ export function MyWellbeingPage() {
         <div className="wellbeing-section-header">
           <div className="wellbeing-section-title-wrap">
             <h2 id="somatic-matrix-heading" className="wellbeing-section-title">
-              <Icon name="self_improvement" size={18} aria-hidden="true" />
+              <Icon name="activity" size={18} aria-hidden="true" />
               <span>Detalle somático por jornada</span>
             </h2>
             <p className="wellbeing-section-desc">
@@ -73,16 +73,11 @@ export function MyWellbeingPage() {
               ergonómicas.
             </p>
           </div>
-          {checkinRecords.length > 0 && (
-            <span className="wellbeing-section-tag">
-              {recentShifts.length} {recentShifts.length === 1 ? 'jornada en ventana' : 'jornadas en ventana'}
-            </span>
-          )}
         </div>
 
         {checkinRecords.length === 0 ? (
           <div className="wellbeing-empty-state">
-            <Icon name="self_improvement" size={40} className="wellbeing-empty-icon" aria-hidden="true" />
+            <Icon name="activity" size={40} className="wellbeing-empty-icon" aria-hidden="true" />
             <h3 className="wellbeing-empty-title">Aún no tienes registros de bienestar</h3>
             <p className="wellbeing-empty-desc">
               Cada check-in diario te ayuda a monitorear tu batería y nivel de tensión entre llamadas en total
@@ -135,10 +130,10 @@ export function MyWellbeingPage() {
                   <span>
                     Jornada del {activeShift.date} · {activeShift.shiftType || 'Turno operativo'}
                   </span>
+                  {isViewingLatest && (
+                    <span className="wellbeing-latest-label">· Más reciente</span>
+                  )}
                 </div>
-                <span className="wellbeing-section-tag">
-                  {isViewingLatest ? 'Turno más reciente' : 'Registro de archivo'}
-                </span>
               </div>
 
               {/* Matriz Somática Continua de las 6 Dimensiones */}
@@ -175,12 +170,14 @@ export function MyWellbeingPage() {
                           </div>
                         )}
                         <div className="wellbeing-matrix-level-hint">
-                          <span>{interpretation.text}</span>
+                          <span className={!hasVal ? 'wellbeing-hint-empty' : ''}>{interpretation.text}</span>
                         </div>
                       </div>
 
                       <div className="wellbeing-matrix-score">
-                        <span className="wellbeing-matrix-val">{displayVal}</span>
+                        <span className={`wellbeing-matrix-val ${!hasVal ? 'wellbeing-matrix-val--empty' : ''}`}>
+                          {displayVal}
+                        </span>
                         {hasVal && <span className="wellbeing-matrix-unit">/ 5</span>}
                       </div>
                     </div>

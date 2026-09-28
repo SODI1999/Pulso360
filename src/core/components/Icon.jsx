@@ -69,7 +69,8 @@ import {
   X,
   Feather,
   Compass,
-  BatteryLow
+  BatteryLow,
+  Send
 } from 'lucide-react';
 
 // Diccionario de iconos de Lucide (soporta nombres PascalCase canónicos y alias clásicos en camelCase/snake_case)
@@ -143,8 +144,10 @@ const lucideComponents = {
   Feather,
   Compass,
   BatteryLow,
+  Send,
 
   // Alias clásicos del sistema Pulso360 mapeados a componentes profesionales de Lucide
+  send: Send,
   feather: Feather,
   compass: Compass,
   battery_low: BatteryLow,
@@ -165,8 +168,10 @@ const lucideComponents = {
   support_agent: HeartHandshake,
   group: Users,
   task_alt: CheckCircle2,
-  summarize: BarChart3,
   analytics: Activity,
+  activity: Activity,
+  heartPulse: HeartPulse,
+  heart_pulse: HeartPulse,
   notifications_active: BellDot,
   notifications: Bell,
   bell: Bell,
@@ -175,7 +180,7 @@ const lucideComponents = {
   tune: Sliders,
   sliders: Sliders,
   healing: HeartHandshake,
-  self_improvement: Sparkles,
+  self_improvement: Activity,
   mark_email_unread: Inbox,
   policy: ShieldCheck,
   audit: FileText,
