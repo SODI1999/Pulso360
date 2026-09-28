@@ -1,610 +1,393 @@
 // src/core/components/Icon.jsx
-// Componente centralizado de iconografía SVG profesional (Cero emojis, cero duplicación)
+// Componente centralizado de iconografía con Lucide React y compatibilidad total con el dominio Pulso360
 
-export function Icon({ name, className = '', size, ...props }) {
-  const iconList = {
-    // Autenticación y Formularios
-    mail: (
-      <>
-        <rect width="20" height="16" x="2" y="4" rx="2" />
-        <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-      </>
-    ),
-    // Señales gestuales de la pausa guiada (el icono enseña el movimiento)
-    volumeOn: (
-      <>
-        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
-        <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
-        <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
-      </>
-    ),
-    volumeOff: (
-      <>
-        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
-        <line x1="22" y1="9" x2="16" y2="15" />
-        <line x1="16" y1="9" x2="22" y2="15" />
-      </>
-    ),
-    bell: (
-      <>
-        <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
-        <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-      </>
-    ),
-    bellOff: (
-      <>
-        <path d="M18 8a6 6 0 0 0-9.33-5" />
-        <path d="M6 8c0 7-3 9-3 9h15" />
-        <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-        <line x1="2" y1="2" x2="22" y2="22" />
-      </>
-    ),
-    breathIn: (
-      <>
-        <path d="M12 21v-8" />
-        <polyline points="8.5 16.5 12 13 15.5 16.5" />
-        <path d="M5 8c1.5-2 4-3 7-3s5.5 1 7 3" />
-        <circle cx="12" cy="12" r="10" opacity="0.35" />
-      </>
-    ),
-    breathHold: (
-      <>
-        <circle cx="12" cy="12" r="4" />
-        <circle cx="12" cy="12" r="7.5" />
-        <circle cx="12" cy="12" r="10" opacity="0.35" />
-      </>
-    ),
-    breathOut: (
-      <>
-        <path d="M12 3v8" />
-        <polyline points="8.5 7.5 12 11 15.5 7.5" />
-        <path d="M5 16c1.5 2 4 3 7 3s5.5-1 7-3" />
-        <circle cx="12" cy="12" r="10" opacity="0.35" />
-      </>
-    ),
-    lock: (
-      <>
-        <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
-        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-      </>
-    ),
-    eye: (
-      <>
-        <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
-        <circle cx="12" cy="12" r="3" />
-      </>
-    ),
-    eyeOff: (
-      <>
-        <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24" />
-        <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68" />
-        <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61" />
-        <line x1="2" y1="2" x2="22" y2="22" />
-      </>
-    ),
-    arrowRight: (
-      <>
-        <line x1="5" y1="12" x2="19" y2="12" />
-        <polyline points="12 5 19 12 12 19" />
-      </>
-    ),
-    arrowLeft: (
-      <>
-        <line x1="19" y1="12" x2="5" y2="12" />
-        <polyline points="12 19 5 12 12 5" />
-      </>
-    ),
-    arrowUp: (
-      <>
-        <line x1="12" y1="19" x2="12" y2="5" />
-        <polyline points="5 12 12 5 19 12" />
-      </>
-    ),
-    chevronDown: <polyline points="6 9 12 15 18 9" />,
-    chevronUp: <polyline points="18 15 12 9 6 15" />,
-    check: <polyline points="20 6 9 17 4 12" />,
-    info: (
-      <>
-        <circle cx="12" cy="12" r="10" />
-        <line x1="12" y1="16" x2="12" y2="12" />
-        <line x1="12" y1="8" x2="12.01" y2="8" />
-      </>
-    ),
-    shield: <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />,
-    copy: (
-      <>
-        <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
-        <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
-      </>
-    ),
-    edit: (
-      <>
-        <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-        <path d="m15 5 4 4" />
-      </>
-    ),
-    x: (
-      <>
-        <line x1="18" y1="6" x2="6" y2="18" />
-        <line x1="6" y1="6" x2="18" y2="18" />
-      </>
-    ),
-    close: (
-      <>
-        <line x1="18" y1="6" x2="6" y2="18" />
-        <line x1="6" y1="6" x2="18" y2="18" />
-      </>
-    ),
-    trendingUp: (
-      <>
-        <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
-        <polyline points="16 7 22 7 22 13" />
-      </>
-    ),
-    alertTriangle: (
-      <>
-        <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
-        <line x1="12" y1="9" x2="12" y2="13" />
-        <line x1="12" y1="17" x2="12.01" y2="17" />
-      </>
-    ),
-    checkCircle: (
-      <>
-        <circle cx="12" cy="12" r="10" />
-        <path d="m9 12 2 2 4-4" />
-      </>
-    ),
-    play: <polygon points="5 3 19 12 5 21 5 3" />,
-    pause: (
-      <>
-        <rect x="6" y="4" width="4" height="16" rx="1" />
-        <rect x="14" y="4" width="4" height="16" rx="1" />
-      </>
-    ),
-    touchApp: (
-      <>
-        <path d="M12 11h1a2 2 0 0 1 2 2v1a2 2 0 0 1 2 2v1a2 2 0 0 1 2 2v2a5 5 0 0 1-5 5h-2a5 5 0 0 1-5-5v-7a2 2 0 0 1 4 0v-4a2 2 0 0 1 4 0v1" />
-        <path d="M12 7V4" />
-        <path d="M8.5 5.5l-2.1-2.1" />
-        <path d="M15.5 5.5l2.1-2.1" />
-      </>
-    ),
-    touch_app: (
-      <>
-        <path d="M12 11h1a2 2 0 0 1 2 2v1a2 2 0 0 1 2 2v1a2 2 0 0 1 2 2v2a5 5 0 0 1-5 5h-2a5 5 0 0 1-5-5v-7a2 2 0 0 1 4 0v-4a2 2 0 0 1 4 0v1" />
-        <path d="M12 7V4" />
-        <path d="M8.5 5.5l-2.1-2.1" />
-        <path d="M15.5 5.5l2.1-2.1" />
-      </>
-    ),
-    plus: (
-      <>
-        <line x1="12" y1="5" x2="12" y2="19" />
-        <line x1="5" y1="12" x2="19" y2="12" />
-      </>
-    ),
-    save: (
-      <>
-        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
-        <polyline points="17 21 17 13 7 13 7 21" />
-        <polyline points="7 3 7 8 15 8" />
-      </>
-    ),
+import {
+  LayoutDashboard,
+  HeartPulse,
+  BookOpen,
+  NotebookPen,
+  TrendingUp,
+  LineChart,
+  Headphones,
+  HeartHandshake,
+  LifeBuoy,
+  ShieldAlert,
+  Users,
+  BellDot,
+  Bell,
+  BellOff,
+  Sliders,
+  Settings2,
+  Network,
+  Building2,
+  ShieldCheck,
+  Shield,
+  BarChart3,
+  FileText,
+  FileSpreadsheet,
+  PanelLeftClose,
+  PanelLeftOpen,
+  PanelLeft,
+  Inbox,
+  LogOut,
+  User,
+  ChevronDown,
+  ChevronUp,
+  ChevronLeft,
+  ChevronRight,
+  ArrowRight,
+  ArrowLeft,
+  ArrowUp,
+  Check,
+  CheckCircle2,
+  AlertTriangle,
+  Info,
+  Clock,
+  Sparkles,
+  Upload,
+  Search,
+  Activity,
+  Phone,
+  Zap,
+  Lock,
+  Eye,
+  EyeOff,
+  Copy,
+  Trash2,
+  RefreshCw,
+  Download,
+  Play,
+  Pause,
+  Plus,
+  Save,
+  Mail,
+  Volume2,
+  VolumeX,
+  X
+} from 'lucide-react';
 
-    // Menús y Roles (Sidebar)
-    dashboard: (
-      <>
-        <rect width="7" height="9" x="3" y="3" rx="1" />
-        <rect width="7" height="5" x="14" y="3" rx="1" />
-        <rect width="7" height="9" x="14" y="12" rx="1" />
-        <rect width="7" height="5" x="3" y="16" rx="1" />
-      </>
-    ),
-    favorite: (
-      <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
-    ),
-    edit_note: (
-      <>
-        <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-        <path d="m15 5 4 4" />
-      </>
-    ),
-    insights: <path d="M22 12h-4l-3 9L9 3l-3 9H2" />,
-    monitoring: (
-      <>
-        <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
-        <polyline points="16 7 22 7 22 13" />
-      </>
-    ),
-    support_agent: (
-      <>
-        <path d="M3 18v-6a9 9 0 0 1 18 0v6" />
-        <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z" />
-      </>
-    ),
-    group: (
-      <>
-        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-        <circle cx="9" cy="7" r="4" />
-        <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-      </>
-    ),
-    task_alt: (
-      <>
-        <circle cx="12" cy="12" r="10" />
-        <path d="m9 12 2 2 4-4" />
-      </>
-    ),
-    summarize: (
-      <>
-        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-        <polyline points="14 2 14 8 20 8" />
-        <line x1="16" y1="13" x2="8" y2="13" />
-        <line x1="16" y1="17" x2="8" y2="17" />
-      </>
-    ),
-    analytics: (
-      <>
-        <line x1="12" y1="20" x2="12" y2="10" />
-        <line x1="18" y1="20" x2="18" y2="4" />
-        <line x1="6" y1="20" x2="6" y2="16" />
-      </>
-    ),
-    notifications_active: (
-      <>
-        <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
-        <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
-        <line x1="12" y1="2" x2="12" y2="4" />
-      </>
-    ),
-    tune: (
-      <>
-        <line x1="4" y1="21" x2="4" y2="14" />
-        <line x1="4" y1="10" x2="4" y2="3" />
-        <line x1="12" y1="21" x2="12" y2="12" />
-        <line x1="12" y1="8" x2="12" y2="3" />
-        <line x1="20" y1="21" x2="20" y2="16" />
-        <line x1="20" y1="12" x2="20" y2="3" />
-        <line x1="1" y1="14" x2="7" y2="14" />
-        <line x1="9" y1="8" x2="15" y2="8" />
-        <line x1="17" y1="16" x2="23" y2="16" />
-      </>
-    ),
-    healing: (
-      <>
-        <circle cx="12" cy="12" r="10" />
-        <line x1="12" y1="8" x2="12" y2="16" />
-        <line x1="8" y1="12" x2="16" y2="12" />
-      </>
-    ),
-    self_improvement: (
-      <>
-        <circle cx="12" cy="5" r="2" />
-        <path d="M4 14c1.5-2 3.5-3 8-3s6.5 1 8 3" />
-        <path d="M2 19c2-1 4-1.5 6-1.5 2.5 0 3.5 1.5 4 1.5s1.5-1.5 4-1.5c2 0 4 .5 6 1.5" />
-        <path d="M12 11v6" />
-      </>
-    ),
-    mark_email_unread: (
-      <>
-        <rect width="20" height="16" x="2" y="4" rx="2" />
-        <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-      </>
-    ),
-    policy: <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />,
-    audit: (
-      <>
-        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-        <polyline points="14 2 14 8 20 8" />
-        <circle cx="11" cy="14" r="3" />
-        <line x1="13.2" y1="16.2" x2="16.5" y2="19.5" />
-      </>
-    ),
-    shieldCheck: (
-      <>
-        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-        <path d="m9 12 2 2 4-4" />
-      </>
-    ),
-    hierarchy: (
-      <>
-        <rect x="9" y="3" width="6" height="4" rx="1" />
-        <rect x="3" y="17" width="6" height="4" rx="1" />
-        <rect x="15" y="17" width="6" height="4" rx="1" />
-        <path d="M12 7v4" />
-        <path d="M6 17v-3a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v3" />
-      </>
-    ),
-    users: (
-      <>
-        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-        <circle cx="9" cy="7" r="4" />
-        <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-      </>
-    ),
-    domain: (
-      <>
-        <rect width="16" height="20" x="4" y="2" rx="2" />
-        <path d="M9 22v-4h6v4" />
-        <path d="M8 6h.01" />
-        <path d="M16 6h.01" />
-        <path d="M8 10h.01" />
-        <path d="M16 10h.01" />
-        <path d="M8 14h.01" />
-        <path d="M16 14h.01" />
-      </>
-    ),
-    manage_accounts: (
-      <>
-        <circle cx="9" cy="7" r="4" />
-        <path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-        <circle cx="19" cy="11" r="2" />
-      </>
-    ),
-    userPlus: (
-      <>
-        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-        <circle cx="9" cy="7" r="4" />
-        <line x1="19" y1="8" x2="19" y2="14" />
-        <line x1="22" y1="11" x2="16" y2="11" />
-      </>
-    ),
-    upload_file: (
-      <>
-        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-        <polyline points="17 8 12 3 7 8" />
-        <line x1="12" y1="3" x2="12" y2="15" />
-      </>
-    ),
-    notifications: (
-      <>
-        <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
-        <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
-      </>
-    ),
-    logout: (
-      <>
-        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-        <polyline points="16 17 21 12 16 7" />
-        <line x1="21" y1="12" x2="9" y2="12" />
-      </>
-    ),
-    support: (
-      <>
-        <path d="M3 18v-6a9 9 0 0 1 18 0v6" />
-        <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z" />
-      </>
-    ),
-    phone: (
-      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-    ),
-    refresh: (
-      <>
-        <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.85.99 6.57 2.57L21 8" />
-        <polyline points="21 3 21 8 16 8" />
-      </>
-    ),
-    download: (
-      <>
-        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-        <polyline points="7 10 12 15 17 10" />
-        <line x1="12" y1="15" x2="12" y2="3" />
-      </>
-    ),
-    fileText: (
-      <>
-        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-        <polyline points="14 2 14 8 20 8" />
-        <line x1="16" y1="13" x2="8" y2="13" />
-        <line x1="16" y1="17" x2="8" y2="17" />
-        <polyline points="10 9 9 9 8 9" />
-      </>
-    ),
-    fileShield: (
-      <>
-        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-        <polyline points="14 2 14 8 20 8" />
-        <path d="M12 18.5c-2.4-1-4-2.5-4-4.5V11l4-1.5 4 1.5v3c0 2-1.6 3.5-4 4.5z" />
-      </>
-    ),
-    clock: (
-      <>
-        <circle cx="12" cy="12" r="10" />
-        <polyline points="12 6 12 12 16 14" />
-      </>
-    ),
-    apartment: (
-      <>
-        <rect width="16" height="20" x="4" y="2" rx="2" ry="2" />
-        <path d="M9 22v-4h6v4" />
-        <path d="M8 6h.01" />
-        <path d="M16 6h.01" />
-        <path d="M12 6h.01" />
-        <path d="M12 10h.01" />
-        <path d="M12 14h.01" />
-        <path d="M16 10h.01" />
-        <path d="M16 14h.01" />
-        <path d="M8 10h.01" />
-        <path d="M8 14h.01" />
-      </>
-    ),
-    building: (
-      <>
-        <rect width="16" height="20" x="4" y="2" rx="2" ry="2" />
-        <path d="M9 22v-4h6v4" />
-        <path d="M8 6h.01" />
-        <path d="M16 6h.01" />
-        <path d="M12 6h.01" />
-        <path d="M12 10h.01" />
-        <path d="M12 14h.01" />
-        <path d="M16 10h.01" />
-        <path d="M16 14h.01" />
-        <path d="M8 10h.01" />
-        <path d="M8 14h.01" />
-      </>
-    ),
-    zap: <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />,
+// Diccionario de iconos de Lucide (soporta nombres PascalCase canónicos y alias clásicos en camelCase/snake_case)
+const lucideComponents = {
+  // Nombres canónicos de Lucide
+  LayoutDashboard,
+  HeartPulse,
+  BookOpen,
+  NotebookPen,
+  TrendingUp,
+  LineChart,
+  Headphones,
+  HeartHandshake,
+  LifeBuoy,
+  ShieldAlert,
+  Users,
+  BellDot,
+  Bell,
+  BellOff,
+  Sliders,
+  Settings2,
+  Network,
+  Building2,
+  ShieldCheck,
+  Shield,
+  BarChart3,
+  FileText,
+  FileSpreadsheet,
+  PanelLeftClose,
+  PanelLeftOpen,
+  PanelLeft,
+  Inbox,
+  LogOut,
+  User,
+  ChevronDown,
+  ChevronUp,
+  ChevronLeft,
+  ChevronRight,
+  ArrowRight,
+  ArrowLeft,
+  ArrowUp,
+  Check,
+  CheckCircle2,
+  AlertTriangle,
+  Info,
+  Clock,
+  Sparkles,
+  Upload,
+  Search,
+  Activity,
+  Phone,
+  Zap,
+  Lock,
+  Eye,
+  EyeOff,
+  Copy,
+  Trash2,
+  RefreshCw,
+  Download,
+  Play,
+  Pause,
+  Plus,
+  Save,
+  Mail,
+  Volume2,
+  VolumeX,
+  X,
 
-    // Especializados Dominio BPO & k-Anonimato
-    headsetBpo: (
-      <>
-        <path d="M3 13v-3a9 9 0 0 1 18 0v3" />
-        <rect x="2" y="12" width="3" height="6" rx="1.5" />
-        <rect x="19" y="12" width="3" height="6" rx="1.5" />
-        <path d="M20 18v1a3 3 0 0 1-3 3h-4" />
-        <circle cx="11.5" cy="22" r="1.5" />
-      </>
-    ),
-    timerAht: (
-      <>
-        <circle cx="12" cy="13" r="8" />
-        <polyline points="12 9 12 13 15 14" />
-        <line x1="12" y1="2" x2="12" y2="5" />
-        <line x1="10" y1="2" x2="14" y2="2" />
-        <line x1="18.5" y1="6.5" x2="16.5" y2="8.5" />
-      </>
-    ),
-    callQueue: (
-      <>
-        <path d="M3 11v-2a4 4 0 0 1 8 0v2" />
-        <circle cx="7" cy="6" r="2" />
-        <path d="M14 6h7" />
-        <path d="M14 10h7" />
-        <path d="M14 14h5" />
-        <path d="M2 18v-1a4 4 0 0 1 8 0v1" />
-        <circle cx="6" cy="13" r="2" />
-        <polyline points="18 17 21 20 18 23" />
-        <line x1="13" y1="20" x2="21" y2="20" />
-      </>
-    ),
-    kAnonymityShield: (
-      <>
-        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-        <rect x="9" y="11" width="6" height="5" rx="1" />
-        <path d="M10 11V9a2 2 0 1 1 4 0v2" />
-        <circle cx="12" cy="13.5" r="0.8" />
-      </>
-    ),
-    send: (
-      <>
-        <line x1="22" y1="2" x2="11" y2="13" />
-        <polygon points="22 2 15 22 11 13 2 9 22 2" />
-      </>
-    ),
-    moodOptimal: (
-      <>
-        <circle cx="12" cy="12" r="10" />
-        <path d="M8 13.5a4 4 0 0 0 8 0" />
-        <line x1="9" y1="9" x2="9.01" y2="9" />
-        <line x1="15" y1="9" x2="15.01" y2="9" />
-      </>
-    ),
-    moodBalanced: (
-      <>
-        <circle cx="12" cy="12" r="10" />
-        <path d="M8.5 14.5c1.5 1.2 5.5 1.2 7 0" />
-        <line x1="9" y1="9" x2="9.01" y2="9" />
-        <line x1="15" y1="9" x2="15.01" y2="9" />
-      </>
-    ),
-    moodDemanding: (
-      <>
-        <circle cx="12" cy="12" r="10" />
-        <line x1="8" y1="15" x2="16" y2="15" />
-        <line x1="9" y1="9" x2="9.01" y2="9" />
-        <line x1="15" y1="9" x2="15.01" y2="9" />
-      </>
-    ),
-    moodSaturated: (
-      <>
-        <circle cx="12" cy="12" r="10" />
-        <path d="M16 16a4 4 0 0 0-8 0" />
-        <line x1="9" y1="9" x2="9.01" y2="9" />
-        <line x1="15" y1="9" x2="15.01" y2="9" />
-      </>
-    ),
-    moodCritical: (
-      <>
-        <circle cx="12" cy="12" r="10" />
-        <path d="M16 17c-1.5-1.8-6.5-1.8-8 0" />
-        <path d="m8 8 2.5 1.5" />
-        <path d="m16 8-2.5 1.5" />
-        <line x1="9" y1="11" x2="9.01" y2="11" />
-        <line x1="15" y1="11" x2="15.01" y2="11" />
-      </>
-    ),
+  // Alias clásicos del sistema Pulso360 mapeados a componentes profesionales de Lucide
+  dashboard: LayoutDashboard,
+  favorite: HeartPulse,
+  edit_note: BookOpen,
+  edit: NotebookPen,
+  insights: TrendingUp,
+  monitoring: Headphones,
+  support_agent: HeartHandshake,
+  group: Users,
+  task_alt: CheckCircle2,
+  summarize: BarChart3,
+  analytics: Activity,
+  notifications_active: BellDot,
+  notifications: Bell,
+  bell: Bell,
+  bell_off: BellOff,
+  bellOff: BellOff,
+  tune: Sliders,
+  healing: HeartHandshake,
+  self_improvement: Sparkles,
+  mark_email_unread: Inbox,
+  policy: ShieldCheck,
+  audit: FileText,
+  shieldCheck: ShieldCheck,
+  shield_check: ShieldCheck,
+  shield: Shield,
+  hierarchy: Network,
+  users: Users,
+  domain: Building2,
+  apartment: Building2,
+  building: Building2,
+  manage_accounts: Users,
+  userPlus: Users,
+  upload_file: Upload,
+  upload: Upload,
+  logout: LogOut,
+  support: LifeBuoy,
+  phone: Phone,
+  refresh: RefreshCw,
+  download: Download,
+  fileText: FileText,
+  fileShield: ShieldCheck,
+  clock: Clock,
+  zap: Zap,
+  trash: Trash2,
+  delete: Trash2,
+  plus: Plus,
+  add: Plus,
+  save: Save,
+  mail: Mail,
+  volumeOn: Volume2,
+  volume_on: Volume2,
+  volumeOff: VolumeX,
+  volume_off: VolumeX,
+  lock: Lock,
+  eye: Eye,
+  eyeOff: EyeOff,
+  eye_off: EyeOff,
+  arrowRight: ArrowRight,
+  arrow_right: ArrowRight,
+  arrow_forward: ArrowRight,
+  arrowLeft: ArrowLeft,
+  arrow_left: ArrowLeft,
+  arrow_back: ArrowLeft,
+  arrowUp: ArrowUp,
+  arrow_up: ArrowUp,
+  chevronDown: ChevronDown,
+  chevron_down: ChevronDown,
+  chevronUp: ChevronUp,
+  chevron_up: ChevronUp,
+  check: Check,
+  checkCircle: CheckCircle2,
+  check_circle: CheckCircle2,
+  alertTriangle: AlertTriangle,
+  info: Info,
+  play: Play,
+  pause: Pause,
+  copy: Copy,
+  x: X,
+  close: X,
+  spa: Sparkles,
+  sync: RefreshCw,
+  verified_user: ShieldCheck
+};
 
-    // Extensiones ergonómicas Bitácora BPO
-    delete: (
-      <>
-        <polyline points="3 6 5 6 21 6" />
-        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-        <line x1="10" y1="11" x2="10" y2="17" />
-        <line x1="14" y1="11" x2="14" y2="17" />
-      </>
-    ),
-    trash: (
-      <>
-        <polyline points="3 6 5 6 21 6" />
-        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-        <line x1="10" y1="11" x2="10" y2="17" />
-        <line x1="14" y1="11" x2="14" y2="17" />
-      </>
-    ),
-    spa: (
-      <>
-        <path d="M12 2C12 7 8 11 4 12c5 1 8 5 8 10 0-5 3-9 8-10-4-1-8-5-8-10z" />
-      </>
-    ),
-    sync: (
-      <>
-        <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-        <polyline points="3 3 3 8 8 8" />
-        <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
-        <polyline points="16 16 21 16 21 21" />
-      </>
-    ),
-    check_circle: (
-      <>
-        <circle cx="12" cy="12" r="10" />
-        <path d="m9 12 2 2 4-4" />
-      </>
-    ),
-    verified_user: (
-      <>
-        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-        <path d="m9 12 2 2 4-4" />
-      </>
-    ),
-    psychology: (
-      <>
-        <path d="M9.5 2A4.5 4.5 0 0 0 5 6.5c0 1.25.5 2.38 1.32 3.2A4.5 4.5 0 0 0 6 12.5a4.5 4.5 0 0 0 2 3.73V19a2 2 0 0 0 2 2h3a2 2 0 0 0 2-2v-1.5" />
-        <path d="M14.5 2A4.5 4.5 0 0 1 19 6.5c0 1.25-.5 2.38-1.32 3.2A4.5 4.5 0 0 1 18 12.5a4.5 4.5 0 0 1-2 3.73V19a2 2 0 0 1-2 2" />
-        <circle cx="12" cy="10" r="1.5" />
-      </>
-    )
-  };
+// SVGs personalizados exclusivos de Pulso360 (ejercicios somáticos, pausas guiadas, k-anonimato y escalas psicométricas)
+const customPulsoSvgs = {
+  // Ejercicios de respiración guiada (el icono enseña la dinámica de movimiento)
+  breathIn: (
+    <>
+      <path d="M12 21v-8" />
+      <polyline points="8.5 16.5 12 13 15.5 16.5" />
+      <path d="M5 8c1.5-2 4-3 7-3s5.5 1 7 3" />
+      <circle cx="12" cy="12" r="10" opacity="0.35" />
+    </>
+  ),
+  breathHold: (
+    <>
+      <circle cx="12" cy="12" r="4" />
+      <circle cx="12" cy="12" r="7.5" />
+      <circle cx="12" cy="12" r="10" opacity="0.35" />
+    </>
+  ),
+  breathOut: (
+    <>
+      <path d="M12 3v8" />
+      <polyline points="8.5 7.5 12 11 15.5 7.5" />
+      <path d="M5 16c1.5 2 4 3 7 3s5.5-1 7-3" />
+      <circle cx="12" cy="12" r="10" opacity="0.35" />
+    </>
+  ),
+  touchApp: (
+    <>
+      <path d="M12 11h1a2 2 0 0 1 2 2v1a2 2 0 0 1 2 2v1a2 2 0 0 1 2 2v2a5 5 0 0 1-5 5h-2a5 5 0 0 1-5-5v-7a2 2 0 0 1 4 0v-4a2 2 0 0 1 4 0v1" />
+      <path d="M12 7V4" />
+      <path d="M8.5 5.5l-2.1-2.1" />
+      <path d="M15.5 5.5l2.1-2.1" />
+    </>
+  ),
+  touch_app: (
+    <>
+      <path d="M12 11h1a2 2 0 0 1 2 2v1a2 2 0 0 1 2 2v1a2 2 0 0 1 2 2v2a5 5 0 0 1-5 5h-2a5 5 0 0 1-5-5v-7a2 2 0 0 1 4 0v-4a2 2 0 0 1 4 0v1" />
+      <path d="M12 7V4" />
+      <path d="M8.5 5.5l-2.1-2.1" />
+      <path d="M15.5 5.5l2.1-2.1" />
+    </>
+  ),
+  headsetBpo: (
+    <>
+      <path d="M3 13v-3a9 9 0 0 1 18 0v3" />
+      <rect x="2" y="12" width="3" height="6" rx="1.5" />
+      <rect x="19" y="12" width="3" height="6" rx="1.5" />
+      <path d="M20 18v1a3 3 0 0 1-3 3h-4" />
+      <circle cx="11.5" cy="22" r="1.5" />
+    </>
+  ),
+  timerAht: (
+    <>
+      <circle cx="12" cy="13" r="8" />
+      <polyline points="12 9 12 13 15 14" />
+      <line x1="12" y1="2" x2="12" y2="5" />
+      <line x1="10" y1="2" x2="14" y2="2" />
+      <line x1="18.5" y1="6.5" x2="16.5" y2="8.5" />
+    </>
+  ),
+  callQueue: (
+    <>
+      <path d="M3 11v-2a4 4 0 0 1 8 0v2" />
+      <circle cx="7" cy="6" r="2" />
+      <path d="M14 6h7" />
+      <path d="M14 10h7" />
+      <path d="M14 14h5" />
+      <path d="M2 18v-1a4 4 0 0 1 8 0v1" />
+      <circle cx="6" cy="13" r="2" />
+      <polyline points="18 17 21 20 18 23" />
+      <line x1="13" y1="20" x2="21" y2="20" />
+    </>
+  ),
+  kAnonymityShield: (
+    <>
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+      <rect x="9" y="11" width="6" height="5" rx="1" />
+      <path d="M10 11V9a2 2 0 1 1 4 0v2" />
+      <circle cx="12" cy="13.5" r="0.8" />
+    </>
+  ),
+  k_anonymity_shield: (
+    <>
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+      <rect x="9" y="11" width="6" height="5" rx="1" />
+      <path d="M10 11V9a2 2 0 1 1 4 0v2" />
+      <circle cx="12" cy="13.5" r="0.8" />
+    </>
+  ),
+  moodOptimal: (
+    <>
+      <circle cx="12" cy="12" r="10" />
+      <path d="M8 13.5a4 4 0 0 0 8 0" />
+      <line x1="9" y1="9" x2="9.01" y2="9" />
+      <line x1="15" y1="9" x2="15.01" y2="9" />
+    </>
+  ),
+  moodBalanced: (
+    <>
+      <circle cx="12" cy="12" r="10" />
+      <path d="M8.5 14.5c1.5 1.2 5.5 1.2 7 0" />
+      <line x1="9" y1="9" x2="9.01" y2="9" />
+      <line x1="15" y1="9" x2="15.01" y2="9" />
+    </>
+  ),
+  moodDemanding: (
+    <>
+      <circle cx="12" cy="12" r="10" />
+      <line x1="8" y1="15" x2="16" y2="15" />
+      <line x1="9" y1="9" x2="9.01" y2="9" />
+      <line x1="15" y1="9" x2="15.01" y2="9" />
+    </>
+  ),
+  moodSaturated: (
+    <>
+      <circle cx="12" cy="12" r="10" />
+      <path d="M16 16a4 4 0 0 0-8 0" />
+      <line x1="9" y1="9" x2="9.01" y2="9" />
+      <line x1="15" y1="9" x2="15.01" y2="9" />
+    </>
+  ),
+  moodCritical: (
+    <>
+      <circle cx="12" cy="12" r="10" />
+      <path d="M16 17c-1.5-1.8-6.5-1.8-8 0" />
+      <path d="m8 8 2.5 1.5" />
+      <path d="m16 8-2.5 1.5" />
+      <line x1="9" y1="11" x2="9.01" y2="11" />
+      <line x1="15" y1="11" x2="15.01" y2="11" />
+    </>
+  ),
+  psychology: (
+    <>
+      <path d="M9.5 2A4.5 4.5 0 0 0 5 6.5c0 1.25.5 2.38 1.32 3.2A4.5 4.5 0 0 0 6 12.5a4.5 4.5 0 0 0 2 3.73V19a2 2 0 0 0 2 2h3a2 2 0 0 0 2-2v-1.5" />
+      <path d="M14.5 2A4.5 4.5 0 0 1 19 6.5c0 1.25-.5 2.38-1.32 3.2A4.5 4.5 0 0 1 18 12.5a4.5 4.5 0 0 1-2 3.73V19a2 2 0 0 1-2 2" />
+      <circle cx="12" cy="10" r="1.5" />
+    </>
+  )
+};
 
-  // Alias de compatibilidad semántica y normalización kebab-case / camelCase
-  iconList.arrow_back = iconList.arrowLeft;
-  iconList.arrow_left = iconList.arrowLeft;
-  iconList.arrow_forward = iconList.arrowRight;
-  iconList.arrow_right = iconList.arrowRight;
-  iconList.arrow_up = iconList.arrowUp;
-  iconList.chevron_down = iconList.chevronDown;
-  iconList.chevron_up = iconList.chevronUp;
-  iconList.check_circle = iconList.check_circle || iconList.checkCircle;
-  iconList.checkCircle = iconList.checkCircle || iconList.check_circle;
-  iconList.shield_check = iconList.shieldCheck;
-  iconList.volume_on = iconList.volumeOn;
-  iconList.volume_off = iconList.volumeOff;
-  iconList.bell_off = iconList.bellOff;
-  iconList.eye_off = iconList.eyeOff;
-  iconList.add = iconList.plus;
-  iconList.k_anonymity_shield = iconList.kAnonymityShield;
+export function Icon({ name, className = '', size = 20, strokeWidth = 1.8, ...props }) {
+  // 0. Si se suministra un componente o función directamente
+  if (typeof name === 'function') {
+    const CustomComp = name;
+    return (
+      <CustomComp
+        size={size}
+        strokeWidth={strokeWidth}
+        className={`ui-svg-icon ${className}`.trim()}
+        aria-hidden="true"
+        {...props}
+      />
+    );
+  }
 
+  // 1. Si existe un componente Lucide coincidente (nombres estándar o mapeados)
+  const LucideComp = lucideComponents[name];
+  if (LucideComp) {
+    return (
+      <LucideComp
+        size={size}
+        strokeWidth={strokeWidth}
+        className={`ui-svg-icon ${className}`.trim()}
+        aria-hidden="true"
+        {...props}
+      />
+    );
+  }
+
+  // 2. Si existe un SVG especializado de Pulso360 (ejercicios somáticos, k-anonimato)
+  const customSvg = customPulsoSvgs[name];
   const style = size ? { width: `${size}px`, height: `${size}px` } : undefined;
 
   return (
@@ -612,7 +395,7 @@ export function Icon({ name, className = '', size, ...props }) {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="1.8"
+      strokeWidth={strokeWidth}
       strokeLinecap="round"
       strokeLinejoin="round"
       className={`ui-svg-icon ${className}`.trim()}
@@ -620,7 +403,7 @@ export function Icon({ name, className = '', size, ...props }) {
       aria-hidden="true"
       {...props}
     >
-      {iconList[name] || <circle cx="12" cy="12" r="3" />}
+      {customSvg || <circle cx="12" cy="12" r="3" />}
     </svg>
   );
 }

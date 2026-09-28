@@ -17,5 +17,14 @@ export const preferences = {
   },
   savePauseSound: (enabled) => localData.setItem('pulso360_pause_ambient', String(enabled)),
   readReminder: (key) => localData.getItem(key) === '1',
-  saveReminder: (key, enabled) => localData.setItem(key, enabled ? '1' : '0')
+  saveReminder: (key, enabled) => localData.setItem(key, enabled ? '1' : '0'),
+  readSidebarCollapsed: (fallback = false) => {
+    try {
+      const value = localData.getItem('pulso_sidebar_collapsed');
+      return value == null ? fallback : value === 'true';
+    } catch {
+      return fallback;
+    }
+  },
+  saveSidebarCollapsed: (collapsed) => localData.setItem('pulso_sidebar_collapsed', String(collapsed))
 };

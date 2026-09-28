@@ -1,10 +1,11 @@
 // src/core/layout/AppLayout.jsx
-// Plantilla maestra de la aplicación con navegación reactiva por roles y consentimientos
+// Plantilla maestra con sidebar colapsable (expandido con árbol guía / compacto solo iconos) y topbar ergonómico
 
-import { Fragment, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { authService, roleLabels, roleHomePaths } from '../auth/authService';
 import { pulsoStore } from '../storage/pulsoStore';
+import { preferences } from '../storage/preferences';
 import { Icon } from '../components/Icon';
 import { InactivityModal } from '../components/InactivityModal';
 
@@ -18,7 +19,18 @@ export function AppLayout() {
   const navigate = useNavigate();
   const user = authService.getCurrentUser();
 
-  // Menú de cuenta (estado y referencia deben declararse antes del early return)
+  // Estado del sidebar colapsable (persiste en preferencias)
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => preferences.readSidebarCollapsed(false));
+
+  const toggleSidebar = () => {
+    setSidebarCollapsed((prev) => {
+      const next = !prev;
+      preferences.saveSidebarCollapsed(next);
+      return next;
+    });
+  };
+
+  // Menú de cuenta (estado y referencia declarados antes del early return)
   const [accountOpen, setAccountOpen] = useState(false);
   const accountRef = useRef(null);
 
@@ -46,10 +58,6 @@ export function AppLayout() {
     };
   }, [accountOpen]);
 
-  // El topbar no repite el nombre de la página: éste vive en el encabezado propio
-  // de cada vista y en el destino activo del sidebar. Repetirlo duplicaba
-  // información sin añadir orientación (decisión anti-slop sobre duplicación).
-
   // Si no hay sesión, AppLayout no se renderiza (es controlado por ProtectedRoute)
   if (!user) return null;
 
@@ -57,17 +65,58 @@ export function AppLayout() {
   const homePath = roleHomePaths[user.role] || '/login';
   const roleLabel = roleLabels[user.role] || user.role;
 
-  // Los grupos de navegación reducen la carga de lectura en menús largos.
-  // Sólo se dibujan encabezados cuando el rol tiene más de un grupo (el auditor tiene 1 ítem).
+  // Estructura de navegación: organizar por grupos temáticos para el árbol visual
   const menuGroups = [...new Set(menuItems.map((item) => item.group).filter(Boolean))];
   const showGroupHeadings = menuGroups.length > 1;
+
+  // Organizar ítems en grupos
+  const groupedNavigation = [];
+  if (showGroupHeadings) {
+    menuGroups.forEach((groupName) => {
+      const items = menuItems.filter((item) => item.group === groupName);
+      if (items.length > 0) {
+        groupedNavigation.push({ name: groupName, items });
+      }
+    });
+    // Ítems sin grupo
+    const ungrouped = menuItems.filter((item) => !item.group);
+    if (ungrouped.length > 0) {
+      groupedNavigation.push({ name: null, items: ungrouped });
+    }
+  } else {
+    groupedNavigation.push({ name: null, items: menuItems });
+  }
+
+  // Badges discretos en ítems de menú (pastel suave) según datos reales de la operación
+  const storeData = pulsoStore.get();
+  const pendingAlerts = (storeData.alerts || []).filter(
+    (a) => a.status === 'GENERADA' || a.status === 'EN_REVISION'
+  ).length;
+  const pendingSupport = (storeData.supportRequests || []).filter(
+    (s) => s.status !== 'Cerrada' && s.status !== 'Resuelta'
+  ).length;
+  const pendingHabeas = (storeData.habeasRequests || []).filter(
+    (h) => h.status === 'En trámite'
+  ).length;
+
+  const getItemBadge = (href) => {
+    if (href === '/sst/alertas' && pendingAlerts > 0) {
+      return { count: pendingAlerts, variant: 'alert' };
+    }
+    if (href === '/sst/buzon' && pendingSupport > 0) {
+      return { count: pendingSupport, variant: 'info' };
+    }
+    if (href === '/admin/solicitudes' && pendingHabeas > 0) {
+      return { count: pendingHabeas, variant: 'neutral' };
+    }
+    return null;
+  };
 
   // Contexto del rol en el topbar: campaña para perfiles operativos, área institucional
   // para SST, auditoría y administración (ambos campos vienen del registro del usuario).
   const contextLabel = user.campaign || user.teamName || null;
 
-  // Bloque de turno del topbar: sólo el agente tiene horario asignado (shiftStartHour);
-  // otros roles no lo tienen y mostrarlo sería inventar un dato inexistente.
+  // Bloque de turno del topbar: sólo el agente tiene horario asignado (shiftStartHour)
   const shiftStart = Number(user.shiftStartHour);
   const shiftInfo =
     user.role === 'agente' && Number.isFinite(shiftStart)
@@ -78,7 +127,7 @@ export function AppLayout() {
       : null;
 
   // Calcular notificaciones no leídas para el usuario o su rol
-  const notifications = pulsoStore.get().notifications || [];
+  const notifications = storeData.notifications || [];
   const unreadCount = notifications.filter(
     (n) => !n.read && (n.role === user.role || n.userId === user.id)
   ).length;
@@ -89,58 +138,113 @@ export function AppLayout() {
   };
 
   return (
-    <div className="app-layout">
-      {/* 1. Barra Lateral de Navegación */}
-      <aside className="app-sidebar" aria-label="Navegación principal">
+    <div className={`app-layout${sidebarCollapsed ? ' sidebar-is-collapsed' : ''}`}>
+      {/* 1. Barra Lateral de Navegación (Sidebar) */}
+      <aside
+        className={`app-sidebar${sidebarCollapsed ? ' is-collapsed' : ''}`}
+        aria-label="Navegación principal"
+      >
         <div className="sidebar-header">
-          <Link to={homePath} className="sidebar-brand-link" title="Ir al panel principal">
-            <img src="/assets/marca/logo.webp" alt="" className="sidebar-logo" />
-            <span className="sidebar-brand-name">Pulso360</span>
+          <Link
+            to={homePath}
+            className="sidebar-brand-link"
+            title={sidebarCollapsed ? 'Pulso360 (Ir al inicio)' : 'Ir al panel principal de Pulso360'}
+            aria-label="Ir al panel principal de Pulso360"
+          >
+            <img
+              src="/assets/marca/logo.webp"
+              alt="Pulso360"
+              className="sidebar-logo"
+            />
+            <span className="sidebar-brand-name" aria-hidden={sidebarCollapsed}>
+              Pulso360
+            </span>
           </Link>
         </div>
 
         <nav className="sidebar-nav" aria-label="Destinos del rol">
-          {menuItems.map((item, index) => (
-            <Fragment key={item.href}>
-              {showGroupHeadings &&
-                item.group &&
-                (index === 0 || menuItems[index - 1].group !== item.group) && (
-                  <span className="sidebar-nav-heading">{item.group}</span>
-                )}
-              <NavLink
-                to={item.href}
-                className={({ isActive }) =>
-                  `nav-item${isActive ? ' active' : ''}${item.mobileOnly ? ' nav-item--mobile-only' : ''}`
-                }
+          {groupedNavigation.map((group, groupIdx) => (
+            <div key={group.name || `group-${groupIdx}`} className="sidebar-nav-group">
+              {showGroupHeadings && group.name && (
+                <div
+                  className="sidebar-nav-heading"
+                  id={`group-heading-${groupIdx}`}
+                  aria-hidden={sidebarCollapsed}
+                >
+                  {group.name}
+                </div>
+              )}
+
+              <div
+                className={`nav-group-items${showGroupHeadings && group.name ? ' nav-group-tree' : ''}`}
+                role={group.name ? 'group' : undefined}
+                aria-labelledby={showGroupHeadings && group.name ? `group-heading-${groupIdx}` : undefined}
               >
-                <span className="nav-icon" aria-hidden="true">
-                  <Icon name={item.icon} size={20} />
-                </span>
-                <span>{item.label}</span>
-              </NavLink>
-            </Fragment>
+                {group.items.map((item) => {
+                  const badge = getItemBadge(item.href);
+                  return (
+                    <NavLink
+                      key={item.href}
+                      to={item.href}
+                      title={sidebarCollapsed ? item.label : undefined}
+                      aria-label={sidebarCollapsed ? item.label : undefined}
+                      className={({ isActive }) =>
+                        `nav-item${isActive ? ' active' : ''}${item.mobileOnly ? ' nav-item--mobile-only' : ''}`
+                      }
+                    >
+                      <span className="nav-icon" aria-hidden="true">
+                        <Icon name={item.icon} size={18} />
+                      </span>
+
+                      <span className="nav-item-label" aria-hidden={sidebarCollapsed}>
+                        {item.label}
+                      </span>
+
+                      {badge && (
+                        <span
+                          className={`nav-item-badge badge-${badge.variant}`}
+                          aria-label={`${badge.count} pendientes`}
+                          aria-hidden={sidebarCollapsed}
+                        >
+                          {badge.count}
+                        </span>
+                      )}
+                    </NavLink>
+                  );
+                })}
+              </div>
+            </div>
           ))}
 
           {/* Acción prioritaria de emergencia exclusiva para Agentes */}
           {user.role === 'agente' && (
-            <>
-              <hr
-                style={{ margin: '8px 12px', border: 'none', borderTop: '1px solid var(--c-borde-suave)' }}
-              />
-              <NavLink to="/apoyo-crisis" className="nav-item nav-crisis">
+            <div className="sidebar-crisis-container">
+              <hr className="sidebar-divider" />
+              <NavLink
+                to="/apoyo-crisis"
+                className="nav-item nav-crisis"
+                title={sidebarCollapsed ? 'Apoyo inmediato' : undefined}
+                aria-label={sidebarCollapsed ? 'Apoyo inmediato' : undefined}
+              >
                 <span className="nav-icon" aria-hidden="true">
-                  <Icon name="support" size={20} />
+                  <Icon name="LifeBuoy" size={18} />
                 </span>
-                <span>Apoyo inmediato</span>
+                <span className="nav-item-label" aria-hidden={sidebarCollapsed}>
+                  Apoyo inmediato
+                </span>
               </NavLink>
-            </>
+            </div>
           )}
         </nav>
 
-        {/* Pie de barra lateral: las acciones de cuenta viven juntas en un menú */}
+        {/* Pie de barra lateral: Menú de cuenta */}
         <div className="sidebar-footer" ref={accountRef}>
           {accountOpen && (
-            <div className="account-menu" role="menu" aria-label="Opciones de cuenta">
+            <div
+              className={`account-menu${sidebarCollapsed ? ' account-menu--collapsed' : ''}`}
+              role="menu"
+              aria-label="Opciones de cuenta"
+            >
               {/* "Mis datos y privacidad" es un módulo exclusivo del rol agente (Habeas Data) */}
               {user.role === 'agente' && (
                 <Link
@@ -149,35 +253,43 @@ export function AppLayout() {
                   role="menuitem"
                   onClick={() => setAccountOpen(false)}
                 >
-                  <Icon name="fileShield" size={16} />
+                  <Icon name="ShieldCheck" size={16} />
                   <span>Mis datos y privacidad</span>
                 </Link>
               )}
-              <button type="button" className="account-menu-item" role="menuitem" onClick={handleLogout}>
-                <Icon name="logout" size={16} />
+              <button
+                type="button"
+                className="account-menu-item account-menu-logout"
+                role="menuitem"
+                onClick={handleLogout}
+              >
+                <Icon name="LogOut" size={16} />
                 <span>Cerrar sesión</span>
               </button>
             </div>
           )}
+
           <button
             type="button"
-            className="user-card account-trigger"
+            className={`user-card account-trigger${sidebarCollapsed ? ' is-compact' : ''}`}
             onClick={() => setAccountOpen((open) => !open)}
             aria-expanded={accountOpen}
             aria-haspopup="menu"
-            title="Opciones de cuenta"
+            title={sidebarCollapsed ? `Cuenta: ${user.name} (${roleLabel})` : 'Opciones de cuenta'}
+            aria-label={sidebarCollapsed ? `Cuenta de ${user.name}` : 'Opciones de cuenta'}
           >
             <div className={`user-avatar role-${user.role}`} aria-hidden="true">
               {user.name.charAt(0).toUpperCase()}
             </div>
-            <div className="user-info">
+
+            <div className="user-info" aria-hidden={sidebarCollapsed}>
               <div className="user-name" title={user.name}>
                 {user.name}
               </div>
               <span className={`user-role-badge role-${user.role}`}>{roleLabel}</span>
             </div>
             <span className="account-chevron" aria-hidden="true">
-              <Icon name="chevronUp" size={16} />
+              <Icon name="ChevronUp" size={16} />
             </span>
           </button>
         </div>
@@ -185,24 +297,35 @@ export function AppLayout() {
 
       {/* 2. Área de Contenido Principal */}
       <div className="app-main">
+        {/* Barra Superior (Topbar / Navbar) */}
         <header className="app-topbar">
-          <div className="topbar-heading">
-            {/* Contexto del rol (campaña o área). No repite el nombre de la página:
-                            ese título ya lo muestra la propia vista como h1 */}
-            <span className="topbar-context">{contextLabel || 'Pulso360'}</span>
+          <div className="topbar-left">
+            <button
+              type="button"
+              className="topbar-toggle-btn"
+              onClick={toggleSidebar}
+              aria-label={sidebarCollapsed ? 'Mostrar menú lateral' : 'Ocultar menú lateral'}
+              title={sidebarCollapsed ? 'Mostrar menú lateral' : 'Ocultar menú lateral'}
+            >
+              <Icon name={sidebarCollapsed ? 'PanelLeftOpen' : 'PanelLeftClose'} size={18} />
+            </button>
+
+            <div className="topbar-heading">
+              {/* Contexto del rol (campaña o área) */}
+              <span className="topbar-context">{contextLabel || 'Pulso360'}</span>
+            </div>
           </div>
 
           <div className="topbar-actions">
-            {/* Acceso de emergencia visible sin scroll en móvil (auditoría 015,
-                            hallazgo 3). En escritorio permanece en el sidebar. */}
+            {/* Acceso de emergencia visible sin scroll en móvil */}
             {user.role === 'agente' && (
               <Link to="/apoyo-crisis" className="btn btn-topbar-crisis" aria-label="Apoyo inmediato">
-                <Icon name="support" size={16} />
+                <Icon name="LifeBuoy" size={16} />
                 <span>Apoyo</span>
               </Link>
             )}
 
-            {/* Horario del turno: reduce incertidumbre sobre la jornada que está registrando */}
+            {/* Horario del turno (sólo agente) */}
             {shiftInfo && (
               <div className="topbar-shift">
                 <span className="topbar-shift-label">{shiftInfo.label}</span>
@@ -210,13 +333,14 @@ export function AppLayout() {
               </div>
             )}
 
+            {/* Botón de avisos / notificaciones con badge tipo píldora limpia */}
             <Link
               to="/notificaciones"
               className={`btn btn-topbar-notifications${unreadCount > 0 ? ' has-unread' : ''}`}
               aria-label={unreadCount > 0 ? `Ver avisos (${unreadCount} sin leer)` : 'Ver avisos'}
             >
               <span className="topbar-bell-icon" aria-hidden="true">
-                <Icon name="notifications" size={18} />
+                <Icon name={unreadCount > 0 ? 'BellDot' : 'Bell'} size={18} />
               </span>
               <span>Avisos</span>
               {unreadCount > 0 && (
@@ -226,10 +350,14 @@ export function AppLayout() {
               )}
             </Link>
 
-            {/* En computador el cierre de sesión vive en el menú de cuenta del sidebar.
-                            Permanece aquí en móvil porque el pie del sidebar se oculta en pantallas pequeñas. */}
-            <button className="btn btn-topbar-logout" onClick={handleLogout} title="Cerrar sesión actual">
-              <Icon name="logout" size={16} />
+            {/* Cierre de sesión en topbar para pantallas táctiles/móviles */}
+            <button
+              type="button"
+              className="btn btn-topbar-logout"
+              onClick={handleLogout}
+              title="Cerrar sesión actual"
+            >
+              <Icon name="LogOut" size={16} />
               <span>Salir</span>
             </button>
           </div>

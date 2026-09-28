@@ -1,18 +1,23 @@
-/* Estilos de estructura y distribucion general */
+/* Estilos de estructura, navegación y distribución general - Pulso360
+   Diseño Clean Clay / Soft Minimalist (ergonómico BPO) */
 
 /* Layout Principal */
 .app-layout {
   display: flex;
   min-height: 100vh;
   width: 100%;
-  background-color: var(--c-fondo);
+  background-color: var(--c-fondo-subtle);
 }
 
-/* Barra Lateral de Navegación */
+/* =========================================================================
+   1. Barra Lateral de Navegación (Sidebar Dual-Mode)
+   ========================================================================= */
+
 .app-sidebar {
   width: 240px;
-  background-color: var(--c-superficie);
-  border-right: 1px solid var(--c-borde-suave);
+  min-width: 240px;
+  background-color: var(--c-fondo-subtle);
+  border-right: none;
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
@@ -20,34 +25,475 @@
   top: 0;
   height: 100vh;
   z-index: 100;
-  box-shadow: var(--shadow-xs);
-  transition: transform var(--transition-normal);
+  box-shadow: none;
+  transition: width 260ms cubic-bezier(0.2, 0, 0, 1), min-width 260ms cubic-bezier(0.2, 0, 0, 1);
+  will-change: width, min-width;
+  user-select: none;
+  overflow-x: hidden;
 }
 
+/* Modo Compacto / Solo Iconos (~72px) */
+.app-sidebar.is-collapsed {
+  width: 72px;
+  min-width: 72px;
+}
+
+/* Cabecera del Sidebar: exclusivamente reservada para la identidad de Pulso360 */
 .sidebar-header {
-  /* La altura coincide con el topbar (72px) para alinear el lomo de ambas columnas */
   height: 72px;
   box-sizing: border-box;
-  padding: 0 var(--space-5);
-  border-bottom: 1px solid var(--c-borde-suave);
+  padding: 0 19px;
+  border-bottom: none;
   display: flex;
   align-items: center;
-  gap: var(--space-3);
-  background: var(--c-superficie);
+  background: transparent;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.app-sidebar.is-collapsed .sidebar-header {
+  padding: 0 19px;
+  justify-content: flex-start;
+  align-items: center;
 }
 
 .sidebar-brand-link {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: var(--space-3);
   text-decoration: none;
+  min-width: 0;
+  width: 100%;
+}
+
+.app-sidebar.is-collapsed .sidebar-brand-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  width: auto;
+}
+
+.sidebar-logo {
+  height: 34px;
+  width: 34px;
+  object-fit: contain;
+  display: block;
+  flex-shrink: 0;
+}
+
+.sidebar-logo--compact,
+.app-sidebar.is-collapsed .sidebar-logo {
+  height: 34px;
+  width: 34px;
 }
 
 .sidebar-brand-name {
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 700;
   color: var(--c-texto);
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  opacity: 1;
+  transform: translateX(0);
+  transition: opacity 180ms cubic-bezier(0.2, 0, 0, 1) 40ms, transform 180ms cubic-bezier(0.2, 0, 0, 1) 40ms;
+}
+
+.app-sidebar.is-collapsed .sidebar-brand-name {
+  opacity: 0;
+  transform: translateX(-6px);
+  pointer-events: none;
+  visibility: hidden;
+  width: 0;
+  overflow: hidden;
+  transition: opacity 100ms cubic-bezier(0.2, 0, 0, 1), transform 100ms cubic-bezier(0.2, 0, 0, 1), visibility 0s 120ms;
+}
+
+/* Botón único toggle ergonómico Clean Clay en Topbar */
+.topbar-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--c-texto-suave);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+}
+
+.topbar-toggle-btn:hover {
+  background-color: var(--c-fondo);
+  color: var(--c-texto);
+  border-color: var(--c-borde-suave);
+}
+
+.topbar-toggle-btn:focus-visible {
+  outline: 2px solid var(--c-primario);
+  outline-offset: 2px;
+}
+
+/* Contenedor de Navegación */
+.sidebar-nav {
+  flex: 1;
+  padding: var(--space-3) 14px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--c-borde-suave) transparent;
+  box-sizing: border-box;
+}
+
+.app-sidebar.is-collapsed .sidebar-nav {
+  padding: var(--space-3) 14px;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+/* Grupos y Estructura de Árbol Minimalista */
+.sidebar-nav-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+}
+
+.app-sidebar.is-collapsed .sidebar-nav-group,
+.app-sidebar.is-collapsed .nav-group-items {
+  align-items: center;
+  width: 100%;
+}
+
+.sidebar-nav-heading {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--c-texto-mutado);
+  padding: var(--space-2) 12px 4px;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  opacity: 1;
+  max-height: 28px;
+  transform: translateY(0);
+  transition: opacity 180ms cubic-bezier(0.2, 0, 0, 1) 40ms, max-height 260ms cubic-bezier(0.2, 0, 0, 1), transform 180ms cubic-bezier(0.2, 0, 0, 1) 40ms, padding 260ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.app-sidebar.is-collapsed .sidebar-nav-heading {
+  opacity: 0;
+  max-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  transform: translateY(-4px);
+  pointer-events: none;
+  visibility: hidden;
+  transition: opacity 100ms cubic-bezier(0.2, 0, 0, 1), max-height 240ms cubic-bezier(0.2, 0, 0, 1), transform 100ms cubic-bezier(0.2, 0, 0, 1), padding 240ms cubic-bezier(0.2, 0, 0, 1), visibility 0s 240ms;
+}
+
+/* Línea vertical o contenedor de grupos */
+.nav-group-tree {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  width: 100%;
+}
+
+.app-sidebar.is-collapsed .nav-group-tree {
+  align-items: center;
+}
+
+.nav-group-items {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  width: 100%;
+}
+
+/* Ítems de Navegación */
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 12px;
+  height: 40px;
+  min-height: 40px;
+  border-radius: var(--radius-md);
+  color: var(--c-texto-suave);
+  text-decoration: none;
+  font-size: 13.5px;
+  font-weight: 500;
+  transition: background-color var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), width 260ms cubic-bezier(0.2, 0, 0, 1);
+  position: relative;
+  border: 1px solid transparent;
+  box-sizing: border-box;
+  width: 100%;
+  overflow: hidden;
+}
+
+.nav-item:hover {
+  background-color: var(--c-fondo);
+  color: var(--c-texto);
+}
+
+.nav-item:focus-visible {
+  outline: 2px solid var(--c-primario);
+  outline-offset: 1px;
+}
+
+/* Ítem Activo: Píldora destacada Clean Clay (Linear/Raycast style) */
+.nav-item.active {
+  background-color: var(--c-superficie);
+  color: var(--c-texto);
+  font-weight: 600;
+  border-color: var(--c-borde-suave);
+  box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.06), 0 1px 2px -1px rgba(15, 23, 42, 0.04);
+}
+
+.nav-item.active .nav-icon {
+  color: var(--c-primario);
+}
+
+.nav-item-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+  min-width: 0;
+  opacity: 1;
+  transform: translateX(0);
+  transition: opacity 180ms cubic-bezier(0.2, 0, 0, 1) 40ms, transform 180ms cubic-bezier(0.2, 0, 0, 1) 40ms;
+}
+
+.nav-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  color: currentColor;
+  transition: color var(--transition-fast);
+}
+
+/* Badges discretos en ítems de menú (pastel suave) */
+.nav-item-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  padding: 2px 6px;
+  border-radius: var(--radius-full);
+  margin-left: auto;
+  min-width: 18px;
+  flex-shrink: 0;
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 180ms cubic-bezier(0.2, 0, 0, 1) 40ms, transform 180ms cubic-bezier(0.2, 0, 0, 1) 40ms;
+}
+
+.nav-item-badge.badge-alert {
+  background-color: var(--c-alerta-bg);
+  color: var(--c-alerta);
+  border: 1px solid var(--c-alerta-border);
+}
+
+.nav-item-badge.badge-info {
+  background-color: var(--c-info-bg);
+  color: var(--c-info);
+  border: 1px solid var(--c-info-border);
+}
+
+.nav-item-badge.badge-neutral {
+  background-color: var(--c-fondo-subtle);
+  color: var(--c-texto-suave);
+  border: 1px solid var(--c-borde-suave);
+}
+
+/* Adaptación de ítems en Modo Colapsado (~72px) */
+.app-sidebar.is-collapsed .nav-item {
+  width: 44px;
+  height: 40px;
+  min-height: 40px;
+  padding: 0 12px;
+  margin: 0 auto;
+  justify-content: flex-start;
+  gap: 0;
+}
+
+.app-sidebar.is-collapsed .nav-item .nav-icon {
+  margin: 0;
+  width: 20px;
+  height: 20px;
+}
+
+.app-sidebar.is-collapsed .nav-item:hover {
+  background-color: var(--c-superficie);
+  color: var(--c-texto);
+  border-color: var(--c-borde-suave);
+}
+
+.app-sidebar.is-collapsed .nav-item.active {
+  background-color: var(--c-superficie);
+  border-color: var(--c-borde-suave);
+  color: var(--c-primario);
+  box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.06);
+}
+
+.app-sidebar.is-collapsed .nav-item.active .nav-icon {
+  color: var(--c-primario);
+}
+
+.app-sidebar.is-collapsed .nav-item-label {
+  opacity: 0;
+  transform: translateX(-6px);
+  pointer-events: none;
+  visibility: hidden;
+  width: 0;
+  max-width: 0;
+  flex: 0 0 0px;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  transition: opacity 100ms cubic-bezier(0.2, 0, 0, 1), transform 100ms cubic-bezier(0.2, 0, 0, 1), visibility 0s 120ms;
+}
+
+.app-sidebar.is-collapsed .nav-item-badge {
+  opacity: 0;
+  transform: scale(0.7);
+  pointer-events: none;
+  visibility: hidden;
+  width: 0;
+  max-width: 0;
+  flex: 0 0 0px;
+  padding: 0;
+  margin: 0;
+  border: none;
+  overflow: hidden;
+  transition: opacity 80ms cubic-bezier(0.2, 0, 0, 1), transform 80ms cubic-bezier(0.2, 0, 0, 1), visibility 0s 100ms;
+}
+
+.nav-item-tooltip {
+  display: none !important;
+}
+
+/* Acción de Crisis / Apoyo Inmediato en Sidebar */
+.sidebar-crisis-container {
+  margin-top: auto;
+  padding-top: var(--space-2);
+  width: 100%;
+}
+
+.app-sidebar.is-collapsed .sidebar-crisis-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.sidebar-divider {
+  margin: var(--space-2) 0 var(--space-3);
+  border: none;
+  border-top: 1px solid var(--c-borde-suave);
+  width: 100%;
+  transition: width 260ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.app-sidebar.is-collapsed .sidebar-divider {
+  margin: var(--space-2) auto var(--space-3);
+  width: 44px;
+}
+
+.nav-item.nav-crisis {
+  background-color: var(--c-critico-bg);
+  color: var(--c-critico);
+  border: 1px solid var(--c-critico-border);
+  font-weight: 600;
+}
+
+.nav-item.nav-crisis:hover {
+  background-color: #fee2e2;
+  border-color: var(--c-critico);
+  color: var(--c-critico);
+}
+
+/* Pie de barra lateral (Menú de Cuenta) */
+.sidebar-footer {
+  padding: var(--space-3) 14px;
+  border-top: 1px solid var(--c-borde-suave);
+  background-color: transparent;
+  position: relative;
+  box-sizing: border-box;
+  transition: padding 260ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.app-sidebar.is-collapsed .sidebar-footer {
+  padding: var(--space-3) 14px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Tarjeta del Usuario en Barra Lateral */
+.user-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 5px 6px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  background: var(--c-superficie);
+  border: 1px solid var(--c-borde-suave);
+  width: 100%;
+  box-sizing: border-box;
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+  overflow: hidden;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast), width 260ms cubic-bezier(0.2, 0, 0, 1), padding 260ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.user-card:hover {
+  background: var(--c-superficie);
+  border-color: var(--c-borde-fuerte);
+}
+
+.user-card:focus-visible {
+  outline: 2px solid var(--c-primario);
+  outline-offset: 1px;
+}
+
+.user-card.is-compact,
+.app-sidebar.is-collapsed .user-card {
+  width: 44px;
+  height: 44px;
+  padding: 0 6px;
+  gap: 0;
+  justify-content: flex-start;
+  margin: 0 auto;
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 12px;
+  flex-shrink: 0;
+  box-shadow: var(--shadow-xs);
+  border: 1.5px solid currentColor;
 }
 
 .user-avatar.role-agente,
@@ -80,144 +526,97 @@
   color: var(--c-rol-admin);
 }
 
-.sidebar-logo {
-  height: 40px;
-  width: auto;
-  display: block;
-}
-
-.sidebar-nav {
+.user-info {
   flex: 1;
-  padding: var(--space-4) var(--space-3);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-  overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: var(--c-borde-suave) transparent;
+  min-width: 0;
+  opacity: 1;
+  transform: translateX(0);
+  transition: opacity 180ms cubic-bezier(0.2, 0, 0, 1) 40ms, transform 180ms cubic-bezier(0.2, 0, 0, 1) 40ms;
 }
 
-.sidebar-nav-heading {
-  font-size: 11px;
+.app-sidebar.is-collapsed .user-info {
+  opacity: 0;
+  transform: translateX(-6px);
+  pointer-events: none;
+  visibility: hidden;
+  width: 0;
+  max-width: 0;
+  flex: 0 0 0px;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  transition: opacity 100ms cubic-bezier(0.2, 0, 0, 1), transform 100ms cubic-bezier(0.2, 0, 0, 1), visibility 0s 120ms;
+}
+
+.user-name {
+  font-size: 13px;
   font-weight: 600;
-  text-transform: none;
-  letter-spacing: normal;
-  color: var(--c-texto-mutado);
-  padding: var(--space-3) var(--space-3) var(--space-1);
-  margin-top: var(--space-2);
-}
-
-.nav-item {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  padding: 10px 14px;
-  border-radius: var(--radius-md);
-  color: var(--c-texto-suave);
-  text-decoration: none;
-  font-size: 13.5px;
-  font-weight: 500;
-  transition: all var(--transition-fast);
-  position: relative;
-}
-
-.nav-item:hover {
-  background-color: var(--c-fondo);
   color: var(--c-texto);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.25;
 }
 
-.nav-item.active {
-  background-color: var(--c-primario-suave);
-  color: var(--c-primario);
+.user-role-badge {
+  display: inline-block;
+  font-size: 10px;
   font-weight: 600;
-}
-
-/* El destino activo se comunica
-   con fondo + color + peso; añadir una marca sería una señal redundante. */
-
-/* Apoyo Inmediato — acción de emergencia en sidebar.
-   Contorno rojo (token crítico) en vez de bloque sólido: visible y reconocible
-   sin dominar la atención del resto de la navegación. */
-.nav-item.nav-crisis {
-  background-color: transparent;
-  color: var(--c-critico);
-  border: 1.5px solid var(--c-critico);
-  font-weight: 700;
-  border-radius: var(--radius-md);
-}
-
-.nav-item.nav-crisis:hover {
-  background-color: var(--c-critico-bg);
-  color: var(--c-critico);
-}
-
-.nav-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-  flex-shrink: 0;
-  color: currentColor;
-}
-
-.sidebar-footer {
-  padding: var(--space-4) var(--space-4);
-  border-top: 1px solid var(--c-borde-suave);
-  background-color: var(--c-superficie);
-  position: relative; /* ancla del menú de cuenta emergente */
-}
-
-/* Tarjeta del Usuario en Barra Lateral — también es el botón del menú de cuenta */
-.user-card {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-2);
-  border-radius: var(--radius-md);
-  background: var(--c-fondo);
-  border: 1px solid var(--c-borde-suave);
-}
-
-/* Reset del <button> para que la tarjeta conserve su aspecto */
-.account-trigger {
-  width: 100%;
-  font: inherit;
-  cursor: pointer;
-  text-align: left;
-}
-
-.account-trigger:hover {
-  background: var(--c-superficie);
-  border-color: var(--c-primario);
+  padding: 1px 6px;
+  border-radius: var(--radius-xs, 4px);
+  line-height: 1.3;
+  margin-top: 2px;
 }
 
 .account-chevron {
   display: inline-flex;
   color: var(--c-texto-mutado);
   flex-shrink: 0;
-  transition: transform var(--transition-fast);
+  opacity: 1;
+  transition: transform var(--transition-fast), opacity 180ms cubic-bezier(0.2, 0, 0, 1) 40ms;
+}
+
+.app-sidebar.is-collapsed .account-chevron {
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  width: 0;
+  max-width: 0;
+  flex: 0 0 0px;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  transition: opacity 100ms cubic-bezier(0.2, 0, 0, 1), visibility 0s 120ms;
 }
 
 .account-trigger[aria-expanded="true"] .account-chevron {
   transform: rotate(180deg);
 }
 
-/* Menú de cuenta emergente: acciones de cuenta agrupadas sobre el pie del sidebar */
+/* Menú de cuenta emergente */
 .account-menu {
   position: absolute;
   bottom: calc(100% + 6px);
-  left: var(--space-4);
-  right: var(--space-4);
+  left: var(--space-3);
+  right: var(--space-3);
   background: var(--c-superficie);
   border: 1px solid var(--c-borde-suave);
   border-radius: var(--radius-md);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-md);
   padding: 4px;
   display: flex;
   flex-direction: column;
   gap: 2px;
   z-index: 130;
+}
+
+.account-menu.account-menu--collapsed {
+  left: calc(100% + 10px);
+  bottom: 8px;
+  right: auto;
+  min-width: 210px;
+  box-shadow: var(--shadow-lg);
+  z-index: 220;
 }
 
 .account-menu-item {
@@ -235,63 +634,47 @@
   text-decoration: none;
   cursor: pointer;
   text-align: left;
+  transition: background-color var(--transition-fast);
 }
 
 .account-menu-item:hover {
   background: var(--c-fondo);
 }
 
-.user-avatar {
-  width: 36px;
-  height: 36px;
-  border-radius: var(--radius-full);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  font-size: 13px;
-  flex-shrink: 0;
-  box-shadow: var(--shadow-xs);
-  border: 1.5px solid currentColor;
+.account-menu-item:focus-visible {
+  outline: 2px solid var(--c-primario);
 }
 
-.user-info {
-  flex: 1;
-  min-width: 0;
+.account-menu-logout {
+  color: var(--c-critico);
 }
 
-.user-name {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--c-texto);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.account-menu-logout:hover {
+  background: var(--c-critico-bg);
 }
 
-.user-role-badge {
-  display: inline-block;
-  font-size: 10.5px;
-  font-weight: 600;
-  padding: 1px 8px;
-  border-radius: var(--radius-xs, 4px);
-  line-height: 1.4;
-  margin-top: 2px;
-}
+/* =========================================================================
+   2. Área de Contenido Principal y Topbar (Navbar)
+   ========================================================================= */
 
-/* Área Principal */
 .app-main {
   flex: 1;
   display: flex;
   flex-direction: column;
   min-width: 0;
-  background-color: var(--c-fondo);
+  background-color: var(--c-superficie);
+  border-top-left-radius: 28px;
+  border-left: 1px solid var(--c-borde-suave);
+  border-top: 1px solid var(--c-borde-suave);
+  box-shadow: -4px 0 20px 0 rgba(15, 23, 42, 0.04);
+  position: relative;
 }
 
 /* Barra Superior (Topbar) */
 .app-topbar {
   height: 72px;
   background-color: var(--c-superficie);
+  border-top-left-radius: 28px;
   border-bottom: 1px solid var(--c-borde-suave);
   padding: 0 var(--space-6);
   display: flex;
@@ -300,11 +683,17 @@
   position: sticky;
   top: 0;
   z-index: 90;
-  box-shadow: var(--shadow-xs);
+  box-shadow: none;
 }
 
-/* Bloque izquierdo del topbar: sólo contexto del rol (campaña o área).
-   No lleva el título de la página: éste ya existe como h1 de cada vista. */
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+/* Contexto del rol en Topbar */
 .topbar-heading {
   display: flex;
   flex-direction: column;
@@ -313,15 +702,23 @@
 }
 
 .topbar-context {
-  font-size: 13px;
+  font-size: 13.5px;
   color: var(--c-texto-suave);
+  font-weight: 500;
   line-height: 1.3;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-/* Bloque de horario del turno (sólo agente): separado por un divisor sutil */
+/* Acciones en Topbar */
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+/* Bloque de horario del turno (sólo agente) */
 .topbar-shift {
   display: flex;
   flex-direction: column;
@@ -344,9 +741,7 @@
   line-height: 1.3;
 }
 
-/* Acceso de emergencia "Apoyo" en el topbar: sólo visible en móvil, donde la
-   tira desplazable no podía garantizar su visibilidad. Se anida en .app-topbar
-   para ganarle la cascada a components.css (que se importa después). */
+/* Acceso de emergencia móvil en topbar */
 .app-topbar .btn-topbar-crisis {
   display: none;
 }
@@ -371,31 +766,24 @@
   }
 }
 
-/* Ítems marcados mobileOnly (p. ej. "Mis datos" del agente): en escritorio viven
-   en el menú de cuenta del pie del sidebar; en móvil aparecen en la tira porque
-   el pie se oculta. Doble clase para ganar la cascada sobre components.css. */
-@media (min-width: 901px) {
-  .sidebar-nav .nav-item--mobile-only {
-    display: none;
-  }
-}
-
-/* En computador "Salir" vive en el menú de cuenta del sidebar; se oculta del topbar.
-   Se anida en .app-topbar porque components.css (que se importa después) fija su
-   display a inline-flex y la clase sola perdería la cascada. */
+/* En computador "Salir" vive en el menú de cuenta del sidebar */
 @media (min-width: 901px) {
   .app-topbar .btn-topbar-logout {
     display: none;
   }
 }
 
-.topbar-actions {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
+/* Ítems marcados mobileOnly (p. ej. "Mis datos") */
+@media (min-width: 901px) {
+  .sidebar-nav .nav-item--mobile-only {
+    display: none;
+  }
 }
 
-/* Contenedor de Página */
+/* =========================================================================
+   3. Contenedor de Página
+   ========================================================================= */
+
 .page-container {
   flex: 1;
   padding: var(--space-5) clamp(24px, 2.5vw, 40px);
@@ -428,15 +816,20 @@
   line-height: 1.45;
 }
 
-/* Responsive & Mobile Layout */
+/* =========================================================================
+   4. Responsive & Mobile Layout (Táctil y Ergonómico)
+   ========================================================================= */
+
 @media (max-width: 900px) {
   .app-layout {
     flex-direction: column;
     min-height: 100vh;
   }
 
-  .app-sidebar {
+  .app-sidebar,
+  .app-sidebar.is-collapsed {
     width: 100%;
+    min-width: 100%;
     height: auto;
     position: sticky;
     top: 0;
@@ -449,16 +842,34 @@
 
   .sidebar-header {
     padding: var(--space-3) var(--space-4);
-    height: auto; /* la altura fija de 72px sólo aplica en escritorio */
+    height: auto;
     justify-content: space-between;
+    background: var(--c-superficie);
+  }
+
+  .topbar-toggle-btn {
+    display: none !important;
+  }
+
+  .app-sidebar.is-collapsed .sidebar-brand-link {
+    display: flex;
+    justify-content: flex-start;
+    width: auto;
+    height: auto;
   }
 
   .sidebar-logo {
     height: 30px;
   }
 
-  .sidebar-brand-name {
+  .sidebar-brand-name,
+  .app-sidebar.is-collapsed .sidebar-brand-name {
     font-size: 15px;
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    width: auto !important;
+    transform: none !important;
   }
 
   .sidebar-nav {
@@ -474,6 +885,17 @@
     display: none;
   }
 
+  .sidebar-nav-group,
+  .nav-group-items,
+  .nav-group-tree {
+    flex-direction: row;
+    border-left: none;
+    margin-left: 0;
+    padding-left: 0;
+    gap: var(--space-2);
+    width: auto;
+  }
+
   .sidebar-nav-heading {
     display: none;
   }
@@ -484,23 +906,47 @@
     font-size: 12.5px;
     border-radius: var(--radius-md);
     flex-shrink: 0;
+    width: auto !important;
+    height: auto !important;
+    min-height: auto;
   }
 
-  .nav-item.active::before {
+  .nav-item-label,
+  .app-sidebar.is-collapsed .nav-item-label {
+    display: inline-block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    width: auto !important;
+    transform: none !important;
+  }
+
+  .nav-item-tooltip {
+    display: none !important;
+  }
+
+  .nav-item.nav-crisis,
+  .sidebar-crisis-container,
+  .sidebar-divider {
     display: none;
   }
 
-  .nav-item.nav-crisis {
-    /* En móvil el acceso de emergencia vive fijo en el topbar (visible sin scroll),
-       así que no se repite al final de la tira desplazable */
+  .sidebar-footer,
+  .app-sidebar.is-collapsed .sidebar-footer {
     display: none;
   }
 
-  .sidebar-footer {
-    display: none;
+  .app-main {
+    border-top-left-radius: 0;
+    border-left: none;
+    border-top: none;
+    box-shadow: none;
+    background-color: var(--c-fondo);
   }
 
   .app-topbar {
+    border-top-left-radius: 0;
+    background-color: var(--c-superficie);
+    border-bottom: 1px solid var(--c-borde-suave);
     padding: 0 var(--space-4);
     height: 52px;
     top: auto;
@@ -508,8 +954,6 @@
     z-index: 90;
   }
 
-  /* El topbar móvil (48–52px) no lleva encabezado: el título lo da la propia vista
-     y el contexto del rol (campaña) se omite para no repetir ni saturar. */
   .topbar-heading,
   .topbar-shift {
     display: none;
@@ -551,7 +995,7 @@
     margin-bottom: var(--space-4);
   }
 
-  .page-header>div:first-child {
+  .page-header > div:first-child {
     min-width: 0;
   }
 
