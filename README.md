@@ -52,16 +52,19 @@ La aplicación estará disponible en `http://localhost:5173`.
 ---
 
 ### 2. Levantar el Backend (API)
-El servidor se encuentra estructurado en el subdirectorio `backend/server`:
+El servidor se encuentra estructurado en el subdirectorio `backend`:
 
 ```bash
 # 1. Entrar al directorio del servidor
-cd backend/server
+cd backend
 
 # 2. Instalar dependencias
 npm install
 
-# 3. Iniciar el servidor
+# 3. Probar conexión con PostgreSQL
+npm run test:db
+
+# 4. Iniciar el servidor
 npm run dev
 ```
 
