@@ -3,6 +3,8 @@ import { localData, sessionData } from '../storage/browserStorage';
 // Servicio de autenticación, control de sesiones y permisos por rol (RBAC)
 
 import { pulsoStore } from '../storage/pulsoStore';
+import { env } from '../config/env';
+import { apiClient, setAuthToken, removeAuthToken } from '../api/apiClient';
 
 const SESSION_KEY = 'pulso360_current_session';
 const GUARD_KEY = 'pulso360_login_guard';
@@ -54,10 +56,20 @@ export const authService = {
     return Math.max(0, Number(getGuard().blockedUntil || 0) - Date.now());
   },
 
-  // Proceso de inicio de sesión (Asíncrono: preparado para fetch a Express en el futuro)
+  // Proceso de inicio de sesión (Asíncrono con fallback a mock)
+  /**
+   * @function login
+   * @description Autentica al usuario contra el backend REST. Si la API no está
+   * disponible (modo offline o fallback), intenta validar en el almacén local.
+   * ¿POR QUÉ este enfoque híbrido?
+   * Garantiza la tolerancia a fallos en BPO. Si se cae la red o el backend,
+   * no dejamos a la operación bloqueada, degradando transparentemente a la
+   * base local existente.
+   */
   login: async (email, password) => {
     // Seguridad: Ante cualquier intento de login, invalidamos cualquier sesión previa residual
     sessionData.removeItem(SESSION_KEY);
+    removeAuthToken(); // Limpieza preventiva del token API
 
     // 1. Verificar si está bloqueado por intentos fallidos
     const lockedTime = authService.getRemainingLockMs();
@@ -70,11 +82,7 @@ export const authService = {
       };
     }
 
-    // 2. Buscar al usuario en la base de datos (hoy pulsoStore, mañana tu API)
-    const data = pulsoStore.get();
-    const cleanEmail = String(email || '')
-      .trim()
-      .toLowerCase();
+    const cleanEmail = String(email || '').trim().toLowerCase();
 
     // Mapeo flexible de aliases corporativos y retrocompatibilidad
     const emailAliases = {
@@ -91,6 +99,66 @@ export const authService = {
     };
     const resolvedEmail = emailAliases[cleanEmail] || cleanEmail;
 
+    // INTENTO 1: LLAMADA A BACKEND (Si está habilitado el modo real)
+    if (!env.useMockStorage) {
+      try {
+        const payload = await apiClient.post('/auth/login', { correo: resolvedEmail, contrasena: password });
+        if (payload.success && payload.data) {
+          const { usuario, token } = payload.data;
+          setAuthToken(token); // Guardar JWT de sesión segura
+
+          /**
+           * NORMALIZACIÓN DE ROLES
+           * ¿POR QUÉ mapear de rol_codigo a role?
+           * El backend devuelve constantes robustas (ej: 'AGENTE'). El frontend
+           * espera llaves en minúscula (ej: 'agente') para renderizar menús y vistas.
+           * Mapeamos bidireccionalmente para no romper NINGÚN componente existente.
+           */
+          const roleMap = { AGENTE: 'agente', SUPERVISOR: 'supervisor', SST: 'sst', AUDITOR: 'auditor', ADMIN: 'admin' };
+          const normalizedRole = roleMap[usuario.rol_codigo] || usuario.rol_codigo?.toLowerCase() || 'agente';
+
+          const session = {
+            id: usuario.id,
+            name: `${usuario.nombres || ''} ${usuario.apellidos || ''}`.trim() || 'Usuario Backend',
+            email: usuario.correo,
+            role: normalizedRole,
+            rol_codigo: usuario.rol_codigo,
+            team: usuario.equipo_nombre || 'Equipo Principal',
+            campaign: usuario.campana_nombre || 'Campaña General',
+            status: usuario.estado || 'Activo',
+            lastActivity: Date.now()
+          };
+
+          saveGuard({ failed: 0, blockedUntil: 0 });
+          sessionData.setItem(SESSION_KEY, JSON.stringify(session));
+
+          pulsoStore.audit({
+            actor: `${session.id} (${roleLabels[session.role] || session.role})`,
+            action: 'INICIO_SESION',
+            target: 'Portal Web (vía API)'
+          });
+
+          return { success: true, user: session };
+        }
+      } catch (error) {
+        const isNetworkError = !error.response;
+        const isAuthError = error.response?.status === 400 || error.response?.status === 401;
+
+        if (isAuthError) {
+          return { success: false, message: error.response?.data?.error?.message || 'Credenciales inválidas' };
+        }
+
+        if (isNetworkError) {
+          console.info('Backend no disponible, ejecutando en modo de respaldo local');
+          // Continuar al bloque mock fallback
+        } else {
+          return { success: false, message: 'Ocurrió un error en el servidor. Intenta de nuevo más tarde.' };
+        }
+      }
+    }
+
+    // INTENTO 2: FALLBACK A DATOS LOCALES (Si useMockStorage es true, o API caída por red)
+    const data = pulsoStore.get();
     let user = (data.users || []).find(
       (u) => u.email.toLowerCase() === cleanEmail || u.email.toLowerCase() === resolvedEmail
     );
@@ -148,7 +216,7 @@ export const authService = {
       return { success: false, message: 'La cuenta se encuentra suspendida. Contacta al administrador.' };
     }
 
-    // 5. Autenticación exitosa
+    // 5. Autenticación exitosa (Fallback Local)
     saveGuard({ failed: 0, blockedUntil: 0 });
     const session = { ...user, lastActivity: Date.now() };
     sessionData.setItem(SESSION_KEY, JSON.stringify(session));
@@ -156,7 +224,7 @@ export const authService = {
     pulsoStore.audit({
       actor: `${user.id} (${roleLabels[user.role] || user.role})`,
       action: 'INICIO_SESION',
-      target: 'Portal Web'
+      target: 'Portal Web (Local)'
     });
 
     return { success: true, user: session };
@@ -173,6 +241,7 @@ export const authService = {
       });
     }
     sessionData.removeItem(SESSION_KEY);
+    removeAuthToken(); // Destruimos el token JWT de la API
   },
 
   // Revisa si un agente debe aceptar la póliza de privacidad antes de entrar

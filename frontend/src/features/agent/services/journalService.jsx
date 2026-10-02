@@ -1,5 +1,7 @@
 import { roleLabels } from '../../../core/auth/authService';
 import { pulsoStore } from '../../../core/storage/pulsoStore';
+import { apiClient, getAuthToken } from '../../../core/api/apiClient';
+import { env } from '../../../core/config/env';
 
 const unavailableJournal = () => ({ error: 'La entrada no está disponible para este usuario.' });
 const missingConsent = () => ({ error: 'La finalidad de bitácora no está activa para este usuario.' });
@@ -52,6 +54,23 @@ export function saveJournal(currentJournalId, currentUser, currentJournal, conte
     action: isNew ? 'REGISTRO_BITACORA' : 'ACTUALIZACION_BITACORA',
     target: `Bitácora ${journalPayload.id}`
   });
+
+  // Sincronización de nuevas bitácoras con el backend de forma asíncrona
+  /**
+   * ¿POR QUÉ sincronizar solo bitácoras nuevas al backend aquí?
+   * Para asegurar que la base de datos distribuida capture los insights
+   * primarios del agente, mientras el front maneja el modo offline gracias
+   * al pulsoStore local como fuente principal (Single Source of Truth de UI).
+   */
+  if (!env.useMockStorage && getAuthToken() && isNew) {
+    apiClient.post('/agent/journal', {
+      context: contextTag,
+      content: trimmed
+    }).catch(err => {
+      console.warn('Backend: Sincronización de bitácora fallida (modo offline).', err.message);
+    });
+  }
+
   return { journalPayload };
 }
 

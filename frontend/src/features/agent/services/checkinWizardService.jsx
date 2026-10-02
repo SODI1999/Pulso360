@@ -1,6 +1,8 @@
 import { QUESTIONS } from '../data/checkinWizardData';
 import { roleLabels } from '../../../core/auth/authService';
 import { pulsoStore } from '../../../core/storage/pulsoStore';
+import { apiClient, getAuthToken } from '../../../core/api/apiClient';
+import { env } from '../../../core/config/env';
 
 export function saveCheckin(existingCheckin, user, journeyKey, draft) {
   const storeData = pulsoStore.get();
@@ -28,5 +30,29 @@ export function saveCheckin(existingCheckin, user, journeyKey, draft) {
     action: existingCheckin ? 'EDICION_CHECKIN' : 'REGISTRO_CHECKIN',
     target: `Jornada ${journeyKey}`
   });
+
+  // Sincronización asíncrona desacoplada con el backend
+  /**
+   * ¿POR QUÉ se hace un fire-and-forget al backend?
+   * Mantenemos la UI ultra rápida (optimistic UI) basándonos en la
+   * actualización local del pulsoStore. El guardado remoto se hace
+   * en segundo plano. Si falla (por red inestable en BPO), se loguea,
+   * pero el agente sigue su proceso sin ver errores técnicos bloqueantes.
+   */
+  if (!env.useMockStorage && getAuthToken()) {
+    apiClient.post('/agent/checkin', {
+      journeyKey,
+      checkinDate: journeyKey,
+      energia: Number(draft.energia || 3),
+      cargaEmocional: Number(draft.cargaEmocional || 3),
+      recuperacion: Number(draft.recuperacion || 3),
+      apoyo: Number(draft.apoyo || 3),
+      distanciamiento: Number(draft.distanciamiento || 3),
+      ineficacia: Number(draft.ineficacia || 3)
+    }).catch((err) => {
+      console.warn('Backend: Sincronización de checkin fallida (modo offline).', err.message);
+    });
+  }
+
   return { payload };
 }
