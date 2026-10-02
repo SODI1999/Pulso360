@@ -1,7 +1,7 @@
 // src/App.jsx
 // Enrutador principal de Pulso360 con arquitectura RBAC y Layout Maestro
-
 import { useEffect } from 'react';
+import axios from 'axios';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { authService, roleHomePaths } from './core/auth/authService';
 import { ProtectedRoute } from './core/auth/ProtectedRoute';
@@ -62,16 +62,14 @@ function RootRedirect() {
 
 function App() {
   useEffect(() => {
-    // Verificación de conexión con el backend de Express
-    fetch(`${env.apiBaseUrl}/health`)
-      .then((res) => res.json())
-      .then((data) => console.log('Estado del Backend:', data.message))
-      .catch((err) => console.error('Error de conexión:', err));
-
-    fetch(`${env.apiBaseUrl}/items`)
-      .then((res) => res.json())
-      .then((data) => console.log('Items desde Express:', data))
-      .catch((err) => console.error('Error al obtener datos:', err));
+    axios
+      .get(env.apiBaseUrl)
+      .then(() => {
+        console.log('[Pulso360]: Conexion establecida con el servidor backend.');
+      })
+      .catch((err) => {
+        console.error('[Pulso360]: Error al conectar con el servidor backend:', err.message);
+      });
   }, []);
 
   return (
