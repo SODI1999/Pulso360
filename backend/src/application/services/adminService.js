@@ -7,12 +7,17 @@ import bcrypt from 'bcryptjs';
  * @module adminService
  */
 
+import * as auditorRepository from '../../infrastructure/repositories/auditorRepository.js';
+
 export const getUsers = async () => {
   return await adminRepository.findAllUsers();
 };
 
-export const createUser = async ({ rolCodigo, correo, nombres, apellidos, contrasena, equipoId }) => {
-  if (!correo || !nombres || !apellidos || !rolCodigo) {
+export const createUser = async ({ rolCodigo, correo, nombres, apellidos, contrasena, equipoId }, adminUserId) => {
+  const userNombres = nombres?.trim();
+  const userApellidos = apellidos?.trim() || '.';
+
+  if (!correo || !userNombres || !rolCodigo) {
     throw new AppError("Datos incompletos para crear usuario", 400, "MISSING_DATA");
   }
 
@@ -35,8 +40,8 @@ export const createUser = async ({ rolCodigo, correo, nombres, apellidos, contra
     rolCodigo,
     correo,
     contrasenaHash,
-    nombres,
-    apellidos,
+    nombres: userNombres,
+    apellidos: userApellidos,
     shiftStartHour
   });
 
@@ -50,11 +55,20 @@ export const createUser = async ({ rolCodigo, correo, nombres, apellidos, contra
     });
   }
 
+  await auditorRepository.createLog({
+    usuarioId: adminUserId || null,
+    rol: 'ADMIN',
+    action: 'CREACION_USUARIO',
+    resource: 'usuarios',
+    resourceId: newUser.id,
+    details: `Usuario ${newUser.correo_institucional || correo} creado con rol ${newUser.rol_codigo || rolCodigo}`
+  });
+
   return newUser;
 };
 
-export const setUserStatus = async (userId, status) => {
-  if (!['Activo', 'Inactivo'].includes(status)) {
+export const setUserStatus = async (userId, status, adminUserId) => {
+  if (!['Activo', 'Inactivo', 'Suspendido'].includes(status)) {
     throw new AppError("Estado de usuario no válido", 400, "INVALID_STATUS");
   }
 
@@ -62,6 +76,16 @@ export const setUserStatus = async (userId, status) => {
   if (!updated) {
     throw new AppError("Usuario no encontrado", 404, "USER_NOT_FOUND");
   }
+
+  await auditorRepository.createLog({
+    usuarioId: adminUserId || null,
+    rol: 'ADMIN',
+    action: status === 'Suspendido' ? 'SUSPENSION_USUARIO' : 'CAMBIO_ESTADO_USUARIO',
+    resource: 'usuarios',
+    resourceId: userId,
+    details: `Estado cambiado a ${status}`
+  });
+
   return updated;
 };
 
@@ -69,33 +93,54 @@ export const getOrganization = async () => {
   return await adminRepository.findAllCampaignsWithTeams();
 };
 
-export const createCampaign = async ({ codigo, nombre, descripcion }) => {
+export const createCampaign = async ({ codigo, nombre, descripcion }, adminUserId) => {
   if (!codigo || !nombre) {
     throw new AppError("Datos incompletos para la campaña", 400, "MISSING_DATA");
   }
   const crypto = await import('crypto');
   const id = crypto.randomUUID();
-  return await adminRepository.createCampaign({ id, codigo, nombre, descripcion });
+  const campaign = await adminRepository.createCampaign({ id, codigo, nombre, descripcion });
+
+  await auditorRepository.createLog({
+    usuarioId: adminUserId || null,
+    rol: 'ADMIN',
+    action: 'CREACION_CAMPANA',
+    resource: 'campanas',
+    resourceId: id,
+    details: `Campaña ${nombre} creada`
+  });
+
+  return campaign;
 };
 
-export const updateCampaign = async (campId, { nombre, activa }) => {
+export const updateCampaign = async (campId, { nombre, activa }, adminUserId) => {
   if (nombre === undefined || activa === undefined) {
     throw new AppError("Datos incompletos para actualizar la campaña", 400, "MISSING_DATA");
   }
-  const updated = await adminRepository.updateCampaign(campId, { nombre, activa });
+  const updated = await adminRepository.updateCampaign(campId, { nombre, activa: Boolean(activa) });
   if (!updated) {
     throw new AppError("Campaña no encontrada", 404, "CAMPAIGN_NOT_FOUND");
   }
+
+  await auditorRepository.createLog({
+    usuarioId: adminUserId || null,
+    rol: 'ADMIN',
+    action: 'ACTUALIZACION_CAMPANA',
+    resource: 'campanas',
+    resourceId: campId,
+    details: `Campaña actualizada: ${nombre}, activa: ${Boolean(activa)}`
+  });
+
   return updated;
 };
 
-export const createTeam = async ({ campanaId, codigo, nombre, supervisorNombre, nMiembros }) => {
+export const createTeam = async ({ campanaId, codigo, nombre, supervisorNombre, nMiembros }, adminUserId) => {
   if (!campanaId || !codigo || !nombre) {
     throw new AppError("Datos incompletos para el equipo", 400, "MISSING_DATA");
   }
   const crypto = await import('crypto');
   const id = crypto.randomUUID();
-  return await adminRepository.createTeam({
+  const team = await adminRepository.createTeam({
     id,
     campanaId,
     codigo,
@@ -104,17 +149,38 @@ export const createTeam = async ({ campanaId, codigo, nombre, supervisorNombre, 
     supervisorNombre,
     nMiembros: nMiembros || 0
   });
+
+  await auditorRepository.createLog({
+    usuarioId: adminUserId || null,
+    rol: 'ADMIN',
+    action: 'CREACION_EQUIPO',
+    resource: 'equipos',
+    resourceId: id,
+    details: `Equipo ${nombre} creado`
+  });
+
+  return team;
 };
 
-export const updateTeam = async (teamId, data) => {
+export const updateTeam = async (teamId, data, adminUserId) => {
   const { nombre, activo, supervisorNombre, nMiembros } = data;
   if (nombre === undefined || activo === undefined) {
     throw new AppError("Datos incompletos para actualizar el equipo", 400, "MISSING_DATA");
   }
-  const updated = await adminRepository.updateTeam(teamId, { nombre, activo, supervisorNombre, nMiembros });
+  const updated = await adminRepository.updateTeam(teamId, { nombre, activo: Boolean(activo), supervisorNombre, nMiembros });
   if (!updated) {
     throw new AppError("Equipo no encontrado", 404, "TEAM_NOT_FOUND");
   }
+
+  await auditorRepository.createLog({
+    usuarioId: adminUserId || null,
+    rol: 'ADMIN',
+    action: 'ACTUALIZACION_EQUIPO',
+    resource: 'equipos',
+    resourceId: teamId,
+    details: `Equipo actualizado: ${nombre}, activo: ${Boolean(activo)}`
+  });
+
   return updated;
 };
 

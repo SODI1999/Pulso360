@@ -1,5 +1,7 @@
 import { supervisorRepository } from '../../infrastructure/repositories/supervisorRepository.js';
 
+import * as auditorRepository from '../../infrastructure/repositories/auditorRepository.js';
+
 export const supervisorService = {
   async getAssignedActions(supervisorId) {
     if (!supervisorId) {
@@ -33,6 +35,15 @@ export const supervisorService = {
       fecha,
       progresoReportado,
       notaAvance
+    });
+
+    await auditorRepository.createLog({
+      usuarioId: supervisorId,
+      rol: 'SUPERVISOR',
+      action: 'SEGUIMIENTO_INTERVENCION',
+      resource: 'sst_intervenciones',
+      resourceId: intervencionId,
+      details: `${actionType || 'Avance'} (${progresoReportado}% avance)`
     });
 
     return result;

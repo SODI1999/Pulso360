@@ -133,5 +133,29 @@ export const sstRepository = {
     ];
     const { rows } = await pool.query(query, values);
     return rows[0];
+  },
+
+  async updateAlertStatus(alertId, { status, dismissReason }) {
+    const query = `
+      UPDATE sst_alertas 
+      SET status = $2, 
+          dismiss_reason = COALESCE($3, dismiss_reason), 
+          updated_at = CURRENT_TIMESTAMP 
+      WHERE id = $1 
+      RETURNING *;
+    `;
+    const { rows } = await pool.query(query, [alertId, status, dismissReason || null]);
+    return rows[0];
+  },
+
+  async updateSupportRequestStatus(requestId, status) {
+    const query = `
+      UPDATE solicitudes_apoyo 
+      SET status = $2 
+      WHERE id = $1 
+      RETURNING *;
+    `;
+    const { rows } = await pool.query(query, [requestId, status]);
+    return rows[0];
   }
 };

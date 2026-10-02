@@ -36,6 +36,16 @@ export const journalRepository = {
     `;
     const { rows } = await pool.query(query, [userId]);
     return rows.map(formatJournal);
+  },
+
+  async delete(id, userId) {
+    const query = `
+      DELETE FROM bitacoras
+      WHERE id = $1 AND usuario_id = $2
+      RETURNING id
+    `;
+    const { rows } = await pool.query(query, [id, userId]);
+    return rows[0] || null;
   }
 };
 

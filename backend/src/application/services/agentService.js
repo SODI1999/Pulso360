@@ -190,5 +190,46 @@ export const agentService = {
 
   async getMyJournalEntries(userId) {
     return await journalRepository.findByUserId(userId);
+  },
+
+  async deleteJournalEntry(userId, journalId) {
+    const deletedRow = await journalRepository.delete(journalId, userId);
+    if (!deletedRow) {
+      throw new AppError('Bitácora no encontrada o no pertenece al usuario', 'JOURNAL_NOT_FOUND', 404);
+    }
+    return { id: journalId, deleted: true };
+  },
+
+  async createHabeasDataRequest(userId, { type, note }) {
+    const validTypes = ['Portabilidad', 'Rectificacion', 'Supresion', 'Consulta'];
+    if (!validTypes.includes(type)) {
+      throw new AppError('Tipo de solicitud Habeas Data inválido', 'INVALID_HABEAS_TYPE', 400);
+    }
+
+    const year = new Date().getFullYear();
+    const suffix = Date.now().toString().slice(-4);
+    const id = `HD-${year}-${suffix}`;
+
+    const query = `
+      INSERT INTO solicitudes_habeas_data (
+        id, usuario_id, tipo_solicitud, notas, status
+      ) VALUES (
+        $1, $2, $3, $4, 'En tramite'
+      ) RETURNING *;
+    `;
+    // We should be using a repository here instead of pool.query directly according to Clean Layered Architecture.
+    // However, the instructions say "Inserta en la tabla solicitudes_habeas_data con status 'En tramite'."
+    // Let's use pool.query since no habeasDataRepository is mentioned, or check if we can import pool.
+    // Let me check what we can do. I'll use pool since agentService doesn't have habeasDataRepository. Wait, I shouldn't do raw SQL in service. Let me check if there's a repository. I'll just use raw pool or see if I should add it to userRepository. Let me use pool.
+    
+    // Wait, the prompt says "Inserta en la tabla solicitudes_habeas_data con status 'En tramite'." 
+    // And "Prohibido: No debe contener lógica de negocio... SQL en repositories". I better create a repository function. 
+    // Let me look at where to put it or just use `pool.query` here if no repository is given. Wait, the prompt just says "Inserta en la tabla...". Let's put the SQL in `userRepository.js` or `consentRepository.js` and call it. Or just create a quick repository object here. 
+    // Wait, let's create it in `userRepository`. I will modify `userRepository` later, but for now I'll just call `userRepository.createHabeasDataRequest`.
+    const newRequest = await userRepository.createHabeasDataRequest({
+      id, userId, type, note
+    });
+
+    return newRequest;
   }
 };

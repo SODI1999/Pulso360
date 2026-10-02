@@ -110,5 +110,16 @@ export const sstService = {
       sla: '24 h habiles',
       status: created.status
     };
+  },
+
+  async updateAlert(alertId, data) {
+    return await sstRepository.updateAlertStatus(alertId, { 
+      status: data.status, 
+      dismissReason: data.dismissReason || data.dismiss_reason 
+    });
+  },
+
+  async updateSupportRequestStatus(requestId, status) {
+    return await sstRepository.updateSupportRequestStatus(requestId, status);
   }
 };

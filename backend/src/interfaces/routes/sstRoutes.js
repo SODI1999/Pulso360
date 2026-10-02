@@ -71,4 +71,18 @@ router.post(
   sstController.createSupportRequest
 );
 
+router.patch(
+  '/alerts/:id',
+  authenticate,
+  requireRole(['SST']),
+  sstController.updateAlert
+);
+
+router.patch(
+  '/support-requests/:id/status',
+  authenticate,
+  requireRole(['SST']),
+  sstController.updateSupportRequestStatus
+);
+
 export default router;

@@ -16,7 +16,8 @@ export const getUsers = async (req, res, next) => {
 
 export const createUser = async (req, res, next) => {
   try {
-    const data = await adminService.createUser(req.body);
+    const adminUserId = req.user?.id;
+    const data = await adminService.createUser(req.body, adminUserId);
     res.status(201).json({ success: true, data });
   } catch (error) {
     next(error);
@@ -25,9 +26,10 @@ export const createUser = async (req, res, next) => {
 
 export const setUserStatus = async (req, res, next) => {
   try {
+    const adminUserId = req.user?.id;
     const { id } = req.params;
     const { status } = req.body;
-    const data = await adminService.setUserStatus(id, status);
+    const data = await adminService.setUserStatus(id, status, adminUserId);
     res.status(200).json({ success: true, data });
   } catch (error) {
     next(error);
@@ -45,7 +47,8 @@ export const getOrganization = async (req, res, next) => {
 
 export const createCampaign = async (req, res, next) => {
   try {
-    const data = await adminService.createCampaign(req.body);
+    const adminUserId = req.user?.id;
+    const data = await adminService.createCampaign(req.body, adminUserId);
     res.status(201).json({ success: true, data });
   } catch (error) {
     next(error);
@@ -54,8 +57,9 @@ export const createCampaign = async (req, res, next) => {
 
 export const updateCampaign = async (req, res, next) => {
   try {
+    const adminUserId = req.user?.id;
     const { id } = req.params;
-    const data = await adminService.updateCampaign(id, req.body);
+    const data = await adminService.updateCampaign(id, req.body, adminUserId);
     res.status(200).json({ success: true, data });
   } catch (error) {
     next(error);
@@ -64,7 +68,8 @@ export const updateCampaign = async (req, res, next) => {
 
 export const createTeam = async (req, res, next) => {
   try {
-    const data = await adminService.createTeam(req.body);
+    const adminUserId = req.user?.id;
+    const data = await adminService.createTeam(req.body, adminUserId);
     res.status(201).json({ success: true, data });
   } catch (error) {
     next(error);
@@ -73,8 +78,9 @@ export const createTeam = async (req, res, next) => {
 
 export const updateTeam = async (req, res, next) => {
   try {
+    const adminUserId = req.user?.id;
     const { id } = req.params;
-    const data = await adminService.updateTeam(id, req.body);
+    const data = await adminService.updateTeam(id, req.body, adminUserId);
     res.status(200).json({ success: true, data });
   } catch (error) {
     next(error);

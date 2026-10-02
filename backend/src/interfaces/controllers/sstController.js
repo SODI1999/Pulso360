@@ -96,5 +96,23 @@ export const sstController = {
     } catch (error) {
       next(error);
     }
+  },
+
+  async updateAlert(req, res, next) {
+    try {
+      const data = await sstService.updateAlert(req.params.id, req.body);
+      res.status(200).json({ success: true, data });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  async updateSupportRequestStatus(req, res, next) {
+    try {
+      const data = await sstService.updateSupportRequestStatus(req.params.id, req.body.status);
+      res.status(200).json({ success: true, data });
+    } catch (error) {
+      next(error);
+    }
   }
 };
