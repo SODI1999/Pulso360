@@ -54,3 +54,5 @@ export const testConnection = async () => {
     return false;
   }
 };
+
+export default pool;

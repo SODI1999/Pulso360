@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import authRoutes from './interfaces/routes/authRoutes.js';
 
 const app = express();
 
@@ -21,6 +22,9 @@ app.get("/api/v1/health", (req, res) => {
   });
 });
 
+// Montar rutas de autenticación
+app.use('/api/v1/auth', authRoutes);
+
 // Manejador para rutas no implementadas (Formato de error SDD unificado)
 app.use((req, res) => {
   res.status(404).json({
@@ -34,8 +38,10 @@ app.use((req, res) => {
 
 // Middleware centralizado de excepciones no controladas
 app.use((err, req, res, next) => {
-  console.error("[ServerError]:", err);
   const status = err.statusCode || 500;
+  if (status >= 500) {
+    console.error("[ServerError]:", err);
+  }
   res.status(status).json({
     success: false,
     error: {
