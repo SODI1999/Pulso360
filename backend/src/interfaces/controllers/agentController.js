@@ -1,0 +1,69 @@
+import { agentService } from '../../application/services/agentService.js';
+
+export const agentController = {
+  async getConsent(req, res, next) {
+    try {
+      const result = await agentService.getConsentStatus(req.user.id);
+      res.status(200).json({ success: true, data: result });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  async updateConsent(req, res, next) {
+    try {
+      const ipOrigen = req.ip || req.connection.remoteAddress;
+      const flags = (req.body && req.body.flags) ? req.body.flags : req.body;
+      const result = await agentService.updateConsent(req.user.id, flags || {}, ipOrigen);
+      res.status(200).json({ success: true, data: result });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  async getTodayCheckin(req, res, next) {
+    try {
+      const result = await agentService.getTodayCheckin(req.user.id);
+      res.status(200).json({ success: true, data: result });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  async registerCheckin(req, res, next) {
+    try {
+      const result = await agentService.registerCheckin(req.user.id, req.body);
+      res.status(201).json({ success: true, data: result });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  async getCheckinHistory(req, res, next) {
+    try {
+      const limit = parseInt(req.query.limit, 10) || 30;
+      const result = await agentService.getCheckinHistory(req.user.id, limit);
+      res.status(200).json({ success: true, data: result });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  async getJournalEntries(req, res, next) {
+    try {
+      const result = await agentService.getMyJournalEntries(req.user.id);
+      res.status(200).json({ success: true, data: result });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  async createJournalEntry(req, res, next) {
+    try {
+      const result = await agentService.createJournalEntry(req.user.id, req.body);
+      res.status(201).json({ success: true, data: result });
+    } catch (error) {
+      next(error);
+    }
+  }
+};

@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import authRoutes from './interfaces/routes/authRoutes.js';
+import agentRoutes from './interfaces/routes/agentRoutes.js';
 
 const app = express();
 
@@ -24,6 +25,9 @@ app.get("/api/v1/health", (req, res) => {
 
 // Montar rutas de autenticación
 app.use('/api/v1/auth', authRoutes);
+
+// Montar rutas de agente
+app.use('/api/v1/agent', agentRoutes);
 
 // Manejador para rutas no implementadas (Formato de error SDD unificado)
 app.use((req, res) => {

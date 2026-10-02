@@ -64,5 +64,16 @@ export const userRepository = {
       WHERE id = $1
     `;
     await pool.query(query, [id]);
+  },
+
+  async findActiveAssignment(userId) {
+    const query = `
+      SELECT id, usuario_id, equipo_id, tipo_asignacion, fecha_inicio, activa
+      FROM asignaciones_usuario_equipo
+      WHERE usuario_id = $1 AND activa = TRUE
+      LIMIT 1
+    `;
+    const { rows } = await pool.query(query, [userId]);
+    return rows[0] || null;
   }
 };
