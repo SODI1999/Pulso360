@@ -1,5 +1,5 @@
 import { roleHomePaths } from '../../../core/auth/roleNavigation';
-import { getNotificationData } from '../services/notificationsQueries';
+import { getNotificationData, fetchNotifications } from '../services/notificationsQueries';
 import { markNotificationRead } from '../services/notificationsService';
 import { markAllRead } from '../services/notificationsService';
 import { preferences } from '../../../core/storage/preferences';
@@ -12,13 +12,25 @@ export function useNotifications() {
   const navigate = useNavigate();
   const [version, setVersion] = useState(0);
   const [activeFilter, setActiveFilter] = useState('all'); // 'all' | 'unread'
+  const [apiNotifications, setApiNotifications] = useState(null);
 
   // Almacén reactivo
   const storeData = useMemo(() => {
     void version;
     return getNotificationData();
   }, [version]);
-  const allNotifications = useMemo(() => storeData.notifications || [], [storeData]);
+
+  useEffect(() => {
+    let active = true;
+    fetchNotifications().then(data => {
+      if (active && data) {
+        setApiNotifications(data);
+      }
+    });
+    return () => { active = false; };
+  }, [version]);
+
+  const allNotifications = useMemo(() => apiNotifications || storeData.notifications || [], [apiNotifications, storeData]);
 
   // Filtrar avisos pertenecientes al rol o usuario actual
   const userNotifications = useMemo(() => {
@@ -53,18 +65,18 @@ export function useNotifications() {
   };
 
   // Marcar aviso como leído y navegar a su destino
-  const handleNotificationClick = (e, notif) => {
+  const handleNotificationClick = async (e, notif) => {
     e.preventDefault();
 
-    if (markNotificationRead(notif)) setVersion((v) => v + 1);
+    if (await markNotificationRead(notif)) setVersion((v) => v + 1);
     if (notif.href) {
       navigate(notif.href);
     }
   };
 
   // Marcar todas las notificaciones como leídas
-  const handleMarkAllRead = () => {
-    if (markAllRead(currentUser)) setVersion((v) => v + 1);
+  const handleMarkAllRead = async () => {
+    if (await markAllRead(currentUser)) setVersion((v) => v + 1);
   };
 
   const formatDate = (isoString) => {

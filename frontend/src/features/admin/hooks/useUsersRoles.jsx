@@ -1,7 +1,7 @@
-import { getUserManagementData } from '../services/adminQueries';
-import { manageUser } from '../services/usersRolesService';
-import { saveCreateUser } from '../services/usersRolesService';
-import { useState, useMemo } from 'react';
+import { getUserManagementData, fetchAdminUsers, fetchAdminOrganization } from '../services/adminQueries';
+import { manageUser, saveCreateUser } from '../services/usersRolesService';
+import { useState, useMemo, useEffect } from 'react';
+import { env } from '../../../core/config/env';
 import { authService } from '../../../core/auth/authService';
 import { pulsoStore } from '../../../core/storage/pulsoStore';
 
@@ -18,11 +18,34 @@ export function useUsersRoles() {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
 
-  // Obtener datos del almacén
-  const storeData = useMemo(() => {
-    void version;
-    return getUserManagementData();
+  const [storeData, setStoreData] = useState(() => getUserManagementData());
+
+  useEffect(() => {
+    let active = true;
+    const loadData = async () => {
+      if (!env.useMockStorage) {
+        try {
+          const [usersData, orgData] = await Promise.all([
+            fetchAdminUsers(),
+            fetchAdminOrganization()
+          ]);
+          if (active) {
+            setStoreData({
+              users: usersData,
+              organization: orgData
+            });
+          }
+        } catch (error) {
+          console.error('Error fetching live users/roles data:', error);
+        }
+      } else {
+        setStoreData(getUserManagementData());
+      }
+    };
+    loadData();
+    return () => { active = false; };
   }, [version]);
+
   const users = useMemo(() => storeData.users || [], [storeData]);
 
   // Obtener ámbitos organizacionales válidos (Equipos + Áreas Centrales)
@@ -100,8 +123,8 @@ export function useUsersRoles() {
   }, [users, searchTerm, roleFilter]);
 
   // Creación atómica de usuario (RF-15)
-  const handleSaveCreateUser = ({ name, email, role, orgScopeId, status, onError }) => {
-    const operationResult = saveCreateUser(email, orgScopes, orgScopeId, name, role, status);
+  const handleSaveCreateUser = async ({ name, email, role, orgScopeId, status, onError }) => {
+    const operationResult = await saveCreateUser(email, orgScopes, orgScopeId, name, role, status);
     if (operationResult.error) {
       onError(operationResult.error);
       return;
@@ -121,8 +144,8 @@ export function useUsersRoles() {
   };
 
   // Gestión / edición de usuario (RF-15)
-  const handleSaveManageUser = ({ userId, newRole, newOrgScopeId, newStatus, onError }) => {
-    const result = manageUser(userId, newRole, newOrgScopeId, newStatus, orgScopes, actorLabel);
+  const handleSaveManageUser = async ({ userId, newRole, newOrgScopeId, newStatus, onError }) => {
+    const result = await manageUser(userId, newRole, newOrgScopeId, newStatus, orgScopes, actorLabel);
     if (result.error) {
       onError(result.error);
       return;

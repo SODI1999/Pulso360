@@ -1,6 +1,6 @@
-import { getReportData } from '../services/reportsQueries';
+import { getReportData, fetchReports } from '../services/reportsQueries';
 import { generateReport } from '../services/reportsService';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { authService } from '../../../core/auth/authService';
 import { pulsoStore } from '../../../core/storage/pulsoStore';
 
@@ -9,10 +9,21 @@ import { BASE_SCOPES } from '../data/reportsData';
 export function useReports() {
   const currentUser = authService.getCurrentUser();
   const [version, setVersion] = useState(0);
+  const [apiHistory, setApiHistory] = useState([]);
 
   const storeData = useMemo(() => {
     void version;
     return getReportData();
+  }, [version]);
+
+  useEffect(() => {
+    let active = true;
+    fetchReports().then(data => {
+      if (active && data) {
+        setApiHistory(data);
+      }
+    });
+    return () => { active = false; };
   }, [version]);
   const minThreshold = storeData.settings?.umbralMinimo || 5;
 
@@ -61,7 +72,7 @@ export function useReports() {
   });
 
   // Generar reporte
-  const handleGenerateReport = (e) => {
+  const handleGenerateReport = async (e) => {
     e.preventDefault();
     setFeedback('');
 
@@ -93,7 +104,7 @@ export function useReports() {
     };
 
     // Guardar en almacén
-    generateReport(newReportRecord);
+    await generateReport(newReportRecord);
 
     // Auditoría inmutable (RF-12 / RF-13)
     pulsoStore.audit({
@@ -169,7 +180,7 @@ export function useReports() {
     window.print();
   };
 
-  const reportHistory = storeData.reportHistory || [];
+  const reportHistory = apiHistory.length > 0 ? apiHistory : (storeData.reportHistory || []);
 
   return {
     currentUser,

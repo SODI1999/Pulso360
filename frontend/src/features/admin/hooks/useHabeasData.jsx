@@ -1,6 +1,7 @@
-import { getHabeasData } from '../services/adminQueries';
+import { getHabeasData, fetchHabeasData, fetchAdminUsers } from '../services/adminQueries';
 import { confirmAdvance } from '../services/habeasDataService';
-import { useState, useMemo } from 'react';
+import { useState, useEffect } from 'react';
+import { env } from '../../../core/config/env';
 import { authService } from '../../../core/auth/authService';
 
 import { STATUS_WORKFLOW } from '../data/habeasDataData';
@@ -15,10 +16,34 @@ export function useHabeasData() {
     nextStatus: ''
   });
 
-  const storeData = useMemo(() => {
-    void version;
-    return getHabeasData();
+  const [storeData, setStoreData] = useState(() => getHabeasData());
+
+  useEffect(() => {
+    let active = true;
+    const loadData = async () => {
+      if (!env.useMockStorage) {
+        try {
+          const [reqs, usersData] = await Promise.all([
+            fetchHabeasData(),
+            fetchAdminUsers()
+          ]);
+          if (active) {
+            setStoreData({
+              habeasRequests: reqs,
+              users: usersData
+            });
+          }
+        } catch (error) {
+          console.error('Error fetching live habeas data:', error);
+        }
+      } else {
+        setStoreData(getHabeasData());
+      }
+    };
+    loadData();
+    return () => { active = false; };
   }, [version]);
+
   const requests = storeData.habeasRequests || [];
   const users = storeData.users || [];
 
@@ -53,8 +78,8 @@ export function useHabeasData() {
   };
 
   // Confirmar avance
-  const handleConfirmAdvance = ({ requestId, nextStatus, note }) => {
-    const operationResult = confirmAdvance(requestId, nextStatus, note, actorLabel);
+  const handleConfirmAdvance = async ({ requestId, nextStatus, note }) => {
+    const operationResult = await confirmAdvance(requestId, nextStatus, note, actorLabel);
     if (!operationResult) return;
     const { req } = operationResult;
 

@@ -1,7 +1,8 @@
-import { getSystemParameters } from '../services/adminQueries';
+import { getSystemParameters, fetchAdminParams } from '../services/adminQueries';
 import { revertNlp } from '../services/systemParamsService';
 import { saveParams, publishPolicy, activateNlp, approveRule } from '../services/systemParamsService';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+import { env } from '../../../core/config/env';
 import { authService } from '../../../core/auth/authService';
 
 export function useSystemParams() {
@@ -9,10 +10,31 @@ export function useSystemParams() {
   const [version, setVersion] = useState(0);
 
   // Almacén
-  const storeData = useMemo(() => {
-    void version;
-    return getSystemParameters();
+  const [storeData, setStoreData] = useState(() => getSystemParameters());
+
+  useEffect(() => {
+    let active = true;
+    const loadData = async () => {
+      if (!env.useMockStorage) {
+        try {
+          const paramsData = await fetchAdminParams();
+          if (active) {
+            setStoreData((prev) => ({
+              ...prev,
+              settings: paramsData
+            }));
+          }
+        } catch (error) {
+          console.error('Error fetching live system params:', error);
+        }
+      } else {
+        setStoreData(getSystemParameters());
+      }
+    };
+    loadData();
+    return () => { active = false; };
   }, [version]);
+
   const settings = storeData.settings || {};
 
   // Estados locales de formularios
@@ -56,7 +78,7 @@ export function useSystemParams() {
   const isRisky = riskReasons.length > 0;
 
   // Guardado de Parámetros y SLAs
-  const handleSaveParams = (e) => {
+  const handleSaveParams = async (e) => {
     e.preventDefault();
     setParamError('');
     setParamFeedback('');
@@ -90,7 +112,7 @@ export function useSystemParams() {
       return;
     }
 
-    saveParams(
+    await saveParams(
       parsedN,
       checkinEditHours,
       minGranularity,
@@ -109,7 +131,7 @@ export function useSystemParams() {
   };
 
   // Publicación de nueva política (RF-15)
-  const handlePublishPolicy = (e) => {
+  const handlePublishPolicy = async (e) => {
     e.preventDefault();
     setPolicyFeedback('');
     const v = newPolicyVersion.trim();
@@ -119,7 +141,7 @@ export function useSystemParams() {
       return;
     }
 
-    publishPolicy(v, actorLabel);
+    await publishPolicy(v, actorLabel);
 
     setPolicyFeedback(`Política ${v} publicada con éxito. Notificación enviada a todos los agentes.`);
     setNewPolicyVersion('');

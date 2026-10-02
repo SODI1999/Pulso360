@@ -25,7 +25,7 @@ export function LoginPage({ initialMode }) {
     feedback,
     setFeedback,
     lockedRemainingMs,
-    handleSelectDemo,
+    fillCredentials,
     handleLoginSubmit,
     recoveryEmail,
     setRecoveryEmail,
@@ -95,7 +95,7 @@ export function LoginPage({ initialMode }) {
               />
 
               {/* Barra Horizontal Discreta de Perfiles Demo al pie del formulario */}
-              <DemoAccountsCard activeEmail={email} onSelectDemo={handleSelectDemo} />
+              <DemoAccountsCard activeEmail={email} onSelectDemo={(r) => fillCredentials(r.email)} />
 
               <footer className="auth-corporate-legal">
                 <p>Protección de datos conforme a la Ley 1581 de 2012 y estándares SG-SST</p>

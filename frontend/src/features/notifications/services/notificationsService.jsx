@@ -1,6 +1,8 @@
 import { pulsoStore } from '../../../core/storage/pulsoStore';
+import { apiClient, getAuthToken } from '../../../core/api/apiClient';
+import { env } from '../../../core/config/env';
 
-export function markAllRead(currentUser) {
+export async function markAllRead(currentUser) {
   const data = pulsoStore.get();
   let updated = false;
 
@@ -17,19 +19,36 @@ export function markAllRead(currentUser) {
     pulsoStore.save(data);
   }
 
+  if (!env.useMockStorage && getAuthToken()) {
+    try {
+      apiClient.patch('/notifications/read-all').catch(err => console.warn('Error markAllRead API in background', err));
+    } catch {
+      // Ignored
+    }
+  }
+
   return updated;
 }
 
-export function markNotificationRead(notif) {
+export async function markNotificationRead(notif) {
+  let updated = false;
   if (!notif.read) {
     const data = pulsoStore.get();
     const target = (data.notifications || []).find((item) => item.id === notif.id);
     if (target) {
       target.read = true;
       pulsoStore.save(data);
-      return true;
+      updated = true;
     }
   }
 
-  return false;
+  if (updated && !env.useMockStorage && getAuthToken()) {
+    try {
+      apiClient.patch('/notifications/' + notif.id + '/read').catch(err => console.warn('Error markNotificationRead API in background', err));
+    } catch {
+      // Ignored
+    }
+  }
+
+  return updated;
 }

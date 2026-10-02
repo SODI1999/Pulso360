@@ -1,8 +1,10 @@
 import { ROLE_LABELS } from '../data/usersRolesData';
 
 import { pulsoStore } from '../../../core/storage/pulsoStore';
+import { apiClient, getAuthToken } from '../../../core/api/apiClient';
+import { env } from '../../../core/config/env';
 
-export function saveCreateUser(email, orgScopes, orgScopeId, name, role, status) {
+export async function saveCreateUser(email, orgScopes, orgScopeId, name, role, status) {
   const data = pulsoStore.get();
 
   // Validación atómica: correo único
@@ -45,9 +47,24 @@ export function saveCreateUser(email, orgScopes, orgScopeId, name, role, status)
 
   data.users.push(newUser);
   pulsoStore.save(data);
+
+  if (!env.useMockStorage && getAuthToken()) {
+    try {
+      await apiClient.post('/admin/users', {
+        correo: email,
+        nombres: name,
+        apellidos: '',
+        rolCodigo: role.toUpperCase(),
+        equipoId: targetScope?.teamId
+      });
+    } catch (error) {
+      console.error('Error saving user via API:', error);
+    }
+  }
+
   return { newUser };
 }
-export function manageUser(userId, newRole, newOrgScopeId, newStatus, orgScopes, actorLabel) {
+export async function manageUser(userId, newRole, newOrgScopeId, newStatus, orgScopes, actorLabel) {
   const data = pulsoStore.get();
   const userIndex = (data.users || []).findIndex((u) => u.id === userId);
 
@@ -106,6 +123,14 @@ export function manageUser(userId, newRole, newOrgScopeId, newStatus, orgScopes,
 
   pulsoStore.save(data);
   auditEntries.forEach((entry) => pulsoStore.audit(entry));
+
+  if (!env.useMockStorage && getAuthToken() && currentStatus !== newStatus) {
+    try {
+      await apiClient.patch('/admin/users/' + userId + '/status', { status: newStatus });
+    } catch (error) {
+      console.error('Error updating user status via API:', error);
+    }
+  }
 
   return { user };
 }

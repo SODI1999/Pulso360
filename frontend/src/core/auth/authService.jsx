@@ -82,25 +82,10 @@ export const authService = {
 
     const cleanEmail = String(email || '').trim().toLowerCase();
 
-    // Mapeo flexible de aliases corporativos y retrocompatibilidad
-    const emailAliases = {
-      'agente@demo': 'agente@pulso360.co',
-      'supervisor@demo': 'supervisor@pulso360.co',
-      'sst@demo': 'sst@pulso360.co',
-      'auditor@demo': 'auditor@pulso360.co',
-      'admin@demo': 'admin@pulso360.co',
-      agente: 'agente@pulso360.co',
-      supervisor: 'supervisor@pulso360.co',
-      sst: 'sst@pulso360.co',
-      auditor: 'auditor@pulso360.co',
-      admin: 'admin@pulso360.co'
-    };
-    const resolvedEmail = emailAliases[cleanEmail] || cleanEmail;
-
     // INTENTO 1: LLAMADA A BACKEND (Si está habilitado el modo real)
     if (!env.useMockStorage) {
       try {
-        const payload = await apiClient.post('/auth/login', { correo: resolvedEmail, contrasena: password });
+        const payload = await apiClient.post('/auth/login', { correo: cleanEmail, contrasena: password });
         if (payload.success && payload.data) {
           const { usuario, token } = payload.data;
           setAuthToken(token); // Guardar JWT de sesión segura
@@ -155,6 +140,20 @@ export const authService = {
 
     // INTENTO 2: FALLBACK A DATOS LOCALES (Si useMockStorage es true, o API caída por red)
     const data = pulsoStore.get();
+    const emailAliases = {
+      'agente@demo': 'agente@pulso360.co',
+      'supervisor@demo': 'supervisor@pulso360.co',
+      'sst@demo': 'sst@pulso360.co',
+      'auditor@demo': 'auditor@pulso360.co',
+      'admin@demo': 'admin@pulso360.co',
+      agente: 'agente@pulso360.co',
+      supervisor: 'supervisor@pulso360.co',
+      sst: 'sst@pulso360.co',
+      auditor: 'auditor@pulso360.co',
+      admin: 'admin@pulso360.co'
+    };
+    const resolvedEmail = emailAliases[cleanEmail] || cleanEmail;
+
     let user = (data.users || []).find(
       (u) => u.email.toLowerCase() === cleanEmail || u.email.toLowerCase() === resolvedEmail
     );
@@ -279,30 +278,10 @@ export const authService = {
     }
 
     const data = pulsoStore.get();
-    const emailAliases = {
-      'agente@demo': 'agente@pulso360.co',
-      'supervisor@demo': 'supervisor@pulso360.co',
-      'sst@demo': 'sst@pulso360.co',
-      'auditor@demo': 'auditor@pulso360.co',
-      'admin@demo': 'admin@pulso360.co',
-      agente: 'agente@pulso360.co',
-      supervisor: 'supervisor@pulso360.co',
-      sst: 'sst@pulso360.co',
-      auditor: 'auditor@pulso360.co',
-      admin: 'admin@pulso360.co'
-    };
-    const resolvedEmail = emailAliases[cleanEmail] || cleanEmail;
+
     let foundUser = (data.users || []).find(
-      (u) => u.email.toLowerCase() === cleanEmail || u.email.toLowerCase() === resolvedEmail
+      (u) => u.email.toLowerCase() === cleanEmail
     );
-    if (!foundUser) {
-      const roleMatch = ['agente', 'supervisor', 'sst', 'auditor', 'admin'].find((r) =>
-        cleanEmail.startsWith(r)
-      );
-      if (roleMatch) {
-        foundUser = (data.users || []).find((u) => u.role === roleMatch);
-      }
-    }
 
     pulsoStore.audit({
       actor: foundUser ? foundUser.id + ' (' + foundUser.role + ')' : 'actor-no-identificado',

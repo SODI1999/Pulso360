@@ -1,6 +1,8 @@
 import { pulsoStore } from '../../../core/storage/pulsoStore';
+import { apiClient, getAuthToken } from '../../../core/api/apiClient';
+import { env } from '../../../core/config/env';
 
-export function saveParams(
+export async function saveParams(
   parsedN,
   checkinEditHours,
   minGranularity,
@@ -31,10 +33,19 @@ export function saveParams(
     action: 'MODIFICACION_PARAMETROS_SISTEMA',
     target: `N=${parsedN}; Granularidad=${minGranularity}; Retención=${parsedAudit}a; SLAs(Alta=${parsedAlta}h, Media=${parsedMedia}h, Baja=${parsedBaja}h, Sol=${parsedSol}h) · Justificación: ${justificationText}`
   });
+
+  if (!env.useMockStorage && getAuthToken()) {
+    try {
+      await apiClient.put('/admin/params/umbral_k_anonimato', { valor: parsedN });
+    } catch (error) {
+      console.error('Error updating umbral_k_anonimato via API:', error);
+    }
+  }
+
   return {};
 }
 
-export function publishPolicy(v, actorLabel) {
+export async function publishPolicy(v, actorLabel) {
   const data = pulsoStore.get();
   data.settings = data.settings || {};
   data.settings.policyVersions = data.settings.policyVersions || [];
@@ -70,6 +81,15 @@ export function publishPolicy(v, actorLabel) {
     action: 'PUBLICACION_POLITICA',
     target: `Versión ${v} publicada. Se requiere re-consentimiento de titulares.`
   });
+
+  if (!env.useMockStorage && getAuthToken()) {
+    try {
+      await apiClient.post('/admin/policies', { version: v, titulo: 'Política de Privacidad ' + v });
+    } catch (error) {
+      console.error('Error publishing policy via API:', error);
+    }
+  }
+
   return {};
 }
 

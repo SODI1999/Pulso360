@@ -36,9 +36,9 @@ export function useLoginCredentials(navigate) {
     return () => clearInterval(timer);
   }, [lockedRemainingMs]);
 
-  const handleSelectDemo = (roleData) => {
-    setEmail(roleData.email);
-    setPassword(roleData.password || 'Pulso360#2026');
+  const fillCredentials = (email) => {
+    setEmail(email);
+    setPassword('Pulso360#2026');
     setFeedback({ type: '', message: '' });
   };
 
@@ -114,7 +114,7 @@ export function useLoginCredentials(navigate) {
     feedback,
     setFeedback,
     lockedRemainingMs,
-    handleSelectDemo,
+    fillCredentials,
     handleLoginSubmit,
     handleSsoLogin
   };

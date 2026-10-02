@@ -1,10 +1,7 @@
-import { getOrganizationData } from '../services/adminQueries';
-import { resetDemo } from '../services/organizationService';
-import { saveTeam } from '../services/organizationService';
-import { saveCampaign } from '../services/organizationService';
-import { toggleCampaign, toggleTeam, saveSupervisorAssignment } from '../services/organizationService';
-import { useState, useMemo } from 'react';
-
+import { getOrganizationData, fetchAdminOrganization, fetchAdminUsers, fetchAdminParams } from '../services/adminQueries';
+import { resetDemo, saveTeam, saveCampaign, toggleCampaign, toggleTeam, saveSupervisorAssignment } from '../services/organizationService';
+import { useState, useMemo, useEffect } from 'react';
+import { env } from '../../../core/config/env';
 import { authService } from '../../../core/auth/authService';
 
 export function useOrganization() {
@@ -17,11 +14,36 @@ export function useOrganization() {
   const [teamModalState, setTeamModalState] = useState({ isOpen: false, campaign: null, team: null });
   const [assignModalState, setAssignModalState] = useState({ isOpen: false, campaign: null, team: null });
 
-  // Cargar datos reactivos del almacén
-  const storeData = useMemo(() => {
-    void version;
-    return getOrganizationData();
+  const [storeData, setStoreData] = useState(() => getOrganizationData());
+
+  useEffect(() => {
+    let active = true;
+    const loadData = async () => {
+      if (!env.useMockStorage) {
+        try {
+          const [org, usersData, paramsData] = await Promise.all([
+            fetchAdminOrganization(),
+            fetchAdminUsers(),
+            fetchAdminParams()
+          ]);
+          if (active) {
+            setStoreData({
+              organization: org,
+              users: usersData,
+              settings: paramsData
+            });
+          }
+        } catch (error) {
+          console.error('Error fetching live organization data:', error);
+        }
+      } else {
+        setStoreData(getOrganizationData());
+      }
+    };
+    loadData();
+    return () => { active = false; };
   }, [version]);
+
   const campaigns = useMemo(() => storeData.organization?.campaigns || [], [storeData]);
   const minThreshold = storeData.settings?.umbralMinimo || 5;
 
@@ -47,15 +69,15 @@ export function useOrganization() {
   const actorLabel = `${currentUser?.name || 'Administrador'} (${currentUser?.role || 'admin'})`;
 
   // --- Handlers de Campaña ---
-  const handleSaveCampaign = ({ id, name, active }) => {
-    const message = saveCampaign(id, name, active, actorLabel);
+  const handleSaveCampaign = async ({ id, name, active }) => {
+    const message = await saveCampaign(id, name, active, actorLabel);
     if (message) setFeedback(message);
     setCampaignModalState({ isOpen: false, campaign: null });
     setVersion((v) => v + 1);
   };
 
-  const handleToggleCampaign = (campId) => {
-    const operationResult = toggleCampaign(campId, actorLabel);
+  const handleToggleCampaign = async (campId) => {
+    const operationResult = await toggleCampaign(campId, actorLabel);
     if (!operationResult) return;
     const { camp, newStatus } = operationResult;
 
@@ -64,16 +86,16 @@ export function useOrganization() {
   };
 
   // --- Handlers de Equipo ---
-  const handleSaveTeam = ({ campId, teamId, name, n, supervisor, active }) => {
-    const message = saveTeam(campId, teamId, name, n, supervisor, active, actorLabel);
+  const handleSaveTeam = async ({ campId, teamId, name, n, supervisor, active }) => {
+    const message = await saveTeam(campId, teamId, name, n, supervisor, active, actorLabel);
     if (message === null) return;
     if (message) setFeedback(message);
     setTeamModalState({ isOpen: false, campaign: null, team: null });
     setVersion((v) => v + 1);
   };
 
-  const handleToggleTeam = (campId, teamId) => {
-    const operationResult = toggleTeam(campId, teamId, actorLabel);
+  const handleToggleTeam = async (campId, teamId) => {
+    const operationResult = await toggleTeam(campId, teamId, actorLabel);
     if (!operationResult) return;
     const { team, newStatus } = operationResult;
 
@@ -81,8 +103,8 @@ export function useOrganization() {
     setVersion((v) => v + 1);
   };
 
-  const handleSaveSupervisorAssignment = ({ campId, teamId, previousSupervisor, newSupervisor }) => {
-    const operationResult = saveSupervisorAssignment(
+  const handleSaveSupervisorAssignment = async ({ campId, teamId, previousSupervisor, newSupervisor }) => {
+    const operationResult = await saveSupervisorAssignment(
       campId,
       teamId,
       newSupervisor,

@@ -1,5 +1,5 @@
-import { getAuditData } from '../services/auditorQueries';
-import { useState, useMemo } from 'react';
+import { fetchAuditLogs } from '../services/auditorQueries';
+import { useState, useMemo, useEffect } from 'react';
 import { authService } from '../../../core/auth/authService';
 import { pulsoStore } from '../../../core/storage/pulsoStore';
 
@@ -15,11 +15,24 @@ export function useAuditLog() {
   const [feedback, setFeedback] = useState('');
   const [version, setVersion] = useState(0);
 
-  // Obtener logs del almacén
-  const logs = useMemo(() => {
-    void version;
-    const data = getAuditData();
-    return data.auditLogs || [];
+  const [logs, setLogs] = useState([]);
+
+  // Carga asíncrona de registros de auditoría
+  useEffect(() => {
+    let isMounted = true;
+    
+    const loadLogs = async () => {
+      const fetchedLogs = await fetchAuditLogs();
+      if (isMounted) {
+        setLogs(fetchedLogs);
+      }
+    };
+
+    loadLogs();
+
+    return () => {
+      isMounted = false;
+    };
   }, [version]);
 
   // Filtrado reactivo de registros

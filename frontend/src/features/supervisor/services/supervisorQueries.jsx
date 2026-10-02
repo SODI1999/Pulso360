@@ -42,3 +42,23 @@ export async function fetchSupervisorMetrics(equipoId, campanaId) {
     }
   };
 }
+
+/**
+ * Recupera las acciones e intervenciones asignadas al supervisor desde el backend.
+ *
+ * @returns {Promise<Array>} Arreglo de intervenciones
+ */
+export async function fetchSupervisorActions() {
+  if (!env.useMockStorage && getAuthToken()) {
+    try {
+      const response = await apiClient.get('/supervisor/actions');
+      return response;
+    } catch (err) {
+      console.warn('Backend inalcanzable, proveyendo datos mockeados de acciones.', err.message);
+    }
+  }
+
+  // Fallback: Datos mock locales
+  const data = pulsoStore.get();
+  return data.interventions || [];
+}

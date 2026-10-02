@@ -1,6 +1,8 @@
 import { pulsoStore } from '../../../core/storage/pulsoStore';
+import { apiClient, getAuthToken } from '../../../core/api/apiClient';
+import { env } from '../../../core/config/env';
 
-export function toggleCampaign(campId, actorLabel) {
+export async function toggleCampaign(campId, actorLabel) {
   const data = pulsoStore.get();
   const camp = (data.organization?.campaigns || []).find((c) => c.id === campId);
   if (!camp) return null;
@@ -17,7 +19,7 @@ export function toggleCampaign(campId, actorLabel) {
   return { camp, newStatus };
 }
 
-export function toggleTeam(campId, teamId, actorLabel) {
+export async function toggleTeam(campId, teamId, actorLabel) {
   const data = pulsoStore.get();
   const camp = (data.organization?.campaigns || []).find((c) => c.id === campId);
   const team = camp?.teams?.find((t) => t.id === teamId);
@@ -35,7 +37,7 @@ export function toggleTeam(campId, teamId, actorLabel) {
   return { team, newStatus };
 }
 
-export function saveSupervisorAssignment(campId, teamId, newSupervisor, actorLabel, previousSupervisor) {
+export async function saveSupervisorAssignment(campId, teamId, newSupervisor, actorLabel, previousSupervisor) {
   const data = pulsoStore.get();
   const camp = (data.organization?.campaigns || []).find((c) => c.id === campId);
   const team = camp?.teams?.find((t) => t.id === teamId);
@@ -49,9 +51,18 @@ export function saveSupervisorAssignment(campId, teamId, newSupervisor, actorLab
     action: 'ASIGNACION_SUPERVISOR',
     target: `Equipo "${team.name}" (${camp.name}) · Supervisor anterior: ${previousSupervisor} -> Nuevo supervisor: ${newSupervisor}`
   });
+
+  if (!env.useMockStorage && getAuthToken()) {
+    try {
+      await apiClient.patch('/admin/teams/' + teamId, { supervisorNombre: newSupervisor });
+    } catch (error) {
+      console.error('Error updating supervisor assignment via API:', error);
+    }
+  }
+
   return { team };
 }
-export function saveCampaign(id, name, active, actorLabel) {
+export async function saveCampaign(id, name, active, actorLabel) {
   let message = '';
   const data = pulsoStore.get();
   data.organization = data.organization || { campaigns: [] };
@@ -71,6 +82,14 @@ export function saveCampaign(id, name, active, actorLabel) {
         target: `${camp.id} · "${oldName}" -> "${name}"`
       });
       message = `Campaña "${name}" actualizada con éxito.`;
+
+      if (!env.useMockStorage && getAuthToken()) {
+        try {
+          await apiClient.patch('/admin/campaigns/' + id, { name, active });
+        } catch (error) {
+          console.error('Error updating campaign via API:', error);
+        }
+      }
     }
   } else {
     // Creación
@@ -89,12 +108,20 @@ export function saveCampaign(id, name, active, actorLabel) {
       target: `${newCamp.id} (${newCamp.name}) · Estado: ${active ? 'Activa' : 'Inactiva'}`
     });
     message = `Campaña "${name}" creada exitosamente.`;
+
+    if (!env.useMockStorage && getAuthToken()) {
+      try {
+        await apiClient.post('/admin/campaigns', { name, active });
+      } catch (error) {
+        console.error('Error creating campaign via API:', error);
+      }
+    }
   }
 
   return message;
 }
 
-export function saveTeam(campId, teamId, name, n, supervisor, active, actorLabel) {
+export async function saveTeam(campId, teamId, name, n, supervisor, active, actorLabel) {
   let message = '';
   const data = pulsoStore.get();
   const camp = (data.organization?.campaigns || []).find((c) => c.id === campId);
@@ -119,6 +146,14 @@ export function saveTeam(campId, teamId, name, n, supervisor, active, actorLabel
         target: `${team.id} en "${camp.name}" · "${oldName}" (N=${oldN}) -> "${name}" (N=${n})`
       });
       message = `Equipo "${name}" modificado con éxito.`;
+
+      if (!env.useMockStorage && getAuthToken()) {
+        try {
+          await apiClient.patch('/admin/teams/' + teamId, { name, n, supervisor, active });
+        } catch (error) {
+          console.error('Error updating team via API:', error);
+        }
+      }
     }
   } else {
     // Creación
@@ -138,6 +173,14 @@ export function saveTeam(campId, teamId, name, n, supervisor, active, actorLabel
       target: `${newTeam.id} (${newTeam.name}, N=${n}) en "${camp.name}" · Sup: ${supervisor} · Estado: ${active ? 'Activo' : 'Inactivo'}`
     });
     message = `Equipo "${name}" creado exitosamente en "${camp.name}".`;
+
+    if (!env.useMockStorage && getAuthToken()) {
+      try {
+        await apiClient.post('/admin/teams', { campId, name, n, supervisor, active });
+      } catch (error) {
+        console.error('Error creating team via API:', error);
+      }
+    }
   }
 
   return message;
