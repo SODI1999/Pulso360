@@ -3,6 +3,12 @@ import cors from "cors";
 import authRoutes from './interfaces/routes/authRoutes.js';
 import agentRoutes from './interfaces/routes/agentRoutes.js';
 import sstRoutes from './interfaces/routes/sstRoutes.js';
+import adminRoutes from './interfaces/routes/adminRoutes.js';
+import auditorRoutes from './interfaces/routes/auditorRoutes.js';
+import supervisorRoutes from './interfaces/routes/supervisorRoutes.js';
+import reportsRoutes from './interfaces/routes/reportsRoutes.js';
+import notificationsRoutes from './interfaces/routes/notificationsRoutes.js';
+
 
 const app = express();
 
@@ -32,6 +38,20 @@ app.use('/api/v1/agent', agentRoutes);
 
 // Montar rutas de SST
 app.use('/api/v1/sst', sstRoutes);
+
+// Montar rutas de administración
+app.use('/api/v1/admin', adminRoutes);
+
+// Montar rutas de auditoría
+app.use('/api/v1/auditor', auditorRoutes);
+
+// Montar rutas de supervisor
+app.use('/api/v1/supervisor', supervisorRoutes);
+
+// Montar rutas transversales
+app.use('/api/v1/reports', reportsRoutes);
+app.use('/api/v1/notifications', notificationsRoutes);
+
 
 // Manejador para rutas no implementadas (Formato de error SDD unificado)
 app.use((req, res) => {
