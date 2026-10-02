@@ -1,5 +1,7 @@
 import { roleLabels } from '../../../core/auth/authService';
 import { pulsoStore } from '../../../core/storage/pulsoStore';
+import { apiClient, getAuthToken } from '../../../core/api/apiClient';
+import { env } from '../../../core/config/env';
 
 export function createSupportRequest(
   isAnonymous,
@@ -47,5 +49,18 @@ export function createSupportRequest(
     action: 'SOLICITUD_ACOMPANAMIENTO',
     target: `Caso ${code}`
   });
+
+  if (!env.useMockStorage && getAuthToken()) {
+    apiClient.post('/sst/support-requests', {
+      mode: supportMode,
+      reason,
+      description: details.trim(),
+      urgency,
+      contactPreference: isAnonymous ? 'app' : contactPreference
+    }).catch(err => {
+      console.warn('Backend: Sincronización de solicitud de soporte fallida', err.message);
+    });
+  }
+
   return { code };
 }

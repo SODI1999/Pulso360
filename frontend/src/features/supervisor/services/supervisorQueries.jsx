@@ -9,11 +9,9 @@ export function getSupervisorData() {
 
 /**
  * Recupera las métricas calculadas del equipo desde el backend aplicando k-anonimato.
- * ¿POR QUÉ el backend calcula esto y no el frontend?
- * En roles de supervisión, enviar todos los check-ins sin procesar al frontend
- * vulneraría la privacidad de los agentes. El backend realiza la agregación,
- * evalúa el umbral (k-anonimato) y solo entrega métricas promediadas,
- * garantizando que el supervisor no pueda identificar respuestas individuales.
+ * Implementa el principio de Privacy by Design: la agregación matemática y evaluación
+ * de k-anonimato ocurre del lado del servidor para impedir la transferencia
+ * de microdatos no agregados al cliente.
  *
  * @param {string} equipoId
  * @param {string} campanaId

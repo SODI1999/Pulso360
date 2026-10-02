@@ -1,4 +1,6 @@
 import { pulsoStore } from '../../../core/storage/pulsoStore';
+import { apiClient, getAuthToken } from '../../../core/api/apiClient';
+import { env } from '../../../core/config/env';
 
 export function updateStatus(alertId, newStatus, user) {
   const storeData = pulsoStore.get();
@@ -70,5 +72,23 @@ export function createIntervention(alertItem, user) {
     action: 'CREACION_INTERVENCION_DESDE_ALERTA',
     target: `${newIntervention.title} asignada a ${targetAlert.campaign}`
   });
+
+  if (!env.useMockStorage && getAuthToken()) {
+    apiClient.post('/sst/interventions', {
+      alertaId: targetAlert.id,
+      title: newIntervention.title,
+      type: newIntervention.type,
+      campanaId: targetAlert.campaignId || 'camp-1',
+      equipoId: targetAlert.teamId || 'team-alpha-1',
+      startDate: newIntervention.startDate,
+      endDate: newIntervention.endDate,
+      indicator: newIntervention.indicator,
+      baseline: newIntervention.baseline,
+      targetDesc: newIntervention.target
+    }).catch(err => {
+      console.warn('Backend: Sincronización de intervención fallida', err.message);
+    });
+  }
+
   return {};
 }

@@ -13,11 +13,9 @@ const AUTH_TOKEN_KEY = 'pulso360_auth_token';
 
 /**
  * Guarda el token de autorización en el almacenamiento de sesión.
- * ¿POR QUÉ sessionStorage (a través de browserStorage)?
- * En entornos de BPO los puestos suelen ser compartidos (hot-desking).
- * Guardar el token en sessionStorage garantiza que al cerrar la pestaña
- * o el navegador, la sesión se invalide automáticamente, mitigando riesgos
- * de acceso no autorizado por el siguiente agente que use la máquina.
+ * Almacenamiento de sesión requerido para la mitigación de persistencia
+ * residual en estaciones de trabajo compartidas (hot-desking),
+ * típicas de centros de contacto BPO.
  * @param {string} token - Token JWT emitido por el backend.
  */
 export const setAuthToken = (token) => {
@@ -47,10 +45,8 @@ export const apiClient = axios.create({
 
 // Interceptor de Solicitud: Inyección del Token
 /**
- * ¿POR QUÉ un interceptor de solicitud?
- * Permite inyectar dinámicamente el token Bearer en los headers de cada
- * petición saliente, evitando tener que agregarlo manualmente en cada servicio,
- * manteniendo el código limpio y centralizado (DRY).
+ * Interceptor de solicitud para la inyección centralizada del token
+ * Bearer bajo el principio DRY.
  */
 apiClient.interceptors.request.use(
   (config) => {
@@ -65,11 +61,8 @@ apiClient.interceptors.request.use(
 
 // Interceptor de Respuesta: Manejo Global de Errores
 /**
- * ¿POR QUÉ un interceptor de respuesta?
- * Para interceptar respuestas de la API antes de que lleguen a los servicios de la UI.
- * Si el backend responde con un 401 (Token Inválido o Expirado), podemos limpiar la
- * sesión de inmediato a nivel de infraestructura, sin que cada componente visual
- * tenga que programar esta lógica de protección.
+ * Interceptor de respuesta que implementa la captura unificada de
+ * errores 401 para la revocación de credenciales a nivel de transporte.
  */
 apiClient.interceptors.response.use(
   (response) => {

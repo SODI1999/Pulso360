@@ -1,18 +1,23 @@
-import { getSstData } from '../services/sstQueries';
+import { getSstData, fetchSstAlerts } from '../services/sstQueries';
 import { updateStatus, confirmDismiss, createIntervention } from '../services/alertsInboxService';
-import { useState, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 
 import { authService } from '../../../core/auth/authService';
+import { env } from '../../../core/config/env';
 
 export function useAlertsInbox() {
   const user = authService.getCurrentUser();
   const [version, setVersion] = useState(0);
   const [dismissingAlert, setDismissingAlert] = useState(null);
   const [feedback, setFeedback] = useState('');
+  const [alerts, setAlerts] = useState([]);
 
-  const alerts = useMemo(() => {
-    void version;
-    return getSstData().alerts || [];
+  useEffect(() => {
+    if (!env.useMockStorage) {
+      fetchSstAlerts().then(setAlerts).catch(console.error);
+    } else {
+      setAlerts(getSstData().alerts || []);
+    }
   }, [version]);
 
   // Actualizar estado general de la alerta

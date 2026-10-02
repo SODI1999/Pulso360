@@ -59,12 +59,10 @@ export const authService = {
   // Proceso de inicio de sesión (Asíncrono con fallback a mock)
   /**
    * @function login
-   * @description Autentica al usuario contra el backend REST. Si la API no está
-   * disponible (modo offline o fallback), intenta validar en el almacén local.
-   * ¿POR QUÉ este enfoque híbrido?
-   * Garantiza la tolerancia a fallos en BPO. Si se cae la red o el backend,
-   * no dejamos a la operación bloqueada, degradando transparentemente a la
-   * base local existente.
+   * @description Autentica al usuario contra el backend REST. Implementa una
+   * arquitectura de resiliencia y degradación tolerante a fallos
+   * (Graceful Degradation) para asegurar continuidad de la operación en
+   * caso de desconexión del backend.
    */
   login: async (email, password) => {
     // Seguridad: Ante cualquier intento de login, invalidamos cualquier sesión previa residual
@@ -108,11 +106,9 @@ export const authService = {
           setAuthToken(token); // Guardar JWT de sesión segura
 
           /**
-           * NORMALIZACIÓN DE ROLES
-           * ¿POR QUÉ mapear de rol_codigo a role?
-           * El backend devuelve constantes robustas (ej: 'AGENTE'). El frontend
-           * espera llaves en minúscula (ej: 'agente') para renderizar menús y vistas.
-           * Mapeamos bidireccionalmente para no romper NINGÚN componente existente.
+           * Implementación del patrón Adapter para la homologación bidireccional
+           * entre la nomenclatura relacional del backend ('AGENTE') y las
+           * rutas dinámicas del cliente ('agente').
            */
           const roleMap = { AGENTE: 'agente', SUPERVISOR: 'supervisor', SST: 'sst', AUDITOR: 'auditor', ADMIN: 'admin' };
           const normalizedRole = roleMap[usuario.rol_codigo] || usuario.rol_codigo?.toLowerCase() || 'agente';

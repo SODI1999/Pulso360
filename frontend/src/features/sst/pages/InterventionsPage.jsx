@@ -1,11 +1,12 @@
-import { getSstData } from '../services/sstQueries';
+import { getSstData, fetchSstInterventions } from '../services/sstQueries';
 import { saveIntervention } from '../services/interventionsService';
 // src/features/sst/pages/InterventionsPage.jsx
 // Gestión macro de intervenciones colectivas y planes de acción preventivos (RF-09)
 
-import { useState, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { authService } from '../../../core/auth/authService';
 import { pulsoStore } from '../../../core/storage/pulsoStore';
+import { env } from '../../../core/config/env';
 import { Icon } from '../../../core/components/Icon';
 import { NewInterventionForm } from '../components/NewInterventionForm';
 
@@ -16,10 +17,14 @@ export function InterventionsPage() {
   const user = authService.getCurrentUser();
   const [version, setVersion] = useState(0);
   const [feedback, setFeedback] = useState('');
+  const [interventions, setInterventions] = useState([]);
 
-  const interventions = useMemo(() => {
-    void version;
-    return getSstData().interventions || [];
+  useEffect(() => {
+    if (!env.useMockStorage) {
+      fetchSstInterventions().then(setInterventions).catch(console.error);
+    } else {
+      setInterventions(getSstData().interventions || []);
+    }
   }, [version]);
 
   const handleSaveIntervention = (newIntervention) => {

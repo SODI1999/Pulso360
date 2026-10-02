@@ -1,8 +1,9 @@
-import { getSstData } from '../services/sstQueries';
+import { getSstData, fetchSstSupportRequests } from '../services/sstQueries';
 import { advanceStatus } from '../services/supportInboxService';
-import { useState, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { authService } from '../../../core/auth/authService';
 import { pulsoStore } from '../../../core/storage/pulsoStore';
+import { env } from '../../../core/config/env';
 
 import { WORKFLOW_STATES } from '../data/supportInboxData';
 
@@ -10,12 +11,19 @@ export function useSupportInbox() {
   const user = authService.getCurrentUser();
   const [version, setVersion] = useState(0);
   const [feedback, setFeedback] = useState('');
+  const [requests, setRequests] = useState([]);
 
   const storeData = getSstData();
 
-  const requests = useMemo(() => {
-    void version;
-    return getSstData().supportRequests || [];
+  useEffect(() => {
+    if (!env.useMockStorage) {
+      fetchSstSupportRequests().then((data) => {
+        // Preservando que las solicitudes con mode === 'anonimo' no expongan la identidad
+        setRequests(data);
+      }).catch(console.error);
+    } else {
+      setRequests(getSstData().supportRequests || []);
+    }
   }, [version]);
 
   // Avanzar estado del caso según flujo predefinido

@@ -57,10 +57,8 @@ export function saveJournal(currentJournalId, currentUser, currentJournal, conte
 
   // Sincronización de nuevas bitácoras con el backend de forma asíncrona
   /**
-   * ¿POR QUÉ sincronizar solo bitácoras nuevas al backend aquí?
-   * Para asegurar que la base de datos distribuida capture los insights
-   * primarios del agente, mientras el front maneja el modo offline gracias
-   * al pulsoStore local como fuente principal (Single Source of Truth de UI).
+   * Implementa la persistencia asíncrona de insights personales bajo consentimiento C2,
+   * asegurando resiliencia offline.
    */
   if (!env.useMockStorage && getAuthToken() && isNew) {
     apiClient.post('/agent/journal', {

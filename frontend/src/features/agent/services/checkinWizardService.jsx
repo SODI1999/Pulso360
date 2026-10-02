@@ -33,11 +33,8 @@ export function saveCheckin(existingCheckin, user, journeyKey, draft) {
 
   // Sincronización asíncrona desacoplada con el backend
   /**
-   * ¿POR QUÉ se hace un fire-and-forget al backend?
-   * Mantenemos la UI ultra rápida (optimistic UI) basándonos en la
-   * actualización local del pulsoStore. El guardado remoto se hace
-   * en segundo plano. Si falla (por red inestable en BPO), se loguea,
-   * pero el agente sigue su proceso sin ver errores técnicos bloqueantes.
+   * Implementa el patrón Optimistic UI mediante sincronización asíncrona
+   * tolerante a fallos de red, garantizando resiliencia operativa.
    */
   if (!env.useMockStorage && getAuthToken()) {
     apiClient.post('/agent/checkin', {
