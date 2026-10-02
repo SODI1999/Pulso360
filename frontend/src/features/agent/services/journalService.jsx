@@ -55,16 +55,11 @@ export function saveJournal(currentJournalId, currentUser, currentJournal, conte
     target: `Bitácora ${journalPayload.id}`
   });
 
-  // Sincronización de nuevas bitácoras con el backend de forma asíncrona
-  /**
-   * Implementa la persistencia asíncrona de insights personales bajo consentimiento C2,
-   * asegurando resiliencia offline.
-   */
   if (!env.useMockStorage && getAuthToken() && isNew) {
     apiClient.post('/agent/journal', {
       context: contextTag,
       content: trimmed
-    }).catch(err => {
+    }).catch((err) => {
       console.warn('Backend: Sincronización de bitácora fallida (modo offline).', err.message);
     });
   }
@@ -84,6 +79,12 @@ export function deleteJournal(currentJournalId, currentUser) {
     action: 'ELIMINACION_BITACORA',
     target: `Bitácora ${currentJournalId}`
   });
+
+  if (!env.useMockStorage && getAuthToken()) {
+    apiClient.delete('/agent/journal/' + currentJournalId).catch((err) => {
+      console.warn('Backend: Eliminación de bitácora fallida (modo offline).', err.message);
+    });
+  }
   return {};
 }
 
@@ -190,6 +191,18 @@ export function createPriorityRequest(currentUser, crisisMode) {
     action: 'SOLICITUD_CONTACTO_PRIORITARIO',
     target: `Caso ${code} (${isAnonymous ? 'Modalidad Anónima' : 'Modalidad Confidencial Identificada'})`
   });
+
+  if (!env.useMockStorage && getAuthToken()) {
+    apiClient.post('/sst/support-requests', {
+      mode: crisisMode,
+      urgency: 'alta',
+      reason: 'Contacto prioritario solicitado por el titular',
+      description: 'Contacto prioritario originado desde la bitácora.',
+      contactPreference: isAnonymous ? 'app' : 'directo'
+    }).catch((err) => {
+      console.warn('Backend: Sincronización de solicitud prioritaria fallida.', err.message);
+    });
+  }
 
   return { code };
 }

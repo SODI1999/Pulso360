@@ -1,4 +1,6 @@
 import { pulsoStore } from '../../../core/storage/pulsoStore';
+import { apiClient, getAuthToken } from '../../../core/api/apiClient';
+import { env } from '../../../core/config/env';
 
 export function advanceStatus(requestId, WORKFLOW_STATES) {
   const data = pulsoStore.get();
@@ -10,5 +12,12 @@ export function advanceStatus(requestId, WORKFLOW_STATES) {
 
   req.status = nextStatus;
   pulsoStore.save(data);
+
+  if (!env.useMockStorage && getAuthToken()) {
+    apiClient.patch('/sst/support-requests/' + requestId + '/status', { status: nextStatus }).catch((err) => {
+      console.warn('Backend: Sincronización de avance de caso fallida', err.message);
+    });
+  }
+
   return { req, nextStatus };
 }

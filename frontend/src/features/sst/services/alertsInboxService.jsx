@@ -15,6 +15,13 @@ export function updateStatus(alertId, newStatus, user) {
     action: 'CAMBIO_ESTADO_ALERTA',
     target: `${alertItem.id} (${alertItem.rule}) -> ${newStatus}`
   });
+
+  if (!env.useMockStorage && getAuthToken()) {
+    apiClient.patch('/sst/alerts/' + alertId, { status: newStatus }).catch((error) => {
+      console.warn('Backend: Sincronización de alerta fallida', error.message);
+    });
+  }
+
   return { alertItem };
 }
 
@@ -32,6 +39,13 @@ export function confirmDismiss(alertId, reason, user) {
     action: 'DESCARTE_ALERTA',
     target: `${alertItem.id} -> DESCARTADA | Justificación: "${reason}"`
   });
+
+  if (!env.useMockStorage && getAuthToken()) {
+    apiClient.patch('/sst/alerts/' + alertId, { status: 'DESCARTADA', dismissReason: reason }).catch((error) => {
+      console.warn('Backend: Sincronización de descarte de alerta fallida', error.message);
+    });
+  }
+
   return {};
 }
 
@@ -85,7 +99,7 @@ export function createIntervention(alertItem, user) {
       indicator: newIntervention.indicator,
       baseline: newIntervention.baseline,
       targetDesc: newIntervention.target
-    }).catch(err => {
+    }).catch((err) => {
       console.warn('Backend: Sincronización de intervención fallida', err.message);
     });
   }

@@ -5,6 +5,28 @@ import { apiClient, getAuthToken } from '../../../core/api/apiClient';
 import { env } from '../../../core/config/env';
 
 export async function saveCreateUser(email, orgScopes, orgScopeId, name, role, status) {
+  if (!env.useMockStorage && getAuthToken()) {
+    const targetScope = orgScopes.find((s) => s.id === orgScopeId);
+    if (!targetScope) {
+      return { error: 'La asignación organizacional seleccionada no es válida.' };
+    }
+    const parts = name.trim().split(/\s+/);
+    const nombres = parts[0] || name.trim();
+    const apellidos = parts.slice(1).join(' ') || '.';
+    try {
+      const res = await apiClient.post('/admin/users', {
+        correo: email,
+        nombres,
+        apellidos,
+        rolCodigo: role.toUpperCase(),
+        equipoId: targetScope?.teamId
+      });
+      return { newUser: res.data };
+    } catch (error) {
+      return { error: error.response?.data?.error?.message || 'Error al registrar usuario en el servidor.' };
+    }
+  }
+
   const data = pulsoStore.get();
 
   // Validación atómica: correo único
@@ -48,23 +70,20 @@ export async function saveCreateUser(email, orgScopes, orgScopeId, name, role, s
   data.users.push(newUser);
   pulsoStore.save(data);
 
+  return { newUser };
+}
+
+export async function manageUser(userId, newRole, newOrgScopeId, newStatus, orgScopes, actorLabel) {
   if (!env.useMockStorage && getAuthToken()) {
     try {
-      await apiClient.post('/admin/users', {
-        correo: email,
-        nombres: name,
-        apellidos: '',
-        rolCodigo: role.toUpperCase(),
-        equipoId: targetScope?.teamId
-      });
+      // Nota: Asumiendo que se actualiza el estado según la instrucción del plan
+      await apiClient.patch('/admin/users/' + userId + '/status', { status: newStatus });
+      return { user: { id: userId, role: newRole, status: newStatus } };
     } catch (error) {
-      console.error('Error saving user via API:', error);
+      return { error: error.response?.data?.error?.message || 'Error al actualizar estado en el servidor.' };
     }
   }
 
-  return { newUser };
-}
-export async function manageUser(userId, newRole, newOrgScopeId, newStatus, orgScopes, actorLabel) {
   const data = pulsoStore.get();
   const userIndex = (data.users || []).findIndex((u) => u.id === userId);
 
@@ -123,14 +142,6 @@ export async function manageUser(userId, newRole, newOrgScopeId, newStatus, orgS
 
   pulsoStore.save(data);
   auditEntries.forEach((entry) => pulsoStore.audit(entry));
-
-  if (!env.useMockStorage && getAuthToken() && currentStatus !== newStatus) {
-    try {
-      await apiClient.patch('/admin/users/' + userId + '/status', { status: newStatus });
-    } catch (error) {
-      console.error('Error updating user status via API:', error);
-    }
-  }
 
   return { user };
 }

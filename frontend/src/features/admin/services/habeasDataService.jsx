@@ -3,6 +3,15 @@ import { apiClient, getAuthToken } from '../../../core/api/apiClient';
 import { env } from '../../../core/config/env';
 
 export async function confirmAdvance(requestId, nextStatus, note, actorLabel) {
+  if (!env.useMockStorage && getAuthToken()) {
+    try {
+      const res = await apiClient.patch('/admin/habeas-data/' + requestId, { status: nextStatus, note });
+      return { req: res.data };
+    } catch (error) {
+      return { error: error.response?.data?.error?.message || 'Error en el servidor' };
+    }
+  }
+
   const data = pulsoStore.get();
   const req = (data.habeasRequests || []).find((item) => item.id === requestId);
   if (!req) return null;
@@ -17,14 +26,6 @@ export async function confirmAdvance(requestId, nextStatus, note, actorLabel) {
     action: 'GESTION_HABEAS_DATA',
     target: `${req.id} (${req.type}) -> Estado: ${nextStatus} · Constancia: ${note || 'Sin nota'}`
   });
-
-  if (!env.useMockStorage && getAuthToken()) {
-    try {
-      await apiClient.patch('/admin/habeas-data/' + requestId, { status: nextStatus, note });
-    } catch (error) {
-      console.error('Error updating habeas data request via API:', error);
-    }
-  }
 
   return { req };
 }

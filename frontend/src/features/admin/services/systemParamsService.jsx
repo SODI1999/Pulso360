@@ -14,6 +14,16 @@ export async function saveParams(
   justification,
   actorLabel
 ) {
+  if (!env.useMockStorage && getAuthToken()) {
+    try {
+      await apiClient.put('/admin/params/umbral_k_anonimato', { valor: parsedN });
+      // Asumiendo éxito, continuamos o retornamos, pero la instrucción solo pide el API call y fallback legacy
+      return {};
+    } catch (error) {
+      return { error: error.response?.data?.error?.message || 'Error en el servidor' };
+    }
+  }
+
   const data = pulsoStore.get();
   data.settings = data.settings || {};
   data.settings.umbralMinimo = parsedN;
@@ -34,18 +44,19 @@ export async function saveParams(
     target: `N=${parsedN}; Granularidad=${minGranularity}; Retención=${parsedAudit}a; SLAs(Alta=${parsedAlta}h, Media=${parsedMedia}h, Baja=${parsedBaja}h, Sol=${parsedSol}h) · Justificación: ${justificationText}`
   });
 
-  if (!env.useMockStorage && getAuthToken()) {
-    try {
-      await apiClient.put('/admin/params/umbral_k_anonimato', { valor: parsedN });
-    } catch (error) {
-      console.error('Error updating umbral_k_anonimato via API:', error);
-    }
-  }
-
   return {};
 }
 
 export async function publishPolicy(v, actorLabel) {
+  if (!env.useMockStorage && getAuthToken()) {
+    try {
+      await apiClient.post('/admin/policies', { version: v, titulo: 'Política de Privacidad ' + v });
+      return {};
+    } catch (error) {
+      return { error: error.response?.data?.error?.message || 'Error en el servidor' };
+    }
+  }
+
   const data = pulsoStore.get();
   data.settings = data.settings || {};
   data.settings.policyVersions = data.settings.policyVersions || [];
@@ -81,14 +92,6 @@ export async function publishPolicy(v, actorLabel) {
     action: 'PUBLICACION_POLITICA',
     target: `Versión ${v} publicada. Se requiere re-consentimiento de titulares.`
   });
-
-  if (!env.useMockStorage && getAuthToken()) {
-    try {
-      await apiClient.post('/admin/policies', { version: v, titulo: 'Política de Privacidad ' + v });
-    } catch (error) {
-      console.error('Error publishing policy via API:', error);
-    }
-  }
 
   return {};
 }

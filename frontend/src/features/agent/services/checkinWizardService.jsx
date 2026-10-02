@@ -31,11 +31,6 @@ export function saveCheckin(existingCheckin, user, journeyKey, draft) {
     target: `Jornada ${journeyKey}`
   });
 
-  // Sincronización asíncrona desacoplada con el backend
-  /**
-   * Implementa el patrón Optimistic UI mediante sincronización asíncrona
-   * tolerante a fallos de red, garantizando resiliencia operativa.
-   */
   if (!env.useMockStorage && getAuthToken()) {
     apiClient.post('/agent/checkin', {
       journeyKey,
@@ -47,7 +42,7 @@ export function saveCheckin(existingCheckin, user, journeyKey, draft) {
       distanciamiento: Number(draft.distanciamiento || 3),
       ineficacia: Number(draft.ineficacia || 3)
     }).catch((err) => {
-      console.warn('Backend: Sincronización de checkin fallida (modo offline).', err.message);
+      console.warn('Backend: Sincronización de check-in fallida (modo offline).', err.message);
     });
   }
 

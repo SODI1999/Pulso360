@@ -57,7 +57,7 @@ export function createSupportRequest(
       description: details.trim(),
       urgency,
       contactPreference: isAnonymous ? 'app' : contactPreference
-    }).catch(err => {
+    }).catch((err) => {
       console.warn('Backend: Sincronización de solicitud de soporte fallida', err.message);
     });
   }

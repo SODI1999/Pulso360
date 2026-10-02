@@ -1,5 +1,7 @@
 import { roleLabels } from '../../../core/auth/authService';
 import { pulsoStore } from '../../../core/storage/pulsoStore';
+import { apiClient, getAuthToken } from '../../../core/api/apiClient';
+import { env } from '../../../core/config/env';
 
 export function createHabeasRequest(requestType, currentUser, noteText) {
   const storeData = pulsoStore.get();
@@ -29,6 +31,13 @@ export function createHabeasRequest(requestType, currentUser, noteText) {
     action: 'SOLICITUD_HABEAS_DATA',
     target: `${generatedId} · ${requestType}`
   });
+
+  if (!env.useMockStorage && getAuthToken()) {
+    apiClient.post('/agent/habeas-data', { type: requestType, note: noteText }).catch((err) => {
+      console.warn('Backend: Sincronización de solicitud Habeas Data fallida', err.message);
+    });
+  }
+
   return { generatedId };
 }
 
