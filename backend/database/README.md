@@ -1,163 +1,92 @@
-# P11 · Persistence — Especificación del Modelo de Datos (PostgreSQL)
+# P11 · Persistence — Especificación del Modelo de Datos Canónico (24 Tablas)
 
 ## 1. Identificación del Componente
 * **Paquete Arquitectónico**: `P11 · persistence`
-* **Componente C4**: `C08 · PostgreSQL`
+* **Componente C4**: `C08 · PostgreSQL` (Contenedor `pulso360-database`)
 * **Motor**: PostgreSQL 18 (Relacional nativo con driver `pg`)
 * **Base de Datos**: `pulso360_db`
+* **Total de Tablas**: **24 tablas canónicas** (100% trazabilidad con PPI RF-01 a RF-18, C01-C14 y diseño previo de Base de Datos II).
 
 ---
 
-## 2. Diagrama Entidad-Relación (ERD)
+## 2. Diagrama Entidad-Relación (Mermaid ERD)
 
 ```mermaid
 erDiagram
-    USERS ||--o| USER_CONSENTS : "posee (1:1)"
-    USERS ||--o{ DAILY_CHECKINS : "registra (1:N)"
-    USERS ||--o{ JOURNALS : "escribe (1:N privada)"
-    USERS ||--o{ SUPPORT_REQUESTS : "solicita (1:N)"
-    USERS ||--o{ HABEAS_DATA_REQUESTS : "radica (1:N)"
-    USERS ||--o{ AUDIT_LOGS : "genera accion (1:N)"
-    SST_ALERTS ||--o{ SST_INTERVENTIONS : "motiva (1:N)"
-
-    USERS {
-        VARCHAR(50) id PK
-        VARCHAR(150) email UK
-        VARCHAR(255) password_hash
-        VARCHAR(120) name
-        VARCHAR(30) role
-        VARCHAR(50) team_id
-        VARCHAR(100) team_name
-        VARCHAR(100) campaign
-        INT shift_start_hour
-        VARCHAR(20) status
-        TIMESTAMP created_at
-        TIMESTAMP updated_at
-    }
-
-    USER_CONSENTS {
-        VARCHAR(50) user_id PK, FK
-        BOOLEAN policy_accepted
-        VARCHAR(20) policy_version
-        BOOLEAN c1_checkin
-        BOOLEAN c2_bitacora
-        BOOLEAN c3_apoyo
-        BOOLEAN c4_analitica
-        BOOLEAN c5_contacto
-        TIMESTAMP updated_at
-    }
-
-    DAILY_CHECKINS {
-        VARCHAR(50) id PK
-        VARCHAR(50) user_id FK
-        VARCHAR(20) journey_key
-        DATE checkin_date
-        TIMESTAMP submitted_at
-        INT energia
-        INT carga_emocional
-        INT recuperacion
-        INT apoyo
-        INT distanciamiento
-        INT ineficacia
-    }
-
-    JOURNALS {
-        VARCHAR(50) id PK
-        VARCHAR(50) user_id FK
-        DATE entry_date
-        VARCHAR(50) context
-        TEXT content
-        JSONB analysis
-        JSONB corrected_categories
-        TEXT correction_note
-        TIMESTAMP created_at
-    }
-
-    SUPPORT_REQUESTS {
-        VARCHAR(50) id PK
-        VARCHAR(30) code UK
-        VARCHAR(20) mode
-        VARCHAR(50) owner_user_id FK
-        VARCHAR(50) identity_user_id FK
-        DATE request_date
-        VARCHAR(100) reason
-        TEXT description
-        VARCHAR(20) urgency
-        VARCHAR(30) contact_preference
-        VARCHAR(50) time_window
-        VARCHAR(30) status
-        VARCHAR(50) assigned_to FK
-        VARCHAR(30) sla
-        TIMESTAMP created_at
-    }
-
-    HABEAS_DATA_REQUESTS {
-        VARCHAR(50) id PK
-        VARCHAR(50) user_id FK
-        VARCHAR(50) type
-        TIMESTAMP created_at
-        VARCHAR(30) status
-        DATE deadline
-        TEXT note
-    }
-
-    SST_ALERTS {
-        VARCHAR(50) id PK
-        VARCHAR(150) rule_name
-        VARCHAR(100) campaign
-        VARCHAR(100) team_name
-        DATE alert_date
-        VARCHAR(20) severity
-        INT respondents
-        VARCHAR(30) status
-        VARCHAR(50) owner_id FK
-        TEXT description
-        JSONB evidence
-        TIMESTAMP created_at
-    }
-
-    SST_INTERVENTIONS {
-        VARCHAR(50) id PK
-        VARCHAR(150) title
-        VARCHAR(80) type
-        VARCHAR(100) campaign
-        VARCHAR(100) team_name
-        VARCHAR(50) creator_id FK
-        VARCHAR(50) assigned_to FK
-        VARCHAR(30) status
-        DATE start_date
-        DATE end_date
-        VARCHAR(100) indicator
-        NUMERIC baseline
-        NUMERIC after_val
-        INT progress
-        TEXT target_desc
-        BOOLEAN external_action
-        TIMESTAMP created_at
-    }
-
-    AUDIT_LOGS {
-        BIGSERIAL id PK
-        VARCHAR(50) user_id FK
-        VARCHAR(30) role
-        VARCHAR(80) action
-        VARCHAR(80) resource
-        VARCHAR(50) resource_id
-        JSONB details
-        VARCHAR(45) ip_address
-        TIMESTAMP created_at
-    }
+    ROLES ||--o{ USUARIOS : "clasifica"
+    CAMPANAS ||--o{ EQUIPOS : "agrupa"
+    EQUIPOS ||--o{ ASIGNACIONES_USUARIO_EQUIPO : "recibe"
+    USUARIOS ||--o{ ASIGNACIONES_USUARIO_EQUIPO : "cumple"
+    
+    POLITICAS_PRIVACIDAD ||--o{ CONSENTIMIENTOS : "versiona"
+    USUARIOS ||--o{ CONSENTIMIENTOS : "otorga"
+    
+    USUARIOS ||--o{ DAILY_CHECKINS : "registra (1:N)"
+    USUARIOS ||--o{ BITACORAS : "escribe (privado)"
+    
+    BITACORAS ||--o| ANALISIS_NLP : "analizada por"
+    VERSIONES_LEXICO ||--o{ ANALISIS_NLP : "utiliza"
+    ANALISIS_NLP ||--o{ REVISIONES_NLP : "corregido por"
+    
+    REGLAS_ALERTA ||--o{ SST_ALERTAS : "dispara"
+    CAMPANAS ||--o{ SST_ALERTAS : "ocurre en"
+    EQUIPOS ||--o{ SST_ALERTAS : "focaliza"
+    
+    SST_ALERTAS ||--o{ SST_INTERVENCIONES : "motiva"
+    SST_INTERVENCIONES ||--o{ SEGUIMIENTOS_INTERVENCION : "traza"
+    
+    USUARIOS ||--o{ SOLICITUDES_APOYO : "radica"
+    SOLICITUDES_APOYO ||--o{ SEGUIMIENTOS_APOYO : "gestiona"
+    
+    USUARIOS ||--o{ SOLICITUDES_HABEAS_DATA : "ejerce ARCO"
+    USUARIOS ||--o{ NOTIFICACIONES : "recibe"
+    USUARIOS ||--o{ AUDITORIA_LOGS : "genera evento"
 ```
 
 ---
 
-## 3. Principios y Reglas Inviolables de Privacidad
+## 3. Catálogo Canónico de las 24 Tablas
 
-1. **Aislamiento Técnico de la Bitácora (`JOURNALS`)**:
-   * Las consultas SQL a `JOURNALS` **deben** incluir obligatoriamente el filtro `WHERE user_id = $1`.
-   * Ningún endpoint de supervisión ni de SST tiene autorización para ejecutar `SELECT * FROM journals` sin filtrar por el usuario autenticado propietario.
-2. **k-Anonimato en Vistas Agregadas**:
-   * Para calcular promedios de `DAILY_CHECKINS` por campaña o equipo, la consulta SQL debe verificar `COUNT(DISTINCT user_id) >= 5`.
-   * Si no se cumple la cohorte mínima, la capa de dominio/servicio suprime el valor numérico para evitar la reidentificación de los operadores.
-3. **Consentimiento Informado (Ley 1581 de 2012)**:
-   * Ningún registro en `DAILY_CHECKINS` o `JOURNALS` puede procesarse si el usuario no tiene activo su consentimiento informado (`c1_checkin = true`).
+### Bloque A: Identidad, Control de Acceso y Estructura Organizacional
+1. **`roles`**: Catálogo canónico de los 5 roles (`AGENTE`, `SUPERVISOR`, `SST`, `AUDITOR`, `ADMIN`).
+2. **`campanas`**: Campañas operativas de Contact Center (ej. `Soporte Alpha`, `Retención Beta`).
+3. **`equipos`**: Equipos de trabajo asignados a una campaña, con líder/supervisor y conteo de miembros.
+4. **`usuarios`**: Cuentas del sistema, contraseña hasheada en `bcrypt`, intentos fallidos y bloqueo temporal.
+5. **`asignaciones_usuario_equipo`**: Asignación activa o histórica de un usuario a un equipo, turno y horario.
+
+### Bloque B: Privacidad y Consentimiento Informado (Ley 1581 de 2012)
+6. **`politicas_privacidad`**: Historial formal de versiones de la política (`v2.4`) y avisos legales.
+7. **`consentimientos`**: Registro auditable de aceptación de política y finalidades C1..C5 por usuario.
+
+### Bloque C: Bienestar y Registro Personal del Agente
+8. **`daily_checkins`**: Registro diario con las 6 dimensiones operativas (energía, carga, recuperación, apoyo, distanciamiento, ineficacia).
+9. **`bitacoras`**: Espacio personal de desahogo. **Inviolable: Cero acceso a supervisores o SST**.
+
+### Bloque D: Motor Léxico Determinista y NLP
+10. **`versiones_lexico`**: Versiones del diccionario determinista local de palabras clave.
+11. **`categorias_nlp`**: Catálogo de dimensiones psicosociales (sobrecarga, exigencia, bajo apoyo).
+12. **`analisis_nlp`**: Resultados de clasificación automática sobre la bitácora con evidencias y confianza.
+13. **`revisiones_nlp`**: Corrección humana y retroalimentación realizada por el propio agente.
+
+### Bloque E: Prevención, Alertas Tempranas e Intervenciones SST
+14. **`reglas_alerta`**: Umbrales configurables (ej. caída de recuperación > 15% durante 3 semanas).
+15. **`sst_alertas`**: Alertas tempranas generadas automáticamente para SST.
+16. **`sst_intervenciones`**: Planes de mitigación (pausas cognitivas coordinadas, talleres emocionales).
+17. **`seguimientos_intervencion`**: Bitácora de evolución y avances de cada plan de intervención.
+
+### Bloque F: Acompañamiento, Habeas Data, Reportes y Auditoría
+18. **`solicitudes_apoyo`**: Solicitudes de acompañamiento psicosocial (anónimo o identificado).
+19. **`seguimientos_apoyo`**: Notas de evolución clínica y psicosocial registradas por SST.
+20. **`solicitudes_habeas_data`**: Peticiones formales de derechos ARCO (rectificación, portabilidad, supresión).
+21. **`reportes_generados`**: Registro de reportes generados con hash criptográfico SHA-256 de integridad.
+22. **`notificaciones`**: Avisos in-app dirigidos a usuarios o roles específicos.
+23. **`auditoria_logs`**: Trazabilidad inmutable con encadenamiento criptográfico (`prev_hash`, `hash`).
+24. **`configuracion_sistema`**: Parámetros de gobernanza: umbral $k$-anonimato ($k=5$), SLAs, políticas.
+
+---
+
+## 4. Invariantes de Privacidad en Base de Datos
+
+1. **Aislamiento de la Bitácora**: Toda consulta a la tabla `bitacoras` desde endpoints del agente debe incluir obligatoriamente la cláusula `WHERE usuario_id = $1`.
+2. **k-Anonimato ($k \ge 5$)**: Las consultas analíticas sobre `daily_checkins` deben verificar `COUNT(DISTINCT usuario_id) >= 5` antes de emitir promedios grupales.
+3. **Consentimiento Previo**: Las inserciones en `daily_checkins` y `bitacoras` exigen verificar previamente que `c1_checkin = TRUE` en la tabla `consentimientos`.

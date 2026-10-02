@@ -133,3 +133,4 @@ Todos los usuarios de demostración tienen configurada la contraseña universal:
 2. **Aislamiento de Bitácoras (Privacidad Absoluta)**: Jamás exponer la bitácora personal a roles distintos del autor (`WHERE user_id = $1`).
 3. **k-Anonimato**: Toda métrica de bienestar organizacional debe suprimirse si no alcanza una cohorte mínima de 5 participantes ($k \ge 5$).
 4. **Cero SQL en Controladores o Servicios**: Todas las consultas SQL pertenecen exclusivamente a `src/infrastructure/repositories/`.
+5. **Estándares y Manifiesto Anti-Slop de Backend**: Consulta obligatoriamente [**`backend/CODING_STANDARDS.md`**](CODING_STANDARDS.md) para cumplir con el decálogo anti-slop (códigos HTTP semánticos, cero overfetching, prevención estricta de SQL injection y manejo unificado de errores).

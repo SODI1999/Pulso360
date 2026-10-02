@@ -67,3 +67,4 @@ docs/auditoria_ia/
 *.zip
 *.tar.gz
 *.rar
+backend/CODING_STANDARDS.md

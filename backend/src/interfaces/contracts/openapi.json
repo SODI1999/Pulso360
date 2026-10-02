@@ -1,0 +1,975 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Pulso360 — API REST de Bienestar y Prevención de Riesgo Psicosocial",
+    "description": "Especificación canónica SDD para el backend de Pulso360 en operaciones BPO y Contact Centers. Proyecto Pedagógico Integrador (PPI) — Construcción de Software 3.",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Equipo Pulso360",
+      "email": "contacto@pulso360.co"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000/api/v1",
+      "description": "Servidor local de desarrollo"
+    }
+  ],
+  "tags": [
+    { "name": "Health", "description": "Disponibilidad y estado de servicios" },
+    { "name": "Auth", "description": "Autenticación, perfil y control de sesiones JWT" },
+    { "name": "Agent", "description": "Check-ins diarios, bitácoras privadas y consentimiento informado" },
+    { "name": "SST", "description": "Métricas agregadas k-anónimas, alertas tempranas e intervenciones" }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "tags": ["Health"],
+        "summary": "Healthcheck de la API y base de datos",
+        "description": "Verifica conectividad y disponibilidad de Node.js y PostgreSQL.",
+        "responses": {
+          "200": {
+            "description": "Servicio operativo",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Inicio de sesión",
+        "description": "Valida credenciales contra la tabla `usuarios` y genera un token JWT.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Autenticación exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginSuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Payload malformado o campos faltantes",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "401": {
+            "description": "Credenciales inválidas",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "Usuario inactivo o cuenta bloqueada por intentos fallidos",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "Perfil del usuario autenticado",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Datos de identidad y rol del usuario",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MeSuccessResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token JWT ausente o inválido",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Cierre de sesión",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Sesión cerrada correctamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleSuccessResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token inválido",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/agent/consent": {
+      "get": {
+        "tags": ["Agent"],
+        "summary": "Consultar consentimiento informado",
+        "security": [{ "bearerAuth": [] }],
+        "description": "Retorna el estado de aceptación de política y permisos granulares C1 a C5.",
+        "responses": {
+          "200": {
+            "description": "Estado actual de consentimiento",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConsentSuccessResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Agent"],
+        "summary": "Actualizar consentimiento informado",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConsentUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Consentimiento actualizado y registrado en auditoría",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConsentSuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos inválidos",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/agent/checkin/today": {
+      "get": {
+        "tags": ["Agent"],
+        "summary": "Consultar estado de check-in del día",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Indica si el check-in ya fue completado hoy y retorna su registro",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckinTodayResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/agent/checkin": {
+      "post": {
+        "tags": ["Agent"],
+        "summary": "Registrar check-in diario (6 dimensiones)",
+        "security": [{ "bearerAuth": [] }],
+        "description": "Registra las 6 dimensiones de bienestar (escala 1 a 5). Exige consentimiento C1 previo.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckinCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Check-in registrado con éxito",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckinSuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dimensiones fuera del rango 1..5 o campos requeridos ausentes",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "Falta de consentimiento informado C1 para check-in",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "Ya existe un check-in registrado para la fecha actual",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/agent/checkin/history": {
+      "get": {
+        "tags": ["Agent"],
+        "summary": "Consultar historial personal de check-ins",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "default": 30, "maximum": 90 },
+            "description": "Número máximo de registros a retornar"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista histórica de check-ins del agente autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckinHistoryResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/agent/journal": {
+      "get": {
+        "tags": ["Agent"],
+        "summary": "Listar bitácoras personales (Privado)",
+        "security": [{ "bearerAuth": [] }],
+        "description": "Inviolable: Solo retorna las entradas del autor (`WHERE usuario_id = $1`).",
+        "responses": {
+          "200": {
+            "description": "Lista de entradas en bitácora personal",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JournalListResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Agent"],
+        "summary": "Crear entrada de desahogo en bitácora (Privado)",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JournalCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Entrada guardada en la bitácora privada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JournalSuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Contenido vacío o formato inválido",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "Falta de consentimiento informado C2 para bitácora",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sst/metrics": {
+      "get": {
+        "tags": ["SST"],
+        "summary": "Métricas agregadas de bienestar (k-anonimato)",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "campana_id", "in": "query", "schema": { "type": "string" }, "description": "Filtro por campaña" },
+          { "name": "equipo_id", "in": "query", "schema": { "type": "string" }, "description": "Filtro por equipo" },
+          { "name": "desde", "in": "query", "schema": { "type": "string", "format": "date" } },
+          { "name": "hasta", "in": "query", "schema": { "type": "string", "format": "date" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Métricas calculadas o estado protegido si k < 5",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SstMetricsResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Rol no autorizado (requiere SST o SUPERVISOR)",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sst/alerts": {
+      "get": {
+        "tags": ["SST"],
+        "summary": "Listar alertas tempranas preventivas",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Catálogo de alertas generadas automáticamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SstAlertsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sst/interventions": {
+      "get": {
+        "tags": ["SST"],
+        "summary": "Listar planes de intervención preventiva",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Planes de acción y mitigación psicosocial",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SstInterventionsResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["SST"],
+        "summary": "Crear nueva intervención preventiva",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InterventionCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Intervención registrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InterventionSuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Campos obligatorios faltantes o alerta inexistente",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sst/support-requests": {
+      "get": {
+        "tags": ["SST"],
+        "summary": "Bandeja de solicitudes de apoyo psicosocial",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Lista de solicitudes (con identidades omitidas si son anónimas)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SupportRequestsResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Agent"],
+        "summary": "Radicar solicitud de acompañamiento psicosocial",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SupportRequestCreateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Solicitud radicada con código único",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SupportRequestCreateResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Token JWT generado tras /auth/login. Enviar en cabecera `Authorization: Bearer <token>`."
+      }
+    },
+    "schemas": {
+      "HealthResponse": {
+        "type": "object",
+        "properties": {
+          "status": { "type": "string", "example": "ok" },
+          "database": { "type": "string", "example": "connected" },
+          "timestamp": { "type": "string", "format": "date-time" }
+        },
+        "required": ["status", "database", "timestamp"]
+      },
+      "LoginRequest": {
+        "type": "object",
+        "properties": {
+          "correo": { "type": "string", "format": "email", "example": "agente@pulso360.co" },
+          "contrasena": { "type": "string", "minLength": 6, "example": "Pulso360#2026" }
+        },
+        "required": ["correo", "contrasena"]
+      },
+      "LoginSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": true },
+          "data": {
+            "type": "object",
+            "properties": {
+              "usuario": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "string", "example": "usr-1" },
+                  "correo": { "type": "string", "example": "agente@pulso360.co" },
+                  "nombres": { "type": "string", "example": "Laura" },
+                  "apellidos": { "type": "string", "example": "Gomez" },
+                  "rol": { "type": "string", "example": "AGENTE" }
+                },
+                "required": ["id", "correo", "nombres", "apellidos", "rol"]
+              },
+              "token": { "type": "string", "example": "eyJhbGciOiJIUzI1NiIsIn..." }
+            },
+            "required": ["usuario", "token"]
+          }
+        },
+        "required": ["success", "data"]
+      },
+      "MeSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": true },
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "correo": { "type": "string" },
+              "nombres": { "type": "string" },
+              "apellidos": { "type": "string" },
+              "rol": { "type": "string" },
+              "equipo": {
+                "type": "object",
+                "nullable": true,
+                "properties": {
+                  "id": { "type": "string" },
+                  "nombre": { "type": "string" },
+                  "campana": { "type": "string" }
+                }
+              }
+            },
+            "required": ["id", "correo", "nombres", "apellidos", "rol"]
+          }
+        },
+        "required": ["success", "data"]
+      },
+      "SimpleSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": true },
+          "message": { "type": "string", "example": "Operación completada con éxito" }
+        },
+        "required": ["success"]
+      },
+      "ConsentSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": true },
+          "data": {
+            "type": "object",
+            "properties": {
+              "politica_version": { "type": "string", "example": "v2.4" },
+              "acepta_politica": { "type": "boolean" },
+              "acepta_aviso_privacidad": { "type": "boolean" },
+              "c1_checkin": { "type": "boolean" },
+              "c2_bitacora": { "type": "boolean" },
+              "c3_apoyo": { "type": "boolean" },
+              "c4_analitica": { "type": "boolean" },
+              "c5_contacto": { "type": "boolean" },
+              "registrado_en": { "type": "string", "format": "date-time" }
+            },
+            "required": ["acepta_politica", "c1_checkin", "c2_bitacora"]
+          }
+        },
+        "required": ["success", "data"]
+      },
+      "ConsentUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "c1_checkin": { "type": "boolean" },
+          "c2_bitacora": { "type": "boolean" },
+          "c3_apoyo": { "type": "boolean" },
+          "c4_analitica": { "type": "boolean" },
+          "c5_contacto": { "type": "boolean" }
+        },
+        "required": ["c1_checkin", "c2_bitacora"]
+      },
+      "CheckinTodayResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": true },
+          "data": {
+            "type": "object",
+            "properties": {
+              "completed": { "type": "boolean", "example": true },
+              "checkin": {
+                "type": "object",
+                "nullable": true,
+                "properties": {
+                  "id": { "type": "string" },
+                  "checkin_date": { "type": "string", "format": "date" },
+                  "energia": { "type": "integer" },
+                  "carga_emocional": { "type": "integer" },
+                  "recuperacion": { "type": "integer" },
+                  "apoyo": { "type": "integer" },
+                  "distanciamiento": { "type": "integer" },
+                  "ineficacia": { "type": "integer" },
+                  "submitted_at": { "type": "string", "format": "date-time" }
+                }
+              }
+            },
+            "required": ["completed"]
+          }
+        },
+        "required": ["success", "data"]
+      },
+      "CheckinCreateRequest": {
+        "type": "object",
+        "properties": {
+          "journey_key": { "type": "string", "example": "2026-10-02" },
+          "energia": { "type": "integer", "minimum": 1, "maximum": 5, "example": 4 },
+          "carga_emocional": { "type": "integer", "minimum": 1, "maximum": 5, "example": 3 },
+          "recuperacion": { "type": "integer", "minimum": 1, "maximum": 5, "example": 4 },
+          "apoyo": { "type": "integer", "minimum": 1, "maximum": 5, "example": 5 },
+          "distanciamiento": { "type": "integer", "minimum": 1, "maximum": 5, "example": 1 },
+          "ineficacia": { "type": "integer", "minimum": 1, "maximum": 5, "example": 2 }
+        },
+        "required": ["energia", "carga_emocional", "recuperacion", "apoyo", "distanciamiento", "ineficacia"]
+      },
+      "CheckinSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": true },
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string", "example": "chk-102" },
+              "checkin_date": { "type": "string", "format": "date", "example": "2026-10-02" },
+              "submitted_at": { "type": "string", "format": "date-time" }
+            },
+            "required": ["id", "checkin_date", "submitted_at"]
+          }
+        },
+        "required": ["success", "data"]
+      },
+      "CheckinHistoryResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": true },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string" },
+                "checkin_date": { "type": "string", "format": "date" },
+                "energia": { "type": "integer" },
+                "carga_emocional": { "type": "integer" },
+                "recuperacion": { "type": "integer" },
+                "apoyo": { "type": "integer" },
+                "distanciamiento": { "type": "integer" },
+                "ineficacia": { "type": "integer" },
+                "submitted_at": { "type": "string", "format": "date-time" }
+              }
+            }
+          }
+        },
+        "required": ["success", "data"]
+      },
+      "JournalCreateRequest": {
+        "type": "object",
+        "properties": {
+          "context": { "type": "string", "maxLength": 60, "example": "Turno tarde / llamadas difíciles" },
+          "content": { "type": "string", "minLength": 5, "maxLength": 4000, "example": "Hoy experimenté bastante agotamiento tras tres llamadas seguidas con clientes molestos." }
+        },
+        "required": ["content"]
+      },
+      "JournalSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": true },
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string", "example": "jrn-55" },
+              "entry_date": { "type": "string", "format": "date" },
+              "context": { "type": "string" },
+              "content": { "type": "string" },
+              "created_at": { "type": "string", "format": "date-time" }
+            },
+            "required": ["id", "entry_date", "content", "created_at"]
+          }
+        },
+        "required": ["success", "data"]
+      },
+      "JournalListResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": true },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string" },
+                "entry_date": { "type": "string", "format": "date" },
+                "context": { "type": "string" },
+                "content": { "type": "string" },
+                "analysis_json": { "type": "object", "nullable": true },
+                "created_at": { "type": "string", "format": "date-time" }
+              }
+            }
+          }
+        },
+        "required": ["success", "data"]
+      },
+      "SstMetricsResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": true },
+          "data": {
+            "type": "object",
+            "properties": {
+              "protected": { "type": "boolean", "example": false },
+              "reason": { "type": "string", "nullable": true },
+              "cohort_count": { "type": "integer", "example": 14 },
+              "k_threshold": { "type": "integer", "example": 5 },
+              "metrics": {
+                "type": "object",
+                "nullable": true,
+                "properties": {
+                  "energia_avg": { "type": "number", "example": 3.4 },
+                  "carga_emocional_avg": { "type": "number", "example": 3.8 },
+                  "recuperacion_avg": { "type": "number", "example": 2.9 },
+                  "apoyo_avg": { "type": "number", "example": 4.1 },
+                  "distanciamiento_avg": { "type": "number", "example": 2.1 },
+                  "ineficacia_avg": { "type": "number", "example": 2.0 }
+                }
+              }
+            },
+            "required": ["protected", "cohort_count", "k_threshold"]
+          }
+        },
+        "required": ["success", "data"]
+      },
+      "SstAlertsResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": true },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string" },
+                "regla_nombre": { "type": "string" },
+                "campana_nombre": { "type": "string" },
+                "equipo_nombre": { "type": "string" },
+                "alert_date": { "type": "string", "format": "date" },
+                "severity": { "type": "string", "enum": ["Baja", "Media", "Alta"] },
+                "respondents": { "type": "integer" },
+                "status": { "type": "string" },
+                "description": { "type": "string" }
+              }
+            }
+          }
+        },
+        "required": ["success", "data"]
+      },
+      "SstInterventionsResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": true },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string" },
+                "title": { "type": "string" },
+                "type": { "type": "string" },
+                "campana_nombre": { "type": "string" },
+                "equipo_nombre": { "type": "string" },
+                "status": { "type": "string" },
+                "start_date": { "type": "string", "format": "date" },
+                "end_date": { "type": "string", "format": "date" },
+                "progress": { "type": "integer" },
+                "indicator": { "type": "string" }
+              }
+            }
+          }
+        },
+        "required": ["success", "data"]
+      },
+      "InterventionCreateRequest": {
+        "type": "object",
+        "properties": {
+          "alerta_id": { "type": "string", "nullable": true },
+          "title": { "type": "string", "minLength": 5, "example": "Pausas cognitivas de recuperación" },
+          "type": { "type": "string", "example": "Pausas activas coordinadas" },
+          "campana_id": { "type": "string", "example": "camp-1" },
+          "equipo_id": { "type": "string", "example": "team-alpha-1" },
+          "assigned_to": { "type": "string", "example": "usr-2" },
+          "start_date": { "type": "string", "format": "date", "example": "2026-10-05" },
+          "end_date": { "type": "string", "format": "date", "example": "2026-10-25" },
+          "indicator": { "type": "string", "example": "Recuperacion agregada" },
+          "target_desc": { "type": "string", "example": "Mejorar percepción de recuperación en un 15%" }
+        },
+        "required": ["title", "type", "campana_id", "equipo_id", "start_date"]
+      },
+      "InterventionSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": true },
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string", "example": "int-99" },
+              "status": { "type": "string", "example": "Activa" },
+              "created_at": { "type": "string", "format": "date-time" }
+            },
+            "required": ["id", "status"]
+          }
+        },
+        "required": ["success", "data"]
+      },
+      "SupportRequestsResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": true },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string" },
+                "code": { "type": "string" },
+                "mode": { "type": "string", "enum": ["anonimo", "identificado"] },
+                "request_date": { "type": "string", "format": "date" },
+                "reason": { "type": "string" },
+                "description": { "type": "string" },
+                "urgency": { "type": "string" },
+                "status": { "type": "string" },
+                "solicitante": { "type": "string", "nullable": true, "example": "Laura Gomez o OMITIDO_POR_ANONIMATO" }
+              }
+            }
+          }
+        },
+        "required": ["success", "data"]
+      },
+      "SupportRequestCreateInput": {
+        "type": "object",
+        "properties": {
+          "mode": { "type": "string", "enum": ["anonimo", "identificado"], "default": "anonimo" },
+          "reason": { "type": "string", "example": "Sobrecarga percibida y agotamiento" },
+          "description": { "type": "string", "minLength": 10, "example": "Requiero orientación profesional para gestionar el estrés de llamadas complejas." },
+          "urgency": { "type": "string", "enum": ["baja", "media", "alta"], "default": "media" },
+          "contact_preference": { "type": "string", "example": "app" }
+        },
+        "required": ["reason", "description"]
+      },
+      "SupportRequestCreateResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": true },
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string", "example": "req-99" },
+              "code": { "type": "string", "example": "ANON-2026-4412" },
+              "sla": { "type": "string", "example": "24 h habiles" },
+              "status": { "type": "string", "example": "Recibida" }
+            },
+            "required": ["id", "code", "sla", "status"]
+          }
+        },
+        "required": ["success", "data"]
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": false },
+          "error": {
+            "type": "object",
+            "properties": {
+              "message": { "type": "string", "example": "Mensaje legible del error" },
+              "code": { "type": "string", "example": "CHECKIN_OUT_OF_RANGE" },
+              "details": { "type": "object", "nullable": true }
+            },
+            "required": ["message", "code"]
+          }
+        },
+        "required": ["success", "error"]
+      }
+    }
+  }
+}
