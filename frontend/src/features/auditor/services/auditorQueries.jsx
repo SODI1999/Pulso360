@@ -21,7 +21,7 @@ export async function fetchAuditLogs(filters = {}) {
   if (!env.useMockStorage && token) {
     try {
       const response = await apiClient.get('/auditor/logs', { params: filters });
-      const records = response.logs || [];
+      const records = Array.isArray(response) ? response : (response?.logs || []);
       
       return records.map((log) => ({
         id: log.id,
