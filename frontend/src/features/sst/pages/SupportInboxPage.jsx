@@ -117,7 +117,7 @@ export function SupportInboxPage() {
                       <td>{item.sla || '24 h hábiles'}</td>
                       <td>
                         <span
-                          className={`badge badge-${item.status === 'Cerrada' ? 'muted' : item.status === 'En contacto' ? 'ok' : 'info'}`}
+                          className={`badge badge-${item.status === 'Cerrada' ? 'muted' : item.status === 'Atendida' ? 'ok' : 'info'}`}
                         >
                           {item.status}
                         </span>

@@ -3,7 +3,7 @@ import { pulsoStore } from '../../../core/storage/pulsoStore';
 import { apiClient, getAuthToken } from '../../../core/api/apiClient';
 import { env } from '../../../core/config/env';
 
-export function createSupportRequest(
+export async function createSupportRequest(
   isAnonymous,
   urgency,
   supportMode,
@@ -13,6 +13,21 @@ export function createSupportRequest(
   contactPreference,
   timeWindow
 ) {
+  if (!env.useMockStorage && getAuthToken()) {
+    try {
+      const res = await apiClient.post('/sst/support-requests', {
+        mode: supportMode,
+        reason,
+        description: details.trim(),
+        urgency,
+        contactPreference: isAnonymous ? 'app' : contactPreference
+      });
+      return { code: res.data.code };
+    } catch (err) {
+      return { error: err.response?.data?.error?.message || 'Error al crear solicitud de apoyo en el servidor' };
+    }
+  }
+
   const storeData = pulsoStore.get();
   storeData.supportRequests = storeData.supportRequests || [];
 
@@ -49,18 +64,6 @@ export function createSupportRequest(
     action: 'SOLICITUD_ACOMPANAMIENTO',
     target: `Caso ${code}`
   });
-
-  if (!env.useMockStorage && getAuthToken()) {
-    apiClient.post('/sst/support-requests', {
-      mode: supportMode,
-      reason,
-      description: details.trim(),
-      urgency,
-      contactPreference: isAnonymous ? 'app' : contactPreference
-    }).catch((err) => {
-      console.warn('Backend: Sincronización de solicitud de soporte fallida', err.message);
-    });
-  }
 
   return { code };
 }

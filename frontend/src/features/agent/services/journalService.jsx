@@ -15,9 +15,19 @@ const canAnalyze = (data, user) => canUseJournal(data, user) && Boolean(data.con
 const ownsJournal = (journal, user) =>
   Boolean(user?.id && user.role === 'agente' && journal?.userId === user.id);
 
-export function saveJournal(currentJournalId, currentUser, currentJournal, contextTag, trimmed) {
-  let storeData = pulsoStore.get();
+export async function saveJournal(currentJournalId, currentUser, currentJournal, contextTag, trimmed) {
   const isNew = !currentJournalId;
+
+  if (!env.useMockStorage && getAuthToken() && isNew) {
+    try {
+      const res = await apiClient.post('/agent/journal', { context: contextTag, content: trimmed });
+      return { journalPayload: res.data };
+    } catch (err) {
+      return { error: err.response?.data?.error?.message || 'Error al guardar bitácora en el servidor' };
+    }
+  }
+
+  let storeData = pulsoStore.get();
   if (!currentUser?.id || currentUser.role !== 'agente') return unavailableJournal();
   if (!canUseJournal(storeData, currentUser)) return missingConsent();
   const storedJournal = isNew ? null : storeData.journals.find((journal) => journal.id === currentJournalId);
@@ -55,19 +65,19 @@ export function saveJournal(currentJournalId, currentUser, currentJournal, conte
     target: `Bitácora ${journalPayload.id}`
   });
 
-  if (!env.useMockStorage && getAuthToken() && isNew) {
-    apiClient.post('/agent/journal', {
-      context: contextTag,
-      content: trimmed
-    }).catch((err) => {
-      console.warn('Backend: Sincronización de bitácora fallida (modo offline).', err.message);
-    });
-  }
-
   return { journalPayload };
 }
 
-export function deleteJournal(currentJournalId, currentUser) {
+export async function deleteJournal(currentJournalId, currentUser) {
+  if (!env.useMockStorage && getAuthToken()) {
+    try {
+      await apiClient.delete('/agent/journal/' + currentJournalId);
+      return {};
+    } catch (err) {
+      return { error: err.response?.data?.error?.message || 'Error al eliminar bitácora en el servidor' };
+    }
+  }
+
   const storeData = pulsoStore.get();
   const target = storeData.journals.find((journal) => journal.id === currentJournalId);
   if (!ownsJournal(target, currentUser)) return unavailableJournal();
@@ -80,11 +90,6 @@ export function deleteJournal(currentJournalId, currentUser) {
     target: `Bitácora ${currentJournalId}`
   });
 
-  if (!env.useMockStorage && getAuthToken()) {
-    apiClient.delete('/agent/journal/' + currentJournalId).catch((err) => {
-      console.warn('Backend: Eliminación de bitácora fallida (modo offline).', err.message);
-    });
-  }
   return {};
 }
 
@@ -145,7 +150,23 @@ export function saveJournalAnalysis(journalPayload, analysisResult, currentUser)
   return {};
 }
 
-export function createPriorityRequest(currentUser, crisisMode) {
+export async function createPriorityRequest(currentUser, crisisMode) {
+  if (!env.useMockStorage && getAuthToken()) {
+    try {
+      const isAnonymous = crisisMode === 'anonimo';
+      const res = await apiClient.post('/sst/support-requests', {
+        mode: crisisMode,
+        urgency: 'alta',
+        reason: 'Contacto prioritario solicitado por el titular',
+        description: 'Contacto prioritario originado desde la bitácora.',
+        contactPreference: isAnonymous ? 'app' : 'directo'
+      });
+      return { code: res.data.code };
+    } catch (err) {
+      return { error: err.response?.data?.error?.message || 'Error al solicitar contacto prioritario en el servidor' };
+    }
+  }
+
   const storeData = pulsoStore.get();
   const currentConsent = storeData.consents?.[currentUser?.id];
 
@@ -191,18 +212,6 @@ export function createPriorityRequest(currentUser, crisisMode) {
     action: 'SOLICITUD_CONTACTO_PRIORITARIO',
     target: `Caso ${code} (${isAnonymous ? 'Modalidad Anónima' : 'Modalidad Confidencial Identificada'})`
   });
-
-  if (!env.useMockStorage && getAuthToken()) {
-    apiClient.post('/sst/support-requests', {
-      mode: crisisMode,
-      urgency: 'alta',
-      reason: 'Contacto prioritario solicitado por el titular',
-      description: 'Contacto prioritario originado desde la bitácora.',
-      contactPreference: isAnonymous ? 'app' : 'directo'
-    }).catch((err) => {
-      console.warn('Backend: Sincronización de solicitud prioritaria fallida.', err.message);
-    });
-  }
 
   return { code };
 }

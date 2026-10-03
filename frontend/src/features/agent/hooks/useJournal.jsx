@@ -76,7 +76,7 @@ export function useJournal() {
   };
 
   // Guardar / Guardar y analizar
-  const handleSaveJournal = (e) => {
+  const handleSaveJournal = async (e) => {
     e.preventDefault();
     const trimmed = journalText.trim();
     if (!trimmed) {
@@ -88,7 +88,7 @@ export function useJournal() {
       return;
     }
 
-    const result = saveJournal(currentJournalId, currentUser, currentJournal, contextTag, trimmed);
+    const result = await saveJournal(currentJournalId, currentUser, currentJournal, contextTag, trimmed);
 
     if (result.error) {
       setFeedback({ type: 'warn', message: result.error });
@@ -162,7 +162,7 @@ export function useJournal() {
   };
 
   // Eliminar entrada (con confirmación de 2 pasos y escritura de palabra ELIMINAR)
-  const handleDeleteJournal = () => {
+  const handleDeleteJournal = async () => {
     if (!currentJournalId) return;
 
     if (
@@ -178,7 +178,7 @@ export function useJournal() {
       return;
     }
 
-    const result = deleteJournal(currentJournalId, currentUser);
+    const result = await deleteJournal(currentJournalId, currentUser);
     if (result.error) {
       setFeedback({ type: 'warn', message: result.error });
       return;
@@ -236,8 +236,8 @@ export function useJournal() {
   };
 
   // Confirmar solicitud prioritaria de crisis con SST
-  const handleConfirmCrisisPriority = () => {
-    const result = createPriorityRequest(currentUser, crisisMode);
+  const handleConfirmCrisisPriority = async () => {
+    const result = await createPriorityRequest(currentUser, crisisMode);
     if (result.error) {
       setFeedback({ type: 'warn', message: result.error });
       return;

@@ -1,1 +1,1 @@
-export const WORKFLOW_STATES = ['Recibida', 'Asignada', 'En contacto', 'Cerrada'];
+export const WORKFLOW_STATES = ['Recibida', 'En gestion', 'Atendida', 'Cerrada'];

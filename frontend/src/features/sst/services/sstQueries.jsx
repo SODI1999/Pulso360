@@ -10,7 +10,9 @@ export function getSstData() {
 export async function fetchSstAlerts() {
   if (!env.useMockStorage && getAuthToken()) {
     try {
-      return await apiClient.get('/sst/alerts');
+      const res = await apiClient.get('/sst/alerts');
+      const payload = res.data?.data !== undefined ? res.data.data : res.data;
+      return Array.isArray(payload) ? payload : [];
     } catch (error) {
       console.warn('Fallback a datos locales', error.message);
     }
@@ -21,7 +23,9 @@ export async function fetchSstAlerts() {
 export async function fetchSstInterventions() {
   if (!env.useMockStorage && getAuthToken()) {
     try {
-      return await apiClient.get('/sst/interventions');
+      const res = await apiClient.get('/sst/interventions');
+      const payload = res.data?.data !== undefined ? res.data.data : res.data;
+      return Array.isArray(payload) ? payload : [];
     } catch (error) {
       console.warn('Fallback a datos locales', error.message);
     }
@@ -32,7 +36,9 @@ export async function fetchSstInterventions() {
 export async function fetchSstSupportRequests() {
   if (!env.useMockStorage && getAuthToken()) {
     try {
-      return await apiClient.get('/sst/support-requests');
+      const res = await apiClient.get('/sst/support-requests');
+      const payload = res.data?.data !== undefined ? res.data.data : res.data;
+      return Array.isArray(payload) ? payload : [];
     } catch (error) {
       console.warn('Fallback a datos locales', error.message);
     }

@@ -1,1 +1,1 @@
-export const STATUS_WORKFLOW = ['Recibida', 'En trámite', 'Respondida', 'Cerrada'];
+export const STATUS_WORKFLOW = ['En tramite', 'Respondida', 'Rechazada'];

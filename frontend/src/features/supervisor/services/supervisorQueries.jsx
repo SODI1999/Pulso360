@@ -51,8 +51,9 @@ export async function fetchSupervisorMetrics(equipoId, campanaId) {
 export async function fetchSupervisorActions() {
   if (!env.useMockStorage && getAuthToken()) {
     try {
-      const response = await apiClient.get('/supervisor/actions');
-      return response;
+      const res = await apiClient.get('/supervisor/actions');
+      const payload = res.data?.data !== undefined ? res.data.data : res.data;
+      return Array.isArray(payload) ? payload : [];
     } catch (err) {
       console.warn('Backend inalcanzable, proveyendo datos mockeados de acciones.', err.message);
     }

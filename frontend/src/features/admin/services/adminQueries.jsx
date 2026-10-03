@@ -29,8 +29,9 @@ export function getHabeasData() {
 export async function fetchAdminUsers() {
   if (!env.useMockStorage && getAuthToken()) {
     try {
-      const response = await apiClient.get('/admin/users');
-      return response.data || [];
+      const res = await apiClient.get('/admin/users');
+      const payload = res.data?.data || res.data;
+      return Array.isArray(payload) ? payload : [];
     } catch (error) {
       console.error('Error fetching admin users:', error);
     }
@@ -45,8 +46,8 @@ export async function fetchAdminUsers() {
 export async function fetchAdminOrganization() {
   if (!env.useMockStorage && getAuthToken()) {
     try {
-      const response = await apiClient.get('/admin/organization');
-      return response.data || { campaigns: [] };
+      const res = await apiClient.get('/admin/organization');
+      return res.data?.data || res.data || { campaigns: [] };
     } catch (error) {
       console.error('Error fetching admin organization:', error);
     }
@@ -61,8 +62,8 @@ export async function fetchAdminOrganization() {
 export async function fetchAdminParams() {
   if (!env.useMockStorage && getAuthToken()) {
     try {
-      const response = await apiClient.get('/admin/params');
-      return response.data || {};
+      const res = await apiClient.get('/admin/params');
+      return res.data?.data || res.data || {};
     } catch (error) {
       console.error('Error fetching admin params:', error);
     }
@@ -77,8 +78,9 @@ export async function fetchAdminParams() {
 export async function fetchHabeasData() {
   if (!env.useMockStorage && getAuthToken()) {
     try {
-      const response = await apiClient.get('/admin/habeas-data');
-      return response.data || [];
+      const res = await apiClient.get('/admin/habeas-data');
+      const payload = res.data?.data || res.data;
+      return Array.isArray(payload) ? payload : [];
     } catch (error) {
       console.error('Error fetching habeas data:', error);
     }

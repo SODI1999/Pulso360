@@ -4,7 +4,25 @@ import { pulsoStore } from '../../../core/storage/pulsoStore';
 import { apiClient, getAuthToken } from '../../../core/api/apiClient';
 import { env } from '../../../core/config/env';
 
-export function saveCheckin(existingCheckin, user, journeyKey, draft) {
+export async function saveCheckin(existingCheckin, user, journeyKey, draft) {
+  if (!env.useMockStorage && getAuthToken()) {
+    try {
+      const res = await apiClient.post('/agent/checkin', {
+        journey_key: journeyKey,
+        checkin_date: journeyKey,
+        energia: Number(draft.energia),
+        carga_emocional: Number(draft.cargaEmocional ?? draft.carga_emocional),
+        recuperacion: Number(draft.recuperacion),
+        apoyo: Number(draft.apoyo),
+        distanciamiento: Number(draft.distanciamiento),
+        ineficacia: Number(draft.ineficacia)
+      });
+      return { payload: res.data };
+    } catch (err) {
+      return { error: err.response?.data?.error?.message || 'Error al registrar check-in' };
+    }
+  }
+
   const storeData = pulsoStore.get();
   const payload = {
     id: existingCheckin?.id || `chk-${Date.now()}`,
@@ -30,21 +48,6 @@ export function saveCheckin(existingCheckin, user, journeyKey, draft) {
     action: existingCheckin ? 'EDICION_CHECKIN' : 'REGISTRO_CHECKIN',
     target: `Jornada ${journeyKey}`
   });
-
-  if (!env.useMockStorage && getAuthToken()) {
-    apiClient.post('/agent/checkin', {
-      journeyKey,
-      checkinDate: journeyKey,
-      energia: Number(draft.energia || 3),
-      cargaEmocional: Number(draft.cargaEmocional || 3),
-      recuperacion: Number(draft.recuperacion || 3),
-      apoyo: Number(draft.apoyo || 3),
-      distanciamiento: Number(draft.distanciamiento || 3),
-      ineficacia: Number(draft.ineficacia || 3)
-    }).catch((err) => {
-      console.warn('Backend: Sincronización de check-in fallida (modo offline).', err.message);
-    });
-  }
 
   return { payload };
 }

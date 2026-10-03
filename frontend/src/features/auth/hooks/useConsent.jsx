@@ -118,27 +118,29 @@ export function useConsent() {
   };
 
   // Guardar consentimiento y registrar evento inmutable
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!policyAccepted || !currentUser) return;
 
     setIsSaving(true);
     setStatusMessage('');
 
-    saveConsent(settings, currentUser, consents);
+    const result = await saveConsent(settings, currentUser, consents);
+    if (result.error) {
+      setIsSaving(false);
+      setStatusMessage(`Error: ${result.error}`);
+      return;
+    }
 
     loadConsentHistory();
+    setIsSaving(false);
+    setStatusMessage('Preferencias actualizadas en tu estación de trabajo.');
 
-    setTimeout(() => {
-      setIsSaving(false);
-      setStatusMessage('Preferencias actualizadas en tu estación de trabajo.');
-
-      if (comesFromLogin) {
-        setTimeout(() => {
-          navigate('/agente/panel');
-        }, 500);
-      }
-    }, 300);
+    if (comesFromLogin) {
+      setTimeout(() => {
+        navigate('/agente/panel');
+      }, 500);
+    }
   };
 
   const activeCount = useMemo(() => {

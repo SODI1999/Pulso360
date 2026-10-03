@@ -98,11 +98,11 @@ export function HabeasDataPage() {
                   const isOverdue =
                     dueDate &&
                     dueDate.getTime() < Date.now() &&
-                    !['Respondida', 'Cerrada'].includes(r.status);
+                    !['Respondida', 'Rechazada'].includes(r.status);
 
                   let statusBadgeClass = 'badge-info';
-                  if (r.status === 'Cerrada') statusBadgeClass = 'badge-ok';
-                  else if (r.status === 'Recibida') statusBadgeClass = 'badge-warn';
+                  if (r.status === 'Rechazada') statusBadgeClass = 'badge-danger';
+                  else if (r.status === 'En tramite') statusBadgeClass = 'badge-warn';
                   else if (r.status === 'Respondida') statusBadgeClass = 'badge-ok';
 
                   return (

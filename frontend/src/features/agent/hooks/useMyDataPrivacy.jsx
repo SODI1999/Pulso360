@@ -53,11 +53,13 @@ export function useMyDataPrivacy() {
   }, [currentUser?.id, requestsVersion]);
 
   // Crear solicitud de Habeas Data
-  const createHabeasRequest = (requestType, noteText) => {
-    const { generatedId } = registerHabeasRequest(requestType, currentUser, noteText);
-
+  const createHabeasRequest = async (requestType, noteText) => {
+    const result = await registerHabeasRequest(requestType, currentUser, noteText);
+    if (result.error) {
+      throw new Error(result.error);
+    }
     setRequestsVersion((prev) => prev + 1);
-    return generatedId;
+    return result.generatedId;
   };
 
   // Preparar la copia propia para los enlaces de descarga.
@@ -96,7 +98,7 @@ export function useMyDataPrivacy() {
   };
 
   // Solicitar rectificación
-  const handleRectificationSubmit = (e) => {
+  const handleRectificationSubmit = async (e) => {
     e.preventDefault();
     const detail = rectificationText.trim();
     if (detail.length < 10) {
@@ -106,19 +108,27 @@ export function useMyDataPrivacy() {
       return;
     }
 
-    const reqId = createHabeasRequest('Rectificación', detail);
-    setRectificationFeedback(`Solicitud ${reqId} recibida. No se modifica ningún dato automáticamente.`);
-    setRectificationText('');
+    try {
+      const reqId = await createHabeasRequest('Rectificación', detail);
+      setRectificationFeedback(`Solicitud ${reqId} recibida. No se modifica ningún dato automáticamente.`);
+      setRectificationText('');
+    } catch (err) {
+      setRectificationFeedback(`Error: ${err.message}`);
+    }
   };
 
   // Solicitar supresión
-  const handleSuppressionSubmit = () => {
-    const reqId = createHabeasRequest(
-      'Supresión',
-      'Solicitud de supresión de datos conforme a la Ley 1581 de 2012.'
-    );
-    setSuppressionFeedback(`Solicitud ${reqId} radicada exitosamente. Se gestionará administrativamente.`);
-    setSuppressionConfirmText('');
+  const handleSuppressionSubmit = async () => {
+    try {
+      const reqId = await createHabeasRequest(
+        'Supresión',
+        'Solicitud de supresión de datos conforme a la Ley 1581 de 2012.'
+      );
+      setSuppressionFeedback(`Solicitud ${reqId} radicada exitosamente. Se gestionará administrativamente.`);
+      setSuppressionConfirmText('');
+    } catch (err) {
+      setSuppressionFeedback(`Error: ${err.message}`);
+    }
   };
 
   const isSuppressionConfirmed = suppressionConfirmText.trim() === 'SUPRIMIR';

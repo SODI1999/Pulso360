@@ -21,9 +21,13 @@ export function useAlertsInbox() {
   }, [version]);
 
   // Actualizar estado general de la alerta
-  const handleUpdateStatus = (alertId, newStatus) => {
-    const operationResult = updateStatus(alertId, newStatus, user);
+  const handleUpdateStatus = async (alertId, newStatus) => {
+    const operationResult = await updateStatus(alertId, newStatus, user);
     if (!operationResult) return;
+    if (operationResult.error) {
+      setFeedback(`Error: ${operationResult.error}`);
+      return;
+    }
     const { alertItem } = operationResult;
 
     setFeedback(`La alerta "${alertItem.rule}" pasó a estado "${newStatus.replace('_', ' ')}".`);
@@ -31,9 +35,13 @@ export function useAlertsInbox() {
   };
 
   // Descartar alerta con justificación técnica obligatoria (RF-08)
-  const handleConfirmDismiss = (alertId, reason) => {
-    const operationResult = confirmDismiss(alertId, reason, user);
+  const handleConfirmDismiss = async (alertId, reason) => {
+    const operationResult = await confirmDismiss(alertId, reason, user);
     if (!operationResult) return;
+    if (operationResult.error) {
+      setFeedback(`Error: ${operationResult.error}`);
+      return;
+    }
 
     setDismissingAlert(null);
     setFeedback(`Alerta descartada con justificación técnica registrada en auditoría.`);
@@ -41,9 +49,13 @@ export function useAlertsInbox() {
   };
 
   // Crear intervención colectiva automáticamente desde la alerta
-  const handleCreateIntervention = (alertItem) => {
-    const operationResult = createIntervention(alertItem, user);
+  const handleCreateIntervention = async (alertItem) => {
+    const operationResult = await createIntervention(alertItem, user);
     if (!operationResult) return;
+    if (operationResult.error) {
+      setFeedback(`Error: ${operationResult.error}`);
+      return;
+    }
 
     setFeedback(
       `Intervención creada exitosamente. Se asignó el plan al supervisor y la alerta avanzó a "Intervención creada".`

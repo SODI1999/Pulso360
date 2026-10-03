@@ -133,7 +133,7 @@ export function useCheckinWizard() {
   }, [currentStep, consent?.c1, existingCheckin, isEditing, submittedSuccess, updateDraftValue]);
 
   // Envío del Check-in
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const missing = QUESTIONS.some((q) => !Object.prototype.hasOwnProperty.call(draft, q.key));
@@ -142,10 +142,15 @@ export function useCheckinWizard() {
       return;
     }
 
-    const { payload } = saveCheckin(existingCheckin, user, journeyKey, draft);
+    const result = await saveCheckin(existingCheckin, user, journeyKey, draft);
+
+    if (result.error) {
+      setValidationError(result.error);
+      return;
+    }
 
     preferences.removeCheckinDraft(draftKey);
-    setExistingCheckin(payload);
+    setExistingCheckin(result.payload);
     setSubmittedSuccess(true);
   };
 

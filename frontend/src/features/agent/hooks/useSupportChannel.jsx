@@ -31,9 +31,9 @@ export function useSupportChannel() {
   const isAnonymous = supportMode === 'anonimo';
 
   // Manejo de envío
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const { code } = createSupportRequest(
+    const result = await createSupportRequest(
       isAnonymous,
       urgency,
       supportMode,
@@ -44,8 +44,13 @@ export function useSupportChannel() {
       timeWindow
     );
 
+    if (result.error) {
+      setFeedback(`Error: ${result.error}`);
+      return;
+    }
+
     setDetails('');
-    setFeedback(`Solicitud enviada exitosamente. Tu radicado de seguimiento es ${code}.`);
+    setFeedback(`Solicitud enviada exitosamente. Tu radicado de seguimiento es ${result.code}.`);
     setRequestsVersion((prev) => prev + 1);
   };
 

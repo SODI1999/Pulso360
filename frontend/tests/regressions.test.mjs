@@ -124,12 +124,12 @@ for (const user of [null, { id: 'other', role: 'agente' }, { id: 'usr-1', role: 
       const service = await load('/src/features/agent/services/journalService.jsx');
       const journal = pulsoStore.get().journals[0];
       const before = JSON.stringify(pulsoStore.get());
-      const results = [
+      const results = await Promise.all([
         service.saveJournal(journal.id, user, journal, 'test', 'Cambio no autorizado'),
         service.saveCorrection(journal.id, ['Test'], 'Cambio', user),
         service.saveJournalAnalysis(journal, { categories: [] }, user),
         service.deleteJournal(journal.id, user)
-      ];
+      ]);
       assert.ok(results.every((result) => result.error));
       assert.equal(JSON.stringify(pulsoStore.get()), before);
     });
@@ -149,8 +149,8 @@ test('el titular puede crear, editar, analizar, corregir y eliminar sin confiar 
       c3: true
     };
     pulsoStore.save(data);
-    const { journalPayload } = service.saveJournal(null, user, null, 'turno', 'Entrada de prueba');
-    const updated = service.saveJournal(
+    const { journalPayload } = await service.saveJournal(null, user, null, 'turno', 'Entrada de prueba');
+    const updated = await service.saveJournal(
       journalPayload.id,
       user,
       { ...journalPayload, date: '1900-01-01' },
@@ -161,9 +161,9 @@ test('el titular puede crear, editar, analizar, corregir y eliminar sin confiar 
     assert.ok(!service.saveJournalAnalysis(journalPayload, { categories: [] }, user).error);
     assert.ok(!service.saveCorrection(journalPayload.id, ['Test'], 'Nota', user).error);
     assert.equal(pulsoStore.get().journals[0].correctionNote, 'Nota');
-    assert.ok(!service.deleteJournal(journalPayload.id, user).error);
+    assert.ok(!(await service.deleteJournal(journalPayload.id, user)).error);
     assert.ok(!pulsoStore.get().journals.some((item) => item.id === journalPayload.id));
-    assert.ok(service.deleteJournal(journalPayload.id, user).error);
+    assert.ok((await service.deleteJournal(journalPayload.id, user)).error);
   });
 });
 
@@ -190,7 +190,7 @@ test('bitácora aplica C2 al guardar y C3 al procesar incluso después de guarda
     const user = pulsoStore.get().users[0];
     const journal = pulsoStore.get().journals.find((item) => item.userId === user.id);
     const before = JSON.stringify(pulsoStore.get());
-    assert.ok(service.saveJournal(null, user, null, 'turno', 'Rechazado').error);
+    assert.ok((await service.saveJournal(null, user, null, 'turno', 'Rechazado')).error);
     assert.equal(JSON.stringify(pulsoStore.get()), before);
     const data = pulsoStore.get();
     data.consents[user.id] = {
@@ -201,7 +201,7 @@ test('bitácora aplica C2 al guardar y C3 al procesar incluso después de guarda
       c3: true
     };
     pulsoStore.save(data);
-    assert.ok(!service.saveJournal(journal.id, user, journal, 'turno', 'Permitido').error);
+    assert.ok(!(await service.saveJournal(journal.id, user, journal, 'turno', 'Permitido')).error);
     const changed = pulsoStore.get();
     changed.consents[user.id].c3 = false;
     pulsoStore.save(changed);
@@ -210,9 +210,9 @@ test('bitácora aplica C2 al guardar y C3 al procesar incluso después de guarda
     assert.equal(JSON.stringify(pulsoStore.get()), noAnalysis);
     changed.consents[user.id].c2 = false;
     pulsoStore.save(changed);
-    assert.ok(service.saveJournal(journal.id, user, journal, 'turno', 'Rechazado').error);
+    assert.ok((await service.saveJournal(journal.id, user, journal, 'turno', 'Rechazado')).error);
     assert.ok(service.saveCorrection(journal.id, ['Test'], 'Rechazado', user).error);
-    assert.ok(!service.deleteJournal(journal.id, user).error);
+    assert.ok(!(await service.deleteJournal(journal.id, user)).error);
   });
 });
 

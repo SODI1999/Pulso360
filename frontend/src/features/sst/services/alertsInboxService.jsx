@@ -2,7 +2,16 @@ import { pulsoStore } from '../../../core/storage/pulsoStore';
 import { apiClient, getAuthToken } from '../../../core/api/apiClient';
 import { env } from '../../../core/config/env';
 
-export function updateStatus(alertId, newStatus, user) {
+export async function updateStatus(alertId, newStatus, user) {
+  if (!env.useMockStorage && getAuthToken()) {
+    try {
+      const res = await apiClient.patch('/sst/alerts/' + alertId, { status: newStatus });
+      return { alertItem: res.data };
+    } catch (error) {
+      return { error: error.response?.data?.error?.message || 'Error al actualizar alerta en el servidor' };
+    }
+  }
+
   const storeData = pulsoStore.get();
   const alertItem = (storeData.alerts || []).find((a) => a.id === alertId);
   if (!alertItem) return null;
@@ -16,16 +25,19 @@ export function updateStatus(alertId, newStatus, user) {
     target: `${alertItem.id} (${alertItem.rule}) -> ${newStatus}`
   });
 
-  if (!env.useMockStorage && getAuthToken()) {
-    apiClient.patch('/sst/alerts/' + alertId, { status: newStatus }).catch((error) => {
-      console.warn('Backend: Sincronización de alerta fallida', error.message);
-    });
-  }
-
   return { alertItem };
 }
 
-export function confirmDismiss(alertId, reason, user) {
+export async function confirmDismiss(alertId, reason, user) {
+  if (!env.useMockStorage && getAuthToken()) {
+    try {
+      await apiClient.patch('/sst/alerts/' + alertId, { status: 'DESCARTADA', dismissReason: reason });
+      return {};
+    } catch (error) {
+      return { error: error.response?.data?.error?.message || 'Error al descartar alerta en el servidor' };
+    }
+  }
+
   const storeData = pulsoStore.get();
   const alertItem = (storeData.alerts || []).find((a) => a.id === alertId);
   if (!alertItem) return null;
@@ -40,16 +52,30 @@ export function confirmDismiss(alertId, reason, user) {
     target: `${alertItem.id} -> DESCARTADA | Justificación: "${reason}"`
   });
 
-  if (!env.useMockStorage && getAuthToken()) {
-    apiClient.patch('/sst/alerts/' + alertId, { status: 'DESCARTADA', dismissReason: reason }).catch((error) => {
-      console.warn('Backend: Sincronización de descarte de alerta fallida', error.message);
-    });
-  }
-
   return {};
 }
 
-export function createIntervention(alertItem, user) {
+export async function createIntervention(alertItem, user) {
+  if (!env.useMockStorage && getAuthToken()) {
+    try {
+      await apiClient.post('/sst/interventions', {
+        alertaId: alertItem.id,
+        title: `Plan preventivo · ${alertItem.rule}`,
+        type: 'Pausas cognitivas',
+        campanaId: alertItem.campaignId || 'camp-1',
+        equipoId: alertItem.teamId || 'team-alpha-1',
+        startDate: new Date().toISOString().substring(0, 10),
+        endDate: new Date(Date.now() + 28 * 86400000).toISOString().substring(0, 10),
+        indicator: 'Recuperación agregada',
+        baseline: alertItem.evidence?.slice(-1)[0] || 58,
+        targetDesc: 'Intervención preventiva coordinada con supervisión para mitigar la tendencia de alerta.'
+      });
+      return {};
+    } catch (err) {
+      return { error: err.response?.data?.error?.message || 'Error al crear intervención en el servidor' };
+    }
+  }
+
   const storeData = pulsoStore.get();
   const targetAlert = (storeData.alerts || []).find((a) => a.id === alertItem.id);
   if (!targetAlert) return null;
@@ -77,7 +103,7 @@ export function createIntervention(alertItem, user) {
   storeData.interventions = storeData.interventions || [];
   storeData.interventions.unshift(newIntervention);
 
-  targetAlert.status = 'INTERVENCION_CREADA';
+  targetAlert.status = 'INTERVENIDA';
   targetAlert.interventionId = newIntervention.id;
   pulsoStore.save(storeData);
 
@@ -86,23 +112,6 @@ export function createIntervention(alertItem, user) {
     action: 'CREACION_INTERVENCION_DESDE_ALERTA',
     target: `${newIntervention.title} asignada a ${targetAlert.campaign}`
   });
-
-  if (!env.useMockStorage && getAuthToken()) {
-    apiClient.post('/sst/interventions', {
-      alertaId: targetAlert.id,
-      title: newIntervention.title,
-      type: newIntervention.type,
-      campanaId: targetAlert.campaignId || 'camp-1',
-      equipoId: targetAlert.teamId || 'team-alpha-1',
-      startDate: newIntervention.startDate,
-      endDate: newIntervention.endDate,
-      indicator: newIntervention.indicator,
-      baseline: newIntervention.baseline,
-      targetDesc: newIntervention.target
-    }).catch((err) => {
-      console.warn('Backend: Sincronización de intervención fallida', err.message);
-    });
-  }
 
   return {};
 }

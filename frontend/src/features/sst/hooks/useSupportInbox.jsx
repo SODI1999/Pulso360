@@ -27,9 +27,13 @@ export function useSupportInbox() {
   }, [version]);
 
   // Avanzar estado del caso según flujo predefinido
-  const handleAdvanceStatus = (requestId) => {
-    const operationResult = advanceStatus(requestId, WORKFLOW_STATES);
+  const handleAdvanceStatus = async (requestId) => {
+    const operationResult = await advanceStatus(requestId, WORKFLOW_STATES);
     if (!operationResult) return;
+    if (operationResult.error) {
+      setFeedback(`Error: ${operationResult.error}`);
+      return;
+    }
     const { req, nextStatus } = operationResult;
 
     // Registro inmutable de auditoría (RF-10)

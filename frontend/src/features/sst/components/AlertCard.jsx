@@ -20,10 +20,7 @@ export function AlertCard({ alertItem, onUpdateStatus, onDismissRequest, onCreat
   const statusBadges = {
     GENERADA: 'badge-info',
     EN_REVISION: 'badge-warn',
-    VALIDADA: 'badge-ok',
-    INTERVENCION_CREADA: 'badge-info',
-    EN_SEGUIMIENTO: 'badge-ok',
-    CERRADA: 'badge-neutral',
+    INTERVENIDA: 'badge-ok',
     DESCARTADA: 'badge-neutral'
   };
 
@@ -94,10 +91,10 @@ export function AlertCard({ alertItem, onUpdateStatus, onDismissRequest, onCreat
             <button
               type="button"
               className="btn btn-primary btn-sm"
-              onClick={() => onUpdateStatus(alertItem.id, 'VALIDADA')}
+              onClick={() => onCreateIntervention(alertItem)}
             >
-              <Icon name="checkCircle" size={14} />
-              <span>Validar alerta</span>
+              <Icon name="healing" size={14} />
+              <span>Crear plan de intervención</span>
             </button>
             <button
               type="button"
@@ -110,42 +107,15 @@ export function AlertCard({ alertItem, onUpdateStatus, onDismissRequest, onCreat
           </>
         )}
 
-        {alertItem.status === 'VALIDADA' && (
-          <button
-            type="button"
-            className="btn btn-primary btn-sm"
-            onClick={() => onCreateIntervention(alertItem)}
-          >
-            <Icon name="healing" size={14} />
-            <span>Crear plan de intervención</span>
-          </button>
-        )}
-
-        {alertItem.status === 'INTERVENCION_CREADA' && (
-          <button
-            type="button"
-            className="btn btn-secondary btn-sm"
-            onClick={() => onUpdateStatus(alertItem.id, 'EN_SEGUIMIENTO')}
-          >
-            <Icon name="trendingUp" size={14} />
-            <span>Iniciar seguimiento</span>
-          </button>
-        )}
-
-        {alertItem.status === 'EN_SEGUIMIENTO' && (
-          <button
-            type="button"
-            className="btn btn-secondary btn-sm"
-            onClick={() => onUpdateStatus(alertItem.id, 'CERRADA')}
-          >
-            <Icon name="checkCircle" size={14} />
-            <span>Cerrar alerta</span>
-          </button>
-        )}
-
-        {alertItem.status === 'CERRADA' && (
+        {alertItem.status === 'INTERVENIDA' && (
           <span style={{ fontSize: '12px', color: 'var(--c-texto-suave)' }}>
-            Alerta cerrada y archivada para auditoría preventiva.
+            Plan de intervención creado y en seguimiento preventivo.
+          </span>
+        )}
+
+        {alertItem.status === 'DESCARTADA' && (
+          <span style={{ fontSize: '12px', color: 'var(--c-texto-suave)' }}>
+            Alerta descartada.
           </span>
         )}
       </div>
