@@ -7,9 +7,17 @@
 * **Base de Datos**: `pulso360_db`
 * **Total de Tablas**: **24 tablas canónicas** (100% trazabilidad con PPI RF-01 a RF-18, C01-C14 y diseño previo de Base de Datos II).
 
+## 2. Inicialización y Migraciones (Bootstrap & Migrations)
+
+**ADVERTENCIA**: El archivo `schema.sql` es un script de inicialización limpia (**bootstrap destructivo**).
+Al ejecutarse, realiza `DROP TABLE IF EXISTS ... CASCADE` sobre todas las tablas.
+- **Uso correcto**: Exclusivamente para entornos de desarrollo local, despliegues iniciales o bases de datos completamente vacías donde no importa la pérdida de datos.
+- **Producción**: En entornos productivos, NUNCA debe ejecutarse `schema.sql`.
+- **Mejores Prácticas para Producción**: Para aplicar cambios de estructura sin pérdida de datos, se debe utilizar una herramienta de migraciones incrementales (ej. Flyway, Liquibase, o scripts SQL secuenciales como `V1__Create_users.sql`, `V2__Add_index.sql`). Cada migración debe incluir operaciones no destructivas (ej. `ALTER TABLE`, `CREATE INDEX CONCURRENTLY`).
+
 ---
 
-## 2. Diagrama Entidad-Relación (Mermaid ERD)
+## 3. Diagrama Entidad-Relación (Mermaid ERD)
 
 ```mermaid
 erDiagram

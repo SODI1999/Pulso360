@@ -1,4 +1,4 @@
-import crypto from 'crypto';
+import crypto from 'node:crypto';
 import { reportsRepository } from '../../infrastructure/repositories/reportsRepository.js';
 
 export const reportsService = {
@@ -8,8 +8,15 @@ export const reportsService = {
   },
 
   async createReport(userId, data) {
-    const { tipoReporte, campanaId, equipoId, fechaCorte, parametrosFiltro, rutaArchivo } = data;
-    const id = 'rep-' + Date.now();
+    const tipoReporte = data.tipoReporte || data.tipo_reporte || data.title || 'general';
+    const campanaId = data.campanaId || data.campana_id || data.scope || null;
+    const equipoId = data.equipoId || data.equipo_id || null;
+    const fechaCorte = data.fechaCorte || data.fecha_corte || new Date().toISOString();
+    const parametrosFiltro = data.parametrosFiltro || data.parametros_filtro || {};
+    const rutaArchivo = data.rutaArchivo || data.ruta_archivo || `/downloads/${tipoReporte}-${Date.now()}.csv`;
+    const format = data.format || 'csv';
+
+    const id = `rep-${crypto.randomUUID()}`;
     
     // Calcula hash de integridad SHA-256 o canónico
     const payload = JSON.stringify({ tipoReporte, autorId: userId, fechaCorte, parametrosFiltro });

@@ -1,6 +1,8 @@
 import { sstRepository } from '../../infrastructure/repositories/sstRepository.js';
 import { consentRepository } from '../../infrastructure/repositories/consentRepository.js';
 import AppError from '../errors/AppError.js';
+import { createLog } from '../../infrastructure/repositories/auditorRepository.js';
+import crypto from 'node:crypto';
 
 export const sstService = {
   /**
@@ -43,7 +45,7 @@ export const sstService = {
     const end_date = data.end_date || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
     const indicator = data.indicator || 'Recuperacion agregada';
 
-    const id = `int-${Date.now()}`;
+    const id = `int-${crypto.randomUUID()}`;
     const payload = {
       ...data,
       id,
@@ -52,7 +54,18 @@ export const sstService = {
       creator_id: sstUserId
     };
 
-    return await sstRepository.createIntervention(payload);
+    const result = await sstRepository.createInterventionWithAlertTransition(payload);
+
+    await createLog({ 
+      usuarioId: sstUserId, 
+      rol: 'SST', 
+      action: 'CREACION_INTERVENCION', 
+      resource: 'sst_intervenciones', 
+      resourceId: result.id, 
+      details: 'Intervención preventiva creada: ' + title 
+    });
+
+    return result;
   },
 
   /**
@@ -86,12 +99,11 @@ export const sstService = {
     }
 
     // 2. Generar el identificador visual de radicado según la modalidad de anonimato solicitada.
-    const randomSuffix = Math.floor(1000 + Math.random() * 9000);
     const isAnonymous = data.mode === 'anonimo';
-    const prefix = isAnonymous ? 'ANON' : 'SST';
-    const code = `${prefix}-2026-${randomSuffix}`;
+    const prefix = isAnonymous ? 'ANON' : 'APO';
+    const code = `${prefix}-${new Date().getFullYear()}-${crypto.randomBytes(3).toString('hex').toUpperCase()}`;
 
-    const id = `sup-${Date.now()}`;
+    const id = `sup-${crypto.randomUUID()}`;
     const payload = {
       ...data,
       id,

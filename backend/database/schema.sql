@@ -4,6 +4,14 @@
 -- 24 Tablas Canónicas: Integración 100% PPI (RF-01 a RF-18) + C01-C14 + BD II
 -- ==============================================================================
 
+-- ==============================================================================
+-- ¡ADVERTENCIA CRÍTICA DE DESTRUCCIÓN DE DATOS!
+-- Este script realiza DROP TABLE CASCADE en todas las tablas. 
+-- Es un bootstrap destructivo de inicialización limpia.
+-- NUNCA LO EJECUTES EN PRODUCCIÓN si la base de datos ya contiene datos reales.
+-- Utiliza migraciones incrementales para conservar información en producción.
+-- ==============================================================================
+
 -- 1. Eliminación en orden inverso para despliegues limpios
 DROP TABLE IF EXISTS audit_logs CASCADE;
 DROP TABLE IF EXISTS habeas_data_requests CASCADE;

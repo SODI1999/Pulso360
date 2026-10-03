@@ -20,7 +20,7 @@ if (missingVars.length > 0) {
 export const pool = new Pool({
   host: process.env.DB_HOST,
   port: parseInt(process.env.DB_PORT, 10),
-  database: process.env.DB_NAME,
+  database: (process.env.NODE_ENV === 'test' && process.env.DB_NAME_TEST) ? process.env.DB_NAME_TEST : process.env.DB_NAME,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   max: parseInt(process.env.DB_POOL_MAX || '20', 10),

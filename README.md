@@ -28,9 +28,12 @@ Para consultar la documentación técnica específica de cada módulo, revisa su
 ## Inicio Rápido
 
 ### Prerrequisitos
-* Node.js: v18.0 o superior
-* npm: v9.0 o superior
+* Node.js: v20.0 o superior (exigido por React Router 7 y runtime ESM moderno)
+* npm: v10.0 o superior
 * Git
+
+### Gobernanza de Seguridad en Dependencias
+Los paquetes señalados en auditorías automatizadas de dependencias (tales como `brace-expansion`, `esbuild` o `nodemon`) pertenecen estrictamente al ámbito de herramientas de desarrollo (`devDependencies`) para tareas de empaquetado local y recarga en caliente (*hot-reload*). Estas librerías no intervienen en el artefacto estático de producción desplegado al usuario final y operan exclusivamente en entornos de desarrollo aislados.
 
 ---
 

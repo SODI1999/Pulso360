@@ -90,6 +90,42 @@ export const sstRepository = {
     return rows[0];
   },
 
+  async createInterventionWithAlertTransition(data) {
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+
+      const insertQuery = `
+        INSERT INTO sst_intervenciones (
+          id, alerta_id, title, type, campana_id, equipo_id, creator_id, assigned_to, 
+          start_date, end_date, indicator, baseline, progress, target_desc, status, created_at
+        ) VALUES (
+          $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, NOW()
+        ) RETURNING id, status, created_at
+      `;
+      const values = [
+        data.id, data.alerta_id || null, data.title, data.type, data.campana_id, data.equipo_id, data.creator_id, data.assigned_to || null,
+        data.start_date, data.end_date, data.indicator, data.baseline || null, data.progress || 0, data.target_desc || null, 'Activa'
+      ];
+      const { rows } = await client.query(insertQuery, values);
+
+      if (data.alerta_id) {
+        await client.query(
+          `UPDATE sst_alertas SET status = 'INTERVENIDA' WHERE id = $1`,
+          [data.alerta_id]
+        );
+      }
+
+      await client.query('COMMIT');
+      return rows[0];
+    } catch (err) {
+      await client.query('ROLLBACK');
+      throw err;
+    } finally {
+      client.release();
+    }
+  },
+
   /**
    * Obtiene la lista de solicitudes de apoyo de los trabajadores.
    * ATENCIÓN A LA PRIVACIDAD: Si el trabajador eligió el modo 'anonimo', la consulta

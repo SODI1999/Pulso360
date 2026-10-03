@@ -42,7 +42,8 @@ export const exportLogs = async (filters) => {
     metadata: {
       exportedAt: new Date().toISOString(),
       totalRecords: logs.length,
-      integrity: "Verificado mediante cadena de hashes (prev_hash -> hash)"
+      integrityCheck: "PENDING_VERIFICATION",
+      batchInfo: "Lote consultado sin recálculo criptográfico"
     }
   };
 };

@@ -2,6 +2,7 @@ import { supervisorRepository } from '../../infrastructure/repositories/supervis
 import * as auditorRepository from '../../infrastructure/repositories/auditorRepository.js';
 import pool from '../../infrastructure/db.js';
 import { AppError } from '../errors/AppError.js';
+import crypto from 'node:crypto';
 
 export const supervisorService = {
   async getAssignedActions(supervisorId) {
@@ -43,7 +44,7 @@ export const supervisorService = {
       throw new AppError('Intervención no encontrada o no autorizada para este supervisor', 'FORBIDDEN', 403);
     }
 
-    const id = 'seg-int-' + Date.now();
+    const id = `seg-${crypto.randomUUID()}`;
     const fecha = new Date().toISOString();
     
     // Ensure progress is constrained between 0 and 100

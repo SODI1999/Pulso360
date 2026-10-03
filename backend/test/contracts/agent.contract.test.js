@@ -1,4 +1,4 @@
-﻿import { describe, it, before, after } from "node:test";
+import { describe, it, before, after } from "node:test";
 import assert from "node:assert/strict";
 import request from "supertest";
 import app from "../../src/app.js";
@@ -13,8 +13,8 @@ describe("Sprint 2 · Agent Module & Privacy Contract Tests", () => {
   before(async () => {
     // Limpiar check-in de hoy y bitácoras creadas para garantizar idempotencia
     await pool.query("DELETE FROM daily_checkins WHERE usuario_id = 'usr-1' AND checkin_date = $1", [today]);
-    await pool.query("DELETE FROM bitacoras WHERE usuario_id = 'usr-1' AND id LIKE 'jou-%'");
-    await pool.query("DELETE FROM consentimientos WHERE usuario_id = 'usr-1' AND id LIKE 'con-%' AND id != 'con-1'");
+    await pool.query("DELETE FROM bitacoras WHERE usuario_id = 'usr-1' AND id LIKE 'jou-%' AND entry_date = $1", [today]);
+    await pool.query("DELETE FROM consentimientos WHERE usuario_id = 'usr-1' AND id LIKE 'con-%' AND id != 'con-1' AND DATE(registrado_en) = $1", [today]);
     await pool.query("UPDATE consentimientos SET c1_checkin = TRUE, c2_bitacora = TRUE, c3_apoyo = TRUE, c4_analitica = TRUE, c5_contacto = TRUE WHERE id = 'con-1'");
 
     // Autenticar agente
@@ -33,8 +33,8 @@ describe("Sprint 2 · Agent Module & Privacy Contract Tests", () => {
   after(async () => {
     try {
       await pool.query("DELETE FROM daily_checkins WHERE usuario_id = 'usr-1' AND checkin_date = $1", [today]);
-      await pool.query("DELETE FROM bitacoras WHERE usuario_id = 'usr-1' AND id LIKE 'jou-%'");
-      await pool.query("DELETE FROM consentimientos WHERE usuario_id = 'usr-1' AND id LIKE 'con-%' AND id != 'con-1'");
+      await pool.query("DELETE FROM bitacoras WHERE usuario_id = 'usr-1' AND id LIKE 'jou-%' AND entry_date = $1", [today]);
+      await pool.query("DELETE FROM consentimientos WHERE usuario_id = 'usr-1' AND id LIKE 'con-%' AND id != 'con-1' AND DATE(registrado_en) = $1", [today]);
       await pool.query("UPDATE consentimientos SET c1_checkin = TRUE, c2_bitacora = TRUE, c3_apoyo = TRUE, c4_analitica = TRUE, c5_contacto = TRUE WHERE id = 'con-1'");
       await pool.end();
     } catch {

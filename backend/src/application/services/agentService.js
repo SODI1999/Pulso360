@@ -4,6 +4,7 @@ import { consentRepository } from '../../infrastructure/repositories/consentRepo
 import { checkinRepository } from '../../infrastructure/repositories/checkinRepository.js';
 import { journalRepository } from '../../infrastructure/repositories/journalRepository.js';
 import { userRepository } from '../../infrastructure/repositories/userRepository.js';
+import crypto from 'node:crypto';
 
 export const agentService = {
   async getConsentStatus(userId) {
@@ -97,7 +98,7 @@ export const agentService = {
       mergedFlags.c5_contacto = false;
     }
 
-    const id = `con-${Date.now()}`;
+    const id = `con-${crypto.randomUUID()}`;
     await consentRepository.createConsentEvent({
       id,
       userId,
@@ -146,7 +147,7 @@ export const agentService = {
     const assignment = await userRepository.findActiveAssignment(userId);
     const asignacionId = assignment ? assignment.id : null;
 
-    const id = `chk-${Date.now()}`;
+    const id = `chk-${crypto.randomUUID()}`;
     const newCheckin = await checkinRepository.create({
       id,
       userId,
@@ -182,7 +183,7 @@ export const agentService = {
     const asignacionId = assignment ? assignment.id : null;
     const today = new Date().toISOString().split('T')[0];
     
-    const id = `jou-${Date.now()}`;
+    const id = `jou-${crypto.randomUUID()}`;
     const newEntry = await journalRepository.create({
       id,
       userId,
@@ -213,9 +214,7 @@ export const agentService = {
       throw new AppError('Tipo de solicitud Habeas Data inválido', 'INVALID_HABEAS_TYPE', 400);
     }
 
-    const year = new Date().getFullYear();
-    const suffix = Date.now().toString().slice(-4);
-    const id = `HD-${year}-${suffix}`;
+    const id = `HD-${new Date().getFullYear()}-${crypto.randomBytes(3).toString('hex').toUpperCase()}`;
 
     const query = `
       INSERT INTO solicitudes_habeas_data (
