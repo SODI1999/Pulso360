@@ -1,4 +1,5 @@
 import pool from '../db.js';
+import crypto from 'crypto';
 
 /**
  * @fileoverview Repositorio de persistencia para el módulo de administración
@@ -218,12 +219,13 @@ export const findPolicies = async () => {
  * Crea una nueva política.
  */
 export const createPolicy = async ({ id, version, titulo, textoPolitica, textoAviso, creadoPorId }) => {
+  const hashContenido = crypto.createHash('sha256').update(textoPolitica + (textoAviso || '')).digest('hex');
   const query = `
-    INSERT INTO politicas_privacidad (id, version, titulo, texto_politica, texto_aviso, estado, vigente_desde, creado_por_id) 
-    VALUES ($1, $2, $3, $4, $5, 'PUBLICADA', CURRENT_DATE, $6)
+    INSERT INTO politicas_privacidad (id, version, titulo, texto_politica, texto_aviso_privacidad, hash_contenido, estado, vigente_desde, creado_por_id) 
+    VALUES ($1, $2, $3, $4, $5, $6, 'PUBLICADA', CURRENT_TIMESTAMP, $7)
     RETURNING id, version, titulo, estado, vigente_desde
   `;
-  const { rows } = await pool.query(query, [id, version, titulo, textoPolitica, textoAviso, creadoPorId]);
+  const { rows } = await pool.query(query, [id, version, titulo, textoPolitica, textoAviso, hashContenido, creadoPorId]);
   return rows[0];
 };
 

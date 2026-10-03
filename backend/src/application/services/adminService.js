@@ -185,7 +185,9 @@ export const updateTeam = async (teamId, data, adminUserId) => {
 };
 
 export const getSystemParams = async () => {
-  return await adminRepository.findSystemParams();
+  const params = await adminRepository.findSystemParams();
+  const policies = await adminRepository.findPolicies();
+  return { params, policies };
 };
 
 export const updateSystemParam = async (clave, valorJson) => {
