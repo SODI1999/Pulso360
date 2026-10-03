@@ -66,10 +66,10 @@ export const agentService = {
 
     const mergedFlags = {
       acepta_politica: flags.acepta_politica !== undefined 
-        ? Boolean(flags.acepta_politica) 
+        ? flags.acepta_politica === true 
         : (currentConsent ? currentConsent.acepta_politica : true),
       acepta_aviso_privacidad: flags.acepta_aviso_privacidad !== undefined 
-        ? Boolean(flags.acepta_aviso_privacidad) 
+        ? (flags.acepta_aviso_privacidad === true || flags.acepta_politica === true)
         : (currentConsent ? currentConsent.acepta_aviso_privacidad : true),
       c1_checkin: flags.c1_checkin !== undefined 
         ? Boolean(flags.c1_checkin) 
@@ -88,8 +88,8 @@ export const agentService = {
         : (currentConsent ? currentConsent.c5_contacto : false)
     };
     
-    // Si no acepta política o aviso, el resto de flags deben ser false
-    if (!mergedFlags.acepta_politica || !mergedFlags.acepta_aviso_privacidad) {
+    // Si no acepta política, el resto de flags deben ser false
+    if (!mergedFlags.acepta_politica) {
       mergedFlags.c1_checkin = false;
       mergedFlags.c2_bitacora = false;
       mergedFlags.c3_apoyo = false;
@@ -125,12 +125,19 @@ export const agentService = {
       throw new AppError('Requiere consentimiento C1 para registrar check-in', 'CONSENT_C1_REQUIRED', 403);
     }
 
-    const { valid, errors } = validarDimensionesCheckin(data);
+    const normalizedData = {
+      ...data,
+      carga_emocional: data.carga_emocional !== undefined ? data.carga_emocional : data.cargaEmocional,
+      journey_key: data.journey_key || data.journeyKey || 'START_SHIFT',
+      checkin_date: data.checkin_date || data.checkinDate || new Date().toISOString().split('T')[0]
+    };
+
+    const { valid, errors } = validarDimensionesCheckin(normalizedData);
     if (!valid) {
       throw new AppError(errors[0], 'CHECKIN_INVALID_DIMENSIONS', 400);
     }
 
-    const today = data.checkin_date || new Date().toISOString().split('T')[0];
+    const today = normalizedData.checkin_date;
     const existing = await checkinRepository.findByUserAndDate(userId, today);
     if (existing) {
       throw new AppError('Ya registraste tu check-in diario para hoy', 'CHECKIN_ALREADY_REGISTERED_TODAY', 409);
@@ -144,14 +151,14 @@ export const agentService = {
       id,
       userId,
       asignacionId,
-      journeyKey: data.journey_key || 'START_SHIFT',
+      journeyKey: normalizedData.journey_key,
       checkinDate: today,
-      energia: data.energia,
-      cargaEmocional: data.carga_emocional,
-      recuperacion: data.recuperacion,
-      apoyo: data.apoyo,
-      distanciamiento: data.distanciamiento,
-      ineficacia: data.ineficacia
+      energia: normalizedData.energia,
+      cargaEmocional: normalizedData.carga_emocional,
+      recuperacion: normalizedData.recuperacion,
+      apoyo: normalizedData.apoyo,
+      distanciamiento: normalizedData.distanciamiento,
+      ineficacia: normalizedData.ineficacia
     });
 
     return newCheckin;

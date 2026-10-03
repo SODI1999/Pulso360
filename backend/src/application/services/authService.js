@@ -41,7 +41,14 @@ export const authService = {
       rol: user.rol_codigo
     };
 
-    const token = jwt.sign(payload, process.env.JWT_SECRET || 'secret', {
+    const secret = process.env.JWT_SECRET;
+    if (!secret || secret === 'secret') {
+      if (process.env.NODE_ENV !== 'test') {
+        throw new AppError('Configuración crítica faltante: JWT_SECRET no seguro', 'INTERNAL_SERVER_ERROR', 500);
+      }
+    }
+
+    const token = jwt.sign(payload, secret || 'secret', {
       expiresIn: process.env.JWT_EXPIRES_IN || '8h'
     });
 

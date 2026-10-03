@@ -14,8 +14,10 @@ export const notificationsController = {
 
   async markRead(req, res, next) {
     try {
+      const userId = req.user.id;
+      const rolCodigo = req.user.rol;
       const { id } = req.params;
-      const updated = await notificationsService.markAsRead(id);
+      const updated = await notificationsService.markAsRead(id, userId, rolCodigo);
       res.status(200).json({ success: true, data: updated });
     } catch (error) {
       next(error);

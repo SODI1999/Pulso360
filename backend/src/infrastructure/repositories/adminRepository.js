@@ -141,7 +141,7 @@ export const createCampaign = async ({ id, codigo, nombre, descripcion }) => {
 export const updateCampaign = async (id, { nombre, activa }) => {
   const query = `
     UPDATE campanas 
-    SET nombre = $2, activa = $3, updated_at = CURRENT_TIMESTAMP 
+    SET nombre = $2, activa = $3 
     WHERE id = $1 
     RETURNING *
   `;
@@ -168,7 +168,7 @@ export const createTeam = async ({ id, campanaId, codigo, nombre, descripcion, s
 export const updateTeam = async (id, { nombre, activo, supervisorNombre, nMiembros }) => {
   const query = `
     UPDATE equipos 
-    SET nombre = $2, activo = $3, supervisor_nombre = $4, n_miembros = $5, updated_at = CURRENT_TIMESTAMP 
+    SET nombre = $2, activo = $3, supervisor_nombre = $4, n_miembros = $5 
     WHERE id = $1 
     RETURNING *
   `;

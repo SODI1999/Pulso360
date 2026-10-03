@@ -80,9 +80,9 @@ export const userRepository = {
   async createHabeasDataRequest({ id, userId, type, note }) {
     const query = `
       INSERT INTO solicitudes_habeas_data (
-        id, usuario_id, tipo_solicitud, notas, status
+        id, usuario_id, type, note, deadline, status
       ) VALUES (
-        $1, $2, $3, $4, 'En tramite'
+        $1, $2, $3, $4, CURRENT_DATE + INTERVAL '15 days', 'En tramite'
       ) RETURNING *;
     `;
     const { rows } = await pool.query(query, [id, userId, type, note]);

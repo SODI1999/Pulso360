@@ -18,12 +18,12 @@ export const createUser = async ({ rolCodigo, correo, nombres, apellidos, contra
   const userApellidos = apellidos?.trim() || '.';
 
   if (!correo || !userNombres || !rolCodigo) {
-    throw new AppError("Datos incompletos para crear usuario", 400, "MISSING_DATA");
+    throw new AppError("Datos incompletos para crear usuario", "MISSING_DATA", 400);
   }
 
   const existing = await adminRepository.findByEmail(correo);
   if (existing) {
-    throw new AppError("El correo ya está en uso", 400, "EMAIL_IN_USE");
+    throw new AppError("El correo ya está en uso", "EMAIL_IN_USE", 400);
   }
 
   const crypto = await import('crypto');
@@ -33,7 +33,7 @@ export const createUser = async ({ rolCodigo, correo, nombres, apellidos, contra
   const contrasenaHash = await bcrypt.hash(pwToHash, 10);
 
   // Valor por defecto para shiftStartHour, asumiendo 08:00
-  const shiftStartHour = '08:00'; 
+  const shiftStartHour = 8; 
 
   const newUser = await adminRepository.createUser({
     id: userId,
@@ -50,7 +50,7 @@ export const createUser = async ({ rolCodigo, correo, nombres, apellidos, contra
       id: crypto.randomUUID(),
       usuarioId: userId,
       equipoId,
-      tipoAsignacion: 'PRIMARIA',
+      tipoAsignacion: rolCodigo === 'SUPERVISOR' ? 'SUPERVISOR' : 'AGENTE',
       fechaInicio: new Date().toISOString().split('T')[0]
     });
   }
@@ -69,12 +69,12 @@ export const createUser = async ({ rolCodigo, correo, nombres, apellidos, contra
 
 export const setUserStatus = async (userId, status, adminUserId) => {
   if (!['Activo', 'Inactivo', 'Suspendido'].includes(status)) {
-    throw new AppError("Estado de usuario no válido", 400, "INVALID_STATUS");
+    throw new AppError("Estado de usuario no válido", "INVALID_STATUS", 400);
   }
 
   const updated = await adminRepository.updateUserStatus(userId, status);
   if (!updated) {
-    throw new AppError("Usuario no encontrado", 404, "USER_NOT_FOUND");
+    throw new AppError("Usuario no encontrado", "USER_NOT_FOUND", 404);
   }
 
   await auditorRepository.createLog({
@@ -95,7 +95,7 @@ export const getOrganization = async () => {
 
 export const createCampaign = async ({ codigo, nombre, descripcion }, adminUserId) => {
   if (!codigo || !nombre) {
-    throw new AppError("Datos incompletos para la campaña", 400, "MISSING_DATA");
+    throw new AppError("Datos incompletos para la campaña", "MISSING_DATA", 400);
   }
   const crypto = await import('crypto');
   const id = crypto.randomUUID();
@@ -115,11 +115,11 @@ export const createCampaign = async ({ codigo, nombre, descripcion }, adminUserI
 
 export const updateCampaign = async (campId, { nombre, activa }, adminUserId) => {
   if (nombre === undefined || activa === undefined) {
-    throw new AppError("Datos incompletos para actualizar la campaña", 400, "MISSING_DATA");
+    throw new AppError("Datos incompletos para actualizar la campaña", "MISSING_DATA", 400);
   }
   const updated = await adminRepository.updateCampaign(campId, { nombre, activa: Boolean(activa) });
   if (!updated) {
-    throw new AppError("Campaña no encontrada", 404, "CAMPAIGN_NOT_FOUND");
+    throw new AppError("Campaña no encontrada", "CAMPAIGN_NOT_FOUND", 404);
   }
 
   await auditorRepository.createLog({
@@ -136,7 +136,7 @@ export const updateCampaign = async (campId, { nombre, activa }, adminUserId) =>
 
 export const createTeam = async ({ campanaId, codigo, nombre, supervisorNombre, nMiembros }, adminUserId) => {
   if (!campanaId || !codigo || !nombre) {
-    throw new AppError("Datos incompletos para el equipo", 400, "MISSING_DATA");
+    throw new AppError("Datos incompletos para el equipo", "MISSING_DATA", 400);
   }
   const crypto = await import('crypto');
   const id = crypto.randomUUID();
@@ -165,11 +165,11 @@ export const createTeam = async ({ campanaId, codigo, nombre, supervisorNombre, 
 export const updateTeam = async (teamId, data, adminUserId) => {
   const { nombre, activo, supervisorNombre, nMiembros } = data;
   if (nombre === undefined || activo === undefined) {
-    throw new AppError("Datos incompletos para actualizar el equipo", 400, "MISSING_DATA");
+    throw new AppError("Datos incompletos para actualizar el equipo", "MISSING_DATA", 400);
   }
   const updated = await adminRepository.updateTeam(teamId, { nombre, activo: Boolean(activo), supervisorNombre, nMiembros });
   if (!updated) {
-    throw new AppError("Equipo no encontrado", 404, "TEAM_NOT_FOUND");
+    throw new AppError("Equipo no encontrado", "TEAM_NOT_FOUND", 404);
   }
 
   await auditorRepository.createLog({
@@ -192,11 +192,11 @@ export const getSystemParams = async () => {
 
 export const updateSystemParam = async (clave, valorJson) => {
   if (!clave || valorJson === undefined) {
-    throw new AppError("Datos incompletos para el parámetro", 400, "MISSING_DATA");
+    throw new AppError("Datos incompletos para el parámetro", "MISSING_DATA", 400);
   }
   const updated = await adminRepository.updateSystemParam(clave, valorJson);
   if (!updated) {
-    throw new AppError("Parámetro no encontrado", 404, "PARAM_NOT_FOUND");
+    throw new AppError("Parámetro no encontrado", "PARAM_NOT_FOUND", 404);
   }
   return updated;
 };
@@ -204,7 +204,7 @@ export const updateSystemParam = async (clave, valorJson) => {
 export const createPolicy = async (data, adminUserId) => {
   const { version, titulo, textoPolitica, textoAviso } = data;
   if (!version || !titulo || !textoPolitica || !textoAviso) {
-    throw new AppError("Datos incompletos para la política", 400, "MISSING_DATA");
+    throw new AppError("Datos incompletos para la política", "MISSING_DATA", 400);
   }
   const crypto = await import('crypto');
   const id = crypto.randomUUID();
@@ -224,11 +224,11 @@ export const getHabeasData = async () => {
 
 export const updateHabeasData = async (id, status, note) => {
   if (!['Pendiente', 'Respondida', 'Rechazada'].includes(status)) {
-    throw new AppError("Estado no válido", 400, "INVALID_STATUS");
+    throw new AppError("Estado no válido", "INVALID_STATUS", 400);
   }
   const updated = await adminRepository.updateHabeasDataStatus(id, status, note);
   if (!updated) {
-    throw new AppError("Solicitud no encontrada", 404, "REQUEST_NOT_FOUND");
+    throw new AppError("Solicitud no encontrada", "REQUEST_NOT_FOUND", 404);
   }
   return updated;
 };

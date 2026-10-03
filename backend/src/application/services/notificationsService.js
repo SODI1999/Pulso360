@@ -6,10 +6,10 @@ export const notificationsService = {
     return notifications;
   },
 
-  async markAsRead(notificationId) {
-    const updated = await notificationsRepository.markRead(notificationId);
+  async markAsRead(notificationId, userId, rolCodigo) {
+    const updated = await notificationsRepository.markRead(notificationId, userId, rolCodigo);
     if (!updated) {
-      const error = new Error("Notificación no encontrada");
+      const error = new Error("Notificación no encontrada o no autorizada");
       error.statusCode = 404;
       error.code = "NOTIFICATION_NOT_FOUND";
       throw error;

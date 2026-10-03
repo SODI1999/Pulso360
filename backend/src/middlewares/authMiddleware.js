@@ -1,7 +1,8 @@
 import jwt from 'jsonwebtoken';
 import { AppError } from '../application/errors/AppError.js';
+import { userRepository } from '../infrastructure/repositories/userRepository.js';
 
-export const authenticate = (req, res, next) => {
+export const authenticate = async (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (!authHeader) {
     return next(new AppError('Token ausente', 'AUTH_TOKEN_MISSING', 401));
@@ -13,7 +14,17 @@ export const authenticate = (req, res, next) => {
 
   const token = authHeader.split(' ')[1];
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret');
+    const secret = process.env.JWT_SECRET;
+    if ((!secret || secret === 'secret') && process.env.NODE_ENV !== 'test') {
+      console.warn("SEVERE WARNING: Using insecure JWT_SECRET");
+    }
+    const decoded = jwt.verify(token, secret || 'secret');
+    
+    const user = await userRepository.findProfileById(decoded.id);
+    if (!user || user.estado !== 'Activo') {
+      return next(new AppError('Usuario no encontrado o inactivo', 'AUTH_USER_INACTIVE', 401));
+    }
+    
     req.user = decoded;
     next();
   } catch (err) {

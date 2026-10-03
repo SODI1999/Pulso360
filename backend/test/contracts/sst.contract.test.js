@@ -35,6 +35,11 @@ describe("Sprint 3 · SST, Supervision & k-Anonymity Analytics Contract Tests", 
         "INSERT INTO daily_checkins (id, usuario_id, asignacion_id, journey_key, checkin_date, energia, carga_emocional, recuperacion, apoyo, distanciamiento, ineficacia) VALUES ($1, $2, $3, 'TEST', '2026-08-20', 4, 3, 3, 4, 2, 2) ON CONFLICT (id) DO NOTHING",
         [`test-chk-${i}`, `test-usr-${i}`, `test-asig-${i}`]
       );
+      
+      await pool.query(
+        "INSERT INTO consentimientos (id, usuario_id, politica_id, tipo_evento, acepta_politica, acepta_aviso_privacidad, c1_checkin, c2_bitacora, c3_apoyo, c4_analitica, c5_contacto) VALUES ($1, $2, 'pol-v24', 'INICIAL', TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE) ON CONFLICT (id) DO NOTHING",
+        [`test-con-${i}`, `test-usr-${i}`]
+      );
     }
 
     // 3. Autenticación de SST, SUPERVISOR y AGENTE
@@ -57,6 +62,7 @@ describe("Sprint 3 · SST, Supervision & k-Anonymity Analytics Contract Tests", 
   after(async () => {
     try {
       await pool.query("DELETE FROM daily_checkins WHERE id LIKE 'test-chk-%'");
+      await pool.query("DELETE FROM consentimientos WHERE id LIKE 'test-con-%'");
       await pool.query("DELETE FROM asignaciones_usuario_equipo WHERE id LIKE 'test-asig-%'");
       await pool.query("DELETE FROM usuarios WHERE id LIKE 'test-usr-%'");
       await pool.query("DELETE FROM sst_intervenciones WHERE id LIKE 'int-%' AND id NOT IN ('int-1', 'int-2')");

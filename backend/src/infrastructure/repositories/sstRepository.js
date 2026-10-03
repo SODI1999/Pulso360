@@ -138,9 +138,8 @@ export const sstRepository = {
   async updateAlertStatus(alertId, { status, dismissReason }) {
     const query = `
       UPDATE sst_alertas 
-      SET status = $2, 
-          dismiss_reason = COALESCE($3, dismiss_reason), 
-          updated_at = CURRENT_TIMESTAMP 
+      SET status = $2,
+          description = CASE WHEN $3::text IS NOT NULL AND $3::text <> '' THEN description || ' [Descarte: ' || $3 || ']' ELSE description END
       WHERE id = $1 
       RETURNING *;
     `;
@@ -151,9 +150,13 @@ export const sstRepository = {
   async updateSupportRequestStatus(requestId, status) {
     const query = `
       UPDATE solicitudes_apoyo 
-      SET status = $2 
+      SET status = $2,
+          resuelto_en = CASE WHEN $2 IN ('Atendida', 'Cerrada') THEN CURRENT_TIMESTAMP ELSE resuelto_en END
       WHERE id = $1 
-      RETURNING *;
+      RETURNING 
+        id, code, mode, reason, description, urgency, contact_preference,
+        status, request_date, resuelto_en, created_at,
+        CASE WHEN mode = 'anonimo' THEN NULL ELSE owner_user_id END AS owner_user_id;
     `;
     const { rows } = await pool.query(query, [requestId, status]);
     return rows[0];

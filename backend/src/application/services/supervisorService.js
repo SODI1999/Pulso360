@@ -1,11 +1,12 @@
 import { supervisorRepository } from '../../infrastructure/repositories/supervisorRepository.js';
-
 import * as auditorRepository from '../../infrastructure/repositories/auditorRepository.js';
+import pool from '../../infrastructure/db.js';
+import { AppError } from '../errors/AppError.js';
 
 export const supervisorService = {
   async getAssignedActions(supervisorId) {
     if (!supervisorId) {
-      throw { statusCode: 400, message: "ID de supervisor es requerido", code: "MISSING_SUPERVISOR_ID" };
+      throw new AppError("ID de supervisor es requerido", 'MISSING_SUPERVISOR_ID', 400);
     }
     const actions = await supervisorRepository.findAssignedInterventions(supervisorId);
     return actions;
@@ -13,12 +14,33 @@ export const supervisorService = {
 
   async recordFollowup(supervisorId, { intervencionId, progress, note, actionType }) {
     if (!intervencionId) {
-      throw { statusCode: 400, message: "ID de intervención es requerido", code: "MISSING_INTERVENCION_ID" };
+      throw new AppError("ID de intervención es requerido", 'MISSING_INTERVENCION_ID', 400);
     }
     
-    // progress can be 0, so check undefined
     if (progress === undefined) {
-      throw { statusCode: 400, message: "Progreso es requerido", code: "MISSING_PROGRESS" };
+      throw new AppError("Progreso es requerido", 'MISSING_PROGRESS', 400);
+    }
+
+    const checkQuery = `
+      SELECT i.id, i.campana_id, i.equipo_id
+      FROM sst_intervenciones i
+      WHERE i.id = $1 
+        AND (
+          i.assigned_to = $2 
+          OR i.equipo_id IN (
+            SELECT aue.equipo_id FROM asignaciones_usuario_equipo aue 
+            WHERE aue.usuario_id = $2 AND aue.activa = TRUE
+          )
+          OR i.campana_id IN (
+            SELECT eq.campana_id FROM equipos eq 
+            JOIN asignaciones_usuario_equipo aue ON aue.equipo_id = eq.id 
+            WHERE aue.usuario_id = $2 AND aue.activa = TRUE
+          )
+        )
+    `;
+    const checkResult = await pool.query(checkQuery, [intervencionId, supervisorId]);
+    if (checkResult.rows.length === 0) {
+      throw new AppError('Intervención no encontrada o no autorizada para este supervisor', 'FORBIDDEN', 403);
     }
 
     const id = 'seg-int-' + Date.now();

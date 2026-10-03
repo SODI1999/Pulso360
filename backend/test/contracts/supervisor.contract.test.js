@@ -19,7 +19,8 @@ describe("Sprint 3 · Supervisor Contract Tests", () => {
       INSERT INTO sst_intervenciones 
       (id, alerta_id, title, type, campana_id, equipo_id, creator_id, assigned_to, status, start_date, end_date, indicator, target_desc, external_action)
       VALUES 
-      ('test-int-sup-1', NULL, 'Test Intervention Supervisor', 'Pausas activas coordinadas', 'camp-1', 'team-alpha-1', 'usr-3', 'usr-2', 'Activa', '2026-10-01', '2026-10-31', 'Recuperacion agregada', 'Target test', NULL)
+      ('test-int-sup-1', NULL, 'Test Intervention Supervisor', 'Pausas activas coordinadas', 'camp-1', 'team-alpha-1', 'usr-3', 'usr-2', 'Activa', '2026-10-01', '2026-10-31', 'Recuperacion agregada', 'Target test', NULL),
+      ('test-int-sup-alien', NULL, 'Alien Intervention', 'Otra', 'camp-2', 'team-beta-2', 'usr-3', 'usr-4', 'Activa', '2026-10-01', '2026-10-31', 'Otra', 'Target test', NULL)
       ON CONFLICT (id) DO NOTHING
     `);
 
@@ -81,12 +82,22 @@ describe("Sprint 3 · Supervisor Contract Tests", () => {
           note: "Avance de prueba"
         })
         .expect("Content-Type", /json/)
-        .expect("Content-Type", /json/)
         .expect(201);
 
       assertSuccessContract(res.body);
       assert.equal(res.body.data.progreso_reportado, 50, "El progreso debe actualizarse");
       assert.equal(res.body.data.nota_avance, "Avance de prueba", "La nota debe coincidir");
+    });
+
+    it("debe retornar 403 Forbidden cuando supervisor intenta reportar avance sobre intervención ajena (IDOR)", async () => {
+      const res = await request(app)
+        .post("/api/v1/supervisor/actions/test-int-sup-alien/followup")
+        .set("Authorization", `Bearer ${supervisorToken}`)
+        .send({ progress: 10, note: "Intento IDOR" })
+        .expect("Content-Type", /json/)
+        .expect(403);
+      
+      assertErrorContract(res.body, "FORBIDDEN");
     });
   });
 });

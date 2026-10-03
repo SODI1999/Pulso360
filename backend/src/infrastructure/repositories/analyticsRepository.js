@@ -19,6 +19,11 @@ export const analyticsRepository = {
       SELECT COUNT(DISTINCT d.usuario_id) AS total_participantes
       FROM daily_checkins d
       JOIN usuarios u ON d.usuario_id = u.id
+      JOIN (
+        SELECT usuario_id FROM consentimientos 
+        WHERE c4_analitica = TRUE
+        GROUP BY usuario_id
+      ) c4 ON c4.usuario_id = d.usuario_id
       LEFT JOIN asignaciones_usuario_equipo a ON (d.asignacion_id = a.id OR (d.asignacion_id IS NULL AND d.usuario_id = a.usuario_id AND a.activa = TRUE))
       LEFT JOIN equipos eq ON a.equipo_id = eq.id
       WHERE 1=1
@@ -70,6 +75,11 @@ export const analyticsRepository = {
         ROUND(AVG(d.ineficacia), 2) AS ineficacia
       FROM daily_checkins d
       JOIN usuarios u ON d.usuario_id = u.id
+      JOIN (
+        SELECT usuario_id FROM consentimientos 
+        WHERE c4_analitica = TRUE
+        GROUP BY usuario_id
+      ) c4 ON c4.usuario_id = d.usuario_id
       LEFT JOIN asignaciones_usuario_equipo a ON (d.asignacion_id = a.id OR (d.asignacion_id IS NULL AND d.usuario_id = a.usuario_id AND a.activa = TRUE))
       LEFT JOIN equipos eq ON a.equipo_id = eq.id
       WHERE 1=1
