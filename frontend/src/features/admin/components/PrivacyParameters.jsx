@@ -23,7 +23,9 @@ export function PrivacyParameters({
           value={umbralN}
           onChange={(e) => setUmbralN(e.target.value)}
         />
-        <span className="form-hint">Mínimo legal: 3. Estándar institucional: 5.</span>
+        <span className="form-hint">
+          Mínimo recomendado: k ≥ 5 para mitigar riesgos de reidentificación por agregación.
+        </span>
       </div>
 
       <div className="form-group">
@@ -72,7 +74,9 @@ export function PrivacyParameters({
           value={auditRetentionYears}
           onChange={(e) => setAuditRetentionYears(e.target.value)}
         />
-        <span className="form-hint">Mínimo obligatorio: 5 años.</span>
+        <span className="form-hint">
+          Período de retención institucional conforme a la política SG-SST de la organización.
+        </span>
       </div>
     </div>
   );

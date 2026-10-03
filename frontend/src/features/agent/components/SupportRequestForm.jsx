@@ -63,7 +63,7 @@ export function SupportRequestForm({
                 )}
               </div>
               <p className="support-mode-desc">
-                SST no recibe tu nombre ni tu documento de identidad. Tu solicitud se gestiona de forma autónoma mediante radicado seguro y consultas las respuestas en esta plataforma con el código generado.
+                SST no recibe tu nombre ni tu documento de identidad. El código generado sirve como número de radicado y seguimiento administrativo de tu solicitud ante el área de SST, y consultas las respuestas en esta plataforma.
               </p>
             </label>
 
@@ -166,7 +166,7 @@ export function SupportRequestForm({
             <div className="support-anon-inline-hint">
               <Icon name="info" size={15} />
               <span>
-                En modalidad anónima la respuesta se consulta con tu código de radicado; no se requieren datos de contacto ni horarios personales.
+                El código generado sirve como número de radicado y seguimiento administrativo de tu solicitud ante el área de SST; no se requieren datos de contacto ni horarios personales.
               </span>
             </div>
           </div>

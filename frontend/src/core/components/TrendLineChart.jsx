@@ -90,8 +90,30 @@ export function TrendLineChart({
   }, [labels, chartValues, activeColor, height]);
 
   return (
-    <div style={{ width: '100%', position: 'relative' }} className={className}>
-      <canvas ref={canvasRef} style={{ display: 'block', width: '100%', height: `${height}px` }} />
+    <div
+      style={{ width: '100%', position: 'relative' }}
+      className={className}
+      role="figure"
+      aria-label="Gráfico de tendencia mostrando la evolución de los indicadores"
+    >
+      <canvas ref={canvasRef} style={{ display: 'block', width: '100%', height: `${height}px` }} aria-hidden="true" />
+      <table className="sr-only">
+        <caption>Datos del gráfico de tendencia</caption>
+        <thead>
+          <tr>
+            <th scope="col">Fecha</th>
+            <th scope="col">Valor</th>
+          </tr>
+        </thead>
+        <tbody>
+          {chartValues.map((val, idx) => (
+            <tr key={idx}>
+              <td>{labels[idx] || `Punto ${idx + 1}`}</td>
+              <td>{val}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }

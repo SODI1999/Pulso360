@@ -13,6 +13,7 @@ export function InactivityModal() {
   const [isWarningVisible, setIsWarningVisible] = useState(false);
   const [secondsLeft, setSecondsLeft] = useState(60);
 
+  const isWarningVisibleRef = useRef(false);
   const inactivityTimerRef = useRef(null);
   const warningTimerRef = useRef(null);
   const countdownIntervalRef = useRef(null);
@@ -33,6 +34,7 @@ export function InactivityModal() {
     clearInterval(countdownIntervalRef.current);
 
     setIsWarningVisible(false);
+    isWarningVisibleRef.current = false;
     setSecondsLeft(60);
 
     const user = authService.getCurrentUser();
@@ -44,6 +46,7 @@ export function InactivityModal() {
     // Programar advertencia preventiva a los 29 minutos
     warningTimerRef.current = setTimeout(() => {
       setIsWarningVisible(true);
+      isWarningVisibleRef.current = true;
       let countdown = 60;
       setSecondsLeft(countdown);
 
@@ -68,7 +71,7 @@ export function InactivityModal() {
 
     const onUserActivity = () => {
       // Si el modal ya se desplegó, requerimos clic explícito en los botones de acción
-      if (!isWarningVisible) {
+      if (!isWarningVisibleRef.current) {
         resetTimer();
       }
     };
@@ -83,7 +86,7 @@ export function InactivityModal() {
       clearTimeout(warningTimerRef.current);
       clearInterval(countdownIntervalRef.current);
     };
-  }, [resetTimer, isWarningVisible]);
+  }, [resetTimer]);
 
   if (!isWarningVisible) return null;
 

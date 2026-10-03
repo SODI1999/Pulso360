@@ -1,24 +1,18 @@
 // src/features/supervisor/components/ActionFollowupModal.jsx
 // Modal estándar para registrar notas operativas de seguimiento en intervenciones de SST (RF-09)
 
-import { useState, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { Icon } from '../../../core/components/Icon';
+import { useModalA11y } from '../../../core/hooks/useModalA11y';
 
 export function ActionFollowupModal({ intervention, onClose, onSave }) {
   const [actionType, setActionType] = useState('Ajuste de pausas y descansos');
   const [notes, setNotes] = useState('');
   const [progress, setProgress] = useState(intervention?.progress || 55);
   const [saving, setSaving] = useState(false);
+  const modalRef = useRef(null);
 
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === 'Escape') {
-        onClose();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [onClose]);
+  useModalA11y({ isOpen: !!intervention, onClose, modalRef });
 
   if (!intervention) return null;
 
@@ -48,7 +42,7 @@ export function ActionFollowupModal({ intervention, onClose, onSave }) {
       aria-labelledby="modalFollowupTitle"
       onClick={handleOverlayClick}
     >
-      <div className="modal-box" style={{ maxWidth: '520px' }}>
+      <div className="modal-box" ref={modalRef} style={{ maxWidth: '520px' }}>
         {/* Cabecera del modal */}
         <div className="modal-header">
           <div>

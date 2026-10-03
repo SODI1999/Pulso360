@@ -130,7 +130,7 @@ export function useCsvImport() {
       });
 
       setFeedback(
-        `Importación completada con éxito: ${parsedRows.length} registros operativos agregados se incorporaron al almacén.`
+        `Estructura validada exitosamente: ${parsedRows.length} registros procesados (Sandbox local). La ingesta definitiva en la base de datos remota se habilitará cuando exista el endpoint masivo específico en el backend.`
       );
       setIsProcessing(false);
       setSelectedFile(null);

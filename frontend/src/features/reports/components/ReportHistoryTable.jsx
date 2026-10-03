@@ -39,10 +39,16 @@ export function ReportHistoryTable({ reportHistory = [] }) {
               </tr>
             ) : (
               reportHistory.map((rep) => {
-                const dateFormatted = new Intl.DateTimeFormat('es-CO', {
-                  dateStyle: 'short',
-                  timeStyle: 'short'
-                }).format(new Date(rep.date));
+                const rawDate = rep.createdAt || rep.created_at || rep.date || new Date().toISOString();
+                let dateFormatted = '';
+                try {
+                  dateFormatted = new Intl.DateTimeFormat('es-CO', {
+                    dateStyle: 'short',
+                    timeStyle: 'short'
+                  }).format(new Date(rawDate));
+                } catch {
+                  dateFormatted = String(rawDate);
+                }
 
                 return (
                   <tr key={rep.id}>

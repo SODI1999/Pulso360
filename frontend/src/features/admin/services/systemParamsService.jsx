@@ -47,13 +47,18 @@ export async function saveParams(
   return {};
 }
 
-export async function publishPolicy(v, actorLabel) {
+export async function publishPolicy(v, actorLabel, title, policyText, noticeText) {
   if (!env.useMockStorage && getAuthToken()) {
     try {
-      await apiClient.post('/admin/policies', { version: v, titulo: 'Política de Privacidad ' + v });
+      await apiClient.post('/admin/policies', {
+        version: v,
+        titulo: title || ('Política de Privacidad ' + v),
+        textoPolitica: policyText || 'Texto de política vigente.',
+        textoAviso: noticeText || 'Texto de aviso de privacidad vigente.'
+      });
       return {};
     } catch (error) {
-      return { error: error.response?.data?.error?.message || 'Error en el servidor' };
+      return { error: error.response?.data?.error?.message || error.message || 'Error en el servidor' };
     }
   }
 

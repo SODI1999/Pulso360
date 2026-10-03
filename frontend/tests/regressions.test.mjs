@@ -236,3 +236,23 @@ test('descarta elementos dañados de listas sin perder registros válidos', asyn
     assert.equal((await authService.login(validUser.email, 'Pulso360#2026')).success, true);
   });
 });
+
+test('nlpEngine analiza intensificadores, negaciones y límites de ventana', async () => {
+  await withApp(async ({ load }) => {
+    const { nlpEngine } = await load('/src/core/nlp/nlpEngine.jsx');
+
+    const r1 = nlpEngine.analyze('agotado');
+    assert.equal(r1.requiresReview, true);
+    assert.ok(r1.categories.length > 0);
+
+    const r2 = nlpEngine.analyze('muy agotado');
+    assert.equal(r2.requiresReview, false);
+    assert.ok(r2.categories[0].confidence >= 0.62);
+
+    const r3 = nlpEngine.analyze('no estoy agotado');
+    assert.equal(r3.categories.some(c => c.name === 'Recuperación insuficiente'), false);
+
+    const r4 = nlpEngine.analyze('hoy no llamé a nadie y me siento agotado');
+    assert.ok(r4.categories.some(c => c.name === 'Recuperación insuficiente'));
+  });
+});

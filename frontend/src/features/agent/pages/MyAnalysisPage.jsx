@@ -142,6 +142,7 @@ export function MyAnalysisPage() {
               {analyzedJournals.map((journal) => {
                 const activeCategories =
                   journal.correctedCategories || journal.analysis?.categories?.map((c) => c.name) || [];
+                const validCategories = activeCategories.filter((cat) => cat !== 'Ninguna aplica');
                 const uniqueEvidence = [
                   ...new Set((journal.analysis?.categories || []).flatMap((c) => c.evidence || []))
                 ];
@@ -177,8 +178,8 @@ export function MyAnalysisPage() {
                     <div className="analysis-entry-factors-row">
                       <span className="analysis-entry-factors-label">Factores identificados:</span>
                       <div className="analysis-entry-chips">
-                        {activeCategories.length > 0 ? (
-                          activeCategories.map((cat) => (
+                        {validCategories.length > 0 ? (
+                          validCategories.map((cat) => (
                             <span key={cat} className="analysis-factor-badge">
                               <Icon name={CATEGORY_ICONS[cat] || 'sliders'} size={13} />
                               <span>{cat}</span>
@@ -186,7 +187,7 @@ export function MyAnalysisPage() {
                           ))
                         ) : (
                           <span className="analysis-factor-empty-note">
-                            Ninguna aplica · Jornada transcurrida sin factores de tensión
+                            No se identificaron patrones de sobrecarga o tensión en este registro
                           </span>
                         )}
                       </div>

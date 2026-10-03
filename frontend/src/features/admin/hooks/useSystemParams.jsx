@@ -141,7 +141,11 @@ export function useSystemParams() {
       return;
     }
 
-    await publishPolicy(v, actorLabel);
+    const res = await publishPolicy(v, actorLabel);
+    if (res && res.error) {
+      setPolicyFeedback(`Error al publicar política: ${res.error}`);
+      return;
+    }
 
     setPolicyFeedback(`Política ${v} publicada con éxito. Notificación enviada a todos los agentes.`);
     setNewPolicyVersion('');

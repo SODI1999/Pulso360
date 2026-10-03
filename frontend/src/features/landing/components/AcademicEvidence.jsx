@@ -114,6 +114,11 @@ export function AcademicEvidence() {
                   </span>
                 </div>
               )}
+              {sec.footnote && (
+                <p className="aside-footnote" role="note">
+                  {sec.footnote}
+                </p>
+              )}
             </div>
           ))}
         </div>

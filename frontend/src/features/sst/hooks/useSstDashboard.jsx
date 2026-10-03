@@ -1,5 +1,5 @@
-import { getSstData } from '../services/sstQueries';
-import { useEffect, useMemo } from 'react';
+import { getSstData, fetchSstAlerts, fetchSstSupportRequests } from '../services/sstQueries';
+import { useEffect, useMemo, useState } from 'react';
 
 import { authService } from '../../../core/auth/authService';
 import { pulsoStore } from '../../../core/storage/pulsoStore';
@@ -9,15 +9,29 @@ export function useSstDashboard() {
   const storeData = getSstData();
   const minThreshold = storeData.settings?.umbralMinimo || 5;
 
+  const [alerts, setAlerts] = useState([]);
+  const [requests, setRequests] = useState([]);
+
+  useEffect(() => {
+    let active = true;
+    Promise.all([fetchSstAlerts(), fetchSstSupportRequests()]).then(([al, req]) => {
+      if (active) {
+        setAlerts(al || []);
+        setRequests(req || []);
+      }
+    });
+    return () => { active = false; };
+  }, []);
+
   // Alertas activas pendientes de atención
   const pendingAlerts = useMemo(() => {
-    return (storeData.alerts || []).filter((a) => a.status !== 'CERRADA' && a.status !== 'DESCARTADA');
-  }, [storeData.alerts]);
+    return alerts.filter((a) => a.status !== 'CERRADA' && a.status !== 'DESCARTADA');
+  }, [alerts]);
 
   // Solicitudes de acompañamiento en gestión
   const activeRequests = useMemo(() => {
-    return (storeData.supportRequests || []).filter((r) => r.status !== 'Cerrada');
-  }, [storeData.supportRequests]);
+    return requests.filter((r) => r.status !== 'Cerrada');
+  }, [requests]);
 
   // Distribución agregada de las 8 categorías léxicas de NLP
   const nlpCategories = useMemo(

@@ -95,6 +95,12 @@ export function useReports() {
     const hash = computeHash(JSON.stringify({ ...meta, sections: activeSections, format, ts: Date.now() }));
 
     const newReportRecord = {
+      tipoReporte: selectedScopeId,
+      campanaId: null,
+      equipoId: null,
+      fechaCorte: new Date().toISOString().slice(0, 10),
+      parametrosFiltro: { scope: selectedScopeId, format, sections },
+      rutaArchivo: null,
       id: `rep-${Date.now()}`,
       date: meta.fecha,
       user: meta.solicitante,
@@ -104,7 +110,11 @@ export function useReports() {
     };
 
     // Guardar en almacén
-    await generateReport(newReportRecord);
+    const res = await generateReport(newReportRecord);
+    if (res && res.error) {
+      setFeedback(`Error: ${res.error.message || res.error}`);
+      return;
+    }
 
     // Auditoría inmutable (RF-12 / RF-13)
     pulsoStore.audit({

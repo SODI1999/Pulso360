@@ -221,7 +221,7 @@ export function BpoResetModal({ isOpen, onClose }) {
           <p className="pause-kicker">Pausa completada</p>
           <h2 className="pause-title">Pausa completada.</h2>
           <p className="pause-sub">
-            La respiración volvió a ser más lenta y clara. Puedes volver al turno cuando te sientas listo.
+            Tómate unos segundos para notar tu respiración a este ritmo pausado antes de retomar la atención. Puedes volver al turno cuando te sientas listo.
           </p>
           <button type="button" className="pause-start-btn" onClick={onClose}>
             <span>Volver al turno</span>

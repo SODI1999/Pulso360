@@ -139,8 +139,8 @@ export function CsvImportPage() {
               <Icon name="check" size={16} />
               <span>
                 {isProcessing
-                  ? 'Procesando archivo...'
-                  : `Procesar e importar ${parsedRows.length} registros`}
+                  ? 'Validando Sandbox...'
+                  : `Simular ingesta de ${parsedRows.length} registros`}
               </span>
             </button>
           </div>

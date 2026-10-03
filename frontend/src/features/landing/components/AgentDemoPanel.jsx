@@ -22,6 +22,12 @@ export function AgentDemoPanel({
           <strong className="act-header-title">Espacio personal · Ejemplo ilustrativo</strong>
           <span className="act-header-scope">Micro-pulso voluntario de 60 segundos sin consecuencias laborales</span>
         </div>
+        <div className="demo-context-notice" role="note" aria-label="Aviso sobre escenarios ilustrativos preconfigurados">
+          <Icon name="info" size={14} className="notice-icon" />
+          <span>
+            <strong>Simulación demostrativa:</strong> Los textos, citas y recomendaciones mostrados en este componente corresponden a <em>escenarios interactivos ilustrativos preconfigurados</em>, diseñados para exhibir la funcionalidad de orientación no médica del motor léxico antes del inicio o al cierre de turno. Se diferencian nítidamente del procesamiento de texto libre en la bitácora confidencial real del agente, donde la reflexión se ejecuta en el navegador local bajo estricta privacidad, sin exposición ante supervisores ni impacto en evaluaciones laborales.
+          </span>
+        </div>
       </div>
 
       {/* Selector de Carga Cognitiva y Emocional (1 al 5) */}

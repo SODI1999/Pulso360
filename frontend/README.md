@@ -17,7 +17,7 @@ Cliente web de Pulso360, una plataforma de bienestar laboral para operaciones BP
 
 ## Instalacion y Ejecucion
 
-Requisitos: Node.js (v18+ recomendado) y npm.
+Requisitos: Node.js (v20.0 o superior, exigido por React Router 7 y runtime ESM moderno) y npm (v10.0 o superior).
 
 1. Entrar a la carpeta del frontend:
    ```bash

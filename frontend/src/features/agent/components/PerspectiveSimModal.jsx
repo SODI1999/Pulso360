@@ -106,8 +106,9 @@ export function PerspectiveSimModal({ isOpen, onClose }) {
                   <Icon name="info" size={15} />
                 </span>
                 <span>
-                  <strong>Promedios agrupados:</strong> Solo se calcula la media de campaña si hay al menos 5
-                  respuestas en la franja horaria.
+                  <strong>Tendencias consolidadas:</strong> SST visualiza tendencias por campaña/equipo (si hay
+                  al menos 5 respuestas en la franja) y atiende solicitudes individuales únicamente cuando las
+                  canalizas de forma voluntaria.
                 </span>
               </li>
               <li className="perspective-list-item">
@@ -148,11 +149,11 @@ export function PerspectiveSimModal({ isOpen, onClose }) {
         <div className="agent-notice agent-notice--flat">
           <Icon name="shieldCheck" size={18} className="agent-notice-icon" />
           <div className="agent-notice-text">
-            <strong>Separación de bienestar y desempeño:</strong> Las vistas de supervisión y SST reciben
-            únicamente tendencias agregadas cuando hay al menos 5 personas (k ≥ 5) y ninguna de ellas permite
-            consultar o filtrar a una persona concreta. La aplicación no incluye funciones de evaluación de
-            desempeño, ranking ni amonestación: el registro de bienestar está separado de las métricas
-            operativas como el AHT.
+            <strong>Separación de bienestar y desempeño:</strong> SST visualiza tendencias consolidadas por
+            campaña/equipo (k ≥ 5) y atiende solicitudes individuales de apoyo únicamente cuando el colaborador las
+            canaliza de forma voluntaria. Ninguna vista operativa permite consultar o filtrar a una persona concreta,
+            ni incluye funciones de evaluación de desempeño, ranking o amonestación: el registro de bienestar
+            permanece separado de métricas operativas como el AHT.
           </div>
         </div>
 

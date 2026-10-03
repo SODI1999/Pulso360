@@ -462,3 +462,14 @@
   color: var(--landing-emerald, #14705A);
   margin-top: 2px;
 }
+
+.aside-footnote {
+  font-size: 0.73rem;
+  line-height: 1.45;
+  color: var(--landing-body, #485B58);
+  margin-top: 10px;
+  margin-bottom: 0;
+  padding-top: 8px;
+  border-top: 1px dashed var(--landing-line, #E5E0D6);
+  font-style: normal;
+}

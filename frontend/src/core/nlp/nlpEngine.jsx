@@ -111,7 +111,9 @@ const hasNegationNear = (text, phrase) => {
 
   const wordsBefore = text
     .slice(Math.max(0, phraseIndex - 35), phraseIndex)
+    .trim()
     .split(/\s+/)
+    .filter(Boolean)
     .slice(-3);
   return wordsBefore.some((word) => NEGATORS.includes(word));
 };
@@ -142,10 +144,12 @@ export const nlpEngine = {
 
         // Detectar si tiene un intensificador previo
         const termIndex = text.indexOf(term);
-        const previousWord = text
-          .slice(Math.max(0, termIndex - 20), termIndex)
+        const precedingWords = text
+          .slice(Math.max(0, termIndex - 25), termIndex)
+          .trim()
           .split(/\s+/)
-          .slice(-1)[0];
+          .filter(Boolean);
+        const previousWord = precedingWords.slice(-1)[0] || '';
 
         if (INTENSIFIERS.includes(previousWord)) {
           score += 1.5;
@@ -157,8 +161,13 @@ export const nlpEngine = {
       });
 
       if (score > 0) {
-        // Cálculo de confianza normalizado entre 0.48 y 0.95
-        const confidence = Math.min(0.95, Number((0.48 + score * 0.13).toFixed(2)));
+        // Cálculo de confianza normalizado
+        let confidence;
+        if (score === 1) {
+          confidence = 0.55;
+        } else {
+          confidence = Math.min(0.95, Number((0.55 + (score - 1) * 0.15).toFixed(2)));
+        }
         results.push({ name, confidence, evidence: [...new Set(evidence)] });
       }
     });

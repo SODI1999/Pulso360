@@ -1,13 +1,17 @@
 // src/features/admin/components/CampaignModal.jsx
 // Modal para creación y edición de campañas operativas (RF-15)
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Icon } from '../../../core/components/Icon';
+import { useModalA11y } from '../../../core/hooks/useModalA11y';
 
 export function CampaignModal({ isOpen, onClose, onSave, campaign = null }) {
   const [name, setName] = useState('');
   const [active, setActive] = useState(true);
   const [error, setError] = useState('');
+  const modalRef = useRef(null);
+
+  useModalA11y({ isOpen, onClose, modalRef });
 
   useEffect(() => {
     if (campaign) {
@@ -40,7 +44,7 @@ export function CampaignModal({ isOpen, onClose, onSave, campaign = null }) {
 
   return (
     <div className="modal-overlay active" onClick={onClose} role="dialog" aria-modal="true">
-      <div className="modal-card" onClick={(e) => e.stopPropagation()}>
+      <div className="modal-card" ref={modalRef} onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <div>
             <h2 className="modal-title">{campaign ? 'Editar Campaña' : 'Crear Nueva Campaña'}</h2>

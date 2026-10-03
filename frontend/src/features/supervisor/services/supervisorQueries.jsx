@@ -17,10 +17,10 @@ export function getSupervisorData() {
  * @param {string} campanaId
  * @returns {Promise<Object>}
  */
-export async function fetchSupervisorMetrics(equipoId, campanaId) {
+export async function fetchSupervisorMetrics(campanaId, equipoId) {
   if (!env.useMockStorage && getAuthToken()) {
     try {
-      const response = await apiClient.get('/sst/metrics', { params: { equipoId, campanaId } });
+      const response = await apiClient.get('/sst/metrics', { params: { campana_id: campanaId, equipo_id: equipoId } });
       // response ya fue desempaquetado por el interceptor (.data)
       // Se espera que contenga { protected, reason, cohort_count, k_threshold, metrics }
       return response;

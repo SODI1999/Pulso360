@@ -77,8 +77,8 @@ export function GroundingExercise({
             <h4 className="crisis-completed-title">Anclaje somático completo (15/15 anclas fijadas)</h4>
           </div>
           <p className="crisis-completed-desc">
-            Has conectado tus 5 sentidos con tu estación física de trabajo. Tu ritmo respiratorio y activación
-            simpática han retornado al momento presente. Recuerda que la llamada difícil ya terminó y tú
+            Has conectado tus 5 sentidos con tu estación física de trabajo. Ejercicio de anclaje completado
+            para recuperar presencia y foco en tu turno. Recuerda que la llamada difícil ya terminó y tú
             marcas el compás de tu turno.
           </p>
           <div className="crisis-completed-actions">

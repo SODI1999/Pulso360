@@ -1,12 +1,16 @@
 // src/features/admin/components/AssignSupervisorModal.jsx
 // Modal para asignar supervisor responsable a un equipo (RF-15)
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Icon } from '../../../core/components/Icon';
+import { useModalA11y } from '../../../core/hooks/useModalA11y';
 
 export function AssignSupervisorModal({ isOpen, onClose, onSave, campaign, team, supervisorsList = [] }) {
   const [selectedSupervisor, setSelectedSupervisor] = useState('');
   const [error, setError] = useState('');
+  const modalRef = useRef(null);
+
+  useModalA11y({ isOpen, onClose, modalRef });
 
   useEffect(() => {
     if (team) {
@@ -34,7 +38,7 @@ export function AssignSupervisorModal({ isOpen, onClose, onSave, campaign, team,
 
   return (
     <div className="modal-overlay active" onClick={onClose} role="dialog" aria-modal="true">
-      <div className="modal-card" onClick={(e) => e.stopPropagation()}>
+      <div className="modal-card" ref={modalRef} onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <div>
             <h2 className="modal-title">Asignar Supervisor de Equipo</h2>

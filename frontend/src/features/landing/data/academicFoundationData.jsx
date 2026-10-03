@@ -62,10 +62,10 @@ export const EMPIRICAL_DATA = {
   ],
   mainMetric: {
     percentage: '84.3%',
-    tag: 'Prevalencia de Agotamiento Emocional Significativo en Muestra',
-    label: 'Prevalencia de Agotamiento Emocional Significativo en Muestra',
+    tag: 'Prevalencia de Agotamiento Emocional en Muestra de Referencia',
+    label: 'Prevalencia de Agotamiento Emocional en Muestra de Referencia',
     description:
-      'Más de 8 de cada 10 agentes evaluados en la muestra de Medellín reportan vaciamiento de energía, fatiga acumulada y sobrecarga afectiva derivada de la atención continua en línea.'
+      'Dato correspondiente al estudio de caso académico formativo de referencia desarrollado con 185 operadores de centros de contacto en Medellín (TdeA). En dicha muestra investigativa, más de 8 de cada 10 participantes evaluados reportaron manifestaciones significativas de fatiga acumulada, vaciamiento energético y sobrecarga por atención continuada. Este indicador se presenta como marco exploratorio y contextual de la investigación formativa, diferenciándose expresamente de una certificación epidemiológica formal o un peritaje oficial de riesgo psicosocial.'
   },
   distribution: [
     {
@@ -102,18 +102,24 @@ export const EMPIRICAL_DATA = {
       value: '76.5%',
       title: 'Intención de Deserción Operativa',
       description:
-        'El 76.5% de los operadores evaluados manifestó haber considerado renunciar a su puesto como salida a la sobrecarga y tensión operativa diaria.',
-      tag: 'Impacto en Rotación BPO'
+        'En la muestra del estudio de caso académico formativo de referencia, el 76.5% de los operadores consultados manifestó haber considerado renunciar a su puesto como salida a la sobrecarga y tensión operativa diaria en piso.',
+      tag: 'Impacto en Rotación BPO',
+      footnote:
+        'Nota metodológica: Dato correspondiente al estudio de caso académico formativo de referencia (Medellín, TdeA). Expresa la percepción exploratoria de la muestra de operadores evaluada en el marco del proyecto, diferenciándose nítidamente de una certificación epidemiológica o de un peritaje oficial de rotación laboral.',
+      operationalMeaning:
+        'La intención de retiro voluntario opera como señal exploratoria de alerta temprana frente a la saturación por colas de llamadas continuas y la escasez de pausas de recuperación psicofísica.'
     },
     {
       id: 'protective',
       value: 'r = -0.428',
       title: 'Efecto Protector del Apoyo Social',
       description:
-        'Correlación inversa estadísticamente significativa (p < 0.01): a mayor apoyo social percibido (pares y supervisores), menor es el nivel de agotamiento emocional.',
+        'Correlación inversa estadísticamente significativa (p < 0.01) observada en el estudio de caso académico formativo de referencia: a mayor apoyo social percibido entre pares y supervisión, menor fue el nivel de agotamiento emocional reportado.',
       tag: 'Hallazgo Psicométrico Clave',
+      footnote:
+        'Nota metodológica: Hallazgo correlacional del estudio formativo de referencia mediante la administración académica de las escalas MSPSS y MBI-HSS. Sustenta la pertinencia del soporte comunitario preventivo sin constituir un diagnóstico psicopatológico clínico ni un peritaje médico-laboral oficial.',
       operationalMeaning:
-        'El soporte social opera como un factor amortiguador fundamental frente al desgaste; el aislamiento operacional intensifica el vaciamiento afectivo en centros de contacto.'
+        'El respaldo constructivo y la contención cotidiana entre pares operan como amortiguadores esenciales frente al desgaste; el aislamiento operacional profundiza la sobrecarga afectiva.'
     }
   ]
 };

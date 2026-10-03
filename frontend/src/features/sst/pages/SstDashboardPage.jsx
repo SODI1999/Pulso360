@@ -12,6 +12,7 @@ import '../../../styles/umbral.css';
 
 export function SstDashboardPage() {
   const { minThreshold, pendingAlerts, activeRequests, nlpCategories } = useSstDashboard();
+  const cohortSize = 48; // Total mock size
 
   return (
     <div>
@@ -105,65 +106,73 @@ export function SstDashboardPage() {
           <span className="badge badge-info">Campaña Soporte Alpha</span>
         </div>
 
-        <div className="table-responsive">
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Dimensión Evaluada</th>
-                <th>Índice Colectivo</th>
-                <th>Nivel de Riesgo</th>
-                <th>Tendencia</th>
-                <th>Recomendación SST</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>
-                  <strong>Recuperación agregada</strong>
-                </td>
-                <td>58 / 100</td>
-                <td>
-                  <span className="badge badge-warn">Medio-Bajo</span>
-                </td>
-                <td>Descenso del 3.2% en 3 semanas</td>
-                <td>Coordinación de pausas activas y descansos escalonados</td>
-              </tr>
-              <tr>
-                <td>
-                  <strong>Carga emocional agregada</strong>
-                </td>
-                <td>74 / 100</td>
-                <td>
-                  <span className="badge badge-danger">Alto</span>
-                </td>
-                <td>Estable en nivel elevado</td>
-                <td>Taller de contención emocional en colas de retención</td>
-              </tr>
-              <tr>
-                <td>
-                  <strong>Apoyo social entre pares</strong>
-                </td>
-                <td>82 / 100</td>
-                <td>
-                  <span className="badge badge-ok">Favorable</span>
-                </td>
-                <td>Incremento positivo (+1.8%)</td>
-                <td>Mantener dinámicas de inicio de jornada</td>
-              </tr>
-              <tr>
-                <td>
-                  <strong>Conflicto y ambigüedad de rol</strong>
-                </td>
-                <td>48 / 100</td>
-                <td>
-                  <span className="badge badge-info">Medio</span>
-                </td>
-                <td>Estable</td>
-                <td>Alineación de criterios operativos con supervisores</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        {cohortSize < minThreshold || minThreshold < 5 ? (
+          <div style={{ padding: 'var(--space-6)', textAlign: 'center', color: 'var(--c-texto-suave)' }}>
+             <Icon name="lock" size={24} style={{ marginBottom: '8px' }} />
+             <p><strong>Privacidad Protegida</strong></p>
+             <p>Los datos de esta cohorte están protegidos. No se cuenta con suficientes datos para cumplir el umbral de k-anonimato (N ≥ {Math.max(5, minThreshold)}).</p>
+          </div>
+        ) : (
+          <div className="table-responsive">
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>Dimensión Evaluada</th>
+                  <th>Índice Colectivo</th>
+                  <th>Nivel de Riesgo</th>
+                  <th>Tendencia</th>
+                  <th>Recomendación SST</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <strong>Recuperación agregada</strong>
+                  </td>
+                  <td>58 / 100</td>
+                  <td>
+                    <span className="badge badge-warn">Medio-Bajo</span>
+                  </td>
+                  <td>Descenso del 3.2% en 3 semanas</td>
+                  <td>Coordinación de pausas activas y descansos escalonados</td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Carga emocional agregada</strong>
+                  </td>
+                  <td>74 / 100</td>
+                  <td>
+                    <span className="badge badge-danger">Alto</span>
+                  </td>
+                  <td>Estable en nivel elevado</td>
+                  <td>Taller de contención emocional en colas de retención</td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Apoyo social entre pares</strong>
+                  </td>
+                  <td>82 / 100</td>
+                  <td>
+                    <span className="badge badge-ok">Favorable</span>
+                  </td>
+                  <td>Incremento positivo (+1.8%)</td>
+                  <td>Mantener dinámicas de inicio de jornada</td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Conflicto y ambigüedad de rol</strong>
+                  </td>
+                  <td>48 / 100</td>
+                  <td>
+                    <span className="badge badge-info">Medio</span>
+                  </td>
+                  <td>Estable</td>
+                  <td>Alineación de criterios operativos con supervisores</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </div>
   );

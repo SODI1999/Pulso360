@@ -69,8 +69,7 @@ export function OrganizationPage() {
         <Icon name="info" size={18} />
         <div>
           <strong>Regla de K-Anonimato Activa:</strong> El umbral mínimo del sistema está configurado en{' '}
-          <strong>N = {minThreshold}</strong>. Los equipos con menos de {minThreshold} integrantes no
-          publicarán tableros agregados a supervisores para imposibilitar la reidentificación de respuestas.
+          <strong>N = {minThreshold}</strong>. Aplica umbral de k-anonimato (k ≥ 5) para proteger la confidencialidad individual en métricas colectivas; los equipos con menos de {minThreshold} integrantes no publicarán tableros agregados a supervisores.
         </div>
       </div>
 
