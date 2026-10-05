@@ -1,10 +1,11 @@
 import { Router } from 'express';
 import { reportsController } from '../controllers/reportsController.js';
-import { authenticate } from '../../middlewares/authMiddleware.js';
+import { authenticate, requireRole } from '../../middlewares/authMiddleware.js';
 
 const router = Router();
 
 router.use(authenticate);
+router.use(requireRole(['SUPERVISOR', 'LIDER_SST', 'ADMIN']));
 
 router.get('/', reportsController.getReports);
 router.post('/', reportsController.createReport);

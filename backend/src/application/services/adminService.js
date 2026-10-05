@@ -163,26 +163,45 @@ export const createTeam = async ({ campanaId, codigo, nombre, supervisorNombre, 
 };
 
 export const updateTeam = async (teamId, data, adminUserId) => {
-  const { nombre, activo, supervisorNombre, nMiembros } = data;
-  if (nombre === undefined && activo === undefined && supervisorNombre === undefined && nMiembros === undefined) {
+  const { nombre, activo, supervisorNombre, supervisorId, nMiembros } = data;
+  if (nombre === undefined && activo === undefined && supervisorNombre === undefined && supervisorId === undefined && nMiembros === undefined) {
     throw new AppError("Datos incompletos para actualizar el equipo", "MISSING_DATA", 400);
   }
-  const updated = await adminRepository.updateTeam(teamId, { nombre, activo: activo !== undefined ? Boolean(activo) : undefined, supervisorNombre, nMiembros });
-  if (!updated) {
-    throw new AppError("Equipo no encontrado", "TEAM_NOT_FOUND", 404);
-  }
 
-  if (supervisorNombre) {
-    const supervisor = await adminRepository.findUserByFullName(supervisorNombre);
-    if (supervisor) {
-      const crypto = await import('crypto');
-      await adminRepository.assignUserToTeam({
-        id: crypto.randomUUID(),
-        usuarioId: supervisor.id,
-        equipoId: teamId,
-        tipoAsignacion: 'SUPERVISOR',
-        fechaInicio: new Date().toISOString().split('T')[0]
-      });
+  let updated;
+  const isSupervisorUpdate = supervisorNombre !== undefined || supervisorId !== undefined;
+
+  if (isSupervisorUpdate) {
+    let supervisor;
+    if (supervisorId) {
+      supervisor = await adminRepository.findUserById(supervisorId);
+    } else {
+      supervisor = await adminRepository.findUserByFullName(supervisorNombre);
+    }
+
+    if (!supervisor || supervisor.rol_codigo !== 'SUPERVISOR' || supervisor.estado !== 'Activo') {
+      throw new AppError("Usuario supervisor inválido, no existe o no tiene los permisos necesarios", "INVALID_SUPERVISOR_USER", 400);
+    }
+
+    const crypto = await import('crypto');
+    const newAssignmentId = crypto.randomUUID();
+    const finalSupervisorNombre = supervisor.nombre_completo || supervisorNombre;
+
+    updated = await adminRepository.updateTeamWithSupervisorHandover(
+      teamId, 
+      { nombre, activo, nMiembros }, 
+      supervisor.id, 
+      finalSupervisorNombre, 
+      newAssignmentId
+    );
+
+    if (!updated) {
+      throw new AppError("Equipo no encontrado", "TEAM_NOT_FOUND", 404);
+    }
+  } else {
+    updated = await adminRepository.updateTeam(teamId, { nombre, activo: activo !== undefined ? Boolean(activo) : undefined, nMiembros });
+    if (!updated) {
+      throw new AppError("Equipo no encontrado", "TEAM_NOT_FOUND", 404);
     }
   }
 

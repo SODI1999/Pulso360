@@ -31,6 +31,19 @@ export const checkinRepository = {
     return formatCheckin(rows[0]);
   },
 
+  async update(id, { energia, cargaEmocional, recuperacion, apoyo, distanciamiento, ineficacia }) {
+    const query = `
+      UPDATE daily_checkins SET
+        energia = $2, carga_emocional = $3, recuperacion = $4,
+        apoyo = $5, distanciamiento = $6, ineficacia = $7
+      WHERE id = $1
+      RETURNING id, checkin_date, submitted_at
+    `;
+    const values = [id, energia, cargaEmocional, recuperacion, apoyo, distanciamiento, ineficacia];
+    const { rows } = await pool.query(query, values);
+    return formatCheckin(rows[0]);
+  },
+
   async findByUserAndDate(userId, checkinDate) {
     const query = `
       SELECT id, usuario_id, checkin_date, energia, carga_emocional, recuperacion, apoyo, distanciamiento, ineficacia, submitted_at

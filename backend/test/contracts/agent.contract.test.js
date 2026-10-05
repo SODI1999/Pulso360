@@ -1,17 +1,17 @@
-import { describe, it, before, after } from "node:test";
+﻿import { describe, it, before, after } from "node:test";
 import assert from "node:assert/strict";
 import request from "supertest";
 import app from "../../src/app.js";
 import { pool } from "../../src/infrastructure/db.js";
 import { assertErrorContract, assertSuccessContract } from "../harness/contractValidator.js";
 
-describe("Sprint 2 · Agent Module & Privacy Contract Tests", () => {
+describe("Sprint 2 Â· Agent Module & Privacy Contract Tests", () => {
   let agentToken = "";
   let supervisorToken = "";
   const today = new Date().toISOString().split("T")[0];
 
   before(async () => {
-    // Limpiar check-in de hoy y bitácoras creadas para garantizar idempotencia
+    // Limpiar check-in de hoy y bitÃ¡coras creadas para garantizar idempotencia
     await pool.query("DELETE FROM daily_checkins WHERE usuario_id = 'usr-1' AND checkin_date = $1", [today]);
     await pool.query("DELETE FROM bitacoras WHERE usuario_id = 'usr-1' AND id LIKE 'jou-%' AND entry_date = $1", [today]);
     await pool.query("DELETE FROM consentimientos WHERE usuario_id = 'usr-1' AND id != 'con-1'");
@@ -93,7 +93,7 @@ describe("Sprint 2 · Agent Module & Privacy Contract Tests", () => {
   });
 
   describe("GET /api/v1/agent/checkin/today", () => {
-    it("debe retornar 200 OK con { completed: false, checkin: null } cuando aún no se ha registrado hoy", async () => {
+    it("debe retornar 200 OK con { completed: false, checkin: null } cuando aÃºn no se ha registrado hoy", async () => {
       const res = await request(app)
         .get("/api/v1/agent/checkin/today")
         .set("Authorization", `Bearer ${agentToken}`)
@@ -107,7 +107,7 @@ describe("Sprint 2 · Agent Module & Privacy Contract Tests", () => {
   });
 
   describe("POST /api/v1/agent/checkin", () => {
-    it("debe rechazar con 400 Bad Request y CHECKIN_INVALID_DIMENSIONS si alguna dimensión es inválida (6 o decimal)", async () => {
+    it("debe rechazar con 400 Bad Request y CHECKIN_INVALID_DIMENSIONS si alguna dimensiÃ³n es invÃ¡lida (6 o decimal)", async () => {
       const payloadFueraDeRango = {
         journey_key: "START_SHIFT",
         energia: 6,
@@ -147,7 +147,7 @@ describe("Sprint 2 · Agent Module & Privacy Contract Tests", () => {
       assertErrorContract(resDecimal.body, "CHECKIN_INVALID_DIMENSIONS");
     });
 
-    it("debe registrar exitosamente con 201 Created y retornar { id, checkin_date, submitted_at } con dimensiones válidas", async () => {
+    it("debe registrar exitosamente con 201 Created y retornar { id, checkin_date, submitted_at } con dimensiones vÃ¡lidas", async () => {
       const payloadValido = {
         journey_key: "START_SHIFT",
         energia: 4,
@@ -172,7 +172,7 @@ describe("Sprint 2 · Agent Module & Privacy Contract Tests", () => {
       assert.ok(data.submitted_at, "Debe contener submitted_at");
     });
 
-    it("debe rechazar con 409 Conflict y CHECKIN_ALREADY_REGISTERED_TODAY cuando ya existe un check-in hoy", async () => {
+    it("debe retornar 201 Created actualizando el check-in cuando se edita en la ventana de tiempo", async () => {
       const payloadDuplicado = {
         journey_key: "START_SHIFT",
         energia: 3,
@@ -188,12 +188,12 @@ describe("Sprint 2 · Agent Module & Privacy Contract Tests", () => {
         .set("Authorization", `Bearer ${agentToken}`)
         .send(payloadDuplicado)
         .expect("Content-Type", /json/)
-        .expect(409);
+        .expect(201);
 
-      assertErrorContract(res.body, "CHECKIN_ALREADY_REGISTERED_TODAY");
+      assertSuccessContract(res.body);
     });
 
-    it("debe retornar completed: true y el objeto checkin en GET /api/v1/agent/checkin/today después de registrar", async () => {
+    it("debe retornar completed: true y el objeto checkin en GET /api/v1/agent/checkin/today despuÃ©s de registrar", async () => {
       const res = await request(app)
         .get("/api/v1/agent/checkin/today")
         .set("Authorization", `Bearer ${agentToken}`)
@@ -226,12 +226,12 @@ describe("Sprint 2 · Agent Module & Privacy Contract Tests", () => {
     });
   });
 
-  describe("Bitácoras Privadas (GET y POST /api/v1/agent/journal)", () => {
+  describe("BitÃ¡coras Privadas (GET y POST /api/v1/agent/journal)", () => {
     it("debe rechazar con 400 Bad Request y JOURNAL_CONTENT_EMPTY cuando el contenido tiene menos de 5 caracteres", async () => {
       const resVacio = await request(app)
         .post("/api/v1/agent/journal")
         .set("Authorization", `Bearer ${agentToken}`)
-        .send({ context: "Turno mañana", content: "   " })
+        .send({ context: "Turno maÃ±ana", content: "   " })
         .expect("Content-Type", /json/)
         .expect(400);
 
@@ -240,14 +240,14 @@ describe("Sprint 2 · Agent Module & Privacy Contract Tests", () => {
       const resCorto = await request(app)
         .post("/api/v1/agent/journal")
         .set("Authorization", `Bearer ${agentToken}`)
-        .send({ context: "Turno mañana", content: "hola" })
+        .send({ context: "Turno maÃ±ana", content: "hola" })
         .expect("Content-Type", /json/)
         .expect(400);
 
       assertErrorContract(resCorto.body, "JOURNAL_CONTENT_EMPTY");
     });
 
-    it("debe registrar con 201 Created una entrada de bitácora privada válida", async () => {
+    it("debe registrar con 201 Created una entrada de bitÃ¡cora privada vÃ¡lida", async () => {
       const entryPayload = {
         context: "Cierre de turno",
         content: "Jornada completada con alto volumen pero buen soporte del equipo."
@@ -269,7 +269,7 @@ describe("Sprint 2 · Agent Module & Privacy Contract Tests", () => {
       assert.ok(entry.created_at);
     });
 
-    it("debe retornar 200 OK con arreglo de bitácoras del propio usuario autenticado", async () => {
+    it("debe retornar 200 OK con arreglo de bitÃ¡coras del propio usuario autenticado", async () => {
       const res = await request(app)
         .get("/api/v1/agent/journal")
         .set("Authorization", `Bearer ${agentToken}`)
@@ -278,7 +278,7 @@ describe("Sprint 2 · Agent Module & Privacy Contract Tests", () => {
 
       assertSuccessContract(res.body);
       assert.ok(Array.isArray(res.body.data), "data debe ser un arreglo");
-      assert.ok(res.body.data.length > 0, "Debe contener entradas en bitácora");
+      assert.ok(res.body.data.length > 0, "Debe contener entradas en bitÃ¡cora");
 
       for (const item of res.body.data) {
         assert.ok(item.id);
@@ -288,7 +288,7 @@ describe("Sprint 2 · Agent Module & Privacy Contract Tests", () => {
     });
   });
 
-  describe("Control RBAC: Restricción de Acceso para SUPERVISOR (403 Forbidden)", () => {
+  describe("Control RBAC: RestricciÃ³n de Acceso para SUPERVISOR (403 Forbidden)", () => {
     it("debe rechazar con 403 Forbidden y AUTH_FORBIDDEN_ROLE cualquier intento de acceso a /api/v1/agent por SUPERVISOR", async () => {
       const endpoints = [
         { method: "get", path: "/api/v1/agent/consent" },
@@ -328,3 +328,4 @@ describe("Sprint 2 · Agent Module & Privacy Contract Tests", () => {
     });
   });
 });
+

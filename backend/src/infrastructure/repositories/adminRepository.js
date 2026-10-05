@@ -38,7 +38,7 @@ export const findByEmail = async (correo) => {
 
 export const findUserByFullName = async (fullName) => {
   const query = `
-    SELECT id 
+    SELECT id, rol_codigo, estado 
     FROM usuarios 
     WHERE CONCAT(nombres, ' ', apellidos) = $1
     LIMIT 1
@@ -160,6 +160,17 @@ export const updateCampaign = async (id, { nombre, activa }) => {
   return rows[0];
 };
 
+export const findUserById = async (id) => {
+  const query = `
+    SELECT id, rol_codigo, estado, CONCAT(nombres, ' ', apellidos) AS nombre_completo
+    FROM usuarios 
+    WHERE id = $1
+    LIMIT 1
+  `;
+  const { rows } = await pool.query(query, [id]);
+  return rows[0];
+};
+
 /**
  * Crea un equipo.
  */
@@ -194,6 +205,61 @@ export const updateTeam = async (id, { nombre, activo, supervisorNombre, nMiembr
     nMiembros !== undefined ? nMiembros : null
   ]);
   return rows[0];
+};
+
+/**
+ * Actualiza equipo y realiza el relevo de supervisor de manera atómica
+ */
+export const updateTeamWithSupervisorHandover = async (teamId, { nombre, activo, nMiembros }, supervisorId, supervisorNombre, nuevaAsignacionId) => {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+
+    // 1. Actualizar el equipo
+    const updateTeamQuery = `
+      UPDATE equipos 
+      SET nombre = COALESCE($2, nombre), 
+          activo = COALESCE($3, activo), 
+          supervisor_nombre = COALESCE($4, supervisor_nombre), 
+          n_miembros = COALESCE($5, n_miembros) 
+      WHERE id = $1 
+      RETURNING *
+    `;
+    const { rows: teamRows } = await client.query(updateTeamQuery, [
+      teamId, 
+      nombre !== undefined ? nombre : null, 
+      activo !== undefined ? activo : null, 
+      supervisorNombre, 
+      nMiembros !== undefined ? nMiembros : null
+    ]);
+
+    const updatedTeam = teamRows[0];
+    if (!updatedTeam) {
+      await client.query('ROLLBACK');
+      return null;
+    }
+
+    // 2. Desactivar asignación previa del supervisor del equipo
+    await client.query(`
+      UPDATE asignaciones_usuario_equipo 
+      SET activa = FALSE, fecha_fin = CURRENT_DATE 
+      WHERE equipo_id = $1 AND tipo_asignacion = 'SUPERVISOR' AND activa = TRUE
+    `, [teamId]);
+
+    // 3. Crear nueva asignación para el nuevo supervisor
+    await client.query(`
+      INSERT INTO asignaciones_usuario_equipo (id, usuario_id, equipo_id, tipo_asignacion, fecha_inicio, activa) 
+      VALUES ($1, $2, $3, 'SUPERVISOR', CURRENT_DATE, TRUE)
+    `, [nuevaAsignacionId, supervisorId, teamId]);
+
+    await client.query('COMMIT');
+    return updatedTeam;
+  } catch (error) {
+    await client.query('ROLLBACK');
+    throw error;
+  } finally {
+    client.release();
+  }
 };
 
 /**

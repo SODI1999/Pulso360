@@ -14,11 +14,11 @@ export const authenticate = async (req, res, next) => {
 
   const token = authHeader.split(' ')[1];
   try {
-    const secret = process.env.JWT_SECRET;
-    if (!secret && process.env.NODE_ENV !== 'test') {
-      return next(new AppError('Configuración de servidor incompleta', 'SERVER_CONFIG_ERROR', 500));
+    const rawSecret = process.env.JWT_SECRET || 'secret';
+    if (process.env.NODE_ENV !== 'test' && (rawSecret === 'secret' || rawSecret.trim().length < 5)) {
+      return next(new AppError('Configuración insegura: no se permite llave trivial en entorno real', 'AUTH_INSECURE_CONFIG', 500));
     }
-    const decoded = jwt.verify(token, secret || 'secret');
+    const decoded = jwt.verify(token, rawSecret);
     
     const user = await userRepository.findProfileById(decoded.id);
     if (!user || user.estado !== 'Activo') {

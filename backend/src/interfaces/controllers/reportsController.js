@@ -24,8 +24,8 @@ export const reportsController = {
   async downloadReport(req, res, next) {
     try {
       const { id } = req.params;
-      const userId = req.user.id;
-      const download = await reportsService.getReportDownload(id, userId);
+      const user = req.user;
+      const download = await reportsService.getReportDownload(id, user);
       
       res.setHeader('Content-Disposition', `attachment; filename="${download.filename}"`);
       res.setHeader('Content-Type', download.mimeType);

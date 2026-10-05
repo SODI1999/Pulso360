@@ -22,9 +22,9 @@ export const supervisorService = {
       throw new AppError("Progreso es requerido", 'MISSING_PROGRESS', 400);
     }
     
-    const parsedProgress = parseInt(progress, 10);
-    if (isNaN(parsedProgress) || parsedProgress < 0 || parsedProgress > 100) {
-      throw new AppError('El progreso debe ser un entero entre 0 y 100', 'INVALID_PROGRESS', 400);
+    const numericProgress = Number(progress);
+    if (!Number.isInteger(numericProgress) || numericProgress < 0 || numericProgress > 100) {
+      throw new AppError('El progreso debe ser un número entero entre 0 y 100', 'INVALID_PROGRESS_VALUE', 400);
     }
 
     const checkQuery = `

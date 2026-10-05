@@ -108,12 +108,22 @@ export const createLog = async ({ usuarioId, rol, action, resource, resourceId, 
   
   let computedPrevHash = prevHash;
   if (!computedPrevHash) {
-    const prevLogQuery = `SELECT hash FROM auditoria_logs ORDER BY created_at DESC LIMIT 1`;
+    const prevLogQuery = `SELECT hash FROM auditoria_logs ORDER BY id DESC LIMIT 1`;
     const prevResult = await query(prevLogQuery);
     computedPrevHash = prevResult.rows[0]?.hash || ('GENESIS_' + crypto.randomBytes(16).toString('hex'));
   }
   
-  const computedHash = hash || crypto.createHash('sha256').update(String(computedPrevHash) + String(action) + String(resource) + String(resourceId || '') + String(detailsJson)).digest('hex');
+  const canonicalPayload = [
+    computedPrevHash,
+    usuarioId || '',
+    rol || '',
+    action,
+    resource,
+    resourceId || '',
+    detailsJson,
+    ipAddress || ''
+  ].join('|');
+  const computedHash = crypto.createHash('sha256').update(canonicalPayload).digest('hex');
 
   const insertQuery = `
     INSERT INTO auditoria_logs 

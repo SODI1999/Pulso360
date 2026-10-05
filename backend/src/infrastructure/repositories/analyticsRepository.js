@@ -64,14 +64,20 @@ export const analyticsRepository = {
    * @param {string} [params.hasta]
    * @returns {Promise<Object|null>} Promedios agregados redondeados a 2 decimales
    */
-  async getAggregatedAverages({ campanaId, equipoId, desde, hasta }) {
+  async getAggregatedAverages({ campanaId, equipoId, desde, hasta, minK = 5 }) {
     let query = `
       SELECT 
+        COUNT(DISTINCT CASE WHEN d.energia IS NOT NULL THEN d.usuario_id END) AS count_energia,
         ROUND(AVG(d.energia), 2) AS energia,
+        COUNT(DISTINCT CASE WHEN d.carga_emocional IS NOT NULL THEN d.usuario_id END) AS count_carga_emocional,
         ROUND(AVG(d.carga_emocional), 2) AS carga_emocional,
+        COUNT(DISTINCT CASE WHEN d.recuperacion IS NOT NULL THEN d.usuario_id END) AS count_recuperacion,
         ROUND(AVG(d.recuperacion), 2) AS recuperacion,
+        COUNT(DISTINCT CASE WHEN d.apoyo IS NOT NULL THEN d.usuario_id END) AS count_apoyo,
         ROUND(AVG(d.apoyo), 2) AS apoyo,
+        COUNT(DISTINCT CASE WHEN d.distanciamiento IS NOT NULL THEN d.usuario_id END) AS count_distanciamiento,
         ROUND(AVG(d.distanciamiento), 2) AS distanciamiento,
+        COUNT(DISTINCT CASE WHEN d.ineficacia IS NOT NULL THEN d.usuario_id END) AS count_ineficacia,
         ROUND(AVG(d.ineficacia), 2) AS ineficacia
       FROM daily_checkins d
       JOIN usuarios u ON d.usuario_id = u.id
@@ -106,21 +112,40 @@ export const analyticsRepository = {
 
     const { rows } = await pool.query(query, values);
     
-    if (!rows[0] || rows[0].energia === null) return null;
+    if (!rows[0]) return null;
+
+    const row = rows[0];
+
+    // Evaluate granular k-anonymity
+    const resolveDimension = (countField, avgField) => {
+      return Number(row[countField]) >= minK ? (Number(row[avgField]) || 0) : null;
+    };
+
+    const energia = resolveDimension('count_energia', 'energia');
+    const carga_emocional = resolveDimension('count_carga_emocional', 'carga_emocional');
+    const recuperacion = resolveDimension('count_recuperacion', 'recuperacion');
+    const apoyo = resolveDimension('count_apoyo', 'apoyo');
+    const distanciamiento = resolveDimension('count_distanciamiento', 'distanciamiento');
+    const ineficacia = resolveDimension('count_ineficacia', 'ineficacia');
+
+    // If all dimensions are null due to k-anonymity (or really no data), return null overall.
+    if (energia === null && carga_emocional === null && recuperacion === null && apoyo === null && distanciamiento === null && ineficacia === null) {
+      return null;
+    }
 
     return {
-      energia_avg: Number(rows[0].energia) || 0,
-      carga_emocional_avg: Number(rows[0].carga_emocional) || 0,
-      recuperacion_avg: Number(rows[0].recuperacion) || 0,
-      apoyo_avg: Number(rows[0].apoyo) || 0,
-      distanciamiento_avg: Number(rows[0].distanciamiento) || 0,
-      ineficacia_avg: Number(rows[0].ineficacia) || 0,
-      energia: Number(rows[0].energia) || 0,
-      carga_emocional: Number(rows[0].carga_emocional) || 0,
-      recuperacion: Number(rows[0].recuperacion) || 0,
-      apoyo: Number(rows[0].apoyo) || 0,
-      distanciamiento: Number(rows[0].distanciamiento) || 0,
-      ineficacia: Number(rows[0].ineficacia) || 0
+      energia_avg: energia,
+      carga_emocional_avg: carga_emocional,
+      recuperacion_avg: recuperacion,
+      apoyo_avg: apoyo,
+      distanciamiento_avg: distanciamiento,
+      ineficacia_avg: ineficacia,
+      energia,
+      carga_emocional,
+      recuperacion,
+      apoyo,
+      distanciamiento,
+      ineficacia
     };
   }
 };

@@ -36,7 +36,7 @@ export const sstService = {
    */
   async createIntervention(sstUserId, data) {
     const campana_id = data.campana_id || data.campanaId;
-    const equipo_id = data.equipo_id || data.equipoId;
+    const equipo_id = data.equipo_id || data.equipoId || null;
     const start_date = data.start_date || data.startDate;
     const end_date = data.end_date || data.endDate || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
     const alerta_id = data.alerta_id || data.alertaId || null;
@@ -48,7 +48,7 @@ export const sstService = {
     const baseline = data.baseline !== undefined ? data.baseline : null;
     
     // Validar parámetros obligatorios que aseguran la correcta descripción del plan.
-    if (!title || !type || !campana_id || !equipo_id || !start_date) {
+    if (!title || !type || !campana_id || !start_date) {
       throw new AppError('Faltan campos obligatorios para crear la intervención.', 'INTERVENTION_MISSING_REQUIRED_FIELDS', 400);
     }
 

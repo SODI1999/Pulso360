@@ -127,11 +127,13 @@ export const agentService = {
       throw new AppError('Requiere consentimiento C1 para registrar check-in', 'CONSENT_C1_REQUIRED', 403);
     }
 
+    const bogotaToday = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Bogota' }).format(new Date());
+
     const normalizedData = {
       ...data,
       carga_emocional: data.carga_emocional !== undefined ? data.carga_emocional : data.cargaEmocional,
       journey_key: data.journey_key || data.journeyKey || 'START_SHIFT',
-      checkin_date: data.checkin_date || data.checkinDate || new Date().toISOString().split('T')[0]
+      checkin_date: data.checkin_date || data.checkinDate || bogotaToday
     };
 
     const { valid, errors } = validarDimensionesCheckin(normalizedData);
@@ -141,8 +143,22 @@ export const agentService = {
 
     const today = normalizedData.checkin_date;
     const existing = await checkinRepository.findByUserAndDate(userId, today);
+    
     if (existing) {
-      throw new AppError('Ya registraste tu check-in diario para hoy', 'CHECKIN_ALREADY_REGISTERED_TODAY', 409);
+      const windowLimit = 7200000; // 2 horas en ms
+      const submittedAt = new Date(existing.submitted_at || existing.created_at).getTime();
+      if (Date.now() - submittedAt <= windowLimit) {
+        return await checkinRepository.update(existing.id, {
+          energia: normalizedData.energia,
+          cargaEmocional: normalizedData.carga_emocional,
+          recuperacion: normalizedData.recuperacion,
+          apoyo: normalizedData.apoyo,
+          distanciamiento: normalizedData.distanciamiento,
+          ineficacia: normalizedData.ineficacia
+        });
+      } else {
+        throw new AppError('Ventana de edición de check-in expirada para la jornada actual', 'CHECKIN_EDIT_WINDOW_EXPIRED', 409);
+      }
     }
 
     const assignment = await userRepository.findActiveAssignment(userId);
@@ -210,6 +226,11 @@ export const agentService = {
   },
 
   async updateJournalEntry(userId, journalId, data) {
+    const consent = await consentRepository.findActiveByUserId(userId);
+    if (!tieneConsentimientoActivo(consent, 'c2_bitacora')) {
+      throw new AppError('Requiere consentimiento C2 activo para editar bitácora', 'CONSENT_C2_REQUIRED', 403);
+    }
+
     if (!data.content || data.content.trim().length < 5) {
       throw new AppError('El contenido de la bitácora no puede estar vacío o tener menos de 5 caracteres', 'JOURNAL_CONTENT_EMPTY', 400);
     }
@@ -227,23 +248,6 @@ export const agentService = {
     }
 
     const id = `HD-${new Date().getFullYear()}-${crypto.randomBytes(3).toString('hex').toUpperCase()}`;
-
-    const query = `
-      INSERT INTO solicitudes_habeas_data (
-        id, usuario_id, tipo_solicitud, notas, status
-      ) VALUES (
-        $1, $2, $3, $4, 'En tramite'
-      ) RETURNING *;
-    `;
-    // We should be using a repository here instead of pool.query directly according to Clean Layered Architecture.
-    // However, the instructions say "Inserta en la tabla solicitudes_habeas_data con status 'En tramite'."
-    // Let's use pool.query since no habeasDataRepository is mentioned, or check if we can import pool.
-    // Let me check what we can do. I'll use pool since agentService doesn't have habeasDataRepository. Wait, I shouldn't do raw SQL in service. Let me check if there's a repository. I'll just use raw pool or see if I should add it to userRepository. Let me use pool.
-    
-    // Wait, the prompt says "Inserta en la tabla solicitudes_habeas_data con status 'En tramite'." 
-    // And "Prohibido: No debe contener lógica de negocio... SQL en repositories". I better create a repository function. 
-    // Let me look at where to put it or just use `pool.query` here if no repository is given. Wait, the prompt just says "Inserta en la tabla...". Let's put the SQL in `userRepository.js` or `consentRepository.js` and call it. Or just create a quick repository object here. 
-    // Wait, let's create it in `userRepository`. I will modify `userRepository` later, but for now I'll just call `userRepository.createHabeasDataRequest`.
     const newRequest = await userRepository.createHabeasDataRequest({
       id, userId, type, note
     });
