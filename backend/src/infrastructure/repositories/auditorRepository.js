@@ -98,10 +98,23 @@ export const countLogs = async ({ rol, action, startDate, endDate, entidadAfecta
   return parseInt(result.rows[0].total, 10);
 };
 
+import crypto from 'node:crypto';
+
 /**
  * Crea un registro en la tabla de logs
  */
 export const createLog = async ({ usuarioId, rol, action, resource, resourceId, details, ipAddress, prevHash, hash }) => {
+  const detailsJson = typeof details === 'string' ? JSON.stringify({ message: details }) : JSON.stringify(details || {});
+  
+  let computedPrevHash = prevHash;
+  if (!computedPrevHash) {
+    const prevLogQuery = `SELECT hash FROM auditoria_logs ORDER BY created_at DESC LIMIT 1`;
+    const prevResult = await query(prevLogQuery);
+    computedPrevHash = prevResult.rows[0]?.hash || ('GENESIS_' + crypto.randomBytes(16).toString('hex'));
+  }
+  
+  const computedHash = hash || crypto.createHash('sha256').update(String(computedPrevHash) + String(action) + String(resource) + String(resourceId || '') + String(detailsJson)).digest('hex');
+
   const insertQuery = `
     INSERT INTO auditoria_logs 
       (usuario_id, rol, action, resource, resource_id, details, ip_address, prev_hash, hash) 
@@ -109,7 +122,6 @@ export const createLog = async ({ usuarioId, rol, action, resource, resourceId, 
       ($1, $2, $3, $4, $5, $6, $7, $8, $9) 
     RETURNING *;
   `;
-  const detailsJson = typeof details === 'string' ? JSON.stringify({ message: details }) : (details || '{}');
   
   const values = [
     usuarioId || null, 
@@ -119,8 +131,8 @@ export const createLog = async ({ usuarioId, rol, action, resource, resourceId, 
     resourceId || null, 
     detailsJson, 
     ipAddress || null, 
-    prevHash || '0000000000000000000000000000000000000000000000000000000000000000', 
-    hash || '0000000000000000000000000000000000000000000000000000000000000000'
+    computedPrevHash, 
+    computedHash
   ];
 
   const result = await query(insertQuery, values);

@@ -36,6 +36,17 @@ export const findByEmail = async (correo) => {
   return rows[0];
 };
 
+export const findUserByFullName = async (fullName) => {
+  const query = `
+    SELECT id 
+    FROM usuarios 
+    WHERE CONCAT(nombres, ' ', apellidos) = $1
+    LIMIT 1
+  `;
+  const { rows } = await pool.query(query, [fullName]);
+  return rows[0];
+};
+
 /**
  * Crea un usuario nuevo.
  */
@@ -141,11 +152,11 @@ export const createCampaign = async ({ id, codigo, nombre, descripcion }) => {
 export const updateCampaign = async (id, { nombre, activa }) => {
   const query = `
     UPDATE campanas 
-    SET nombre = $2, activa = $3 
+    SET nombre = COALESCE($2, nombre), activa = COALESCE($3, activa) 
     WHERE id = $1 
     RETURNING *
   `;
-  const { rows } = await pool.query(query, [id, nombre, activa]);
+  const { rows } = await pool.query(query, [id, nombre !== undefined ? nombre : null, activa !== undefined ? activa : null]);
   return rows[0];
 };
 
@@ -168,11 +179,20 @@ export const createTeam = async ({ id, campanaId, codigo, nombre, descripcion, s
 export const updateTeam = async (id, { nombre, activo, supervisorNombre, nMiembros }) => {
   const query = `
     UPDATE equipos 
-    SET nombre = $2, activo = $3, supervisor_nombre = $4, n_miembros = $5 
+    SET nombre = COALESCE($2, nombre), 
+        activo = COALESCE($3, activo), 
+        supervisor_nombre = COALESCE($4, supervisor_nombre), 
+        n_miembros = COALESCE($5, n_miembros) 
     WHERE id = $1 
     RETURNING *
   `;
-  const { rows } = await pool.query(query, [id, nombre, activo, supervisorNombre, nMiembros]);
+  const { rows } = await pool.query(query, [
+    id, 
+    nombre !== undefined ? nombre : null, 
+    activo !== undefined ? activo : null, 
+    supervisorNombre !== undefined ? supervisorNombre : null, 
+    nMiembros !== undefined ? nMiembros : null
+  ]);
   return rows[0];
 };
 
@@ -249,8 +269,8 @@ export const findHabeasDataRequests = async () => {
 export const updateHabeasDataStatus = async (id, status, note) => {
   const query = `
     UPDATE solicitudes_habeas_data 
-    SET status = $2, note = COALESCE($3, note), 
-        resuelto_en = CASE WHEN $2 IN ('Respondida', 'Rechazada') THEN CURRENT_TIMESTAMP ELSE resuelto_en END 
+    SET status = $2::varchar, note = COALESCE($3::text, note), 
+        resuelto_en = CASE WHEN $2::varchar IN ('Respondida', 'Rechazada') THEN CURRENT_TIMESTAMP ELSE resuelto_en END 
     WHERE id = $1 
     RETURNING *
   `;

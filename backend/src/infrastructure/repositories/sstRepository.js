@@ -11,7 +11,8 @@ export const sstRepository = {
   async findAlerts(filters = {}) {
     let query = `
       SELECT 
-        a.id, a.alert_date, a.status, a.severity, a.respondents, a.description,
+        a.id, a.alert_date, a.status, a.severity, a.respondents, a.description, a.evidence,
+        a.campana_id, a.equipo_id,
         r.nombre AS regla_nombre,
         c.nombre AS campana_nombre,
         e.nombre AS equipo_nombre
@@ -149,6 +150,18 @@ export const sstRepository = {
     return rows;
   },
 
+  async findSupportRequestsByUser(userId) {
+    const query = `
+      SELECT 
+        id, code, mode, request_date, reason, description, urgency, contact_preference, time_window, status, sla
+      FROM solicitudes_apoyo
+      WHERE owner_user_id = $1
+      ORDER BY request_date DESC
+    `;
+    const { rows } = await pool.query(query, [userId]);
+    return rows;
+  },
+
   /**
    * Crea un ticket de solicitud de apoyo psicosocial.
    * 
@@ -158,14 +171,14 @@ export const sstRepository = {
   async createSupportRequest(data) {
     const query = `
       INSERT INTO solicitudes_apoyo (
-        id, code, mode, owner_user_id, identity_user_id, request_date, reason, description, urgency, contact_preference, status
+        id, code, mode, owner_user_id, identity_user_id, request_date, reason, description, urgency, contact_preference, time_window, status
       ) VALUES (
-        $1, $2, $3, $4, $5, NOW(), $6, $7, $8, $9, $10
+        $1, $2, $3, $4, $5, NOW(), $6, $7, $8, $9, $10, $11
       ) RETURNING id, code, status
     `;
     const values = [
       data.id, data.code, data.mode, data.owner_user_id, data.identity_user_id,
-      data.reason, data.description, data.urgency, data.contact_preference, 'Recibida'
+      data.reason, data.description, data.urgency, data.contact_preference, data.time_window || null, 'Recibida'
     ];
     const { rows } = await pool.query(query, values);
     return rows[0];
@@ -186,12 +199,11 @@ export const sstRepository = {
   async updateSupportRequestStatus(requestId, status) {
     const query = `
       UPDATE solicitudes_apoyo 
-      SET status = $2,
-          resuelto_en = CASE WHEN $2 IN ('Atendida', 'Cerrada') THEN CURRENT_TIMESTAMP ELSE resuelto_en END
+      SET status = $2
       WHERE id = $1 
       RETURNING 
         id, code, mode, reason, description, urgency, contact_preference,
-        status, request_date, resuelto_en, created_at,
+        time_window, status, request_date, created_at,
         CASE WHEN mode = 'anonimo' THEN NULL ELSE owner_user_id END AS owner_user_id;
     `;
     const { rows } = await pool.query(query, [requestId, status]);

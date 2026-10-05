@@ -17,6 +17,7 @@ describe("Sprint 3 · SST, Supervision & k-Anonymity Analytics Contract Tests", 
     await pool.query("DELETE FROM usuarios WHERE id LIKE 'test-usr-%'");
     await pool.query("DELETE FROM sst_intervenciones WHERE id LIKE 'int-%' AND id NOT IN ('int-1', 'int-2')");
     await pool.query("DELETE FROM solicitudes_apoyo WHERE id LIKE 'sup-%' AND id NOT IN ('req-1')");
+    await pool.query("DELETE FROM consentimientos WHERE usuario_id = 'usr-1' AND id != 'con-1'");
     await pool.query("UPDATE consentimientos SET c1_checkin = TRUE, c2_bitacora = TRUE, c3_apoyo = TRUE, c4_analitica = TRUE, c5_contacto = TRUE WHERE id = 'con-1'");
 
     // 2. Insertar 4 usuarios agentes adicionales para conformar cohorte de k >= 5 en team-alpha-1 (junto con usr-1)

@@ -114,10 +114,10 @@ export const createCampaign = async ({ codigo, nombre, descripcion }, adminUserI
 };
 
 export const updateCampaign = async (campId, { nombre, activa }, adminUserId) => {
-  if (nombre === undefined || activa === undefined) {
+  if (nombre === undefined && activa === undefined) {
     throw new AppError("Datos incompletos para actualizar la campaña", "MISSING_DATA", 400);
   }
-  const updated = await adminRepository.updateCampaign(campId, { nombre, activa: Boolean(activa) });
+  const updated = await adminRepository.updateCampaign(campId, { nombre, activa: activa !== undefined ? Boolean(activa) : undefined });
   if (!updated) {
     throw new AppError("Campaña no encontrada", "CAMPAIGN_NOT_FOUND", 404);
   }
@@ -128,7 +128,7 @@ export const updateCampaign = async (campId, { nombre, activa }, adminUserId) =>
     action: 'ACTUALIZACION_CAMPANA',
     resource: 'campanas',
     resourceId: campId,
-    details: `Campaña actualizada: ${nombre}, activa: ${Boolean(activa)}`
+    details: `Campaña actualizada: ${nombre || updated.nombre}, activa: ${activa !== undefined ? Boolean(activa) : updated.activa}`
   });
 
   return updated;
@@ -164,12 +164,26 @@ export const createTeam = async ({ campanaId, codigo, nombre, supervisorNombre, 
 
 export const updateTeam = async (teamId, data, adminUserId) => {
   const { nombre, activo, supervisorNombre, nMiembros } = data;
-  if (nombre === undefined || activo === undefined) {
+  if (nombre === undefined && activo === undefined && supervisorNombre === undefined && nMiembros === undefined) {
     throw new AppError("Datos incompletos para actualizar el equipo", "MISSING_DATA", 400);
   }
-  const updated = await adminRepository.updateTeam(teamId, { nombre, activo: Boolean(activo), supervisorNombre, nMiembros });
+  const updated = await adminRepository.updateTeam(teamId, { nombre, activo: activo !== undefined ? Boolean(activo) : undefined, supervisorNombre, nMiembros });
   if (!updated) {
     throw new AppError("Equipo no encontrado", "TEAM_NOT_FOUND", 404);
+  }
+
+  if (supervisorNombre) {
+    const supervisor = await adminRepository.findUserByFullName(supervisorNombre);
+    if (supervisor) {
+      const crypto = await import('crypto');
+      await adminRepository.assignUserToTeam({
+        id: crypto.randomUUID(),
+        usuarioId: supervisor.id,
+        equipoId: teamId,
+        tipoAsignacion: 'SUPERVISOR',
+        fechaInicio: new Date().toISOString().split('T')[0]
+      });
+    }
   }
 
   await auditorRepository.createLog({
@@ -178,7 +192,7 @@ export const updateTeam = async (teamId, data, adminUserId) => {
     action: 'ACTUALIZACION_EQUIPO',
     resource: 'equipos',
     resourceId: teamId,
-    details: `Equipo actualizado: ${nombre}, activo: ${Boolean(activo)}`
+    details: `Equipo actualizado: ${nombre || updated.nombre}, activo: ${activo !== undefined ? Boolean(activo) : updated.activo}`
   });
 
   return updated;
@@ -194,6 +208,14 @@ export const updateSystemParam = async (clave, valorJson) => {
   if (!clave || valorJson === undefined) {
     throw new AppError("Datos incompletos para el parámetro", "MISSING_DATA", 400);
   }
+  
+  if (clave === 'umbral_k_anonimato') {
+    const umbral = typeof valorJson === 'object' ? valorJson.valor : parseInt(valorJson, 10);
+    if (isNaN(umbral) || umbral < 5) {
+      throw new AppError("El umbral de k-anonimato no puede ser menor a 5", "INVALID_K_ANONYMITY", 400);
+    }
+  }
+
   const updated = await adminRepository.updateSystemParam(clave, valorJson);
   if (!updated) {
     throw new AppError("Parámetro no encontrado", "PARAM_NOT_FOUND", 404);
@@ -223,7 +245,7 @@ export const getHabeasData = async () => {
 };
 
 export const updateHabeasData = async (id, status, note) => {
-  if (!['Pendiente', 'Respondida', 'Rechazada'].includes(status)) {
+  if (!['En tramite', 'Respondida', 'Rechazada'].includes(status)) {
     throw new AppError("Estado no válido", "INVALID_STATUS", 400);
   }
   const updated = await adminRepository.updateHabeasDataStatus(id, status, note);

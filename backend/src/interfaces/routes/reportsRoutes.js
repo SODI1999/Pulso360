@@ -8,5 +8,6 @@ router.use(authenticate);
 
 router.get('/', reportsController.getReports);
 router.post('/', reportsController.createReport);
+router.get('/:id/download', reportsController.downloadReport);
 
 export default router;

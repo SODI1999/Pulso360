@@ -15,8 +15,8 @@ export const authenticate = async (req, res, next) => {
   const token = authHeader.split(' ')[1];
   try {
     const secret = process.env.JWT_SECRET;
-    if ((!secret || secret === 'secret') && process.env.NODE_ENV !== 'test') {
-      console.warn("SEVERE WARNING: Using insecure JWT_SECRET");
+    if (!secret && process.env.NODE_ENV !== 'test') {
+      return next(new AppError('Configuración de servidor incompleta', 'SERVER_CONFIG_ERROR', 500));
     }
     const decoded = jwt.verify(token, secret || 'secret');
     
@@ -25,7 +25,7 @@ export const authenticate = async (req, res, next) => {
       return next(new AppError('Usuario no encontrado o inactivo', 'AUTH_USER_INACTIVE', 401));
     }
     
-    req.user = decoded;
+    req.user = { ...decoded, ...user, role: user.rol_codigo, rol_codigo: user.rol_codigo };
     next();
   } catch (err) {
     return next(new AppError('Token inválido o expirado', 'AUTH_TOKEN_INVALID', 401));

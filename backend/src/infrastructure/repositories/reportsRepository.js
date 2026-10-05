@@ -33,5 +33,15 @@ export const reportsRepository = {
     ];
     const { rows } = await pool.query(query, values);
     return rows[0];
+  },
+
+  async findById(id) {
+    const query = `
+      SELECT id, tipo_reporte, autor_id, campana_id, equipo_id, fecha_corte, hash_integridad, parametros_filtro, ruta_archivo, created_at
+      FROM reportes_generados
+      WHERE id = $1
+    `;
+    const { rows } = await pool.query(query, [id]);
+    return rows[0];
   }
 };

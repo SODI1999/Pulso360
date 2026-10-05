@@ -20,9 +20,14 @@ router.get('/checkin/history', agentController.getCheckinHistory);
 // Bitácora / Desahogo personal
 router.get('/journal', agentController.getJournalEntries);
 router.post('/journal', agentController.createJournalEntry);
+router.put('/journal/:id', agentController.updateJournalEntry);
 router.delete('/journal/:id', agentController.deleteJournalEntry);
 
+// Solicitudes de Apoyo
+router.get('/support-requests', agentController.getMySupportRequests);
+
 // Solicitudes Habeas Data
+router.get('/habeas-data', agentController.getMyHabeasData);
 router.post('/habeas-data', agentController.createHabeasData);
 
 export default router;

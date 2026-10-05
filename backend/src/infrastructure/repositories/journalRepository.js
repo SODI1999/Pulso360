@@ -46,6 +46,17 @@ export const journalRepository = {
     `;
     const { rows } = await pool.query(query, [id, userId]);
     return rows[0] || null;
+  },
+
+  async update(id, userId, content) {
+    const query = `
+      UPDATE bitacoras 
+      SET content = $3 
+      WHERE id = $1 AND usuario_id = $2 
+      RETURNING id, entry_date, context, content, created_at
+    `;
+    const { rows } = await pool.query(query, [id, userId, content]);
+    return formatJournal(rows[0]);
   }
 };
 

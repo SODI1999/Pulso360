@@ -19,5 +19,19 @@ export const reportsController = {
     } catch (error) {
       next(error);
     }
+  },
+
+  async downloadReport(req, res, next) {
+    try {
+      const { id } = req.params;
+      const userId = req.user.id;
+      const download = await reportsService.getReportDownload(id, userId);
+      
+      res.setHeader('Content-Disposition', `attachment; filename="${download.filename}"`);
+      res.setHeader('Content-Type', download.mimeType);
+      res.status(200).send(download.content);
+    } catch (error) {
+      next(error);
+    }
   }
 };

@@ -46,12 +46,18 @@ export function validarDimensionesCheckin(dims = {}) {
   const errors = [];
   for (const dim of CHECKIN_DIMENSIONS) {
     const val = dims[dim];
-    if (val === undefined || val === null) {
-      errors.push(`La dimensión '${dim}' es obligatoria.`);
+    
+    if (val === undefined) {
+      errors.push(`La dimensión obligatoria '${dim}' no fue provista.`);
       continue;
     }
+    
+    if (val === null) {
+      continue; // Permitir omisión voluntaria explícita
+    }
+    
     if (!Number.isInteger(val) || val < 1 || val > 5) {
-      errors.push(`La dimensión '${dim}' debe ser un número entero entre 1 y 5 (recibido: ${val}).`);
+      errors.push(`La dimensión '${dim}', si se provee, debe ser un número entero entre 1 y 5 (recibido: ${val}).`);
     }
   }
   return {

@@ -76,10 +76,37 @@ export const agentController = {
     }
   },
 
+  async updateJournalEntry(req, res, next) {
+    try {
+      const result = await agentService.updateJournalEntry(req.user.id, req.params.id, req.body);
+      res.status(200).json({ success: true, data: result });
+    } catch (error) {
+      next(error);
+    }
+  },
+
   async createHabeasData(req, res, next) {
     try {
       const result = await agentService.createHabeasDataRequest(req.user.id, req.body);
       res.status(201).json({ success: true, data: result });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  async getMySupportRequests(req, res, next) {
+    try {
+      const result = await agentService.getMySupportRequests(req.user.id);
+      res.status(200).json({ success: true, data: result });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  async getMyHabeasData(req, res, next) {
+    try {
+      const result = await agentService.getMyHabeasData(req.user.id);
+      res.status(200).json({ success: true, data: result });
     } catch (error) {
       next(error);
     }

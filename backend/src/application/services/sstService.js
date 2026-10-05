@@ -35,35 +35,55 @@ export const sstService = {
    * @throws {AppError} Si faltan atributos esenciales
    */
   async createIntervention(sstUserId, data) {
-    const { title, type, campana_id, equipo_id, start_date } = data;
+    const campana_id = data.campana_id || data.campanaId;
+    const equipo_id = data.equipo_id || data.equipoId;
+    const start_date = data.start_date || data.startDate;
+    const end_date = data.end_date || data.endDate || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+    const alerta_id = data.alerta_id || data.alertaId || null;
+    const target_desc = data.target_desc || data.targetDesc || null;
+    const assigned_to = data.assigned_to || data.assignedTo || null;
+    const title = data.title;
+    const type = data.type;
+    const indicator = data.indicator || 'Recuperacion agregada';
+    const baseline = data.baseline !== undefined ? data.baseline : null;
     
     // Validar parámetros obligatorios que aseguran la correcta descripción del plan.
     if (!title || !type || !campana_id || !equipo_id || !start_date) {
       throw new AppError('Faltan campos obligatorios para crear la intervención.', 'INTERVENTION_MISSING_REQUIRED_FIELDS', 400);
     }
 
-    const end_date = data.end_date || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
-    const indicator = data.indicator || 'Recuperacion agregada';
-
     const id = `int-${crypto.randomUUID()}`;
     const payload = {
       ...data,
       id,
+      alerta_id,
+      title,
+      type,
+      campana_id,
+      equipo_id,
+      assigned_to,
+      start_date,
       end_date,
       indicator,
+      baseline,
+      target_desc,
       creator_id: sstUserId
     };
 
     const result = await sstRepository.createInterventionWithAlertTransition(payload);
 
-    await createLog({ 
-      usuarioId: sstUserId, 
-      rol: 'SST', 
-      action: 'CREACION_INTERVENCION', 
-      resource: 'sst_intervenciones', 
-      resourceId: result.id, 
-      details: 'Intervención preventiva creada: ' + title 
-    });
+    try {
+      await createLog({ 
+        usuarioId: sstUserId, 
+        rol: 'SST', 
+        action: 'CREACION_INTERVENCION', 
+        resource: 'sst_intervenciones', 
+        resourceId: result.id, 
+        details: 'Intervención preventiva creada: ' + title 
+      });
+    } catch (auditError) {
+      console.warn('Advertencia: No se pudo registrar auditoría en createIntervention:', auditError.message);
+    }
 
     return result;
   },
@@ -131,7 +151,22 @@ export const sstService = {
     });
   },
 
-  async updateSupportRequestStatus(requestId, status) {
-    return await sstRepository.updateSupportRequestStatus(requestId, status);
+  async updateSupportRequestStatus(requestId, status, sstUserId) {
+    const result = await sstRepository.updateSupportRequestStatus(requestId, status);
+    if (result) {
+      try {
+        await createLog({ 
+          usuarioId: sstUserId || null, 
+          rol: 'SST', 
+          action: 'ACTUALIZACION_APOYO', 
+          resource: 'solicitudes_apoyo', 
+          resourceId: requestId, 
+          details: `Estado actualizado a: ${status}` 
+        });
+      } catch (auditError) {
+        console.warn('Advertencia: No se pudo registrar auditoría en updateSupportRequest:', auditError.message);
+      }
+    }
+    return result;
   }
 };

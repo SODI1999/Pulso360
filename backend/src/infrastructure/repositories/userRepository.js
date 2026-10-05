@@ -87,5 +87,16 @@ export const userRepository = {
     `;
     const { rows } = await pool.query(query, [id, userId, type, note]);
     return rows[0];
+  },
+
+  async findHabeasDataRequestsByUser(userId) {
+    const query = `
+      SELECT id, type, status, deadline, note, resuelto_en, created_at
+      FROM solicitudes_habeas_data
+      WHERE usuario_id = $1
+      ORDER BY created_at DESC
+    `;
+    const { rows } = await pool.query(query, [userId]);
+    return rows;
   }
 };

@@ -10,10 +10,15 @@ import reportsRoutes from './interfaces/routes/reportsRoutes.js';
 import notificationsRoutes from './interfaces/routes/notificationsRoutes.js';
 
 
+import pool from './infrastructure/db.js';
+
 const app = express();
 
 // Middlewares globales de transporte
-app.use(cors());
+app.use(cors({
+  origin: process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : '*',
+  credentials: true
+}));
 app.use(express.json());
 
 // Endpoint base de estado
@@ -22,12 +27,13 @@ app.get("/api/v1", (req, res) => {
 });
 
 // Endpoint canónico de Healthcheck (RNF-03)
-app.get("/api/v1/health", (req, res) => {
-  res.status(200).json({
-    status: "ok",
-    database: "connected",
-    timestamp: new Date().toISOString()
-  });
+app.get("/api/v1/health", async (req, res) => {
+  try {
+    await pool.query('SELECT 1');
+    res.status(200).json({ status: 'ok', database: 'connected', timestamp: new Date().toISOString() });
+  } catch (err) {
+    res.status(503).json({ status: 'degraded', database: 'disconnected', error: err.message });
+  }
 });
 
 // Montar rutas de autenticación

@@ -4,6 +4,7 @@ import { consentRepository } from '../../infrastructure/repositories/consentRepo
 import { checkinRepository } from '../../infrastructure/repositories/checkinRepository.js';
 import { journalRepository } from '../../infrastructure/repositories/journalRepository.js';
 import { userRepository } from '../../infrastructure/repositories/userRepository.js';
+import { sstRepository } from '../../infrastructure/repositories/sstRepository.js';
 import crypto from 'node:crypto';
 
 export const agentService = {
@@ -208,6 +209,17 @@ export const agentService = {
     return { id: journalId, deleted: true };
   },
 
+  async updateJournalEntry(userId, journalId, data) {
+    if (!data.content || data.content.trim().length < 5) {
+      throw new AppError('El contenido de la bitácora no puede estar vacío o tener menos de 5 caracteres', 'JOURNAL_CONTENT_EMPTY', 400);
+    }
+    const updated = await journalRepository.update(journalId, userId, data.content.trim());
+    if (!updated) {
+      throw new AppError('Bitácora no encontrada o no pertenece al usuario', 'JOURNAL_NOT_FOUND', 404);
+    }
+    return updated;
+  },
+
   async createHabeasDataRequest(userId, { type, note }) {
     const validTypes = ['Portabilidad', 'Rectificacion', 'Supresion', 'Consulta'];
     if (!validTypes.includes(type)) {
@@ -237,5 +249,13 @@ export const agentService = {
     });
 
     return newRequest;
+  },
+
+  async getMySupportRequests(userId) {
+    return await sstRepository.findSupportRequestsByUser(userId);
+  },
+
+  async getMyHabeasData(userId) {
+    return await userRepository.findHabeasDataRequestsByUser(userId);
   }
 };

@@ -10,7 +10,10 @@ export const notificationsRepository = {
       LIMIT 50
     `;
     const { rows } = await pool.query(query, [userId, rolCodigo]);
-    return rows;
+    return rows.map(row => ({
+      ...row,
+      read: row.is_read
+    }));
   },
 
   async markRead(notificationId, userId, rolCodigo) {
