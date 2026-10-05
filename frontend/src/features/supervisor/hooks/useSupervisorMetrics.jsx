@@ -84,35 +84,30 @@ export function useSupervisorMetrics({
 
     const energy = rawMetrics.energia != null
       ? toScore100(rawMetrics.energia)
-      : (rawMetrics.energia_avg != null ? toScore100(rawMetrics.energia_avg) : 76.2);
+      : (rawMetrics.energia_avg != null ? toScore100(rawMetrics.energia_avg) : 0);
 
     const overload = rawMetrics.carga_emocional != null
       ? toScore100(rawMetrics.carga_emocional)
       : (rawMetrics.carga_emocional_avg != null
         ? toScore100(rawMetrics.carga_emocional_avg)
-        : (rawMetrics.agotamiento != null ? toScore100(rawMetrics.agotamiento) : 68.5));
+        : (rawMetrics.agotamiento != null ? toScore100(rawMetrics.agotamiento) : 0));
 
     const participation = rawMetrics.participacion_pct != null
       ? `${rawMetrics.participacion_pct}%`
-      : (rawMetrics.participationRate || `${Math.min(100, Math.round((cohortCount / 16) * 100))}%`);
+      : (rawMetrics.participationRate || 'N/D');
 
     const trend = Array.isArray(rawMetrics.tendencia) && rawMetrics.tendencia.length > 0
       ? rawMetrics.tendencia
-      : [
-          Math.max(0, Math.round(energy - 6)),
-          Math.max(0, Math.round(energy - 4)),
-          Math.max(0, Math.round(energy - 2)),
-          Math.round(energy)
-        ];
+      : [];
 
     return {
       energyIndex: energy,
-      energyDelta: '+2.1% frente a semana previa',
+      energyDelta: rawMetrics.energyDelta || 'N/D',
       overloadIndex: overload,
       participationRate: participation,
       trendValues: trend
     };
-  }, [isProtected, rawMetrics, cohortCount]);
+  }, [isProtected, rawMetrics]);
 
   return {
     data,

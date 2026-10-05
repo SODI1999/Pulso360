@@ -4,18 +4,18 @@ Cliente web de Pulso360, una plataforma de bienestar laboral para operaciones BP
 
 ---
 
-## Stack Tecnologico
+## Stack Tecnológico
 
 * Framework: React 18
 * Enrutamiento: React Router 7
 * Empaquetador y Dev Server: Vite 5
-* Iconografia: Lucide React
-* Estilos: Vanilla CSS modular con sistema de diseno por tokens (`src/styles/tokens.css`)
+* Iconografía: Lucide React
+* Estilos: Vanilla CSS modular con sistema de diseño por tokens (`src/styles/tokens.css`)
 * Linter y Calidad: ESLint 9 + Node Test Runner (`tests/regressions.test.mjs`)
 
 ---
 
-## Instalacion y Ejecucion
+## Instalación y Ejecución
 
 Requisitos: Node.js (v20.0 o superior, exigido por React Router 7 y runtime ESM moderno) y npm (v10.0 o superior).
 
@@ -33,78 +33,90 @@ Requisitos: Node.js (v20.0 o superior, exigido por React Router 7 y runtime ESM 
    ```bash
    npm run dev
    ```
-   Abre en tu navegador la direccion local que indique la consola (habitualmente `http://localhost:5173`).
+   Abre en tu navegador la dirección local que indique la consola (habitualmente `http://localhost:5173`).
 
 ---
 
-## Configuracion de Entorno (.env)
+## Configuración de Entorno (.env)
 
-No es estrictamente necesario configurar un `.env` para probar la aplicacion en modo demostracion local. Si necesitas cambiar parametros locales o conectar con el backend:
+No es estrictamente necesario configurar un `.env` para probar la aplicación en modo demostración local. Si necesitas cambiar parámetros locales o conectar con el backend:
 
 ```bash
 # Copia la plantilla de ejemplo
 cp .env.example .env
 ```
 
-> **Aviso de seguridad:** Las variables con prefijo `VITE_*` son publicas y visibles en el codigo cliente generado para el navegador. No coloques credenciales secretas aqui.
+> **Aviso de seguridad:** Las variables con prefijo `VITE_*` son públicas y visibles en el código cliente generado para el navegador. No coloques credenciales secretas aquí.
 
 ---
 
-## Recorrido de la Demostracion
+## Recorrido de la Demostración
 
-| Ruta | Descripcion |
+| Ruta | Descripción |
 | :--- | :--- |
-| `/` | Portada principal, presentacion del proyecto y modulos de contexto. |
-| `/contactenos` | Formulario con validacion controlada y resumen demostrativo. |
-| `/login` | Acceso con switch rapido de prueba para los 5 roles. |
-| `/agente/dashboard` | Tablero del agente, estado del turno, metricas y accesos rapidos. |
-| `/agente/bitacora` | Registro privado de bienestar y analisis lexico determinista. |
-| `/supervisor/equipo` | Vista agregada de factores y KPIs de equipo (respetando k-anonimato). |
-| `/sst/dashboard` | Gestion de alertas operativas, bandejas de apoyo e intervenciones SST. |
-| `/admin/usuarios-roles`| Administracion y auditoria de cuentas y roles del sistema. |
+| `/` | Portada principal, presentación del proyecto y módulos de contexto. |
+| `/contactenos` | Formulario de contacto y canal informativo. |
+| `/login` | Autenticación con acceso rápido para los 5 roles RBAC. |
+| `/agente/panel` | Tablero de bienestar del agente, estado del turno y accesos directos. |
+| `/agente/bitacora` | Registro privado de bienestar y análisis léxico determinista. |
+| `/agente/checkin` | Evaluación voluntaria diaria de dimensiones de fatiga y carga. |
+| `/supervisor/panel` | Vista agregada de factores y KPIs de equipo (k-anonimato N >= 5). |
+| `/supervisor/acciones` | Seguimiento y planes de acción preventivos asignados. |
+| `/sst/panel` | Vigilancia epidemiológica preventiva y monitoreo psicosocial agregado. |
+| `/sst/alertas` | Gestión de alertas operativas e intervenciones SST. |
+| `/sst/buzon` | Solicitudes voluntarias de apoyo confidencial canalizadas por SST. |
+| `/auditor/panel` | Registro inmutable de auditoría y trazabilidad del sistema. |
+| `/admin/panel` | Gestión organizacional y configuración de campañas/turnos. |
+| `/admin/usuarios-roles` | Administración y auditoría de cuentas y roles del sistema. |
+| `/reportes` | Generación y exportación de reportes agregados con hash de integridad SHA-256. |
+| `/notificaciones` | Notificaciones y avisos institucionales in-app. |
 
-> En la pantalla de `/login`, utiliza la seccion **Acceso rapido de evaluacion** para autocompletar credenciales de cualquier rol con un solo clic.
+> En la pantalla de `/login`, utiliza la sección **Acceso rápido de evaluación** para autocompletar credenciales de cualquier rol con un solo clic.
 
 ---
 
-## Estructura del Codigo
+## Estructura del Código
 
 ```text
 frontend/
-├── public/              # Recursos estaticos (logos, imagenes, favicon)
+├── public/              # Recursos estáticos (logos, imágenes, favicon)
 ├── src/
-│   ├── core/            # Infraestructura transversal (Auth, Storage, Config, NLP lexico)
-│   ├── features/        # Modulos organizados por dominio y rol:
-│   │   ├── admin/       # Vistas y servicios de administracion
-│   │   ├── agent/       # Bitacora, pausas activas, soporte de agente
-│   │   ├── public/      # Landing page, contacto, login
-│   │   ├── sst/         # Reglas de alerta, intervenciones, inbox SST
-│   │   └── supervisor/  # Tableros de equipo y seguimiento
-│   ├── styles/          # Design tokens, variables CSS globales y hojas de modulo
-│   ├── App.jsx          # Declaracion central de rutas publicas y protegidas
+│   ├── core/            # Infraestructura transversal (Auth, Storage, Config, API, Layout, NLP léxico)
+│   ├── features/        # Módulos organizados por dominio y rol:
+│   │   ├── admin/       # Vistas y servicios de administración y gobernanza
+│   │   ├── agent/       # Bitácora privada, check-in, pausas activas, apoyo y privacidad
+│   │   ├── auth/        # Login RBAC, consentimiento C1-C5 y recuperación de claves
+│   │   ├── auditor/     # Trazabilidad, logs inmutables y registros de auditoría
+│   │   ├── landing/     # Portada pública, fundamentación académica y contacto
+│   │   ├── notifications/# Notificaciones y comunicados operativos in-app
+│   │   ├── reports/     # Generación de reportes agregados con sello SHA-256
+│   │   ├── sst/         # Vigilancia epidemiológica, alertas, reglas, intervenciones y buzón
+│   │   └── supervisor/  # Tableros de equipo (k-anonimato N >= 5) y planes preventivos
+│   ├── styles/          # Design tokens, variables CSS globales y hojas de módulo
+│   ├── App.jsx          # Declaración central de rutas públicas, protegidas y redirecciones canónicas
 │   └── main.jsx         # Punto de entrada de React en el DOM
-├── tests/               # Pruebas automatizadas de regresion (storage, auth, bitacora)
+├── tests/               # Pruebas automatizadas de regresión (storage, auth, bitácora)
 ├── index.html           # Documento base HTML
-└── vite.config.js       # Configuracion del bundler Vite
+└── vite.config.js       # Configuración del bundler Vite
 ```
 
 ---
 
-## Pruebas y Validacion de Calidad
+## Pruebas y Validación de Calidad
 
-El proyecto cuenta con el siguiente flujo de validacion:
+El proyecto cuenta con el siguiente flujo de validación:
 
 ```bash
-# Ejecutar suite de pruebas de regresion (Node test runner)
+# Ejecutar suite de pruebas de regresión (Node test runner)
 npm test
 
-# Ejecutar analisis estatico de codigo
+# Ejecutar análisis estático de código
 npm run lint
 
-# Compilar para produccion (genera carpeta dist/)
+# Compilar para producción (genera carpeta dist/)
 npm run build
 
-# Previsualizar el build de produccion localmente
+# Previsualizar el build de producción localmente
 npm run preview
 ```
 
@@ -112,5 +124,18 @@ npm run preview
 
 ## Privacidad y Almacenamiento
 
-* **Almacenamiento:** Centralizado a traves de `src/core/storage/pulsoStore.jsx` utilizando almacenamiento del navegador (localStorage / memoria en caso de bloqueo).
-* **Motor NLP:** Ubicado en `src/core/nlp/nlpEngine.jsx`, es un modelo puramente lexico y determinista. No envia datos a LLMs externos ni emite diagnosticos clinicos.
+### Arquitectura de Persistencia y Modos de Ejecución
+
+Pulso360 implementa un desacoplamiento estricto entre la interfaz de usuario y los mecanismos de persistencia, administrado por la variable de entorno `VITE_USE_MOCK_STORAGE`:
+
+* **Modo Producción Conectada (`VITE_USE_MOCK_STORAGE=false`):**
+  Arquitectura de cliente ligero (*Thin Client*). Todas las operaciones de dominio (check-ins diarios, bitácoras privadas de desahogo, consentimientos informados C1–C5, alertas psicosociales, intervenciones y reportes) se gestionan directamente contra el backend REST (Node.js, Express y PostgreSQL 18) a través de `apiClient`.
+  - **Principio Anti-Dual-Persistence:** La aplicación cliente nunca persiste microdatos personales ni registros sensibles de bienestar en el navegador (ni en `localStorage` ni en `sessionStorage`), garantizando que la única fuente de verdad sea la base de datos relacional y protegiendo la confidencialidad en puestos de trabajo compartidos de Contact Center.
+
+* **Modo Demostración Offline (`VITE_USE_MOCK_STORAGE=true`):**
+  Almacenamiento simulado en `src/core/storage/pulsoStore.jsx` (`localStorage` con fallback resiliente en memoria en caso de bloqueo por políticas del navegador) para demostraciones portables, pruebas unitarias o entornos aislados sin backend.
+
+### Motor NLP Determinista
+
+* **Análisis Léxico en Cliente:** Ubicado en `src/core/nlp/nlpEngine.jsx`, evalúa reflexiones de la bitácora mediante coincidencia léxica determinista de diccionarios locales sin recurrir a procesamiento probabilístico en la nube.
+* **Seguridad Psicológica y Ética de Datos:** Se ejecuta estrictamente en el navegador del usuario sin exposición de datos a modelos LLM externos ni servicios de terceros. Su alcance es estrictamente de autorreflexión y apoyo operativo; no emite diagnósticos clínicos, valoraciones psiquiátricas ni dictámenes médicos laborales.

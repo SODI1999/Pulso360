@@ -77,11 +77,15 @@ export function useOrganization() {
   };
 
   const handleToggleCampaign = async (campId) => {
-    const operationResult = await toggleCampaign(campId, actorLabel);
+    const currentCamp = campaigns.find(c => c.id === campId);
+    if (!currentCamp) return;
+    const currentActive = currentCamp.active !== false;
+
+    const operationResult = await toggleCampaign(campId, currentActive, actorLabel);
     if (!operationResult) return;
     const { camp, newStatus } = operationResult;
 
-    setFeedback(`Campaña "${camp.name}" marcada como ${newStatus}.`);
+    setFeedback(`Campaña "${camp.name || campId}" marcada como ${newStatus}.`);
     setVersion((v) => v + 1);
   };
 
@@ -95,11 +99,16 @@ export function useOrganization() {
   };
 
   const handleToggleTeam = async (campId, teamId) => {
-    const operationResult = await toggleTeam(campId, teamId, actorLabel);
+    const camp = campaigns.find(c => c.id === campId);
+    const currentTeam = camp?.teams?.find(t => t.id === teamId);
+    if (!currentTeam) return;
+    const currentActive = currentTeam.active !== false;
+
+    const operationResult = await toggleTeam(campId, teamId, currentActive, actorLabel);
     if (!operationResult) return;
     const { team, newStatus } = operationResult;
 
-    setFeedback(`Equipo "${team.name}" marcado como ${newStatus}.`);
+    setFeedback(`Equipo "${team.name || teamId}" marcado como ${newStatus}.`);
     setVersion((v) => v + 1);
   };
 

@@ -220,6 +220,7 @@ function App() {
           />
 
           {/* --- MÓDULO AUDITOR (Hito 6) --- */}
+          <Route path="/auditor/panel" element={<Navigate to="/auditor/auditoria" replace />} />
           <Route
             path="/auditor/auditoria"
             element={
@@ -230,6 +231,7 @@ function App() {
           />
 
           {/* --- MÓDULO ADMINISTRADOR (Hito 6) --- */}
+          <Route path="/admin/panel" element={<Navigate to="/admin/organizacion" replace />} />
           <Route
             path="/admin/organizacion"
             element={

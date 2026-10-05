@@ -3,7 +3,8 @@ import { apiClient, getAuthToken } from '../../../core/api/apiClient';
 import { env } from '../../../core/config/env';
 
 export async function saveIntervention(newIntervention) {
-  if (!env.useMockStorage && getAuthToken()) {
+  if (!env.useMockStorage) {
+    if (!getAuthToken()) return { error: 'Sesión no válida o expirada.' };
     try {
       const res = await apiClient.post('/sst/interventions', {
         ...newIntervention,

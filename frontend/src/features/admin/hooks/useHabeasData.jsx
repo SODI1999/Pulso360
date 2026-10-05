@@ -81,9 +81,13 @@ export function useHabeasData() {
   const handleConfirmAdvance = async ({ requestId, nextStatus, note }) => {
     const operationResult = await confirmAdvance(requestId, nextStatus, note, actorLabel);
     if (!operationResult) return;
+    if (operationResult.error) {
+      setFeedback(`Error: ${operationResult.error}`);
+      return;
+    }
     const { req } = operationResult;
 
-    setFeedback(`Radicado ${req.id} actualizado exitosamente al estado "${nextStatus}".`);
+    setFeedback(`Radicado ${req?.id || requestId} actualizado exitosamente al estado "${nextStatus}".`);
     setAdvanceModalState({ isOpen: false, request: null, nextStatus: '' });
     setVersion((v) => v + 1);
   };

@@ -123,7 +123,8 @@ export function CheckinWizardPage() {
 
   // 3. Caso: Check-in ya registrado para la jornada de hoy (Ventana de edición)
   if (existingCheckin && !isEditing) {
-    const age = Date.now() - new Date(existingCheckin.submittedAt).getTime();
+    const checkinTime = existingCheckin.submittedAt || existingCheckin.submitted_at || existingCheckin.createdAt || existingCheckin.created_at;
+    const age = Date.now() - new Date(checkinTime).getTime();
     const editHours = Number(data.settings?.checkinEditHours || 2);
     const remainingTime = editHours * 60 * 60 * 1000 - age;
 

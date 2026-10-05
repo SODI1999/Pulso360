@@ -17,6 +17,7 @@ export function InterventionsPage() {
   const user = authService.getCurrentUser();
   const [version, setVersion] = useState(0);
   const [feedback, setFeedback] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
   const [interventions, setInterventions] = useState([]);
 
   useEffect(() => {
@@ -27,8 +28,15 @@ export function InterventionsPage() {
     }
   }, [version]);
 
-  const handleSaveIntervention = (newIntervention) => {
-    saveIntervention(newIntervention);
+  const handleSaveIntervention = async (newIntervention) => {
+    setFeedback('');
+    setErrorMessage('');
+    const result = await saveIntervention(newIntervention);
+
+    if (result?.error) {
+      setErrorMessage(result.error);
+      return;
+    }
 
     // Registro inmutable de auditoría (RF-09)
     pulsoStore.audit({
@@ -65,6 +73,14 @@ export function InterventionsPage() {
           enrutadores ni turnos.
         </div>
       </div>
+
+      {/* Mensaje de error si falla la creación */}
+      {errorMessage && (
+        <div className="alert-banner warn" role="alert" style={{ marginBottom: 'var(--space-5)' }}>
+          <Icon name="alertTriangle" size={18} />
+          <span>{errorMessage}</span>
+        </div>
+      )}
 
       {/* Mensaje de feedback */}
       {feedback && (

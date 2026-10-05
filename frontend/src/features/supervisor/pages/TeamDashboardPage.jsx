@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { authService } from '../../../core/auth/authService';
 import { pulsoStore } from '../../../core/storage/pulsoStore';
+import { env } from '../../../core/config/env';
 import { Icon } from '../../../core/components/Icon';
 import { TrendLineChart } from '../../../core/components/TrendLineChart';
 import { TeamKpiGrid } from '../components/TeamKpiGrid';
@@ -40,11 +41,13 @@ export function TeamDashboardPage() {
   // Registro de auditoría cada vez que se filtran métricas agregadas (RF-07)
   useEffect(() => {
     if (!user) return;
-    pulsoStore.audit({
-      actor: `${user.name} (${user.role})`,
-      action: 'CONSULTA_AGREGADA',
-      target: `ámbito=${scopeFilter}; período=${periodFilter}`
-    });
+    if (env.useMockStorage) {
+      pulsoStore.audit({
+        actor: `${user.name} (${user.role})`,
+        action: 'CONSULTA_AGREGADA',
+        target: `ámbito=${scopeFilter}; período=${periodFilter}`
+      });
+    }
   }, [scopeFilter, periodFilter, user]);
 
   // Factores derivados de las métricas agregadas del equipo

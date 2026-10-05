@@ -39,7 +39,8 @@ export async function fetchSupervisorMetrics(campanaId = 'camp-1', equipoId = 't
     };
   }
 
-  if (!env.useMockStorage && getAuthToken()) {
+  if (!env.useMockStorage) {
+    if (!getAuthToken()) return { error: 'No autorizado' };
     try {
       const response = await apiClient.get('/sst/metrics', { params: { campana_id: cId, equipo_id: eqId } });
       const payload = response?.data !== undefined ? response.data : response;
@@ -47,29 +48,11 @@ export async function fetchSupervisorMetrics(campanaId = 'camp-1', equipoId = 't
         return payload;
       }
     } catch (err) {
-      console.warn('Backend inalcanzable, proveyendo datos mockeados de métricas.', err.message);
+      return { error: err.response?.data?.error?.message || 'Error al obtener métricas en el servidor' };
     }
   }
 
-  // Fallback: Datos mock basados en umbral mínimo
-  return {
-    protected: false,
-    reason: null,
-    cohort_count: 14,
-    k_threshold: 5,
-    metrics: {
-      energia: 76.2,
-      carga_emocional: 68.5,
-      recuperacion: 72.0,
-      apoyo: 80.0,
-      distanciamiento: 45.0,
-      ineficacia: 40.0,
-      agotamiento: 3.4,
-      despersonalizacion: 2.1,
-      participacion_pct: 87.5,
-      tendencia: [70, 72, 74, 76]
-    }
-  };
+  return { error: 'Las métricas reales requieren un backend conectado.' };
 }
 
 /**
@@ -78,7 +61,8 @@ export async function fetchSupervisorMetrics(campanaId = 'camp-1', equipoId = 't
  * @returns {Promise<Array>} Arreglo de intervenciones
  */
 export async function fetchSupervisorActions() {
-  if (!env.useMockStorage && getAuthToken()) {
+  if (!env.useMockStorage) {
+    if (!getAuthToken()) return [];
     try {
       const res = await apiClient.get('/supervisor/actions');
       const payload = res.data?.data !== undefined ? res.data.data : res.data;
@@ -88,7 +72,8 @@ export async function fetchSupervisorActions() {
         assignedTo: item.assigned_to || item.assignedTo
       }));
     } catch (err) {
-      console.warn('Backend inalcanzable, proveyendo datos mockeados de acciones.', err.message);
+      console.warn('Backend inalcanzable, retornando vacío.', err.message);
+      return [];
     }
   }
 

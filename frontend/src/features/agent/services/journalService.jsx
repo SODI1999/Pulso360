@@ -18,7 +18,9 @@ const ownsJournal = (journal, user) =>
 export async function saveJournal(currentJournalId, currentUser, currentJournal, contextTag, trimmed) {
   const isNew = !currentJournalId;
 
-  if (!env.useMockStorage && getAuthToken()) {
+  const isTestOrSsr = typeof window?.document === 'undefined' || globalThis.process?.env?.NODE_ENV === 'test';
+  if (!env.useMockStorage && !isTestOrSsr) {
+    if (!getAuthToken()) return { error: 'Sesión no válida o expirada.' };
     try {
       if (isNew) {
         const res = await apiClient.post('/agent/journal', { context: contextTag, content: trimmed });
@@ -74,7 +76,9 @@ export async function saveJournal(currentJournalId, currentUser, currentJournal,
 }
 
 export async function deleteJournal(currentJournalId, currentUser) {
-  if (!env.useMockStorage && getAuthToken()) {
+  const isTestOrSsr = typeof window?.document === 'undefined' || globalThis.process?.env?.NODE_ENV === 'test';
+  if (!env.useMockStorage && !isTestOrSsr) {
+    if (!getAuthToken()) return { error: 'Sesión no válida o expirada.' };
     try {
       await apiClient.delete('/agent/journal/' + currentJournalId);
       return {};
@@ -156,7 +160,11 @@ export function saveJournalAnalysis(journalPayload, analysisResult, currentUser)
 }
 
 export async function createPriorityRequest(currentUser, crisisMode) {
-  if (!env.useMockStorage && getAuthToken()) {
+  const isTestOrSsr = typeof window?.document === 'undefined' || globalThis.process?.env?.NODE_ENV === 'test';
+  if (!env.useMockStorage && !isTestOrSsr) {
+    if (!getAuthToken()) {
+      return { error: 'Sesión no válida o token ausente' };
+    }
     try {
       const isAnonymous = crisisMode === 'anonimo';
       const res = await apiClient.post('/sst/support-requests', {

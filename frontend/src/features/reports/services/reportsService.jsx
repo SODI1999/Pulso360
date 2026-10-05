@@ -3,7 +3,10 @@ import { apiClient, getAuthToken } from '../../../core/api/apiClient';
 import { env } from '../../../core/config/env';
 
 export async function generateReport(newReportRecord) {
-  if (!env.useMockStorage && getAuthToken()) {
+  if (!env.useMockStorage) {
+    if (!getAuthToken()) {
+      return { error: 'Sesión no válida o token ausente' };
+    }
     try {
       const res = await apiClient.post('/reports', newReportRecord);
       return { reportPayload: res.data };

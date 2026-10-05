@@ -4,7 +4,10 @@ import { apiClient, getAuthToken } from '../../../core/api/apiClient';
 import { env } from '../../../core/config/env';
 
 export async function createHabeasRequest(requestType, currentUser, noteText) {
-  if (!env.useMockStorage && getAuthToken()) {
+  if (!env.useMockStorage) {
+    if (!getAuthToken()) {
+      return { error: 'Sesión no válida o token ausente' };
+    }
     try {
       const res = await apiClient.post('/agent/habeas-data', { type: requestType, note: noteText });
       return { generatedId: res.data.id };

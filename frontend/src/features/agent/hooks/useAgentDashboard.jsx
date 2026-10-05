@@ -1,15 +1,27 @@
-import { getAgentRecords } from '../services/agentQueries';
+import { fetchAgentRecords, getAgentRecords } from '../services/agentQueries';
 import { preferences } from '../../../core/storage/preferences';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { env } from '../../../core/config/env';
 import { authService } from '../../../core/auth/authService';
 
 import { formatHour } from '../services/agentDashboardHelpers';
 
 export function useAgentDashboard() {
   const currentUser = authService.getCurrentUser();
-  const storeData = getAgentRecords(currentUser?.id);
   const navigate = useNavigate();
+  const [storeData, setStoreData] = useState(() => getAgentRecords(currentUser?.id));
+
+  useEffect(() => {
+    let mounted = true;
+    if (!env.useMockStorage && currentUser?.id) {
+      fetchAgentRecords(currentUser.id).then((remoteData) => {
+        if (mounted && remoteData) setStoreData(remoteData);
+      });
+    }
+    return () => { mounted = false; };
+  }, [currentUser?.id]);
+
   const consent = storeData.consents?.[currentUser?.id] || {};
 
   // 1. Partes de fecha y hora local en Bogotá

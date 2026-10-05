@@ -3,7 +3,10 @@ import { apiClient, getAuthToken } from '../../../core/api/apiClient';
 import { env } from '../../../core/config/env';
 
 export async function saveFollowup(interventionId, actionType, notes, progress, user) {
-  if (!env.useMockStorage && getAuthToken()) {
+  if (!env.useMockStorage) {
+    if (!getAuthToken()) {
+      return { error: 'Sesión no válida o token ausente' };
+    }
     try {
       await apiClient.post('/supervisor/actions/' + interventionId + '/followup', { actionType, notes, progress });
       return `Seguimiento guardado exitosamente. Avance actualizado al ${progress}%.`;

@@ -8,7 +8,8 @@ export function getSstData() {
 }
 
 export async function fetchSstAlerts() {
-  if (!env.useMockStorage && getAuthToken()) {
+  if (!env.useMockStorage) {
+    if (!getAuthToken()) return [];
     try {
       const res = await apiClient.get('/sst/alerts');
       const payload = res.data?.data !== undefined ? res.data.data : res.data;
@@ -22,33 +23,38 @@ export async function fetchSstAlerts() {
         equipo_id: item.equipo_id
       }));
     } catch (error) {
-      console.warn('Fallback a datos locales', error.message);
+      console.warn('Error backend', error.message);
+      return [];
     }
   }
   return pulsoStore.get().alerts || [];
 }
 
 export async function fetchSstInterventions() {
-  if (!env.useMockStorage && getAuthToken()) {
+  if (!env.useMockStorage) {
+    if (!getAuthToken()) return [];
     try {
       const res = await apiClient.get('/sst/interventions');
       const payload = res.data?.data !== undefined ? res.data.data : res.data;
       return Array.isArray(payload) ? payload : [];
     } catch (error) {
-      console.warn('Fallback a datos locales', error.message);
+      console.warn('Error backend', error.message);
+      return [];
     }
   }
   return pulsoStore.get().interventions || [];
 }
 
 export async function fetchSstSupportRequests() {
-  if (!env.useMockStorage && getAuthToken()) {
+  if (!env.useMockStorage) {
+    if (!getAuthToken()) return [];
     try {
       const res = await apiClient.get('/sst/support-requests');
       const payload = res.data?.data !== undefined ? res.data.data : res.data;
       return Array.isArray(payload) ? payload : [];
     } catch (error) {
-      console.warn('Fallback a datos locales', error.message);
+      console.warn('Error backend', error.message);
+      return [];
     }
   }
   return pulsoStore.get().supportRequests || [];
@@ -67,7 +73,8 @@ export async function fetchSstSupportRequests() {
  */
 export async function fetchSstMetrics(params = {}) {
   const { campanaId, equipoId, desde, hasta } = params;
-  if (!env.useMockStorage && getAuthToken()) {
+  if (!env.useMockStorage) {
+    if (!getAuthToken()) return { error: 'No autorizado' };
     try {
       const res = await apiClient.get('/sst/metrics', {
         params: {
@@ -82,26 +89,9 @@ export async function fetchSstMetrics(params = {}) {
         return payload;
       }
     } catch (error) {
-      console.warn('Fallback a datos locales de métricas SST:', error.message);
+      return { error: error.response?.data?.error?.message || 'Error al obtener métricas SST en el servidor' };
     }
   }
 
-  // Fallback: Datos mock basados en umbral mínimo del sistema
-  const data = pulsoStore.get();
-  const minThreshold = data.settings?.umbralMinimo || 5;
-  return {
-    protected: false,
-    reason: null,
-    cohort_count: 48,
-    k_threshold: minThreshold,
-    metrics: {
-      bienestar_general: 64.2,
-      energia: 66.8,
-      carga_emocional: 74.0,
-      recuperacion: 58.0,
-      apoyo: 82.0,
-      distanciamiento: 52.0,
-      ineficacia: 48.0
-    }
-  };
+  return { error: 'Las métricas reales requieren un backend conectado.' };
 }

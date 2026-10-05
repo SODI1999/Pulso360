@@ -1,13 +1,35 @@
-import { getAgentRecords } from '../services/agentQueries';
+import { fetchAgentRecords, getAgentRecords } from '../services/agentQueries';
 import { createSupportRequest } from '../services/supportChannelService';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { env } from '../../../core/config/env';
 import { authService } from '../../../core/auth/authService';
 
 export function useSupportChannel() {
   const navigate = useNavigate();
   const currentUser = authService.getCurrentUser();
-  const data = getAgentRecords(currentUser?.id);
+  const [data, setData] = useState(() => getAgentRecords(currentUser?.id));
+
+  const loadData = useCallback(async () => {
+    if (!currentUser?.id) return;
+    if (!env.useMockStorage) {
+      const remoteData = await fetchAgentRecords(currentUser.id);
+      if (remoteData) setData(remoteData);
+    } else {
+      setData(getAgentRecords(currentUser.id));
+    }
+  }, [currentUser?.id]);
+
+  useEffect(() => {
+    let mounted = true;
+    if (!env.useMockStorage && currentUser?.id) {
+      fetchAgentRecords(currentUser.id).then((remoteData) => {
+        if (mounted && remoteData) setData(remoteData);
+      });
+    }
+    return () => { mounted = false; };
+  }, [currentUser?.id]);
+
   const consent = data.consents?.[currentUser?.id];
 
   // Estados del formulario
@@ -19,14 +41,10 @@ export function useSupportChannel() {
   const [timeWindow, setTimeWindow] = useState('Cualquiera');
   const [feedback, setFeedback] = useState('');
 
-  // Solicitudes del usuario
-  const [requestsVersion, setRequestsVersion] = useState(0);
 
   const userRequests = useMemo(() => {
-    void requestsVersion;
-    const storeData = getAgentRecords(currentUser?.id);
-    return (storeData.supportRequests || []).filter((r) => r.ownerUserId === currentUser?.id);
-  }, [currentUser?.id, requestsVersion]);
+    return (data.supportRequests || []).filter((r) => r.ownerUserId === currentUser?.id);
+  }, [data.supportRequests, currentUser?.id]);
 
   const isAnonymous = supportMode === 'anonimo';
 
@@ -51,7 +69,7 @@ export function useSupportChannel() {
 
     setDetails('');
     setFeedback(`Solicitud enviada exitosamente. Tu radicado de seguimiento es ${result.code}.`);
-    setRequestsVersion((prev) => prev + 1);
+    loadData();
   };
 
   // 1. Caso: Bloqueo pedagógico por falta de consentimiento C5 (Ruta pública de apoyo permanece habilitada)

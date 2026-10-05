@@ -46,7 +46,7 @@ export function SstDashboardPage() {
     const positiveScores = [energia, recuperacion, apoyo].filter((v) => v != null).map((v) => toScore100(v));
     const riskScores = [carga, dist, inef].filter((v) => v != null).map((v) => Math.max(0, 100 - toScore100(v)));
     const all = [...positiveScores, ...riskScores];
-    if (all.length === 0) return 64.2;
+    if (all.length === 0) return null;
     const avg = all.reduce((a, b) => a + b, 0) / all.length;
     return Number(avg.toFixed(1));
   }, [isProtected, metrics]);
@@ -216,10 +216,10 @@ export function SstDashboardPage() {
                   <td>
                     <strong>Recuperación agregada</strong>
                   </td>
-                  <td>{toScore100(metrics?.recuperacion ?? metrics?.recuperacion_avg, 58)} / 100</td>
+                  <td>{toScore100(metrics?.recuperacion ?? metrics?.recuperacion_avg, 0)} / 100</td>
                   <td>
-                    <span className={`badge badge-${toScore100(metrics?.recuperacion ?? metrics?.recuperacion_avg, 58) < 60 ? 'warn' : 'ok'}`}>
-                      {toScore100(metrics?.recuperacion ?? metrics?.recuperacion_avg, 58) < 60 ? 'Medio-Bajo' : 'Favorable'}
+                    <span className={`badge badge-${toScore100(metrics?.recuperacion ?? metrics?.recuperacion_avg, 0) < 60 ? 'warn' : 'ok'}`}>
+                      {toScore100(metrics?.recuperacion ?? metrics?.recuperacion_avg, 0) < 60 ? 'Medio-Bajo' : 'Favorable'}
                     </span>
                   </td>
                   <td>Descenso del 3.2% en 3 semanas</td>
@@ -229,10 +229,10 @@ export function SstDashboardPage() {
                   <td>
                     <strong>Carga emocional agregada</strong>
                   </td>
-                  <td>{toScore100(metrics?.carga_emocional ?? metrics?.carga_emocional_avg, 74)} / 100</td>
+                  <td>{toScore100(metrics?.carga_emocional ?? metrics?.carga_emocional_avg, 0)} / 100</td>
                   <td>
-                    <span className={`badge badge-${toScore100(metrics?.carga_emocional ?? metrics?.carga_emocional_avg, 74) > 70 ? 'danger' : 'warn'}`}>
-                      {toScore100(metrics?.carga_emocional ?? metrics?.carga_emocional_avg, 74) > 70 ? 'Alto' : 'Medio'}
+                    <span className={`badge badge-${toScore100(metrics?.carga_emocional ?? metrics?.carga_emocional_avg, 0) > 70 ? 'danger' : 'warn'}`}>
+                      {toScore100(metrics?.carga_emocional ?? metrics?.carga_emocional_avg, 0) > 70 ? 'Alto' : 'Medio'}
                     </span>
                   </td>
                   <td>Estable en nivel elevado</td>
@@ -242,10 +242,10 @@ export function SstDashboardPage() {
                   <td>
                     <strong>Apoyo social entre pares</strong>
                   </td>
-                  <td>{toScore100(metrics?.apoyo ?? metrics?.apoyo_avg, 82)} / 100</td>
+                  <td>{toScore100(metrics?.apoyo ?? metrics?.apoyo_avg, 0)} / 100</td>
                   <td>
-                    <span className={`badge badge-${toScore100(metrics?.apoyo ?? metrics?.apoyo_avg, 82) >= 70 ? 'ok' : 'warn'}`}>
-                      {toScore100(metrics?.apoyo ?? metrics?.apoyo_avg, 82) >= 70 ? 'Favorable' : 'En observación'}
+                    <span className={`badge badge-${toScore100(metrics?.apoyo ?? metrics?.apoyo_avg, 0) >= 70 ? 'ok' : 'warn'}`}>
+                      {toScore100(metrics?.apoyo ?? metrics?.apoyo_avg, 0) >= 70 ? 'Favorable' : 'En observación'}
                     </span>
                   </td>
                   <td>Incremento positivo (+1.8%)</td>
@@ -255,7 +255,7 @@ export function SstDashboardPage() {
                   <td>
                     <strong>Conflicto y ambigüedad de rol</strong>
                   </td>
-                  <td>{toScore100(metrics?.ineficacia ?? metrics?.distanciamiento, 48)} / 100</td>
+                  <td>{toScore100(metrics?.ineficacia ?? metrics?.distanciamiento, 0)} / 100</td>
                   <td>
                     <span className="badge badge-info">Medio</span>
                   </td>

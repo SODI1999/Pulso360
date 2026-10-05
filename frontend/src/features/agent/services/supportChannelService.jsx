@@ -13,7 +13,10 @@ export async function createSupportRequest(
   contactPreference,
   timeWindow
 ) {
-  if (!env.useMockStorage && getAuthToken()) {
+  if (!env.useMockStorage) {
+    if (!getAuthToken()) {
+      return { error: 'Sesión no válida o token ausente' };
+    }
     try {
       const res = await apiClient.post('/sst/support-requests', {
         mode: supportMode,

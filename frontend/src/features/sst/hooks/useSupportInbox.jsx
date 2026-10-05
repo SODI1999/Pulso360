@@ -28,7 +28,10 @@ export function useSupportInbox() {
 
   // Avanzar estado del caso según flujo predefinido
   const handleAdvanceStatus = async (requestId) => {
-    const operationResult = await advanceStatus(requestId, WORKFLOW_STATES);
+    const localReq = requests.find(r => r.id === requestId);
+    if (!localReq) return;
+    
+    const operationResult = await advanceStatus(requestId, WORKFLOW_STATES, localReq.status);
     if (!operationResult) return;
     if (operationResult.error) {
       setFeedback(`Error: ${operationResult.error}`);

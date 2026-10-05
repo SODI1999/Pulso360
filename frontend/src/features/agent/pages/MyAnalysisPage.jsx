@@ -1,10 +1,11 @@
 // src/features/agent/pages/MyAnalysisPage.jsx
 // Historial analítico y temas recurrentes derivados de notas de bitácora privada
 
-import { useMemo } from 'react';
+import { fetchAgentRecords, getAgentRecords } from '../services/agentQueries';
+import { env } from '../../../core/config/env';
+import { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { authService } from '../../../core/auth/authService';
-import { getAgentRecords } from '../services/agentQueries';
 import { Icon } from '../../../core/components/Icon';
 import '../../../styles/analisis.css';
 
@@ -22,7 +23,17 @@ const CATEGORY_ICONS = {
 export function MyAnalysisPage() {
   const navigate = useNavigate();
   const currentUser = authService.getCurrentUser();
-  const data = getAgentRecords(currentUser?.id);
+  const [data, setData] = useState(() => getAgentRecords(currentUser?.id));
+
+  useEffect(() => {
+    let mounted = true;
+    if (!env.useMockStorage && currentUser?.id) {
+      fetchAgentRecords(currentUser.id).then((remoteData) => {
+        if (mounted && remoteData) setData(remoteData);
+      });
+    }
+    return () => { mounted = false; };
+  }, [currentUser?.id]);
 
   const analyzedJournals = useMemo(() => {
     return (data.journals || [])

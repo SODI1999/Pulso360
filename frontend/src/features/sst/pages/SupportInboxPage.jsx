@@ -93,11 +93,17 @@ export function SupportInboxPage() {
                           {isAnon ? 'Anónimo' : 'Identificado'}
                         </span>
                       </td>
-                      <td>{item.date || item.createdAt?.substring(0, 10) || '2026-08-20'}</td>
+                      <td>{item.requestDate || item.request_date || item.date || (item.createdAt || item.created_at)?.substring(0, 10) || 'Sin fecha'}</td>
                       <td>{item.reason}</td>
                       <td>
                         {isAnon ? (
-                          <span style={{ color: 'var(--c-texto-mutado)' }}>— Reserva anónima</span>
+                          <span
+                            className="badge badge-neutral"
+                            style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+                          >
+                            <Icon name="lock" size={12} />
+                            <span>Solicitante anónimo (Identidad protegida)</span>
+                          </span>
                         ) : (
                           <div>
                             <strong style={{ color: 'var(--c-texto)' }}>

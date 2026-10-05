@@ -1,15 +1,26 @@
-import { getAgentRecords } from '../services/agentQueries';
+import { fetchAgentRecords, getAgentRecords } from '../services/agentQueries';
 import { saveCheckin } from '../services/checkinWizardService';
 import { preferences } from '../../../core/storage/preferences';
 import { useState, useEffect, useCallback, useRef } from 'react';
-
+import { env } from '../../../core/config/env';
 import { authService } from '../../../core/auth/authService';
 
 import { QUESTIONS } from '../data/checkinWizardData';
 
 export function useCheckinWizard() {
   const user = authService.getCurrentUser();
-  const data = getAgentRecords(user?.id);
+  const [data, setData] = useState(() => getAgentRecords(user?.id));
+
+  useEffect(() => {
+    let mounted = true;
+    if (!env.useMockStorage && user?.id) {
+      fetchAgentRecords(user.id).then((remoteData) => {
+        if (mounted && remoteData) setData(remoteData);
+      });
+    }
+    return () => { mounted = false; };
+  }, [user?.id]);
+
   const consent = data.consents?.[user?.id];
 
   // 1. Calcular la jornada laboral según la hora de inicio de turno y zona horaria
@@ -64,8 +75,7 @@ export function useCheckinWizard() {
 
   // Cargar registro existente o borrador
   useEffect(() => {
-    const storeData = getAgentRecords(user?.id);
-    const found = (storeData.checkins || []).find(
+    const found = (data.checkins || []).find(
       (c) => c.userId === user?.id && c.journeyKey === journeyKey
     );
     if (found) {
@@ -78,7 +88,7 @@ export function useCheckinWizard() {
         setDraft({});
       }
     }
-  }, [user?.id, journeyKey, draftKey]);
+  }, [user?.id, journeyKey, draftKey, data.checkins]);
 
   // Limpiar temporizador al desmontar
   useEffect(() => {
@@ -151,6 +161,7 @@ export function useCheckinWizard() {
 
     preferences.removeCheckinDraft(draftKey);
     setExistingCheckin(result.payload);
+    setIsEditing(false);
     setSubmittedSuccess(true);
   };
 

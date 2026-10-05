@@ -1,5 +1,6 @@
 import { getConsentData } from '../services/consentQueries';
-import { saveConsent } from '../services/consentService';
+import { saveConsent, fetchConsent } from '../services/consentService';
+import { env } from '../../../core/config/env';
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { authService } from '../../../core/auth/authService';
@@ -49,30 +50,54 @@ export function useConsent() {
 
   // Verificar sesión y rol de agente
   useEffect(() => {
-    if (!currentUser || currentUser.role !== 'agente') {
-      navigate('/login');
-      return;
+    let mounted = true;
+    async function init() {
+      if (!currentUser || currentUser.role !== 'agente') {
+        navigate('/login');
+        return;
+      }
+
+      const data = getConsentData(currentUserId);
+      if (mounted && data.settings) {
+        setSettings(data.settings);
+      }
+
+      const activePolicyVersion = data.settings?.policyVersion || 'v2.4';
+      let userConsent = data.consents?.[currentUserId] || {};
+
+      if (!env.useMockStorage) {
+        const remoteConsent = await fetchConsent(currentUserId);
+        if (remoteConsent && mounted) {
+          userConsent = {
+            c1: remoteConsent.c1_checkin,
+            c2: remoteConsent.c2_bitacora,
+            c3: remoteConsent.c3_apoyo,
+            c4: remoteConsent.c4_analitica,
+            c5: remoteConsent.c5_contacto,
+            policyAccepted: remoteConsent.acepta_politica,
+            policyVersion: activePolicyVersion
+          };
+        }
+      }
+
+      if (mounted) {
+        setConsents({
+          c1: Boolean(userConsent.c1),
+          c2: Boolean(userConsent.c2),
+          c3: Boolean(userConsent.c3),
+          c4: Boolean(userConsent.c4),
+          c5: Boolean(userConsent.c5)
+        });
+
+        setPolicyAccepted(
+          Boolean(userConsent.policyAccepted && userConsent.policyVersion === activePolicyVersion)
+        );
+        loadConsentHistory();
+      }
     }
-
-    const data = getConsentData(currentUserId);
-    if (data.settings) {
-      setSettings(data.settings);
-    }
-
-    const userConsent = data.consents?.[currentUserId] || {};
-    setConsents({
-      c1: Boolean(userConsent.c1),
-      c2: Boolean(userConsent.c2),
-      c3: Boolean(userConsent.c3),
-      c4: Boolean(userConsent.c4),
-      c5: Boolean(userConsent.c5)
-    });
-
-    const activePolicyVersion = data.settings?.policyVersion || 'v2.4';
-    setPolicyAccepted(
-      Boolean(userConsent.policyAccepted && userConsent.policyVersion === activePolicyVersion)
-    );
-    loadConsentHistory();
+    
+    init();
+    return () => { mounted = false; };
   }, [currentUserId, currentUser, navigate, loadConsentHistory]);
 
   // Control accesible de tecla Escape en modal
@@ -134,6 +159,17 @@ export function useConsent() {
       setIsSaving(false);
       setStatusMessage(`Error: ${result.error}`);
       return;
+    }
+
+    if (!env.useMockStorage && result.payload) {
+      setConsents({
+        c1: Boolean(result.payload.c1_checkin),
+        c2: Boolean(result.payload.c2_bitacora),
+        c3: Boolean(result.payload.c3_apoyo),
+        c4: Boolean(result.payload.c4_analitica),
+        c5: Boolean(result.payload.c5_contacto)
+      });
+      setPolicyAccepted(Boolean(result.payload.acepta_politica));
     }
 
     loadConsentHistory();

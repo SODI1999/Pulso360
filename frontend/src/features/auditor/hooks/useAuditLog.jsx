@@ -53,23 +53,27 @@ export function useAuditLog() {
   }, [logs, searchTerm, statusFilter]);
 
   // Verificación de integridad de la cadena de hashes
+  // Verificación de integridad de la cadena de hashes
   const handleVerifyIntegrity = () => {
-    let isValid = true;
-    for (let i = 0; i < logs.length - 1; i++) {
-      const currentPrev = logs[i].prevHash;
-      const nextHash = logs[i + 1].hash;
-      const currentHash = logs[i].hash;
-      
-      // Zero chain check
-      const isZeroChain = currentHash && /^0+$/.test(currentHash);
-      if (isZeroChain) {
+    let isValid = logs.length > 0;
+    
+    for (let i = 0; i < logs.length; i++) {
+      const currentHash = logs[i].hash || logs[i].hash_registro;
+      const currentPrev = logs[i].prevHash || logs[i].prev_hash;
+
+      if (!currentHash || currentHash.trim() === '' || /^0+$/.test(currentHash) || currentHash === 'synthetic-hash') {
         isValid = false;
         break;
       }
 
-      if (currentPrev && nextHash && currentPrev !== nextHash) {
-        isValid = false;
-        break;
+      if (i > 0) {
+        const prevHashFromPrev = logs[i - 1].hash || logs[i - 1].hash_registro;
+        if (currentPrev !== prevHashFromPrev) {
+          isValid = false;
+          break;
+        }
+      } else {
+        // First log in the returned list might have any prev_hash, but let's check its own hash
       }
     }
 

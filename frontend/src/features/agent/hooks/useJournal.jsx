@@ -1,8 +1,9 @@
-import { getAgentRecords } from '../services/agentQueries';
+import { fetchAgentRecords, getAgentRecords } from '../services/agentQueries';
 import { createPriorityRequest } from '../services/journalService';
 import { saveJournalAnalysis } from '../services/journalService';
 import { saveJournal, deleteJournal, saveCorrection } from '../services/journalService';
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
+import { env } from '../../../core/config/env';
 
 import { authService, roleLabels } from '../../../core/auth/authService';
 import { pulsoStore } from '../../../core/storage/pulsoStore';
@@ -10,7 +11,7 @@ import { nlpEngine } from '../../../core/nlp/nlpEngine';
 
 export function useJournal() {
   const currentUser = authService.getCurrentUser();
-  const storeState = getAgentRecords(currentUser?.id);
+  const [storeState, setStoreState] = useState(() => getAgentRecords(currentUser?.id));
   const consent = storeState.consents?.[currentUser?.id] || {};
 
   // Estados del editor
@@ -36,9 +37,17 @@ export function useJournal() {
   const textareaRef = useRef(null);
 
   // Cargar bitácoras del agente
-  const loadJournals = useCallback(() => {
-    const storeData = getAgentRecords(currentUser?.id);
-    const myJournals = (storeData.journals || []).filter((j) => j.userId === currentUser?.id);
+  const loadJournals = useCallback(async () => {
+    if (!currentUser?.id) return [];
+    let data;
+    if (!env.useMockStorage) {
+      data = await fetchAgentRecords(currentUser.id);
+      setStoreState(data);
+    } else {
+      data = getAgentRecords(currentUser.id);
+      setStoreState(data);
+    }
+    const myJournals = (data?.journals || []).filter((j) => j.userId === currentUser.id);
     setJournals(myJournals);
     return myJournals;
   }, [currentUser?.id]);

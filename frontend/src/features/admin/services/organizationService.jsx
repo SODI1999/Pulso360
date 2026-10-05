@@ -2,13 +2,13 @@ import { pulsoStore } from '../../../core/storage/pulsoStore';
 import { apiClient, getAuthToken } from '../../../core/api/apiClient';
 import { env } from '../../../core/config/env';
 
-export async function toggleCampaign(campId, actorLabel) {
-  const data = pulsoStore.get();
-  const camp = (data.organization?.campaigns || []).find((c) => c.id === campId);
-  if (!camp) return null;
-  const newActive = !(camp.active !== false);
+export async function toggleCampaign(campId, currentActive, actorLabel) {
+  const newActive = !currentActive;
 
-  if (!env.useMockStorage && getAuthToken()) {
+  if (!env.useMockStorage) {
+    if (!getAuthToken()) {
+      return { error: 'Sesión no válida o token ausente' };
+    }
     try {
       await apiClient.patch('/admin/campaigns/' + campId, { activa: newActive });
       return { camp: { id: campId, active: newActive }, newStatus: newActive ? 'Activa' : 'Inactiva' };
@@ -17,6 +17,10 @@ export async function toggleCampaign(campId, actorLabel) {
     }
   }
 
+  const data = pulsoStore.get();
+  const camp = (data.organization?.campaigns || []).find((c) => c.id === campId);
+  if (!camp) return null;
+  
   camp.active = newActive;
   const newStatus = camp.active ? 'Activa' : 'Inactiva';
   pulsoStore.save(data);
@@ -29,14 +33,13 @@ export async function toggleCampaign(campId, actorLabel) {
   return { camp, newStatus };
 }
 
-export async function toggleTeam(campId, teamId, actorLabel) {
-  const data = pulsoStore.get();
-  const camp = (data.organization?.campaigns || []).find((c) => c.id === campId);
-  const team = camp?.teams?.find((t) => t.id === teamId);
-  if (!team) return null;
-  const newActive = !(team.active !== false);
+export async function toggleTeam(campId, teamId, currentActive, actorLabel) {
+  const newActive = !currentActive;
 
-  if (!env.useMockStorage && getAuthToken()) {
+  if (!env.useMockStorage) {
+    if (!getAuthToken()) {
+      return { error: 'Sesión no válida o token ausente' };
+    }
     try {
       await apiClient.patch('/admin/teams/' + teamId, { activo: newActive });
       return { team: { id: teamId, active: newActive }, newStatus: newActive ? 'Activo' : 'Inactivo' };
@@ -44,6 +47,11 @@ export async function toggleTeam(campId, teamId, actorLabel) {
       return { error: error.response?.data?.error?.message || 'Error en el servidor' };
     }
   }
+
+  const data = pulsoStore.get();
+  const camp = (data.organization?.campaigns || []).find((c) => c.id === campId);
+  const team = camp?.teams?.find((t) => t.id === teamId);
+  if (!team) return null;
 
   team.active = newActive;
   const newStatus = team.active ? 'Activo' : 'Inactivo';
@@ -58,7 +66,10 @@ export async function toggleTeam(campId, teamId, actorLabel) {
 }
 
 export async function saveSupervisorAssignment(campId, teamId, newSupervisor, actorLabel, previousSupervisor) {
-  if (!env.useMockStorage && getAuthToken()) {
+  if (!env.useMockStorage) {
+    if (!getAuthToken()) {
+      return { error: 'Sesión no válida o token ausente' };
+    }
     try {
       await apiClient.patch('/admin/teams/' + teamId, { supervisorNombre: newSupervisor });
       return { team: { id: teamId, supervisor: newSupervisor } };
@@ -84,7 +95,10 @@ export async function saveSupervisorAssignment(campId, teamId, newSupervisor, ac
   return { team };
 }
 export async function saveCampaign(id, name, active, actorLabel) {
-  if (!env.useMockStorage && getAuthToken()) {
+  if (!env.useMockStorage) {
+    if (!getAuthToken()) {
+      return { error: 'Sesión no válida o token ausente' };
+    }
     try {
       if (id) {
         await apiClient.patch('/admin/campaigns/' + id, { nombre: name, activa: active });
@@ -142,7 +156,10 @@ export async function saveCampaign(id, name, active, actorLabel) {
 }
 
 export async function saveTeam(campId, teamId, name, n, supervisor, active, actorLabel) {
-  if (!env.useMockStorage && getAuthToken()) {
+  if (!env.useMockStorage) {
+    if (!getAuthToken()) {
+      return { error: 'Sesión no válida o token ausente' };
+    }
     try {
       if (teamId) {
         await apiClient.patch('/admin/teams/' + teamId, { nombre: name, nMiembros: n, supervisorNombre: supervisor, activo: active });

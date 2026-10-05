@@ -5,9 +5,10 @@ import { apiClient, getAuthToken } from '../../../core/api/apiClient';
 import { env } from '../../../core/config/env';
 
 export async function saveCheckin(existingCheckin, user, journeyKey, draft) {
-  if (!env.useMockStorage && getAuthToken()) {
+  if (!env.useMockStorage) {
+    if (!getAuthToken()) return { error: 'Sesión no válida o expirada.' };
     try {
-      const res = await apiClient.post('/agent/checkin', {
+      const payloadBody = {
         journey_key: journeyKey,
         checkin_date: journeyKey,
         energia: draft.energia != null ? Number(draft.energia) : null,
@@ -16,7 +17,14 @@ export async function saveCheckin(existingCheckin, user, journeyKey, draft) {
         apoyo: draft.apoyo != null ? Number(draft.apoyo) : null,
         distanciamiento: draft.distanciamiento != null ? Number(draft.distanciamiento) : null,
         ineficacia: draft.ineficacia != null ? Number(draft.ineficacia) : null
-      });
+      };
+
+      let res;
+      if (existingCheckin && existingCheckin.id) {
+        res = await apiClient.put(`/agent/checkin/${existingCheckin.id}`, payloadBody);
+      } else {
+        res = await apiClient.post('/agent/checkin', payloadBody);
+      }
       return { payload: res.data };
     } catch (err) {
       return { error: err.response?.data?.error?.message || 'Error al registrar check-in' };

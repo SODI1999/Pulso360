@@ -3,7 +3,10 @@ import { apiClient, getAuthToken } from '../../../core/api/apiClient';
 import { env } from '../../../core/config/env';
 
 export async function markAllRead(currentUser) {
-  if (!env.useMockStorage && getAuthToken()) {
+  if (!env.useMockStorage) {
+    if (!getAuthToken()) {
+      return false;
+    }
     try {
       await apiClient.patch('/notifications/read-all');
       return true;
@@ -33,7 +36,10 @@ export async function markAllRead(currentUser) {
 }
 
 export async function markNotificationRead(notif) {
-  if (!env.useMockStorage && getAuthToken()) {
+  if (!env.useMockStorage) {
+    if (!getAuthToken()) {
+      return false;
+    }
     try {
       await apiClient.patch('/notifications/' + notif.id + '/read');
       return true;

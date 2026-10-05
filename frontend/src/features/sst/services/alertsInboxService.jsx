@@ -3,7 +3,10 @@ import { apiClient, getAuthToken } from '../../../core/api/apiClient';
 import { env } from '../../../core/config/env';
 
 export async function updateStatus(alertId, newStatus, user) {
-  if (!env.useMockStorage && getAuthToken()) {
+  if (!env.useMockStorage) {
+    if (!getAuthToken()) {
+      return { error: 'Sesión no válida o token ausente' };
+    }
     try {
       const res = await apiClient.patch('/sst/alerts/' + alertId, { status: newStatus });
       return { alertItem: res.data };
@@ -29,7 +32,10 @@ export async function updateStatus(alertId, newStatus, user) {
 }
 
 export async function confirmDismiss(alertId, reason, user) {
-  if (!env.useMockStorage && getAuthToken()) {
+  if (!env.useMockStorage) {
+    if (!getAuthToken()) {
+      return { error: 'Sesión no válida o token ausente' };
+    }
     try {
       await apiClient.patch('/sst/alerts/' + alertId, { status: 'DESCARTADA', dismissReason: reason });
       return {};
@@ -56,7 +62,10 @@ export async function confirmDismiss(alertId, reason, user) {
 }
 
 export async function createIntervention(alertItem, user) {
-  if (!env.useMockStorage && getAuthToken()) {
+  if (!env.useMockStorage) {
+    if (!getAuthToken()) {
+      return { error: 'Sesión no válida o token ausente' };
+    }
     try {
       const campanaId = alertItem.campana_id || alertItem.campaignId;
       const equipoId = alertItem.equipo_id || alertItem.teamId;

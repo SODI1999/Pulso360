@@ -3,7 +3,10 @@ import { apiClient, getAuthToken } from '../../../core/api/apiClient';
 import { env } from '../../../core/config/env';
 
 export async function confirmAdvance(requestId, nextStatus, note, actorLabel) {
-  if (!env.useMockStorage && getAuthToken()) {
+  if (!env.useMockStorage) {
+    if (!getAuthToken()) {
+      return { error: 'Sesión no válida o token ausente' };
+    }
     try {
       const res = await apiClient.patch('/admin/habeas-data/' + requestId, { status: nextStatus, note });
       return { req: res.data };

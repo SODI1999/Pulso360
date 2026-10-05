@@ -7,15 +7,19 @@ export function getReportData() {
   return { settings, reportHistory };
 }
 
-export async function fetchReports() {
-  if (!env.useMockStorage && getAuthToken()) {
+export async function fetchReports(campanaId = null, equipoId = null) {
+  if (!env.useMockStorage) {
+    if (!getAuthToken()) return [];
     try {
-      const response = await apiClient.get('/reports');
-      if (response.success && response.data) {
-        return response.data;
-      }
+      const params = {};
+      if (campanaId && campanaId !== 'all') params.campanaId = campanaId;
+      if (equipoId && equipoId !== 'all') params.equipoId = equipoId;
+
+      const response = await apiClient.get('/reports', { params });
+      return response.data?.data || response.data || [];
     } catch (err) {
-      console.warn('Error fetching reports from API, falling back to local.', err);
+      console.warn('Error fetching reports from API', err);
+      return [];
     }
   }
   return pulsoStore.get().reportHistory || [];

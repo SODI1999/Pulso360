@@ -6,11 +6,11 @@ import { useState } from 'react';
 import { Icon } from '../../../core/components/Icon';
 
 const SCOPES = {
-  'team-alpha-1': { campaign: 'Campaña Soporte Alpha', team: 'Equipo Alpha 1', n: 14, baseline: 58 },
-  'team-alpha-2': { campaign: 'Campaña Soporte Alpha', team: 'Equipo Alpha 2', n: 4, baseline: null },
-  'team-beta-2': { campaign: 'Campaña Retención Beta', team: 'Equipo Beta 2', n: 22, baseline: 64 },
-  'camp-1': { campaign: 'Campaña Soporte Alpha', team: '', n: 18, baseline: 61 },
-  'camp-2': { campaign: 'Campaña Retención Beta', team: '', n: 22, baseline: 64 }
+  'team-alpha-1': { campaign: 'Campaña Soporte Alpha', team: 'Equipo Alpha 1', campanaId: 'camp-1', equipoId: 'team-alpha-1', n: 14, baseline: 58 },
+  'team-alpha-2': { campaign: 'Campaña Soporte Alpha', team: 'Equipo Alpha 2', campanaId: 'camp-1', equipoId: 'team-alpha-2', n: 4, baseline: null },
+  'team-beta-2': { campaign: 'Campaña Retención Beta', team: 'Equipo Beta 2', campanaId: 'camp-2', equipoId: 'team-beta-2', n: 22, baseline: 64 },
+  'camp-1': { campaign: 'Campaña Soporte Alpha', team: '', campanaId: 'camp-1', equipoId: null, n: 18, baseline: 61 },
+  'camp-2': { campaign: 'Campaña Retención Beta', team: '', campanaId: 'camp-2', equipoId: null, n: 22, baseline: 64 }
 };
 
 export function NewInterventionForm({ onSaveIntervention, minThreshold }) {
@@ -54,6 +54,10 @@ export function NewInterventionForm({ onSaveIntervention, minThreshold }) {
       type,
       campaign: currentScope.campaign,
       team: currentScope.team,
+      campanaId: currentScope.campanaId,
+      equipoId: currentScope.equipoId,
+      campana_id: currentScope.campanaId,
+      equipo_id: currentScope.equipoId,
       creator: 'usr-3',
       assignedTo,
       status: 'Activa',

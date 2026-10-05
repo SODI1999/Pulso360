@@ -4,6 +4,7 @@ import { useState, useMemo, useEffect } from 'react';
 import { authService } from '../../../core/auth/authService';
 import { pulsoStore } from '../../../core/storage/pulsoStore';
 import { apiClient } from '../../../core/api/apiClient';
+import { env } from '../../../core/config/env';
 
 import { BASE_SCOPES } from '../data/reportsData';
 
@@ -17,17 +18,6 @@ export function useReports() {
     return getReportData();
   }, [version]);
 
-  useEffect(() => {
-    let active = true;
-    fetchReports().then(data => {
-      if (active && data) {
-        setApiHistory(data);
-      }
-    });
-    return () => { active = false; };
-  }, [version]);
-  const minThreshold = storeData.settings?.umbralMinimo || 5;
-
   // Filtrar alcances según el rol del usuario
   const availableScopes = useMemo(() => {
     return Object.values(BASE_SCOPES).filter((s) => s.allowed.includes(currentUser?.role || 'admin'));
@@ -35,6 +25,24 @@ export function useReports() {
 
   const [selectedScopeId, setSelectedScopeId] = useState(availableScopes[0]?.id || 'team-alpha-1');
   const [selectedPeriod, setSelectedPeriod] = useState('Semana 34 (18–24 Ago 2026)');
+
+  useEffect(() => {
+    let active = true;
+    const isTeam = selectedScopeId.startsWith('team-');
+    const isCamp = selectedScopeId.startsWith('camp-');
+    const cId = isCamp || isTeam ? (isTeam ? null : selectedScopeId) : null;
+    const tId = isTeam ? selectedScopeId : null;
+    
+    fetchReports(cId, tId).then(data => {
+      if (active && data) {
+        setApiHistory(data);
+      }
+    });
+    return () => { active = false; };
+  }, [version, selectedScopeId]);
+
+  const minThreshold = storeData.settings?.umbralMinimo || 5;
+
   const [sections, setSections] = useState({
     energia: true,
     carga: true,
@@ -95,10 +103,13 @@ export function useReports() {
     const meta = getReportMetadata();
     const hash = computeHash(JSON.stringify({ ...meta, sections: activeSections, format, ts: Date.now() }));
 
+    const isTeam = selectedScopeId.startsWith('team-');
+    const isCamp = selectedScopeId.startsWith('camp-');
+    
     const newReportRecord = {
-      tipoReporte: selectedScopeId,
-      campanaId: null,
-      equipoId: null,
+      tipoReporte: selectedScopeId === 'all' ? 'general' : (isTeam ? 'equipo' : 'campana'),
+      campanaId: isCamp || isTeam ? (isTeam ? null : selectedScopeId) : null,
+      equipoId: isTeam ? selectedScopeId : null,
       fechaCorte: new Date().toISOString().slice(0, 10),
       parametrosFiltro: { scope: selectedScopeId, format, sections },
       rutaArchivo: null,
@@ -128,20 +139,24 @@ export function useReports() {
     if (isApi && finalReport.id) {
       try {
         const downloadRes = await apiClient.get(`/reports/${finalReport.id}/download`, { responseType: 'text' });
-        finalReport.serverContent = downloadRes;
+        finalReport.serverContent = downloadRes.data || downloadRes;
       } catch (err) {
-        console.warn('No se pudo descargar el contenido del servidor', err);
+        setFeedback(`Error al descargar reporte del servidor: ${err.response?.data?.error?.message || err.message}`);
+        setGeneratedReport(null);
+        return;
       }
     }
 
     const finalHash = finalReport.hash;
 
     // Auditoría inmutable (RF-12 / RF-13)
-    pulsoStore.audit({
-      actor: `${meta.solicitante} (${meta.rol})`,
-      action: 'EXPORTACION_REPORTE',
-      target: `${format} · ${meta.alcance} · Hash: ${finalHash}`
-    });
+    if (env.useMockStorage) {
+      pulsoStore.audit({
+        actor: `${meta.solicitante} (${meta.rol})`,
+        action: 'EXPORTACION_REPORTE',
+        target: `${format} · ${meta.alcance} · Hash: ${finalHash}`
+      });
+    }
 
     setGeneratedReport({ ...finalReport, meta });
     setFeedback(`Reporte generado exitosamente con código de integridad ${finalHash}.`);
@@ -151,12 +166,14 @@ export function useReports() {
   // Descargar archivo CSV
   const csvContent = useMemo(() => {
     if (!generatedReport) return null;
-    if (generatedReport.serverContent?.csv) return generatedReport.serverContent.csv;
-    if (generatedReport.serverContent && typeof generatedReport.serverContent === 'string' && format === 'CSV') return generatedReport.serverContent;
-    if (generatedReport.reportPayload?.csv) return generatedReport.reportPayload.csv;
-
+    if (generatedReport.serverContent) {
+       return typeof generatedReport.serverContent === 'object' && generatedReport.serverContent.csv 
+         ? generatedReport.serverContent.csv 
+         : generatedReport.serverContent;
+    }
+    
+    // Solo si no hay respuesta real de API:
     const { meta, hash } = generatedReport;
-
     const csvRows = [
       ['METADATO', 'VALOR'],
       ['Sistema', 'Pulso360 - Plataforma de Bienestar Laboral'],
@@ -169,56 +186,40 @@ export function useReports() {
       ['Modelo NLP', meta.modeloNLP],
       ['Hash Criptografico Demo', hash],
       [],
-      ['INDICADOR AGREGADO', 'VALOR (0-100)', 'INTERPRETACION'],
-      ['Energia agregada', generatedReport.indicadores?.energiaAgregada || '76', 'Nivel Optimo'],
-      ['Carga emocional agregada', generatedReport.indicadores?.cargaEmocionalAgregada || '68', 'Nivel Moderado'],
-      ['Recuperacion agregada', generatedReport.indicadores?.recuperacionAgregada || '58', 'Atencion Preventiva'],
-      ['Tasa de participacion', generatedReport.indicadores?.tasaParticipacion || '92%', 'Muestra representativa'],
-      [],
-      [
-        'ALCANCE DE PRIVACIDAD',
-        'Este documento contiene datos agregados del corte seleccionado. No incluye check-ins individuales ni bitácoras personales.'
-      ]
+      ['INDICADOR AGREGADO', 'VALOR (0-100)', 'INTERPRETACION']
     ];
 
     return csvRows
       .map((row) => row.map((val) => `"${String(val ?? '').replaceAll('"', '""')}"`).join(','))
       .join('\n');
-  }, [generatedReport, format]);
+  }, [generatedReport]);
 
   // Descargar archivo JSON
   const jsonContent = useMemo(() => {
     if (!generatedReport) return null;
-    if (generatedReport.serverContent?.json) return typeof generatedReport.serverContent.json === 'string' ? generatedReport.serverContent.json : JSON.stringify(generatedReport.serverContent.json, null, 2);
-    if (generatedReport.serverContent && typeof generatedReport.serverContent === 'object' && format === 'JSON') return JSON.stringify(generatedReport.serverContent, null, 2);
-    if (generatedReport.reportPayload?.json) return JSON.stringify(generatedReport.reportPayload.json, null, 2);
+    if (generatedReport.serverContent) {
+       return typeof generatedReport.serverContent === 'object' 
+         ? JSON.stringify(generatedReport.serverContent.json || generatedReport.serverContent, null, 2)
+         : generatedReport.serverContent;
+    }
 
+    // Solo si no hay respuesta real de API:
     const { meta, hash } = generatedReport;
-
     const exportObj = {
       sistema: 'Pulso360',
       tipo: 'Reporte Consolidado Agregado (RF-12)',
       metadatos: meta,
-      hashCriptograficoDemo: hash,
-      indicadores: {
-        energiaAgregada: generatedReport.indicadores?.energiaAgregada || 76,
-        cargaEmocionalAgregada: generatedReport.indicadores?.cargaEmocionalAgregada || 68,
-        recuperacionAgregada: generatedReport.indicadores?.recuperacionAgregada || 58,
-        tasaParticipacion: generatedReport.indicadores?.tasaParticipacion || '92%'
-      },
-      clausulaPrivacidad:
-        'Datos agregados protegidos bajo la Ley 1581 de 2012 y lineamientos de k-anonimato N >= 5.'
+      hashCriptograficoDemo: hash
     };
-
     return JSON.stringify(exportObj, null, 2);
-  }, [generatedReport, format]);
+  }, [generatedReport]);
 
   // Imprimir / Guardar PDF
   const handlePrintPdf = () => {
     window.print();
   };
 
-  const reportHistory = apiHistory.length > 0 ? apiHistory : (storeData.reportHistory || []);
+  const reportHistory = env.useMockStorage ? (storeData.reportHistory || []) : apiHistory;
 
   return {
     currentUser,

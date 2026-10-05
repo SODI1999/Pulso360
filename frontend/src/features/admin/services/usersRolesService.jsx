@@ -5,7 +5,10 @@ import { apiClient, getAuthToken } from '../../../core/api/apiClient';
 import { env } from '../../../core/config/env';
 
 export async function saveCreateUser(email, orgScopes, orgScopeId, name, role, status) {
-  if (!env.useMockStorage && getAuthToken()) {
+  if (!env.useMockStorage) {
+    if (!getAuthToken()) {
+      return { error: 'Sesión no válida o token ausente' };
+    }
     const targetScope = orgScopes.find((s) => s.id === orgScopeId);
     if (!targetScope) {
       return { error: 'La asignación organizacional seleccionada no es válida.' };
@@ -74,7 +77,10 @@ export async function saveCreateUser(email, orgScopes, orgScopeId, name, role, s
 }
 
 export async function manageUser(userId, newRole, newOrgScopeId, newStatus, orgScopes, actorLabel) {
-  if (!env.useMockStorage && getAuthToken()) {
+  if (!env.useMockStorage) {
+    if (!getAuthToken()) {
+      return { error: 'Sesión no válida o token ausente' };
+    }
     try {
       // Nota: Asumiendo que se actualiza el estado según la instrucción del plan
       await apiClient.patch('/admin/users/' + userId + '/status', { status: newStatus });

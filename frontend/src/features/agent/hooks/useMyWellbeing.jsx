@@ -1,12 +1,23 @@
-import { getAgentRecords } from '../services/agentQueries';
-import { useState, useMemo } from 'react';
+import { fetchAgentRecords, getAgentRecords } from '../services/agentQueries';
+import { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { env } from '../../../core/config/env';
 import { authService } from '../../../core/auth/authService';
 
 export function useMyWellbeing() {
   const navigate = useNavigate();
   const currentUser = authService.getCurrentUser();
-  const data = getAgentRecords(currentUser?.id);
+  const [data, setData] = useState(() => getAgentRecords(currentUser?.id));
+
+  useEffect(() => {
+    let mounted = true;
+    if (!env.useMockStorage && currentUser?.id) {
+      fetchAgentRecords(currentUser.id).then((remoteData) => {
+        if (mounted && remoteData) setData(remoteData);
+      });
+    }
+    return () => { mounted = false; };
+  }, [currentUser?.id]);
 
   // 1. Registros del agente actual (orden cronológico inverso: más reciente primero)
   const checkinRecords = useMemo(() => {

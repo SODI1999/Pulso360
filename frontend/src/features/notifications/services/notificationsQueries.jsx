@@ -8,14 +8,17 @@ export function getNotificationData() {
 }
 
 export async function fetchNotifications() {
-  if (!env.useMockStorage && getAuthToken()) {
+  if (!env.useMockStorage) {
+    if (!getAuthToken()) return [];
     try {
       const response = await apiClient.get('/notifications');
       if (response.success && response.data) {
         return response.data;
       }
+      return response.data || [];
     } catch (err) {
-      console.warn('Error fetching notifications from API, falling back to local.', err);
+      console.warn('Error fetching notifications from API', err);
+      return [];
     }
   }
   return pulsoStore.get().notifications || [];
