@@ -21,8 +21,7 @@ export async function createHabeasRequest(requestType, currentUser, noteText) {
   const seq =
     storeData.habeasRequests.filter((r) => String(r.id).startsWith(`HD-${currentYear}-`)).length + 1;
   const generatedId = `HD-${currentYear}-${String(seq).padStart(3, '0')}`;
-
-  const businessDays = requestType === 'Rectificación' || requestType === 'Supresión' ? 15 : 10;
+  const businessDays = requestType === 'Rectificacion' || requestType === 'Supresion' ? 15 : 10;
 
   storeData.habeasRequests.unshift({
     id: generatedId,

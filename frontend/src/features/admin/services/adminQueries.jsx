@@ -31,7 +31,14 @@ export async function fetchAdminUsers() {
     try {
       const res = await apiClient.get('/admin/users');
       const payload = res.data?.data || res.data;
-      return Array.isArray(payload) ? payload : [];
+      const arrayPayload = Array.isArray(payload) ? payload : [];
+      return arrayPayload.map((u) => ({
+        ...u,
+        name: u.nombres && u.apellidos ? `${u.nombres} ${u.apellidos}` : u.name,
+        role: u.rol_codigo?.toLowerCase() || u.role,
+        status: u.estado || u.status,
+        email: u.correo || u.email
+      }));
     } catch (error) {
       console.error('Error fetching admin users:', error);
     }
@@ -47,7 +54,19 @@ export async function fetchAdminOrganization() {
   if (!env.useMockStorage && getAuthToken()) {
     try {
       const res = await apiClient.get('/admin/organization');
-      return res.data?.data || res.data || { campaigns: [] };
+      const payload = res.data?.data || res.data || { campaigns: [] };
+      const campaignsRaw = payload.campaigns || (Array.isArray(payload) ? payload : []);
+      return {
+        ...payload,
+        campaigns: (Array.isArray(campaignsRaw) ? campaignsRaw : []).map((c) => ({
+          ...c,
+          name: c.nombre || c.name,
+          teams: (c.equipos || c.teams || []).map((t) => ({
+            ...t,
+            name: t.nombre || t.name
+          }))
+        }))
+      };
     } catch (error) {
       console.error('Error fetching admin organization:', error);
     }

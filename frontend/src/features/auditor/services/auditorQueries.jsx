@@ -27,9 +27,9 @@ export async function fetchAuditLogs(filters = {}) {
       return records.map((log) => ({
         id: log.id,
         date: log.created_at || log.timestamp || '',
-        actor: log.usuario_nombre || log.actor || 'Sistema',
+        actor: (log.nombres && log.apellidos) ? `${log.nombres} ${log.apellidos}` : (log.usuario_nombre || log.usuario_id || log.actor || 'Sistema'),
         action: log.action || 'SISTEMA',
-        target: log.resource ? `${log.resource}: ${log.details || ''}` : (log.target || log.details || ''),
+        target: log.resource ? `${log.resource}: ${typeof log.details === 'object' ? JSON.stringify(log.details) : (log.details || '')}` : (log.target || (typeof log.details === 'object' ? JSON.stringify(log.details) : log.details) || ''),
         ip: log.ip_address || log.ip || '0.0.0.0',
         status: log.status || 'SUCCESS',
         prevHash: log.prev_hash || log.prevHash || '',

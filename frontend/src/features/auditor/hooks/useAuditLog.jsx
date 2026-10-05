@@ -56,7 +56,18 @@ export function useAuditLog() {
   const handleVerifyIntegrity = () => {
     let isValid = true;
     for (let i = 0; i < logs.length - 1; i++) {
-      if (logs[i].prevHash && logs[i + 1].hash && logs[i].prevHash !== logs[i + 1].hash) {
+      const currentPrev = logs[i].prevHash;
+      const nextHash = logs[i + 1].hash;
+      const currentHash = logs[i].hash;
+      
+      // Zero chain check
+      const isZeroChain = currentHash && /^0+$/.test(currentHash);
+      if (isZeroChain) {
+        isValid = false;
+        break;
+      }
+
+      if (currentPrev && nextHash && currentPrev !== nextHash) {
         isValid = false;
         break;
       }

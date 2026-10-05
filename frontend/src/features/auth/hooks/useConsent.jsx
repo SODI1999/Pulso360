@@ -125,7 +125,11 @@ export function useConsent() {
     setIsSaving(true);
     setStatusMessage('');
 
-    const result = await saveConsent(settings, currentUser, consents);
+    const result = await saveConsent(settings, currentUser, {
+      ...consents,
+      policyAccepted,
+      noticeAccepted: policyAccepted
+    });
     if (result.error) {
       setIsSaving(false);
       setStatusMessage(`Error: ${result.error}`);

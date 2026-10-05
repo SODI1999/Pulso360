@@ -58,19 +58,34 @@ export async function confirmDismiss(alertId, reason, user) {
 export async function createIntervention(alertItem, user) {
   if (!env.useMockStorage && getAuthToken()) {
     try {
-      await apiClient.post('/sst/interventions', {
+      const campanaId = alertItem.campana_id || alertItem.campaignId;
+      const equipoId = alertItem.equipo_id || alertItem.teamId;
+      if (!campanaId || !equipoId) {
+        return { error: 'Faltan parámetros requeridos de campaña o equipo para crear la intervención.' };
+      }
+      const startDate = new Date().toISOString().substring(0, 10);
+      const endDate = new Date(Date.now() + 28 * 86400000).toISOString().substring(0, 10);
+      const ruleTitle = alertItem.rule || alertItem.description || 'Alerta preventiva';
+
+      const res = await apiClient.post('/sst/interventions', {
+        alerta_id: alertItem.id,
         alertaId: alertItem.id,
-        title: `Plan preventivo · ${alertItem.rule}`,
+        title: `Plan preventivo · ${ruleTitle}`,
         type: 'Pausas cognitivas',
-        campanaId: alertItem.campaignId || 'camp-1',
-        equipoId: alertItem.teamId || 'team-alpha-1',
-        startDate: new Date().toISOString().substring(0, 10),
-        endDate: new Date(Date.now() + 28 * 86400000).toISOString().substring(0, 10),
+        campana_id: campanaId,
+        campanaId: campanaId,
+        equipo_id: equipoId,
+        equipoId: equipoId,
+        start_date: startDate,
+        startDate: startDate,
+        end_date: endDate,
+        endDate: endDate,
         indicator: 'Recuperación agregada',
-        baseline: alertItem.evidence?.slice(-1)[0] || 58,
+        baseline: alertItem.baseline || alertItem.evidence?.[0] || null,
+        target_desc: 'Intervención preventiva coordinada con supervisión para mitigar la tendencia de alerta.',
         targetDesc: 'Intervención preventiva coordinada con supervisión para mitigar la tendencia de alerta.'
       });
-      return {};
+      return { intervention: res.data };
     } catch (err) {
       return { error: err.response?.data?.error?.message || 'Error al crear intervención en el servidor' };
     }

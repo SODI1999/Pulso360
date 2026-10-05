@@ -71,9 +71,10 @@ apiClient.interceptors.response.use(
     return response.data;
   },
   (error) => {
-    // Si la respuesta es 401 (No autorizado), limpiamos el token de seguridad.
+    // Si la respuesta es 401 (No autorizado), limpiamos el token y sesión.
     if (error.response && error.response.status === 401) {
       removeAuthToken();
+      sessionData.removeItem('pulso360_current_session');
     }
     return Promise.reject(error);
   }

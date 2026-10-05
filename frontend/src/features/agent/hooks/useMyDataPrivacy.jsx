@@ -1,6 +1,6 @@
-import { getAgentRecords } from '../services/agentQueries';
+import { fetchAgentRecords } from '../services/agentQueries';
 import { createHabeasRequest as registerHabeasRequest } from '../services/myDataPrivacyService';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 
 import { authService, roleLabels } from '../../../core/auth/authService';
 import { pulsoStore } from '../../../core/storage/pulsoStore';
@@ -40,16 +40,31 @@ export function useMyDataPrivacy() {
   // Calcular días hábiles
 
   // Resumen de datos propios
-  const summary = useMemo(() => {
-    void requestsVersion;
-    const storeData = getAgentRecords(currentUser?.id);
-    return {
-      checkins: (storeData.checkins || []).filter((c) => c.userId === currentUser?.id),
-      journals: (storeData.journals || []).filter((j) => j.userId === currentUser?.id),
-      support: (storeData.supportRequests || []).filter((s) => s.ownerUserId === currentUser?.id),
-      consent: storeData.consents?.[currentUser?.id],
-      requests: (storeData.habeasRequests || []).filter((r) => r.userId === currentUser?.id)
-    };
+  const [summary, setSummary] = useState({
+    checkins: [],
+    journals: [],
+    support: [],
+    consent: null,
+    requests: []
+  });
+
+
+  useEffect(() => {
+    let mounted = true;
+    async function load() {
+      if (!currentUser?.id) return;
+      const storeData = await fetchAgentRecords(currentUser.id);
+      if (!mounted) return;
+      setSummary({
+        checkins: storeData.checkins || [],
+        journals: storeData.journals || [],
+        support: storeData.supportRequests || [],
+        consent: storeData.consents?.[currentUser.id],
+        requests: storeData.habeasRequests || []
+      });
+    }
+    load();
+    return () => { mounted = false; };
   }, [currentUser?.id, requestsVersion]);
 
   // Crear solicitud de Habeas Data
@@ -109,7 +124,7 @@ export function useMyDataPrivacy() {
     }
 
     try {
-      const reqId = await createHabeasRequest('Rectificación', detail);
+      const reqId = await createHabeasRequest('Rectificacion', detail);
       setRectificationFeedback(`Solicitud ${reqId} recibida. No se modifica ningún dato automáticamente.`);
       setRectificationText('');
     } catch (err) {
@@ -121,7 +136,7 @@ export function useMyDataPrivacy() {
   const handleSuppressionSubmit = async () => {
     try {
       const reqId = await createHabeasRequest(
-        'Supresión',
+        'Supresion',
         'Solicitud de supresión de datos conforme a la Ley 1581 de 2012.'
       );
       setSuppressionFeedback(`Solicitud ${reqId} radicada exitosamente. Se gestionará administrativamente.`);

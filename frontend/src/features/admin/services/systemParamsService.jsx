@@ -16,8 +16,15 @@ export async function saveParams(
 ) {
   if (!env.useMockStorage && getAuthToken()) {
     try {
-      await apiClient.put('/admin/params/umbral_k_anonimato', { valor: parsedN });
-      // Asumiendo éxito, continuamos o retornamos, pero la instrucción solo pide el API call y fallback legacy
+      await Promise.all([
+        apiClient.put('/admin/params/umbral_k_anonimato', { valor: parsedN }),
+        apiClient.put('/admin/params/ventana_tiempo_checkin', { valor: checkinEditHours }),
+        apiClient.put('/admin/params/retencion_auditoria_anos', { valor: parsedAudit }),
+        apiClient.put('/admin/params/sla_alerta_alta_horas', { valor: parsedAlta }),
+        apiClient.put('/admin/params/sla_alerta_media_horas', { valor: parsedMedia }),
+        apiClient.put('/admin/params/sla_alerta_baja_horas', { valor: parsedBaja }),
+        apiClient.put('/admin/params/sla_solicitud_apoyo_horas', { valor: parsedSol })
+      ]);
       return {};
     } catch (error) {
       return { error: error.response?.data?.error?.message || 'Error en el servidor' };
@@ -53,8 +60,8 @@ export async function publishPolicy(v, actorLabel, title, policyText, noticeText
       await apiClient.post('/admin/policies', {
         version: v,
         titulo: title || ('Política de Privacidad ' + v),
-        textoPolitica: policyText || 'Texto de política vigente.',
-        textoAviso: noticeText || 'Texto de aviso de privacidad vigente.'
+        textoPolitica: policyText,
+        textoAviso: noticeText
       });
       return {};
     } catch (error) {

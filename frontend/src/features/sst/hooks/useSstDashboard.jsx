@@ -1,27 +1,52 @@
-import { getSstData, fetchSstAlerts, fetchSstSupportRequests } from '../services/sstQueries';
+import { getSstData, fetchSstAlerts, fetchSstSupportRequests, fetchSstMetrics } from '../services/sstQueries';
 import { useEffect, useMemo, useState } from 'react';
 
 import { authService } from '../../../core/auth/authService';
 import { pulsoStore } from '../../../core/storage/pulsoStore';
 
-export function useSstDashboard() {
+export function useSstDashboard({ campanaId, equipoId, desde, hasta } = {}) {
   const user = authService.getCurrentUser();
   const storeData = getSstData();
-  const minThreshold = storeData.settings?.umbralMinimo || 5;
+  const defaultMinThreshold = storeData.settings?.umbralMinimo || 5;
 
   const [alerts, setAlerts] = useState([]);
   const [requests, setRequests] = useState([]);
+  const [metricsResponse, setMetricsResponse] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     let active = true;
-    Promise.all([fetchSstAlerts(), fetchSstSupportRequests()]).then(([al, req]) => {
-      if (active) {
-        setAlerts(al || []);
-        setRequests(req || []);
-      }
-    });
-    return () => { active = false; };
-  }, []);
+    setLoading(true);
+
+    Promise.all([
+      fetchSstAlerts(),
+      fetchSstSupportRequests(),
+      fetchSstMetrics({ campanaId, equipoId, desde, hasta })
+    ])
+      .then(([al, req, met]) => {
+        if (active) {
+          setAlerts(al || []);
+          setRequests(req || []);
+          setMetricsResponse(met || null);
+          setError(null);
+        }
+      })
+      .catch((err) => {
+        if (active) {
+          setError(err);
+        }
+      })
+      .finally(() => {
+        if (active) {
+          setLoading(false);
+        }
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [campanaId, equipoId, desde, hasta]);
 
   // Alertas activas pendientes de atención
   const pendingAlerts = useMemo(() => {
@@ -58,5 +83,21 @@ export function useSstDashboard() {
     });
   }, [user]);
 
-  return { minThreshold, pendingAlerts, activeRequests, nlpCategories };
+  const minThreshold = metricsResponse?.k_threshold ?? defaultMinThreshold;
+  const isProtected = Boolean(metricsResponse?.protected);
+  const cohortSize = metricsResponse?.cohort_count ?? 0;
+  const metrics = metricsResponse?.metrics ?? null;
+
+  return {
+    minThreshold,
+    pendingAlerts,
+    activeRequests,
+    nlpCategories,
+    metrics,
+    cohortSize,
+    isProtected,
+    loading,
+    error,
+    reason: metricsResponse?.reason ?? null
+  };
 }

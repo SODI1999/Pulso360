@@ -20,7 +20,8 @@ export async function createSupportRequest(
         reason,
         description: details.trim(),
         urgency,
-        contactPreference: isAnonymous ? 'app' : contactPreference
+        contact_preference: isAnonymous ? 'app' : (contactPreference || 'app'),
+        time_window: isAnonymous ? 'No aplica' : (timeWindow || 'No aplica')
       });
       return { code: res.data.code };
     } catch (err) {

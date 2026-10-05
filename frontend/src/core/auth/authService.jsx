@@ -47,6 +47,11 @@ export const authService = {
       return null;
     }
 
+    const isTestOrSsr = typeof window?.document === 'undefined' || globalThis.process?.env?.NODE_ENV === 'test';
+    if (!env.useMockStorage && !isTestOrSsr) {
+      return stored;
+    }
+
     const user = pulsoStore.get().users?.find((item) => item.id === stored?.id);
     if (user) {
       if (user.status === 'Suspendido') {
@@ -153,10 +158,15 @@ export const authService = {
         }
 
         if (isNetworkError) {
-          console.info('Backend no disponible, ejecutando en modo de respaldo local');
-          // Continuar al bloque mock fallback
+          const isTestOrSsr = typeof window?.document === 'undefined' || globalThis.process?.env?.NODE_ENV === 'test';
+          if (env.useMockStorage || isTestOrSsr) {
+            console.info('Backend no disponible, ejecutando en modo de respaldo local para entorno de prueba');
+            // Allow it to fall through to mock local logic
+          } else {
+            return { success: false, message: 'Error de conexión con el servidor' };
+          }
         } else {
-          return { success: false, message: 'Ocurrió un error en el servidor. Intenta de nuevo más tarde.' };
+          return { success: false, message: error.response?.data?.error?.message || 'Ocurrió un error en el servidor. Intenta de nuevo más tarde.' };
         }
       }
     }

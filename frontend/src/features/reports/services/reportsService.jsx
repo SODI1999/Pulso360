@@ -5,8 +5,8 @@ import { env } from '../../../core/config/env';
 export async function generateReport(newReportRecord) {
   if (!env.useMockStorage && getAuthToken()) {
     try {
-      await apiClient.post('/reports', newReportRecord);
-      return {};
+      const res = await apiClient.post('/reports', newReportRecord);
+      return { reportPayload: res.data };
     } catch (err) {
       return { error: err.response?.data?.error?.message || 'Error en el servidor' };
     }

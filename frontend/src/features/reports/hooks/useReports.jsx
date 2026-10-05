@@ -3,6 +3,7 @@ import { generateReport } from '../services/reportsService';
 import { useState, useMemo, useEffect } from 'react';
 import { authService } from '../../../core/auth/authService';
 import { pulsoStore } from '../../../core/storage/pulsoStore';
+import { apiClient } from '../../../core/api/apiClient';
 
 import { BASE_SCOPES } from '../data/reportsData';
 
@@ -109,28 +110,51 @@ export function useReports() {
       hash
     };
 
-    // Guardar en almacén
     const res = await generateReport(newReportRecord);
     if (res && res.error) {
       setFeedback(`Error: ${res.error.message || res.error}`);
       return;
     }
 
+    const isApi = !!res.reportPayload;
+    let finalReport = isApi ? {
+      ...newReportRecord,
+      ...res.reportPayload,
+      reportPayload: res.reportPayload,
+      hash: res.reportPayload.hashIntegridad || res.reportPayload.hash || hash,
+      id: res.reportPayload.id || newReportRecord.id
+    } : newReportRecord;
+
+    if (isApi && finalReport.id) {
+      try {
+        const downloadRes = await apiClient.get(`/reports/${finalReport.id}/download`, { responseType: 'text' });
+        finalReport.serverContent = downloadRes;
+      } catch (err) {
+        console.warn('No se pudo descargar el contenido del servidor', err);
+      }
+    }
+
+    const finalHash = finalReport.hash;
+
     // Auditoría inmutable (RF-12 / RF-13)
     pulsoStore.audit({
       actor: `${meta.solicitante} (${meta.rol})`,
       action: 'EXPORTACION_REPORTE',
-      target: `${format} · ${meta.alcance} · Hash: ${hash}`
+      target: `${format} · ${meta.alcance} · Hash: ${finalHash}`
     });
 
-    setGeneratedReport({ ...newReportRecord, meta });
-    setFeedback(`Reporte generado exitosamente con código de integridad ${hash}.`);
+    setGeneratedReport({ ...finalReport, meta });
+    setFeedback(`Reporte generado exitosamente con código de integridad ${finalHash}.`);
     setVersion((v) => v + 1);
   };
 
   // Descargar archivo CSV
   const csvContent = useMemo(() => {
     if (!generatedReport) return null;
+    if (generatedReport.serverContent?.csv) return generatedReport.serverContent.csv;
+    if (generatedReport.serverContent && typeof generatedReport.serverContent === 'string' && format === 'CSV') return generatedReport.serverContent;
+    if (generatedReport.reportPayload?.csv) return generatedReport.reportPayload.csv;
+
     const { meta, hash } = generatedReport;
 
     const csvRows = [
@@ -146,10 +170,10 @@ export function useReports() {
       ['Hash Criptografico Demo', hash],
       [],
       ['INDICADOR AGREGADO', 'VALOR (0-100)', 'INTERPRETACION'],
-      ['Energia agregada', '76', 'Nivel Optimo'],
-      ['Carga emocional agregada', '68', 'Nivel Moderado'],
-      ['Recuperacion agregada', '58', 'Atencion Preventiva'],
-      ['Tasa de participacion', '92%', 'Muestra representativa'],
+      ['Energia agregada', generatedReport.indicadores?.energiaAgregada || '76', 'Nivel Optimo'],
+      ['Carga emocional agregada', generatedReport.indicadores?.cargaEmocionalAgregada || '68', 'Nivel Moderado'],
+      ['Recuperacion agregada', generatedReport.indicadores?.recuperacionAgregada || '58', 'Atencion Preventiva'],
+      ['Tasa de participacion', generatedReport.indicadores?.tasaParticipacion || '92%', 'Muestra representativa'],
       [],
       [
         'ALCANCE DE PRIVACIDAD',
@@ -160,11 +184,15 @@ export function useReports() {
     return csvRows
       .map((row) => row.map((val) => `"${String(val ?? '').replaceAll('"', '""')}"`).join(','))
       .join('\n');
-  }, [generatedReport]);
+  }, [generatedReport, format]);
 
   // Descargar archivo JSON
   const jsonContent = useMemo(() => {
     if (!generatedReport) return null;
+    if (generatedReport.serverContent?.json) return typeof generatedReport.serverContent.json === 'string' ? generatedReport.serverContent.json : JSON.stringify(generatedReport.serverContent.json, null, 2);
+    if (generatedReport.serverContent && typeof generatedReport.serverContent === 'object' && format === 'JSON') return JSON.stringify(generatedReport.serverContent, null, 2);
+    if (generatedReport.reportPayload?.json) return JSON.stringify(generatedReport.reportPayload.json, null, 2);
+
     const { meta, hash } = generatedReport;
 
     const exportObj = {
@@ -173,17 +201,17 @@ export function useReports() {
       metadatos: meta,
       hashCriptograficoDemo: hash,
       indicadores: {
-        energiaAgregada: 76,
-        cargaEmocionalAgregada: 68,
-        recuperacionAgregada: 58,
-        tasaParticipacion: '92%'
+        energiaAgregada: generatedReport.indicadores?.energiaAgregada || 76,
+        cargaEmocionalAgregada: generatedReport.indicadores?.cargaEmocionalAgregada || 68,
+        recuperacionAgregada: generatedReport.indicadores?.recuperacionAgregada || 58,
+        tasaParticipacion: generatedReport.indicadores?.tasaParticipacion || '92%'
       },
       clausulaPrivacidad:
         'Datos agregados protegidos bajo la Ley 1581 de 2012 y lineamientos de k-anonimato N >= 5.'
     };
 
     return JSON.stringify(exportObj, null, 2);
-  }, [generatedReport]);
+  }, [generatedReport, format]);
 
   // Imprimir / Guardar PDF
   const handlePrintPdf = () => {

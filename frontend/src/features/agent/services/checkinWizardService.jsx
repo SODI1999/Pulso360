@@ -10,12 +10,12 @@ export async function saveCheckin(existingCheckin, user, journeyKey, draft) {
       const res = await apiClient.post('/agent/checkin', {
         journey_key: journeyKey,
         checkin_date: journeyKey,
-        energia: Number(draft.energia),
-        carga_emocional: Number(draft.cargaEmocional ?? draft.carga_emocional),
-        recuperacion: Number(draft.recuperacion),
-        apoyo: Number(draft.apoyo),
-        distanciamiento: Number(draft.distanciamiento),
-        ineficacia: Number(draft.ineficacia)
+        energia: draft.energia != null ? Number(draft.energia) : null,
+        carga_emocional: (draft.cargaEmocional ?? draft.carga_emocional) != null ? Number(draft.cargaEmocional ?? draft.carga_emocional) : null,
+        recuperacion: draft.recuperacion != null ? Number(draft.recuperacion) : null,
+        apoyo: draft.apoyo != null ? Number(draft.apoyo) : null,
+        distanciamiento: draft.distanciamiento != null ? Number(draft.distanciamiento) : null,
+        ineficacia: draft.ineficacia != null ? Number(draft.ineficacia) : null
       });
       return { payload: res.data };
     } catch (err) {

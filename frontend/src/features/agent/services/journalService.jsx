@@ -18,10 +18,15 @@ const ownsJournal = (journal, user) =>
 export async function saveJournal(currentJournalId, currentUser, currentJournal, contextTag, trimmed) {
   const isNew = !currentJournalId;
 
-  if (!env.useMockStorage && getAuthToken() && isNew) {
+  if (!env.useMockStorage && getAuthToken()) {
     try {
-      const res = await apiClient.post('/agent/journal', { context: contextTag, content: trimmed });
-      return { journalPayload: res.data };
+      if (isNew) {
+        const res = await apiClient.post('/agent/journal', { context: contextTag, content: trimmed });
+        return { journalPayload: res.data };
+      } else {
+        const res = await apiClient.put('/agent/journal/' + currentJournalId, { content: trimmed });
+        return { journalPayload: res.data };
+      }
     } catch (err) {
       return { error: err.response?.data?.error?.message || 'Error al guardar bitácora en el servidor' };
     }

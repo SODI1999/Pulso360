@@ -56,7 +56,7 @@ export function NewInterventionForm({ onSaveIntervention, minThreshold }) {
       team: currentScope.team,
       creator: 'usr-3',
       assignedTo,
-      status: 'Planeada',
+      status: 'Activa',
       startDate,
       endDate,
       indicator,
