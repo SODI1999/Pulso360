@@ -70,7 +70,7 @@ export const analyticsRepository = {
     return this.getAggregatedAverages({ ...params, includeCohort: true }, client);
   },
 
-  async getAggregatedAverages({ campanaId, equipoId, desde, hasta, minK = 5, includeCohort = false }, client = pool) {
+  async getAggregatedAverages({ campanaId, equipoId, desde, hasta, minK = 5, includeCohort = false, activeOnly = false }, client = pool) {
     let query = `
       SELECT 
         COUNT(DISTINCT d.usuario_id) AS cohort_count,
@@ -102,6 +102,10 @@ export const analyticsRepository = {
     const values = [];
     let index = 1;
 
+    if (activeOnly) {
+      query += ` AND eq.activo=TRUE AND EXISTS(SELECT 1 FROM campanas c WHERE c.id=eq.campana_id AND c.activa=TRUE)`;
+    }
+
     if (desde) {
       query += ` AND d.checkin_date >= $${index++}`;
       values.push(desde);
@@ -124,6 +128,9 @@ export const analyticsRepository = {
     if (!rows[0]) return null;
 
     const row = rows[0];
+    // Solo metadatos internos; el DTO público sigue publicando métricas protegidas.
+    const participant_counts = Object.fromEntries(['energia','carga_emocional','recuperacion','apoyo','distanciamiento','ineficacia']
+      .map(field => [field, Number(row['count_' + field])]));
 
     // Evaluate granular k-anonymity
     const resolveDimension = (countField, avgField) => {
@@ -139,7 +146,7 @@ export const analyticsRepository = {
 
     // If all dimensions are null due to k-anonymity (or really no data), return null overall.
     if (energia === null && carga_emocional === null && recuperacion === null && apoyo === null && distanciamiento === null && ineficacia === null) {
-      return includeCohort ? { cohort_count: Number(row.cohort_count), metrics: null } : null;
+      return includeCohort ? { cohort_count: Number(row.cohort_count), participant_counts, metrics: null } : null;
     }
 
     const metrics = {
@@ -156,6 +163,6 @@ export const analyticsRepository = {
       distanciamiento,
       ineficacia
     };
-    return includeCohort ? { cohort_count: Number(row.cohort_count), metrics } : metrics;
+    return includeCohort ? { cohort_count: Number(row.cohort_count), participant_counts, metrics } : metrics;
   }
 };

@@ -142,11 +142,12 @@ Los contratos completos están en [OpenAPI](src/interfaces/contracts/openapi.jso
 
 ### Migraciones y base de prueba
 
-`npm run db:migrate -- --database NOMBRE` exige un destino explícito que coincida con la conexión. Las tres migraciones se ejecutan dentro de una transacción con bloqueo y registro de checksum en `pulso_migrations`; no se aplican al iniciar la API. Repetir el comando verifica las migraciones registradas sin volver a ejecutarlas. Un checksum diferente provoca error.
+`npm run db:migrate -- --database NOMBRE` exige un destino explícito que coincida con la conexión. Las migraciones se ejecutan dentro de una transacción con bloqueo y registro de checksum en `pulso_migrations`; no se aplican al iniciar la API. Repetir el comando verifica las migraciones registradas sin volver a ejecutarlas. Un checksum diferente provoca error.
 
 - `001_integration_contracts`: tokens de recuperación, versión de autenticación, contenido de léxico e historial de activaciones, propuesta/aprobación de reglas, formato de hash de auditoría y motivo de descarte separado.
 - `002_current_lexicon`: registra únicamente el diccionario existente `lexico-v1.2`, conservado en `database/lexicon-current.json`, con hash SHA-256 canónico. No agrega términos ni versiones de producto. Las versiones sin contenido íntegro no son activables.
 - `003_followup_action`: conserva el tipo de acción que ya ofrece el formulario de seguimiento; las notas históricas permanecen intactas.
+- `004_weekly_alert_job`: agrega cursor, ejecuciones, motivos sin datos personales y metadatos de alertas semanales. Su aplicación y activación en la base habitual están pendientes de aprobación específica.
 
 Validación reproducible desde `backend/`, con la base separada ya preparada a partir del esquema canónico y su semilla académica:
 
@@ -171,7 +172,7 @@ La suite prepara un mensaje MIME con transporte local de Nodemailer y simula ent
 
 ### Límites de operación y evidencia
 
-Las propuestas de reglas SST se guardan sin aprobación y solo ADMIN puede aprobarlas. Aprobar no ejecuta evaluaciones ni genera alertas automáticas. Las activaciones y reversiones del léxico registran el actor y la versión anterior; el motor sigue analizando localmente y con el mismo algoritmo.
+Las propuestas de reglas SST se guardan sin aprobación y solo ADMIN puede aprobarlas. La aprobación habilita a la regla para el job semanal; no genera una alerta inmediata. El job necesita la migración 004 y `ALERT_JOB_ENABLED=true`; permanece deshabilitado por defecto. Las activaciones y reversiones del léxico registran el actor y la versión anterior; el motor sigue analizando localmente y con el mismo algoritmo.
 
 La auditoría nueva usa formato 2, contenido canónico y escritura serializada. Los hashes históricos se conservan; la verificación informa qué registros históricos no permiten comprobar su contenido. La exportación proviene del servidor, incluye filtros y un límite explícito de 10 000 registros; la paginación conserva un máximo de ID estable.
 
@@ -180,3 +181,12 @@ Los reportes conservan un único snapshot para previsualización, historial, has
 Los formularios afectados esperan la confirmación del servidor. Ante un 401, el acceso se revoca y sus borradores de negocio quedan en memoria de la pestaña, asociados al mismo titular, durante un máximo de 30 minutos. Se recuperan después de reautenticarse y volver a abrir el formulario; se eliminan al cerrar sesión o cambiar de cuenta. No se guardan contraseñas ni tokens en ese mecanismo y no sobrevive a cerrar o recargar la pestaña.
 
 El informe de cierre y su matriz C01–C25 están en `../anti-slop/audit-029-2026-10-05.md`. La validación de la base de prueba no equivale a haber actualizado la base habitual ni a certificar accesibilidad global o un despliegue.
+
+Actualización autorizada del 2026-10-05: las tres migraciones ya se aplicaron en la base local `pulso360_db`, con respaldo restaurado y comprobaciones HTTP/navegador. El estado posterior y los pendientes SMTP/descarga nativa están en `../anti-slop/audit-030-2026-10-05.md`; este resultado no implica actualización de otras bases o entornos.
+
+
+### Job semanal de alertas (2026-10-06)
+
+Implementado sin nuevas dependencias en `src/jobs/alertScheduler.js`, `src/jobs/runAlerts.js` y `src/application/services/weeklyAlertService.js`. Reutiliza los agregados de check-in y aplica C4 vigente y k=5 por dimensión/semana. Las caídas son relativas a la semana anterior; sobrecarga percibida no tiene fuente automática. No altera el análisis de bitácoras ni envía correos.
+
+La evaluación vence el lunes a las 06:00 de Bogotá; el planificador comprueba pendientes cada minuto cuando la API está encendida y recupera cierres desde su cursor. Un bloqueo PostgreSQL, transacciones e índice único impiden solapamiento, escrituras parciales y duplicados. Detalles y comando con destino explícito en `src/jobs/README.md`. La evidencia y el límite de activación están en `../anti-slop/audit-031-2026-10-06.md`.

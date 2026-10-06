@@ -10,6 +10,7 @@ try {
   if (rows[0].name !== target) throw new Error('El destino indicado no coincide con la conexión configurada.');
   const sql = await fs.readFile(new URL('./migrations/001_integration_contracts.sql',import.meta.url),'utf8');
   const followupSql = await fs.readFile(new URL('./migrations/003_followup_action.sql',import.meta.url),'utf8');
+  const alertJobSql = await fs.readFile(new URL('./migrations/004_weekly_alert_job.sql',import.meta.url),'utf8');
   const dictionary = JSON.parse(await fs.readFile(new URL('./lexicon-current.json',import.meta.url),'utf8'));
   const content = canonicalJson(dictionary),hash = crypto.createHash('sha256').update(content).digest('hex');
   await transaction(async client => {
@@ -21,7 +22,8 @@ try {
           VALUES ('lex-v12','lexico-v1.2','Diccionario existente del motor determinista','ACTIVA',$1,$2)
           ON CONFLICT (codigo_version) DO UPDATE SET contenido=EXCLUDED.contenido,hash_contenido=EXCLUDED.hash_contenido
           WHERE versiones_lexico.contenido IS NULL`,[hash,content]) },
-      { id:'003_followup_action',checksum:crypto.createHash('sha256').update(followupSql).digest('hex'),run:()=>client.query(followupSql) }
+      { id:'003_followup_action',checksum:crypto.createHash('sha256').update(followupSql).digest('hex'),run:()=>client.query(followupSql) },
+      { id:'004_weekly_alert_job',checksum:crypto.createHash('sha256').update(alertJobSql).digest('hex'),run:()=>client.query(alertJobSql) }
     ]) {
       const applied = await client.query('SELECT checksum FROM pulso_migrations WHERE id=$1',[migration.id]);
       if (applied.rowCount) {

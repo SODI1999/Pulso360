@@ -10,7 +10,8 @@
     "test:db": "node -e \"import('./src/infrastructure/db.js').then(m => m.testConnection().then(ok => process.exit(ok ? 0 : 1)))\"",
     "dev": "nodemon src/index.js",
     "start": "node src/index.js",
-    "db:migrate": "node database/migrate.js"
+    "db:migrate": "node database/migrate.js",
+    "job:alerts": "node src/jobs/runAlerts.js"
   },
   "keywords": [],
   "author": "",

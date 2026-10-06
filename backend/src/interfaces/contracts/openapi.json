@@ -4983,7 +4983,7 @@
                     "data": {
                       "type": "array",
                       "items": {
-                        "type": "object"
+                        "$ref": "#/components/schemas/RuleCatalogEntry"
                       }
                     }
                   },
@@ -5061,7 +5061,7 @@
             "bearerAuth": []
           }
         ],
-        "description": "SST. Catálogo persistido de propuestas y reglas aprobadas."
+        "description": "Catálogo SST con compatibilidad y habilitación de evaluación semanal. Sobrecarga percibida no tiene fuente automática. Las caídas son porcentajes relativos respecto a la semana anterior."
       },
       "post": {
         "tags": [
@@ -7200,6 +7200,61 @@
           }
         },
         "required": []
+      },
+      "RuleCatalogEntry": {
+        "type": "object",
+        "description": "Regla persistida y disponibilidad configurada de evaluación semanal. No acredita una ejecución completada.",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "metrica": {
+            "type": "string"
+          },
+          "operador": {
+            "type": "string"
+          },
+          "valor_umbral": {
+            "type": [
+              "number",
+              "string"
+            ]
+          },
+          "persistencia_periodos": {
+            "type": "integer"
+          },
+          "unidad_tiempo": {
+            "type": "string"
+          },
+          "alcance": {
+            "type": "string"
+          },
+          "activa": {
+            "type": "boolean"
+          },
+          "pending_approval": {
+            "type": "boolean"
+          },
+          "evaluation_supported": {
+            "type": "boolean"
+          },
+          "evaluation_reason": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "evaluation_enabled": {
+            "type": "boolean",
+            "description": "Configuración habilitada y migración de job disponible; la API debe permanecer ejecutándose."
+          }
+        },
+        "required": [
+          "id",
+          "evaluation_supported",
+          "evaluation_reason",
+          "evaluation_enabled"
+        ]
       }
     }
   }

@@ -101,7 +101,7 @@
   * La inserción asocia estrictamente `usuario_id = userId`.
 * **Flujo**:
   1. Insertar en `journalRepository.create({ userId, context, content })`.
-  2. Emitir evento asíncrono o job para análisis léxico determinista (sin bloquear la respuesta).
+  2. El cliente ejecuta el motor léxico determinista con C2/C3 vigente y persiste su snapshot mediante `updateJournalEntry`. El job semanal de SST no lee ni analiza bitácoras.
 * **Retorno**:
   ```typescript
   { id: string, entry_date: string, context: string, content: string, created_at: string }

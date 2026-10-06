@@ -3,9 +3,17 @@ import { transaction } from '../../infrastructure/db.js';
 import { rulesRepository } from '../../infrastructure/repositories/rulesRepository.js';
 import { AppError } from '../errors/AppError.js';
 import { createLog } from '../../infrastructure/repositories/auditorRepository.js';
+import { ruleEvaluationDefinition } from '../../domain/weeklyAlertRules.js';
+import { alertJobRepository } from '../../infrastructure/repositories/alertJobRepository.js';
+import { alertJobEnabled } from '../../infrastructure/alertJobConfig.js';
 
 export async function listRules() {
-  return rulesRepository.list();
+  const enabled = alertJobEnabled() && await alertJobRepository.ready();
+  return (await rulesRepository.list()).map(rule => {
+    const definition = ruleEvaluationDefinition(rule);
+    return {...rule,evaluation_supported:definition.supported,
+      evaluation_reason:definition.reason || null,evaluation_enabled:enabled};
+  });
 }
 
 export async function proposeRule(data, actor) {
