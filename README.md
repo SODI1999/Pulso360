@@ -27,17 +27,36 @@ Para consultar la documentación técnica específica de cada módulo, revisa su
 
 ## Inicio Rápido
 
-### Prerrequisitos
-* Node.js: v20.0 o superior (exigido por React Router 7 y runtime ESM moderno)
-* npm: v10.0 o superior
-* Git
+### Opción A: Arranque 1-Click con Docker Compose (Recomendado)
+Para evaluadores o despliegue en cualquier máquina sin necesidad de configurar Node.js ni PostgreSQL manualmente:
 
-### Gobernanza de Seguridad en Dependencias
-Los paquetes señalados en auditorías automatizadas de dependencias (tales como `brace-expansion`, `esbuild` o `nodemon`) pertenecen estrictamente al ámbito de herramientas de desarrollo (`devDependencies`) para tareas de empaquetado local y recarga en caliente (*hot-reload*). Estas librerías no intervienen en el artefacto estático de producción desplegado al usuario final y operan exclusivamente en entornos de desarrollo aislados.
+```bash
+# 1. Levantar la plataforma completa en segundo plano
+docker compose up -d
+
+# 2. Ver logs de inicialización
+docker compose logs -f
+```
+* **Cliente Web (Frontend):** `http://localhost:5173`
+* **API REST (Backend):** `http://localhost:3000/api/v1`
+* **Healthcheck:** `http://localhost:3000/api/v1/health`
+
+Para detener el entorno:
+```bash
+docker compose down
+```
 
 ---
 
-### 1. Levantar el Frontend (Cliente Web)
+### Opción B: Ejecución Local Nativa (Entorno de Desarrollo)
+
+#### Prerrequisitos
+* Node.js: v20.0 o superior (exigido por React Router 7 y runtime ESM moderno)
+* npm: v10.0 o superior
+* PostgreSQL: 16 o superior con base de datos `pulso360_db` creada
+* Git
+
+#### 1. Levantar el Frontend (Cliente Web)
 La interfaz de usuario está desarrollada en React 18 con Vite:
 
 ```bash

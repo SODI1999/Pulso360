@@ -1,0 +1,77 @@
+# Pulso360 — Orquestación 1-Click con Docker Compose
+# Levanta la plataforma completa sin necesidad de instalar dependencias locales:
+# Uso: docker compose up -d
+
+services:
+  # 1. Base de Datos Relacional PostgreSQL
+  db:
+    image: postgres:17-alpine
+    container_name: pulso360-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: pulso360_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pulso360_pgdata:/var/lib/postgresql/data
+      - ./backend/database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+      - ./backend/database/seed.sql:/docker-entrypoint-initdb.d/02-seed.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d pulso360_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - pulso360-net
+
+  # 2. Servidor de API REST (Node.js 20 Express)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: pulso360-backend
+    restart: unless-stopped
+    environment:
+      PORT: 3000
+      NODE_ENV: production
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: pulso360_db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      JWT_SECRET: pulso360_super_secret_jwt_key_2026_enterprise_docker
+      JWT_EXPIRES_IN: 8h
+      CORS_ORIGIN: "http://localhost:5173,http://localhost"
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+    command: >
+      sh -c "node database/migrate.js --database pulso360_db && node src/index.js"
+    networks:
+      - pulso360-net
+
+  # 3. Aplicación Web Cliente (React 18 + Nginx)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: pulso360-frontend
+    restart: unless-stopped
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+    networks:
+      - pulso360-net
+
+volumes:
+  pulso360_pgdata:
+    driver: local
+
+networks:
+  pulso360-net:
+    driver: bridge

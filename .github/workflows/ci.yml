@@ -1,0 +1,77 @@
+name: Pulso360 CI — Quality Gates 360°
+
+on:
+  push:
+    branches: [develop, main]
+  pull_request:
+    branches: [develop, main]
+
+jobs:
+  audit-and-test:
+    name: Verificación Integral de Calidad
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: pulso360_db
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js 20 LTS
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: |
+            backend/package-lock.json
+            frontend/package-lock.json
+
+      - name: Instalar dependencias del Backend
+        working-directory: ./backend
+        run: npm ci
+
+      - name: Instalar dependencias del Frontend
+        working-directory: ./frontend
+        run: npm ci
+
+      - name: Inicializar bases de datos y migraciones
+        working-directory: ./backend
+        env:
+          DB_HOST: 127.0.0.1
+          DB_PORT: 5432
+          DB_NAME: pulso360_db
+          DB_USER: postgres
+          DB_PASSWORD: postgres
+        run: |
+          psql -h 127.0.0.1 -U postgres -d pulso360_db -f database/schema.sql
+          psql -h 127.0.0.1 -U postgres -d pulso360_db -f database/seed.sql
+          createdb -h 127.0.0.1 -U postgres pulso360_plan_test_20261005
+          psql -h 127.0.0.1 -U postgres -d pulso360_plan_test_20261005 -f database/schema.sql
+          psql -h 127.0.0.1 -U postgres -d pulso360_plan_test_20261005 -f database/seed.sql
+          node database/migrate.js --database pulso360_db
+          node database/migrate.js --database pulso360_plan_test_20261005
+
+      - name: Ejecutar Quality Gates 360° (Runner Oficial)
+        env:
+          DB_HOST: 127.0.0.1
+          DB_PORT: 5432
+          DB_NAME: pulso360_db
+          DB_USER: postgres
+          DB_PASSWORD: postgres
+          DB_NAME_TEST: pulso360_plan_test_20261005
+          JWT_SECRET: pulso360_super_secret_jwt_key_2026_ci_workflow
+        run: |
+          node .agents/skills/pre-flight-audit/scripts/run-all-gates.mjs

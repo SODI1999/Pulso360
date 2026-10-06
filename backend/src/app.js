@@ -1,5 +1,7 @@
 import express from "express";
 import cors from "cors";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
 import authRoutes from './interfaces/routes/authRoutes.js';
 import agentRoutes from './interfaces/routes/agentRoutes.js';
 import sstRoutes from './interfaces/routes/sstRoutes.js';
@@ -10,17 +12,47 @@ import reportsRoutes from './interfaces/routes/reportsRoutes.js';
 import notificationsRoutes from './interfaces/routes/notificationsRoutes.js';
 import nlpRoutes from './interfaces/routes/nlpRoutes.js';
 
-
 import pool from './infrastructure/db.js';
 
 const app = express();
 
-// Middlewares globales de transporte
+// Middlewares globales de seguridad y transporte
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" }
+}));
+
+const allowedOrigins = process.env.CORS_ORIGIN 
+  ? process.env.CORS_ORIGIN.split(',').map(s => s.trim()) 
+  : ['http://localhost:5173'];
+
 app.use(cors({
-  origin: process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : '*',
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin) || allowedOrigins.includes('*')) {
+      callback(null, true);
+    } else {
+      callback(new Error('Bloqueado por política CORS'));
+    }
+  },
   credentials: true
 }));
 app.use(express.json());
+
+// Limitador de tasa contra ataques de fuerza bruta en inicio de sesión (exento en test)
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 30,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    error: {
+      message: 'Demasiados intentos de acceso desde esta dirección IP. Por favor intente en 15 minutos.',
+      code: 'AUTH_RATE_LIMIT_EXCEEDED'
+    }
+  },
+  skip: () => process.env.NODE_ENV === 'test'
+});
+app.use('/api/v1/auth/login', loginLimiter);
 
 // Endpoint base de estado
 app.get("/api/v1", (req, res) => {
