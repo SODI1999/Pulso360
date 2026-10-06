@@ -50,6 +50,7 @@ jobs:
       - name: Inicializar bases de datos y migraciones
         working-directory: ./backend
         env:
+          PGPASSWORD: postgres
           DB_HOST: 127.0.0.1
           DB_PORT: 5432
           DB_NAME: pulso360_db
@@ -66,6 +67,7 @@ jobs:
 
       - name: Ejecutar Quality Gates 360° (Runner Oficial)
         env:
+          PGPASSWORD: postgres
           DB_HOST: 127.0.0.1
           DB_PORT: 5432
           DB_NAME: pulso360_db

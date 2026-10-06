@@ -11,6 +11,7 @@ import supervisorRoutes from './interfaces/routes/supervisorRoutes.js';
 import reportsRoutes from './interfaces/routes/reportsRoutes.js';
 import notificationsRoutes from './interfaces/routes/notificationsRoutes.js';
 import nlpRoutes from './interfaces/routes/nlpRoutes.js';
+import { notFoundHandler, errorHandler } from './middlewares/errorMiddleware.js';
 
 import pool from './infrastructure/db.js';
 
@@ -94,29 +95,10 @@ app.use('/api/v1/nlp', nlpRoutes);
 
 
 // Manejador para rutas no implementadas (Formato de error SDD unificado)
-app.use((req, res) => {
-  res.status(404).json({
-    success: false,
-    error: {
-      message: `La ruta '${req.method} ${req.originalUrl}' no existe en esta versión de la API.`,
-      code: "RESOURCE_NOT_FOUND"
-    }
-  });
-});
+app.use(notFoundHandler);
 
 // Middleware centralizado de excepciones no controladas
-app.use((err, req, res, next) => {
-  const status = err.statusCode || 500;
-  if (status >= 500) {
-    console.error('[ServerError]', { code:err.code || 'INTERNAL_SERVER_ERROR', method:req.method,path:req.path });
-  }
-  res.status(status).json({
-    success: false,
-    error: {
-      message: err.code === 'PASSWORD_RESET_UNAVAILABLE' ? 'La recuperación por correo no está disponible.' : status >= 500 ? 'No se pudo completar la operación del servidor.' : err.message || 'Error interno del servidor',
-      code: err.code || "INTERNAL_SERVER_ERROR"
-    }
-  });
-});
+app.use(errorHandler);
 
 export default app;
+

@@ -33,16 +33,6 @@ export const authenticate = async (req, res, next) => {
   }
 };
 
-export const requireRole = (allowedRoles = []) => {
-  return (req, res, next) => {
-    if (!req.user) {
-      return next(new AppError('Usuario no autenticado', 'AUTH_TOKEN_MISSING', 401));
-    }
-    
-    const role = req.user.role || req.user.rol_codigo;
-    if (!allowedRoles.includes(role)) {
-      return next(new AppError('Rol no autorizado', 'AUTH_FORBIDDEN_ROLE', 403));
-    }
-    next();
-  };
-};
+// Re-exportar requireRole para compatibilidad hacia atrás con rutas existentes
+export { requireRole } from './rbacMiddleware.js';
+
