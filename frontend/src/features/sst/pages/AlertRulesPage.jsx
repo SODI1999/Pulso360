@@ -81,7 +81,7 @@ export function AlertRulesPage() {
             <div>
               <h2 className="card-title">Catálogo de reglas vigentes y propuestas</h2>
               <p className="card-subtitle">
-                Catálogo persistente. Esta versión no evalúa reglas ni genera alertas automáticamente.
+                Semanas de lunes a domingo. La evaluación de cierres comienza el lunes a las 06:00, hora de Bogotá, cuando está habilitada.
               </p>
             </div>
             <span className="badge badge-info">{rules.length} reglas</span>
@@ -95,12 +95,17 @@ export function AlertRulesPage() {
                 <div key={rule.id} className="rule-list-item">
                   <div className="rule-list-info">
                     <div className="rule-list-title">
-                      <strong>{rule.metric}</strong> {rule.operator} {rule.value}%
+                      <strong>{rule.metric}</strong> {rule.operator} {rule.value}{rule.operator?.startsWith('baje') ? '% respecto a la semana anterior' : ' / 100'}
                     </div>
                     <div className="rule-list-meta">
                       Persistencia: {rule.persistence} {rule.unit || 'semanas'} · Ámbito: {ruleScopeLabel(rule.scope, user?.scopes)} ·
                       Severidad: {rule.severity}
                     </div>
+                    {!env.useMockStorage && <p>{rule.evaluation_supported === false
+                      ? 'Sin evaluación automática: falta una fuente o condición compatible.'
+                      : rule.evaluation_enabled
+                        ? 'Evaluación semanal habilitada; requiere aprobación y datos suficientes.'
+                        : 'Evaluación semanal deshabilitada en este servidor.'}</p>}
                   </div>
                   <span className={`badge ${rule.active ? 'badge-ok' : 'badge-warn'}`}>
                     {rule.pendingApproval ? 'Pendiente de aprobación' : 'Aprobada'}

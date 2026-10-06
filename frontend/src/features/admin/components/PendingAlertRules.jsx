@@ -9,7 +9,7 @@ export function PendingAlertRules({ rules, handleApproveRule }) {
         <div>
           <h2 className="card-title">Aprobación Institucional de Reglas de Alerta</h2>
           <div className="card-subtitle">
-            Propuestas SST para revisión. Su aprobación no ejecuta alertas automáticas.
+            La aprobación permite evaluar la regla en el siguiente cierre, si la evaluación semanal está habilitada y hay datos suficientes.
           </div>
         </div>
       </div>
@@ -25,8 +25,9 @@ export function PendingAlertRules({ rules, handleApproveRule }) {
           return (
             <div key={r.id} className="rule-approval-card">
               <div>
-                <strong>{r.metric}</strong> {r.operator} <strong>{r.value}%</strong> durante {r.persistence}{' '}
+                <strong>{r.metric}</strong> {r.operator} <strong>{r.value}{r.operator?.startsWith('baje') ? '%' : ' / 100'}</strong> durante {r.persistence}{' '}
                 {r.unit} · Ámbito: <em>{ruleScopeLabel(r.scope, authService.getCurrentUser()?.scopes)}</em> ({r.severity})
+                {r.evaluation_supported === false && <p>Sin evaluación automática: falta una fuente o condición compatible.</p>}
               </div>
 
               <div>

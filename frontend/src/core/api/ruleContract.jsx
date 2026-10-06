@@ -6,5 +6,7 @@ export function normalizeRule(row) {
 }
 
 export function ruleScopeLabel(scope, scopes = []) {
+  const team = scopes.find(item => item.id === scope);
+  if (team) return `${team.campana_nombre} · ${team.nombre}`;
   return scopes.find(item => item.campana_id === scope)?.campana_nombre || scope;
 }

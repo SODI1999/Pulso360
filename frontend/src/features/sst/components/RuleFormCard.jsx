@@ -23,7 +23,8 @@ export function RuleFormCard({ onSaveRule }) {
     setSeverity(draft.severity); setScope(draft.scope);
   });
   // Sentencia en lenguaje natural autogenerada
-  const ruleSentence = `Propuesta: observar si ${metric} ${operator} ${value}% durante ${persistence} semanas en ${ruleScopeLabel(scope, authService.getCurrentUser()?.scopes)}, con severidad ${severity}; solo si el grupo supera el umbral de privacidad (N ≥ 5).`;
+  const condition = operator === 'baje más de' ? `desciende más de ${value}% respecto a la semana anterior` : `supera ${value} / 100`;
+  const ruleSentence = `Propuesta: observar si ${metric} ${condition} durante ${persistence} semanas en ${ruleScopeLabel(scope, authService.getCurrentUser()?.scopes)}, con severidad ${severity}; solo con al menos 5 participantes por dimensión y semana.`;
 
   const handleSimulate = () => {
     setSimulationResult(
@@ -59,7 +60,7 @@ export function RuleFormCard({ onSaveRule }) {
         <div>
           <h2 className="card-title">Definir nueva regla preventiva</h2>
           <p className="card-subtitle">
-            Propón condiciones para revisión administrativa. No se ejecutan alertas automáticas.
+            Propón condiciones para revisión administrativa. Las reglas aprobadas pueden evaluarse cuando la evaluación semanal está habilitada.
           </p>
         </div>
       </div>
@@ -81,6 +82,7 @@ export function RuleFormCard({ onSaveRule }) {
             <option value="Distanciamiento laboral">Distanciamiento laboral</option>
             <option value="Sobrecarga percibida">Sobrecarga percibida</option>
           </select>
+          {metric === 'Sobrecarga percibida' && <p role="note">Esta métrica aún no tiene una fuente definida y no se evaluará automáticamente.</p>}
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', marginBottom: '14px' }}>
@@ -100,7 +102,7 @@ export function RuleFormCard({ onSaveRule }) {
           </div>
           <div className="form-group">
             <label className="form-label" htmlFor="ruleValue">
-              Valor umbral (%)
+              Valor umbral
             </label>
             <input
               id="ruleValue"
@@ -111,7 +113,11 @@ export function RuleFormCard({ onSaveRule }) {
               max="90"
               onChange={(e) => setValue(e.target.value)}
               required
+              aria-describedby="ruleThresholdHelp"
             />
+            <p id="ruleThresholdHelp">{operator === 'baje más de'
+              ? 'Porcentaje de caída respecto a la semana anterior, en cada semana consecutiva.'
+              : 'Umbral sobre la escala de 100 que usan los paneles colectivos.'}</p>
           </div>
         </div>
 
@@ -159,8 +165,12 @@ export function RuleFormCard({ onSaveRule }) {
             onChange={(e) => setScope(e.target.value)}
           >
             <option value="cualquier equipo">Cualquier equipo con N ≥ 5</option>
-            {env.useMockStorage ? <><option value="Campaña Soporte Alpha">Campaña Soporte Alpha</option><option value="Campaña Retención Beta">Campaña Retención Beta</option></> :
-              [...new Map((authService.getCurrentUser()?.scopes || []).map(t => [t.campana_id,t.campana_nombre])).entries()].map(([id,name]) => <option key={id} value={id}>{name}</option>)}
+            {env.useMockStorage ? <><option value="Campaña Soporte Alpha">Campaña Soporte Alpha</option><option value="Campaña Retención Beta">Campaña Retención Beta</option></> : <>
+              <optgroup label="Campañas">{[...new Map((authService.getCurrentUser()?.scopes || []).map(t => [t.campana_id,t.campana_nombre])).entries()]
+                .map(([id,name]) => <option key={id} value={id}>{name}</option>)}</optgroup>
+              <optgroup label="Equipos">{(authService.getCurrentUser()?.scopes || []).map(team =>
+                <option key={team.id} value={team.id}>{team.campana_nombre} · {team.nombre}</option>)}</optgroup>
+            </>}
           </select>
         </div>
 

@@ -191,7 +191,7 @@ export function useSystemParams() {
   const handleApproveRule = async (id) => {
     const result = await approveRule(id, actorLabel);
     if (result?.success !== true) { setParamError(result.error); return; }
-    setParamFeedback('Propuesta aprobada y registrada. La evaluación automática no está implementada.');
+    setParamFeedback('Propuesta aprobada y registrada. Requiere evaluación semanal habilitada y datos suficientes para generar alertas.');
     setVersion(v => v + 1);
   };
 

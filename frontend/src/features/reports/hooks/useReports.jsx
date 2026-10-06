@@ -40,18 +40,20 @@ export function useReports() {
 
   const [selectedScopeId, setSelectedScopeId] = useState(availableScopes[0]?.id || '');
   const [selectedPeriod, setSelectedPeriod] = useState('Semana 34 (18–24 Ago 2026)');
+  const historyScope = availableScopes.find(scope => scope.id === selectedScopeId);
+  const historyCampaignId = historyScope?.campanaId;
+  const historyTeamId = historyScope?.equipoId;
 
   useEffect(() => {
     let active = true; setHistoryLoading(true); setHistoryError('');
-    const scope = availableScopes.find(s => s.id === selectedScopeId);
-    const cId = scope?.campanaId, tId = scope?.equipoId;
-    fetchReports(cId, tId).then(data => {
+    fetchReports(historyCampaignId, historyTeamId).then(data => {
       if (active && data) {
         setApiHistory(data);
       }
     }).catch(error => { if (active) setHistoryError(error.message); }).finally(() => { if (active) setHistoryLoading(false); });
     return () => { active = false; };
-  }, [version, selectedScopeId,availableScopes]);
+  // La sesión se deserializa al leerla: depender del array reiniciaría la consulta en cada render.
+  }, [version, selectedScopeId, currentUser?.id, historyCampaignId, historyTeamId]);
 
   const minThreshold = storeData.settings?.umbralMinimo || 5;
 
