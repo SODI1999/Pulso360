@@ -85,6 +85,13 @@ export const agentController = {
     }
   },
 
+  async correctJournal(req, res, next) {
+    try {
+      const data = await agentService.correctJournal(req.user.id, req.params.id, req.body);
+      res.status(201).json({ success: true, data });
+    } catch (error) { next(error); }
+  },
+
   async createHabeasData(req, res, next) {
     try {
       const result = await agentService.createHabeasDataRequest(req.user.id, req.body);

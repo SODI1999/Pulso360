@@ -1,8 +1,15 @@
 import { Router } from 'express';
 import { sstController } from '../controllers/sstController.js';
 import { authenticate, requireRole } from '../../middlewares/authMiddleware.js';
+import { listRules, proposeRule } from '../../application/services/rulesService.js';
 
 const router = Router();
+router.get('/rules', authenticate, requireRole(['SST']), async (req,res,next) => {
+  try { res.json({ success:true,data:await listRules() }); } catch(error) { next(error); }
+});
+router.post('/rules', authenticate, requireRole(['SST']), async (req,res,next) => {
+  try { res.status(201).json({ success:true,data:await proposeRule(req.body,req.user) }); } catch(error) { next(error); }
+});
 
 // ============================================================================
 // Pulso360 — Módulo de Seguridad y Salud en el Trabajo (SST) y Analítica

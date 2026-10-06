@@ -38,7 +38,8 @@ export const authService = {
     const payload = {
       id: user.id,
       rol_codigo: user.rol_codigo,
-      rol: user.rol_codigo
+      rol: user.rol_codigo,
+      auth_version: user.auth_version
     };
 
     const secret = process.env.JWT_SECRET;
@@ -53,6 +54,7 @@ export const authService = {
     });
 
     const userResponse = {
+      ...await this.getProfile(user.id),
       id: user.id,
       correo: user.correo,
       nombres: user.nombres,
@@ -70,6 +72,12 @@ export const authService = {
     if (!profile) {
       throw new AppError('Perfil no encontrado', 'PROFILE_NOT_FOUND', 404);
     }
-    return profile;
+    const [scopes, supervisors, assignments, navigationCounts] = await Promise.all([
+      userRepository.findAvailableScopes(userId, profile.rol_codigo),
+      userRepository.findSupervisors(profile.rol_codigo),
+      userRepository.findActiveAssignments(userId),
+      userRepository.findNavigationCounts(userId, profile.rol_codigo)
+    ]);
+    return { ...profile, scopes, supervisors, assignments, navigation_counts:navigationCounts };
   }
 };

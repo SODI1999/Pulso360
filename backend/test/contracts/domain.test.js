@@ -90,6 +90,7 @@ describe("P08 · Domain Contracts & Invariants (Test Harness)", () => {
     it("debe retornar true solo si la política general fue aceptada y el flag específico está activo", () => {
       const consentimientoActivo = {
         acepta_politica: true,
+        politica_vigente: true,
         c1_checkin: true,
         c2_bitacora: false
       };

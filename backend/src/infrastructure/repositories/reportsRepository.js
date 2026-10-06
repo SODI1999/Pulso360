@@ -12,7 +12,7 @@ export const reportsRepository = {
     return rows;
   },
 
-  async create({ id, tipoReporte, autorId, campanaId, equipoId, fechaCorte, hashIntegridad, parametrosFiltro, rutaArchivo }) {
+  async create({ id, tipoReporte, autorId, campanaId, equipoId, fechaCorte, hashIntegridad, parametrosFiltro, rutaArchivo }, client = pool) {
     const query = `
       INSERT INTO reportes_generados (
         id, tipo_reporte, autor_id, campana_id, equipo_id, fecha_corte, hash_integridad, parametros_filtro, ruta_archivo
@@ -31,7 +31,7 @@ export const reportsRepository = {
       parametrosFiltro ? JSON.stringify(parametrosFiltro) : null,
       rutaArchivo || null
     ];
-    const { rows } = await pool.query(query, values);
+    const { rows } = await client.query(query, values);
     return rows[0];
   },
 

@@ -74,6 +74,6 @@ export function validarDimensionesCheckin(dims = {}) {
  */
 export function tieneConsentimientoActivo(consent, flag) {
   if (!consent || typeof consent !== 'object') return false;
-  if (!consent.acepta_politica) return false;
+  if (!consent.acepta_politica || consent.politica_vigente !== true) return false;
   return Boolean(consent[flag]);
 }

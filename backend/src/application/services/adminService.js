@@ -1,6 +1,10 @@
 import * as adminRepository from '../../infrastructure/repositories/adminRepository.js';
 import { AppError } from '../errors/AppError.js';
 import bcrypt from 'bcryptjs';
+import { createTeamAtomic } from '../../infrastructure/repositories/organizationManagementRepository.js';
+import crypto from 'node:crypto';
+import { transaction } from '../../infrastructure/db.js';
+import { createUserAtomic, updateUserAtomic } from '../../infrastructure/repositories/userManagementRepository.js';
 
 /**
  * @fileoverview Lógica de negocio para la gestión administrativa y organizativa
@@ -13,93 +17,47 @@ export const getUsers = async () => {
   return await adminRepository.findAllUsers();
 };
 
-export const createUser = async ({ rolCodigo, correo, nombres, apellidos, contrasena, equipoId }, adminUserId) => {
-  const userNombres = nombres?.trim();
-  const userApellidos = apellidos?.trim() || '.';
-
-  if (!correo || !userNombres || !rolCodigo) {
-    throw new AppError("Datos incompletos para crear usuario", "MISSING_DATA", 400);
-  }
-
-  const existing = await adminRepository.findByEmail(correo);
-  if (existing) {
-    throw new AppError("El correo ya está en uso", "EMAIL_IN_USE", 400);
-  }
-
-  const crypto = await import('crypto');
-  const userId = crypto.randomUUID();
-
-  const pwToHash = contrasena || "Pulso360#2026";
-  const contrasenaHash = await bcrypt.hash(pwToHash, 10);
-
-  // Valor por defecto para shiftStartHour, asumiendo 08:00
-  const shiftStartHour = 8; 
-
-  const newUser = await adminRepository.createUser({
-    id: userId,
-    rolCodigo,
-    correo,
-    contrasenaHash,
-    nombres: userNombres,
-    apellidos: userApellidos,
-    shiftStartHour
-  });
-
-  if (equipoId) {
-    await adminRepository.assignUserToTeam({
-      id: crypto.randomUUID(),
-      usuarioId: userId,
-      equipoId,
-      tipoAsignacion: rolCodigo === 'SUPERVISOR' ? 'SUPERVISOR' : 'AGENTE',
-      fechaInicio: new Date().toISOString().split('T')[0]
-    });
-  }
-
-  await auditorRepository.createLog({
-    usuarioId: adminUserId || null,
-    rol: 'ADMIN',
-    action: 'CREACION_USUARIO',
-    resource: 'usuarios',
-    resourceId: newUser.id,
-    details: `Usuario ${newUser.correo_institucional || correo} creado con rol ${newUser.rol_codigo || rolCodigo}`
-  });
-
-  return newUser;
+const roles = ['AGENTE','SUPERVISOR','SST','AUDITOR','ADMIN'];
+const statuses = ['Activo','Inactivo','Suspendido'];
+function validateUser(data) {
+  if (data.rolCodigo !== undefined && !roles.includes(data.rolCodigo)) throw new AppError('Rol inválido', 'INVALID_ROLE', 400);
+  if (data.status !== undefined && !statuses.includes(data.status)) throw new AppError('Estado inválido', 'INVALID_STATUS', 400);
+}
+export const createUser = async (data, adminUserId) => {
+  validateUser(data);
+  const { rolCodigo, correo, nombres, apellidos, contrasena, equipoId, status = 'Activo', shiftStartHour = 8 } = data;
+  if (!rolCodigo || typeof nombres !== 'string' || !nombres.trim() || typeof correo !== 'string' || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo))
+    throw new AppError('Datos incompletos o correo inválido', 'MISSING_DATA', 400);
+  if (typeof contrasena !== 'string' || contrasena.length < 8 || contrasena.length > 72)
+    throw new AppError('La contraseña inicial debe tener entre 8 y 72 caracteres', 'INVALID_PASSWORD', 400);
+  if (!Number.isInteger(shiftStartHour) || shiftStartHour < 0 || shiftStartHour > 23)
+    throw new AppError('Hora de turno inválida', 'INVALID_SHIFT', 400);
+  if (await adminRepository.findByEmail(correo)) throw new AppError('El correo ya está en uso', 'EMAIL_IN_USE', 409);
+  return createUserAtomic({ id: crypto.randomUUID(), rolCodigo, correo: correo.trim().toLowerCase(), nombres: nombres.trim(),
+    apellidos: apellidos?.trim() || '.', contrasenaHash: await bcrypt.hash(contrasena, 10), equipoId, status, shiftStartHour }, adminUserId);
 };
-
-export const setUserStatus = async (userId, status, adminUserId) => {
-  if (!['Activo', 'Inactivo', 'Suspendido'].includes(status)) {
-    throw new AppError("Estado de usuario no válido", "INVALID_STATUS", 400);
-  }
-
-  const updated = await adminRepository.updateUserStatus(userId, status);
-  if (!updated) {
-    throw new AppError("Usuario no encontrado", "USER_NOT_FOUND", 404);
-  }
-
-  await auditorRepository.createLog({
-    usuarioId: adminUserId || null,
-    rol: 'ADMIN',
-    action: status === 'Suspendido' ? 'SUSPENSION_USUARIO' : 'CAMBIO_ESTADO_USUARIO',
-    resource: 'usuarios',
-    resourceId: userId,
-    details: `Estado cambiado a ${status}`
-  });
-
-  return updated;
+export const updateUser = async (userId, data, adminUserId) => {
+  validateUser(data);
+  if (!['rolCodigo','status','equipoId'].some(key => Object.hasOwn(data,key))) throw new AppError('No hay cambios', 'MISSING_DATA', 400);
+  if (userId === adminUserId && ((data.rolCodigo && data.rolCodigo !== 'ADMIN') || (data.status && data.status !== 'Activo')))
+    throw new AppError('No puedes retirar tu propio acceso administrativo', 'SELF_ACCESS_CHANGE', 403);
+  return updateUserAtomic(userId, data, adminUserId);
 };
+export const setUserStatus = (userId, status, adminUserId) => updateUser(userId, { status }, adminUserId);
 
 export const getOrganization = async () => {
   return await adminRepository.findAllCampaignsWithTeams();
 };
 
-export const createCampaign = async ({ codigo, nombre, descripcion }, adminUserId) => {
+export const createCampaign = async ({ codigo, nombre, descripcion, activa = true }, adminUserId) => {
+  if (typeof activa !== 'boolean') throw new AppError('Estado inválido','INVALID_STATUS',400);
+  return transaction(async client => {
   if (!codigo || !nombre) {
     throw new AppError("Datos incompletos para la campaña", "MISSING_DATA", 400);
   }
   const crypto = await import('crypto');
   const id = crypto.randomUUID();
-  const campaign = await adminRepository.createCampaign({ id, codigo, nombre, descripcion });
+  const campaign = await adminRepository.createCampaign({ id, codigo, nombre, descripcion, activa },client);
 
   await auditorRepository.createLog({
     usuarioId: adminUserId || null,
@@ -108,16 +66,19 @@ export const createCampaign = async ({ codigo, nombre, descripcion }, adminUserI
     resource: 'campanas',
     resourceId: id,
     details: `Campaña ${nombre} creada`
-  });
+  },client);
 
   return campaign;
+  });
 };
 
 export const updateCampaign = async (campId, { nombre, activa }, adminUserId) => {
+  if (activa !== undefined && typeof activa !== 'boolean') throw new AppError('Estado inválido','INVALID_STATUS',400);
+  return transaction(async client => {
   if (nombre === undefined && activa === undefined) {
     throw new AppError("Datos incompletos para actualizar la campaña", "MISSING_DATA", 400);
   }
-  const updated = await adminRepository.updateCampaign(campId, { nombre, activa: activa !== undefined ? Boolean(activa) : undefined });
+  const updated = await adminRepository.updateCampaign(campId, { nombre, activa: activa !== undefined ? Boolean(activa) : undefined },client);
   if (!updated) {
     throw new AppError("Campaña no encontrada", "CAMPAIGN_NOT_FOUND", 404);
   }
@@ -129,40 +90,23 @@ export const updateCampaign = async (campId, { nombre, activa }, adminUserId) =>
     resource: 'campanas',
     resourceId: campId,
     details: `Campaña actualizada: ${nombre || updated.nombre}, activa: ${activa !== undefined ? Boolean(activa) : updated.activa}`
-  });
+  },client);
 
   return updated;
+  });
 };
 
-export const createTeam = async ({ campanaId, codigo, nombre, supervisorNombre, nMiembros }, adminUserId) => {
-  if (!campanaId || !codigo || !nombre) {
-    throw new AppError("Datos incompletos para el equipo", "MISSING_DATA", 400);
-  }
-  const crypto = await import('crypto');
-  const id = crypto.randomUUID();
-  const team = await adminRepository.createTeam({
-    id,
-    campanaId,
-    codigo,
-    nombre,
-    descripcion: "",
-    supervisorNombre,
-    nMiembros: nMiembros || 0
-  });
-
-  await auditorRepository.createLog({
-    usuarioId: adminUserId || null,
-    rol: 'ADMIN',
-    action: 'CREACION_EQUIPO',
-    resource: 'equipos',
-    resourceId: id,
-    details: `Equipo ${nombre} creado`
-  });
-
-  return team;
+export const createTeam = async (data, adminUserId) => {
+  if (!data.campanaId || !data.codigo || !data.nombre || !data.supervisorId) throw new AppError('Datos incompletos para el equipo', 'MISSING_DATA', 400);
+  if (data.activo !== undefined && typeof data.activo !== 'boolean') throw new AppError('Estado inválido', 'INVALID_STATUS', 400);
+  if (data.nMiembros !== undefined && (!Number.isInteger(data.nMiembros) || data.nMiembros < 0)) throw new AppError('Integrantes inválidos', 'INVALID_MEMBERS', 400);
+  return createTeamAtomic(data, adminUserId);
 };
 
 export const updateTeam = async (teamId, data, adminUserId) => {
+  if (data.activo !== undefined && typeof data.activo !== 'boolean') throw new AppError('Estado inválido','INVALID_STATUS',400);
+  if (data.nMiembros !== undefined && (!Number.isInteger(data.nMiembros) || data.nMiembros < 0)) throw new AppError('Integrantes inválidos','INVALID_MEMBERS',400);
+  return transaction(async client => {
   const { nombre, activo, supervisorNombre, supervisorId, nMiembros } = data;
   if (nombre === undefined && activo === undefined && supervisorNombre === undefined && supervisorId === undefined && nMiembros === undefined) {
     throw new AppError("Datos incompletos para actualizar el equipo", "MISSING_DATA", 400);
@@ -192,14 +136,14 @@ export const updateTeam = async (teamId, data, adminUserId) => {
       { nombre, activo, nMiembros }, 
       supervisor.id, 
       finalSupervisorNombre, 
-      newAssignmentId
+      newAssignmentId, client
     );
 
     if (!updated) {
       throw new AppError("Equipo no encontrado", "TEAM_NOT_FOUND", 404);
     }
   } else {
-    updated = await adminRepository.updateTeam(teamId, { nombre, activo: activo !== undefined ? Boolean(activo) : undefined, nMiembros });
+    updated = await adminRepository.updateTeam(teamId, { nombre, activo: activo !== undefined ? Boolean(activo) : undefined, nMiembros },client);
     if (!updated) {
       throw new AppError("Equipo no encontrado", "TEAM_NOT_FOUND", 404);
     }
@@ -212,34 +156,21 @@ export const updateTeam = async (teamId, data, adminUserId) => {
     resource: 'equipos',
     resourceId: teamId,
     details: `Equipo actualizado: ${nombre || updated.nombre}, activo: ${activo !== undefined ? Boolean(activo) : updated.activo}`
-  });
+  },client);
 
   return updated;
+  });
 };
 
 export const getSystemParams = async () => {
   const params = await adminRepository.findSystemParams();
   const policies = await adminRepository.findPolicies();
-  return { params, policies };
+  const { listRules } = await import('./rulesService.js');
+  return { params, policies, rules: await listRules() };
 };
 
-export const updateSystemParam = async (clave, valorJson) => {
-  if (!clave || valorJson === undefined) {
-    throw new AppError("Datos incompletos para el parámetro", "MISSING_DATA", 400);
-  }
-  
-  if (clave === 'umbral_k_anonimato') {
-    const umbral = typeof valorJson === 'object' ? valorJson.valor : parseInt(valorJson, 10);
-    if (isNaN(umbral) || umbral < 5) {
-      throw new AppError("El umbral de k-anonimato no puede ser menor a 5", "INVALID_K_ANONYMITY", 400);
-    }
-  }
-
-  const updated = await adminRepository.updateSystemParam(clave, valorJson);
-  if (!updated) {
-    throw new AppError("Parámetro no encontrado", "PARAM_NOT_FOUND", 404);
-  }
-  return updated;
+export const updateSystemParam = async () => {
+  throw new AppError('Parámetro de solo lectura: esta versión conserva k=5 y edición de dos horas; los restantes controles no ejecutan automatizaciones.', 'PARAM_READONLY', 409);
 };
 
 export const createPolicy = async (data, adminUserId) => {
@@ -249,13 +180,19 @@ export const createPolicy = async (data, adminUserId) => {
   }
   const crypto = await import('crypto');
   const id = crypto.randomUUID();
-  return await adminRepository.createPolicy({
+  return transaction(async client => {
+  const policy = await adminRepository.createPolicy({
     id,
     version,
     titulo,
     textoPolitica,
     textoAviso,
     creadoPorId: adminUserId
+  }, client);
+  await adminRepository.createPolicyNotification(crypto.randomUUID(), version, client);
+  await auditorRepository.createLog({ usuarioId:adminUserId,rol:'ADMIN',action:'PUBLICACION_POLITICA',resource:'politicas_privacidad',resourceId:id,
+    details:{ version } },client);
+  return policy;
   });
 };
 
@@ -263,13 +200,19 @@ export const getHabeasData = async () => {
   return await adminRepository.findHabeasDataRequests();
 };
 
-export const updateHabeasData = async (id, status, note) => {
+export const updateHabeasData = async (id, status, note, actorId) => {
+  return transaction(async client => {
   if (!['En tramite', 'Respondida', 'Rechazada'].includes(status)) {
     throw new AppError("Estado no válido", "INVALID_STATUS", 400);
   }
-  const updated = await adminRepository.updateHabeasDataStatus(id, status, note);
+  const current = await adminRepository.findHabeasForUpdate(id, client);
+  if (!current) throw new AppError('Solicitud no encontrada','REQUEST_NOT_FOUND',404);
+  if (['Respondida','Rechazada'].includes(current.status)) throw new AppError('La solicitud ya fue resuelta','REQUEST_ALREADY_RESOLVED',409);
+  const updated = await adminRepository.updateHabeasDataStatus(id, status, note, client);
   if (!updated) {
     throw new AppError("Solicitud no encontrada", "REQUEST_NOT_FOUND", 404);
   }
+  await auditorRepository.createLog({usuarioId:actorId,rol:'ADMIN',action:'RESPUESTA_HABEAS_DATA',resource:'solicitudes_habeas_data',resourceId:id,details:{status}},client);
   return updated;
+  });
 };

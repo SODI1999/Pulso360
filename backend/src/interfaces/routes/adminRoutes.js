@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import { authenticate, requireRole } from '../../middlewares/authMiddleware.js';
 import * as adminController from '../controllers/adminController.js';
+import { listLexicons, activateLexicon } from '../../application/services/lexiconService.js';
+import { approveRule } from '../../application/services/rulesService.js';
 
 /**
  * @fileoverview Rutas para el módulo de administración
@@ -17,6 +19,7 @@ router.use(requireRole(['ADMIN']));
 router.get('/users', adminController.getUsers);
 router.post('/users', adminController.createUser);
 router.patch('/users/:id/status', adminController.setUserStatus);
+router.patch('/users/:id', adminController.updateUser);
 
 // Organización (Campañas y Equipos)
 router.get('/organization', adminController.getOrganization);
@@ -27,6 +30,18 @@ router.patch('/teams/:id', adminController.updateTeam);
 
 // Parámetros del Sistema
 router.get('/params', adminController.getSystemParams);
+router.patch('/rules/:id/approval', async (req,res,next) => {
+  try { res.json({ success:true,data:await approveRule(req.params.id,req.user) }); } catch(error) { next(error); }
+});
+router.get('/nlp/versions', async (req,res,next) => {
+  try { res.json({ success:true,data:await listLexicons() }); } catch(error) { next(error); }
+});
+router.post('/nlp/versions/:id/activate', async (req,res,next) => {
+  try { res.json({ success:true,data:await activateLexicon(req.params.id,req.user) }); } catch(error) { next(error); }
+});
+router.post('/nlp/revert', async (req,res,next) => {
+  try { res.json({ success:true,data:await activateLexicon(null,req.user,true) }); } catch(error) { next(error); }
+});
 router.put('/params/:clave', adminController.updateSystemParam);
 
 // Políticas de Privacidad

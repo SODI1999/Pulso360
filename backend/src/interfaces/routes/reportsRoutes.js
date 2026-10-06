@@ -5,7 +5,7 @@ import { authenticate, requireRole } from '../../middlewares/authMiddleware.js';
 const router = Router();
 
 router.use(authenticate);
-router.use(requireRole(['SUPERVISOR', 'LIDER_SST', 'ADMIN']));
+router.use(requireRole(['SUPERVISOR', 'SST', 'LIDER_SST', 'ADMIN']));
 
 router.get('/', reportsController.getReports);
 router.post('/', reportsController.createReport);

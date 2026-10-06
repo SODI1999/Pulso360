@@ -1,7 +1,6 @@
 import { sstService } from '../../application/services/sstService.js';
 import { analyticsService } from '../../application/services/analyticsService.js';
-import { AppError } from '../../application/errors/AppError.js';
-import pool from '../../infrastructure/db.js';
+import { authorizeScope } from '../../application/services/scopeAuthorization.js';
 
 export const sstController = {
   /**
@@ -16,23 +15,7 @@ export const sstController = {
       const equipoId = req.query.equipo_id || req.query.equipoId;
       const { desde, hasta } = req.query;
       
-      const role = req.user.role || req.user.rol_codigo;
-      if (role === 'SUPERVISOR') {
-        const userId = req.user.id;
-        let isAuthorized = false;
-        if (equipoId) {
-          const authCheck = await pool.query(`SELECT 1 FROM asignaciones_usuario_equipo WHERE usuario_id = $1 AND equipo_id = $2 AND activa = TRUE`, [userId, equipoId]);
-          isAuthorized = authCheck.rows.length > 0;
-        } else if (campanaId) {
-          const authCheck = await pool.query(`SELECT 1 FROM equipos e JOIN asignaciones_usuario_equipo a ON e.id = a.equipo_id WHERE a.usuario_id = $1 AND e.campana_id = $2 AND a.activa = TRUE`, [userId, campanaId]);
-          isAuthorized = authCheck.rows.length > 0;
-        } else {
-          return next(new AppError('Los supervisores deben filtrar por una campaña o equipo asignado', 'MISSING_FILTERS', 400));
-        }
-        if (!isAuthorized) {
-          return next(new AppError('No tienes autorización para consultar las métricas de esta campaña o equipo', 'FORBIDDEN', 403));
-        }
-      }
+      await authorizeScope(req.user,campanaId,equipoId);
 
       const result = await analyticsService.getAggregatedMetrics({ 
         campanaId: campanaId || undefined, 
@@ -119,7 +102,7 @@ export const sstController = {
 
   async updateAlert(req, res, next) {
     try {
-      const data = await sstService.updateAlert(req.params.id, req.body);
+      const data = await sstService.updateAlert(req.params.id, req.body, req.user.id);
       res.status(200).json({ success: true, data });
     } catch (error) {
       next(error);
@@ -128,7 +111,7 @@ export const sstController = {
 
   async updateSupportRequestStatus(req, res, next) {
     try {
-      const data = await sstService.updateSupportRequestStatus(req.params.id, req.body.status);
+      const data = await sstService.updateSupportRequestStatus(req.params.id, req.body.status, req.user.id);
       res.status(200).json({ success: true, data });
     } catch (error) {
       next(error);

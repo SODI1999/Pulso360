@@ -8,6 +8,7 @@ import auditorRoutes from './interfaces/routes/auditorRoutes.js';
 import supervisorRoutes from './interfaces/routes/supervisorRoutes.js';
 import reportsRoutes from './interfaces/routes/reportsRoutes.js';
 import notificationsRoutes from './interfaces/routes/notificationsRoutes.js';
+import nlpRoutes from './interfaces/routes/nlpRoutes.js';
 
 
 import pool from './infrastructure/db.js';
@@ -57,6 +58,7 @@ app.use('/api/v1/supervisor', supervisorRoutes);
 // Montar rutas transversales
 app.use('/api/v1/reports', reportsRoutes);
 app.use('/api/v1/notifications', notificationsRoutes);
+app.use('/api/v1/nlp', nlpRoutes);
 
 
 // Manejador para rutas no implementadas (Formato de error SDD unificado)
@@ -74,12 +76,12 @@ app.use((req, res) => {
 app.use((err, req, res, next) => {
   const status = err.statusCode || 500;
   if (status >= 500) {
-    console.error("[ServerError]:", err);
+    console.error('[ServerError]', { code:err.code || 'INTERNAL_SERVER_ERROR', method:req.method,path:req.path });
   }
   res.status(status).json({
     success: false,
     error: {
-      message: err.message || "Error interno del servidor",
+      message: err.code === 'PASSWORD_RESET_UNAVAILABLE' ? 'La recuperación por correo no está disponible.' : status >= 500 ? 'No se pudo completar la operación del servidor.' : err.message || 'Error interno del servidor',
       code: err.code || "INTERNAL_SERVER_ERROR"
     }
   });

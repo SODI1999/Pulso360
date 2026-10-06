@@ -14,16 +14,15 @@ describe("Sprint 3 · SST, Supervision & k-Anonymity Analytics Contract Tests", 
     // 1. Limpieza preventiva de datos previos de pruebas
     await pool.query("DELETE FROM daily_checkins WHERE id LIKE 'test-chk-%'");
     await pool.query("DELETE FROM asignaciones_usuario_equipo WHERE id LIKE 'test-asig-%'");
+    await pool.query("DELETE FROM consentimientos WHERE id LIKE 'test-con-%'");
     await pool.query("DELETE FROM usuarios WHERE id LIKE 'test-usr-%'");
     await pool.query("DELETE FROM sst_intervenciones WHERE id LIKE 'int-%' AND id NOT IN ('int-1', 'int-2')");
     await pool.query("DELETE FROM solicitudes_apoyo WHERE id LIKE 'sup-%' AND id NOT IN ('req-1')");
-    await pool.query("DELETE FROM consentimientos WHERE usuario_id = 'usr-1' AND id != 'con-1'");
-    await pool.query("UPDATE consentimientos SET c1_checkin = TRUE, c2_bitacora = TRUE, c3_apoyo = TRUE, c4_analitica = TRUE, c5_contacto = TRUE WHERE id = 'con-1'");
 
     // 2. Insertar 4 usuarios agentes adicionales para conformar cohorte de k >= 5 en team-alpha-1 (junto con usr-1)
-    for (let i = 1; i <= 4; i++) {
+    for (let i = 1; i <= 5; i++) {
       await pool.query(
-        "INSERT INTO usuarios (id, rol_codigo, correo_institucional, contrasena_hash, nombres, apellidos) VALUES ($1, 'AGENTE', $2, '$2b$10$fBVGE8qy91Fp4rxpI4/dgO.gIXwMoT2JPskCXG/flua3SL2G/tGc6', 'Test', $3) ON CONFLICT (id) DO NOTHING",
+        "INSERT INTO usuarios (id, rol_codigo, correo_institucional, contrasena_hash, nombres, apellidos) SELECT $1, 'AGENTE', $2, contrasena_hash, 'Fixture', $3 FROM usuarios WHERE id='usr-1' ON CONFLICT (id) DO NOTHING",
         [`test-usr-${i}`, `testagent${i}@pulso360.co`, `Agente ${i}`]
       );
 
@@ -38,7 +37,7 @@ describe("Sprint 3 · SST, Supervision & k-Anonymity Analytics Contract Tests", 
       );
       
       await pool.query(
-        "INSERT INTO consentimientos (id, usuario_id, politica_id, tipo_evento, acepta_politica, acepta_aviso_privacidad, c1_checkin, c2_bitacora, c3_apoyo, c4_analitica, c5_contacto) VALUES ($1, $2, 'pol-v24', 'INICIAL', TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE) ON CONFLICT (id) DO NOTHING",
+        "INSERT INTO consentimientos (id, usuario_id, politica_id, tipo_evento, acepta_politica, acepta_aviso_privacidad, c1_checkin, c2_bitacora, c3_apoyo, c4_analitica, c5_contacto) SELECT $1, $2, id, 'INICIAL', TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE FROM politicas_privacidad WHERE estado='PUBLICADA' AND vigente_desde<=NOW() ORDER BY vigente_desde DESC,created_at DESC,id DESC LIMIT 1 ON CONFLICT (id) DO NOTHING",
         [`test-con-${i}`, `test-usr-${i}`]
       );
     }
@@ -56,7 +55,7 @@ describe("Sprint 3 · SST, Supervision & k-Anonymity Analytics Contract Tests", 
 
     const agentRes = await request(app)
       .post("/api/v1/auth/login")
-      .send({ correo: "agente@pulso360.co", contrasena: "Pulso360#2026" });
+      .send({ correo: "testagent1@pulso360.co", contrasena: "Pulso360#2026" });
     agentToken = agentRes.body.data.token;
   });
 

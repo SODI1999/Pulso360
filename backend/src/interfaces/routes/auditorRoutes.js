@@ -8,6 +8,7 @@ router.use(authenticate);
 router.use(requireRole(['AUDITOR', 'ADMIN']));
 
 router.get('/logs', auditorController.getLogs);
+router.get('/integrity', requireRole(['AUDITOR']), auditorController.getIntegrity);
 router.post('/export', auditorController.exportLogs);
 
 export default router;

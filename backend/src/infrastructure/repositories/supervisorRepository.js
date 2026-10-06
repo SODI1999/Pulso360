@@ -1,6 +1,26 @@
+import { createLog } from './auditorRepository.js';
 import pool from '../db.js';
 
 export const supervisorRepository = {
+  async findAuthorizedIntervention(intervencionId, supervisorId) {
+    return (await pool.query(`
+      SELECT i.id, i.campana_id, i.equipo_id
+      FROM sst_intervenciones i
+      WHERE i.id = $1
+        AND (
+          i.assigned_to = $2
+          OR i.equipo_id IN (
+            SELECT aue.equipo_id FROM asignaciones_usuario_equipo aue
+            WHERE aue.usuario_id = $2 AND aue.activa = TRUE
+          )
+          OR i.campana_id IN (
+            SELECT eq.campana_id FROM equipos eq
+            JOIN asignaciones_usuario_equipo aue ON aue.equipo_id = eq.id
+            WHERE aue.usuario_id = $2 AND aue.activa = TRUE
+          )
+        )
+    `, [intervencionId, supervisorId])).rows[0];
+  },
   async findAssignedInterventions(supervisorId) {
     const query = `
       SELECT 
@@ -18,8 +38,9 @@ export const supervisorRepository = {
               'fecha', s.fecha,
               'progreso_reportado', s.progreso_reportado,
               'nota_avance', s.nota_avance,
-              'autor_id', s.autor_id
-            ) ORDER BY s.fecha DESC
+              'autor_id', s.autor_id,
+              'tipo_accion', s.tipo_accion
+            ) ORDER BY s.created_at DESC, s.fecha DESC, s.id DESC
           ) FILTER (WHERE s.id IS NOT NULL), 
           '[]'
         ) AS seguimientos
@@ -46,18 +67,18 @@ export const supervisorRepository = {
     return result.rows;
   },
 
-  async createFollowup({ id, intervencionId, autorId, fecha, progresoReportado, notaAvance }) {
+  async createFollowup({ id, intervencionId, autorId, fecha, progresoReportado, notaAvance, tipoAccion }) {
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
       
       const insertQuery = `
         INSERT INTO seguimientos_intervencion 
-        (id, intervencion_id, autor_id, fecha, progreso_reportado, nota_avance) 
-        VALUES ($1, $2, $3, $4, $5, $6)
+        (id, intervencion_id, autor_id, fecha, progreso_reportado, nota_avance, tipo_accion)
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
         RETURNING *
       `;
-      const followupResult = await client.query(insertQuery, [id, intervencionId, autorId, fecha, progresoReportado, notaAvance]);
+      const followupResult = await client.query(insertQuery, [id, intervencionId, autorId, fecha, progresoReportado, notaAvance, tipoAccion]);
 
       const updateQuery = `
         UPDATE sst_intervenciones 
@@ -68,6 +89,7 @@ export const supervisorRepository = {
       `;
       await client.query(updateQuery, [progresoReportado, intervencionId]);
       
+      await createLog({usuarioId:autorId,rol:'SUPERVISOR',action:'SEGUIMIENTO_INTERVENCION',resource:'sst_intervenciones',resourceId:intervencionId,details:{progress:progresoReportado}},client);
       await client.query('COMMIT');
       return followupResult.rows[0];
     } catch (err) {

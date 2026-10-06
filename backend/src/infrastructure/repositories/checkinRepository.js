@@ -1,3 +1,4 @@
+import { auditedMutation } from './auditedMutation.js';
 import pool from '../db.js';
 
 function formatCheckin(row) {
@@ -21,14 +22,14 @@ export const checkinRepository = {
         energia, carga_emocional, recuperacion, apoyo, distanciamiento, ineficacia
       ) VALUES (
         $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11
-      ) RETURNING id, checkin_date, submitted_at
+      ) RETURNING *
     `;
     const values = [
       id, userId, asignacionId, journeyKey, checkinDate,
       energia, cargaEmocional, recuperacion, apoyo, distanciamiento, ineficacia
     ];
-    const { rows } = await pool.query(query, values);
-    return formatCheckin(rows[0]);
+    return auditedMutation(async client => formatCheckin((await client.query(query,values)).rows[0]),
+      row => ({ usuarioId:row.usuario_id,rol:'AGENTE',action:'REGISTRO_CHECKIN',resource:'daily_checkins',resourceId:row.id }));
   },
 
   async update(id, { energia, cargaEmocional, recuperacion, apoyo, distanciamiento, ineficacia }) {
@@ -37,11 +38,11 @@ export const checkinRepository = {
         energia = $2, carga_emocional = $3, recuperacion = $4,
         apoyo = $5, distanciamiento = $6, ineficacia = $7
       WHERE id = $1
-      RETURNING id, checkin_date, submitted_at
+      RETURNING *
     `;
     const values = [id, energia, cargaEmocional, recuperacion, apoyo, distanciamiento, ineficacia];
-    const { rows } = await pool.query(query, values);
-    return formatCheckin(rows[0]);
+    return auditedMutation(async client => formatCheckin((await client.query(query,values)).rows[0]),
+      row => ({ usuarioId:row.usuario_id,rol:'AGENTE',action:'EDICION_CHECKIN',resource:'daily_checkins',resourceId:row.id }));
   },
 
   async findByUserAndDate(userId, checkinDate) {

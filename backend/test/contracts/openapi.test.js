@@ -9,6 +9,28 @@ const __dirname = path.dirname(__filename);
 const openapiPath = path.resolve(__dirname, "../../src/interfaces/contracts/openapi.json");
 
 describe("P05 · OpenAPI 3.1 Specification Contract Integrity", () => {
+  it('documenta todas las operaciones montadas y no anuncia rutas inexistentes', () => {
+    const doc=JSON.parse(fs.readFileSync(openapiPath,'utf8'));
+    const routesDir=path.resolve(__dirname,'../../src/interfaces/routes');
+    const actual=new Set();
+    for(const filename of fs.readdirSync(routesDir).filter(name=>name.endsWith('Routes.js'))){
+      const prefix=filename.replace('Routes.js','');
+      const source=fs.readFileSync(path.join(routesDir,filename),'utf8');
+      for(const match of source.matchAll(/router\.(get|post|put|patch|delete)\(\s*['"]([^'"]+)['"]/g)){
+        if(match[2]==='/password-reset/')continue;
+        const endpoint=('/'+prefix+(match[2]==='/'?'':match[2])).replace(/:(\w+)/g,'{$1}');
+        actual.add(match[1].toUpperCase()+' '+endpoint);
+      }
+    }
+    for(const action of ['request','validate','confirm'])actual.add('POST /auth/password-reset/'+action);
+    const documented=new Set(Object.entries(doc.paths).flatMap(([endpoint,operations])=>
+      Object.keys(operations).filter(method=>['get','post','put','patch','delete'].includes(method)&&endpoint!='/health').map(method=>method.toUpperCase()+' '+endpoint)));
+    assert.deepEqual([...documented].sort(),[...actual].sort());
+    assert.equal(doc.paths['/agent/journal/{id}'].put.requestBody.content['application/json'].schema.$ref,'#/components/schemas/JournalUpdateRequest');
+    assert.ok(doc.components.schemas.ReportCreateRequest.properties.desde);
+    assert.ok(doc.components.schemas.ReportCreateRequest.properties.dimensions);
+    assert.ok(doc.components.schemas.AuditIntegrity.properties.legacyUnverifiable);
+  });
   it("el archivo openapi.json debe existir y ser un JSON sintácticamente válido", () => {
     assert.ok(fs.existsSync(openapiPath), "El archivo openapi.json debe existir en contracts/");
     const content = fs.readFileSync(openapiPath, "utf-8");
@@ -67,7 +89,7 @@ describe("P05 · OpenAPI 3.1 Specification Contract Integrity", () => {
       assert.ok(dim in checkinSchema.properties, `La propiedad '${dim}' debe existir en el esquema`);
       assert.equal(checkinSchema.properties[dim].minimum, 1);
       assert.equal(checkinSchema.properties[dim].maximum, 5);
-      assert.equal(checkinSchema.properties[dim].type, "integer");
+      assert.deepEqual(checkinSchema.properties[dim].type, ["integer", "null"]);
     }
   });
 

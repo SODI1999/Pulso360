@@ -91,6 +91,7 @@ CORS_ORIGIN=http://localhost:5173
 ```
 
 ### 2. Inicialización de Base de Datos (Si se requiere recrear)
+La actualización de los contratos C01–C25 utiliza las migraciones incrementales de la sección 6. No ejecutar `schema.sql` ni `seed.sql` sobre una base con datos para aplicar esta actualización.
 Para cargar el esquema DDL y los datos demo en PostgreSQL:
 
 ```powershell
@@ -134,3 +135,48 @@ Todos los usuarios de demostración tienen configurada la contraseña universal:
 3. **k-Anonimato**: Toda métrica de bienestar organizacional debe suprimirse si no alcanza una cohorte mínima de 5 participantes ($k \ge 5$).
 4. **Cero SQL en Controladores o Servicios**: Todas las consultas SQL pertenecen exclusivamente a `src/infrastructure/repositories/`.
 5. **Estándares y Manifiesto Anti-Slop de Backend**: Consulta obligatoriamente [**`backend/CODING_STANDARDS.md`**](CODING_STANDARDS.md) para cumplir con el decálogo anti-slop (códigos HTTP semánticos, cero overfetching, prevención estricta de SQL injection y manejo unificado de errores).
+
+## 6. Actualización incremental de integración (2026-10-05)
+
+Los contratos completos están en [OpenAPI](src/interfaces/contracts/openapi.json). Se conservan React/Express/PostgreSQL, el algoritmo léxico determinista, k=5 y la edición del check-in durante dos horas. C3 autoriza apoyo voluntario y análisis, este último también requiere C2; los tratamientos comprueban la política publicada vigente.
+
+### Migraciones y base de prueba
+
+`npm run db:migrate -- --database NOMBRE` exige un destino explícito que coincida con la conexión. Las tres migraciones se ejecutan dentro de una transacción con bloqueo y registro de checksum en `pulso_migrations`; no se aplican al iniciar la API. Repetir el comando verifica las migraciones registradas sin volver a ejecutarlas. Un checksum diferente provoca error.
+
+- `001_integration_contracts`: tokens de recuperación, versión de autenticación, contenido de léxico e historial de activaciones, propuesta/aprobación de reglas, formato de hash de auditoría y motivo de descarte separado.
+- `002_current_lexicon`: registra únicamente el diccionario existente `lexico-v1.2`, conservado en `database/lexicon-current.json`, con hash SHA-256 canónico. No agrega términos ni versiones de producto. Las versiones sin contenido íntegro no son activables.
+- `003_followup_action`: conserva el tipo de acción que ya ofrece el formulario de seguimiento; las notas históricas permanecen intactas.
+
+Validación reproducible desde `backend/`, con la base separada ya preparada a partir del esquema canónico y su semilla académica:
+
+```powershell
+$env:NODE_ENV = 'test'
+$env:DB_NAME_TEST = 'pulso360_plan_test_20261005'
+npm run db:migrate -- --database pulso360_plan_test_20261005
+npm test
+```
+
+Las pruebas requieren una base `DB_NAME_TEST` distinta de `DB_NAME`, y las pruebas del plan exigen el nombre aislado indicado. El runner utiliza `NODE_ENV=test` y ejecución secuencial para los contratos que escriben fixtures. No ejecutar estas pruebas con datos reales. Los fixtures propios se eliminan por ID; la auditoría de sus operaciones se conserva. `test/browser-fixtures.js prepare|cleanup` prepara las cuentas técnicas para recorridos de navegador en esa misma base.
+
+La aplicación sobre `pulso360_db`, una base compartida o con datos reales requiere la aprobación específica del usuario acordada en el plan. Antes de aplicarla, comprobar el destino, conservar un respaldo recuperable y detener escrituras de la API. Después, ejecutar el migrador con ese nombre explícito, reiniciar la API y recorrer los contratos con cuentas de prueba autorizadas. No reinicializar el esquema ni restaurar semillas como parte de esta actualización.
+
+### Recuperación SMTP
+
+Nodemailer es la única nueva dependencia de ejecución. Configurar exclusivamente en el servidor `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_FROM` y `PUBLIC_FRONTEND_URL`, según `.env.example`. Un relay que no requiere credenciales puede omitir `SMTP_USER` y `SMTP_PASSWORD`. El puerto 465 usa TLS directo; los demás exigen STARTTLS, TLS 1.2 o superior y validación de certificado, conforme a la [documentación oficial de Nodemailer](https://nodemailer.com/smtp).
+
+Sin host, remitente, puerto o URL pública válidos, la recuperación responde con indisponibilidad. Con transporte configurado, la respuesta es genérica y no revela la existencia de la cuenta ni confirma entrega individual. El servidor almacena únicamente el hash del token; su caducidad es de 30 minutos, solo se permite utilizarlo una vez y un fallo de entrega lo invalida. Restablecer la contraseña incrementa `auth_version` y revoca los JWT anteriores. Los JWT previos a la migración corresponden a la versión inicial 0.
+
+La suite prepara un mensaje MIME con transporte local de Nodemailer y simula entrega/rechazo sin correo externo. La verificación de un servidor SMTP real requiere configuración y un destinatario de prueba autorizado; no está incluida en la evidencia de entrega externa.
+
+### Límites de operación y evidencia
+
+Las propuestas de reglas SST se guardan sin aprobación y solo ADMIN puede aprobarlas. Aprobar no ejecuta evaluaciones ni genera alertas automáticas. Las activaciones y reversiones del léxico registran el actor y la versión anterior; el motor sigue analizando localmente y con el mismo algoritmo.
+
+La auditoría nueva usa formato 2, contenido canónico y escritura serializada. Los hashes históricos se conservan; la verificación informa qué registros históricos no permiten comprobar su contenido. La exportación proviene del servidor, incluye filtros y un límite explícito de 10 000 registros; la paginación conserva un máximo de ID estable.
+
+Los reportes conservan un único snapshot para previsualización, historial, hash y descarga. JSON y CSV se generan en el servidor; PDF es impresión del documento renderizado. Las dimensiones sin muestra publicable permanecen `null`. La participación permanece deshabilitada porque no existe un denominador de personas elegibles en el contrato.
+
+Los formularios afectados esperan la confirmación del servidor. Ante un 401, el acceso se revoca y sus borradores de negocio quedan en memoria de la pestaña, asociados al mismo titular, durante un máximo de 30 minutos. Se recuperan después de reautenticarse y volver a abrir el formulario; se eliminan al cerrar sesión o cambiar de cuenta. No se guardan contraseñas ni tokens en ese mecanismo y no sobrevive a cerrar o recargar la pestaña.
+
+El informe de cierre y su matriz C01–C25 están en `../anti-slop/audit-029-2026-10-05.md`. La validación de la base de prueba no equivale a haber actualizado la base habitual ni a certificar accesibilidad global o un despliegue.

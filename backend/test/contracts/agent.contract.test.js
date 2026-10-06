@@ -1,3 +1,4 @@
+import { currentJourney } from '../../src/domain/journey.js';
 ﻿import { describe, it, before, after } from "node:test";
 import assert from "node:assert/strict";
 import request from "supertest";
@@ -8,19 +9,20 @@ import { assertErrorContract, assertSuccessContract } from "../harness/contractV
 describe("Sprint 2 Â· Agent Module & Privacy Contract Tests", () => {
   let agentToken = "";
   let supervisorToken = "";
-  const today = new Date().toISOString().split("T")[0];
+  const today = currentJourney(8);
 
   before(async () => {
-    // Limpiar check-in de hoy y bitÃ¡coras creadas para garantizar idempotencia
-    await pool.query("DELETE FROM daily_checkins WHERE usuario_id = 'usr-1' AND checkin_date = $1", [today]);
-    await pool.query("DELETE FROM bitacoras WHERE usuario_id = 'usr-1' AND id LIKE 'jou-%' AND entry_date = $1", [today]);
-    await pool.query("DELETE FROM consentimientos WHERE usuario_id = 'usr-1' AND id != 'con-1'");
-    await pool.query("UPDATE consentimientos SET c1_checkin = TRUE, c2_bitacora = TRUE, c3_apoyo = TRUE, c4_analitica = TRUE, c5_contacto = TRUE WHERE id = 'con-1'");
+    await pool.query("DELETE FROM usuarios WHERE id='test-agent-contract'");
+    await pool.query(`INSERT INTO usuarios(id,rol_codigo,correo_institucional,contrasena_hash,nombres,apellidos,estado,shift_start_hour)
+      SELECT 'test-agent-contract','AGENTE','test-agent-contract@example.test',contrasena_hash,'Fixture','Agente','Activo',8 FROM usuarios WHERE id='usr-1'`);
+    await pool.query(`INSERT INTO consentimientos(id,usuario_id,politica_id,tipo_evento,acepta_politica,acepta_aviso_privacidad,c1_checkin,c2_bitacora,c3_apoyo,c4_analitica,c5_contacto)
+      SELECT 'test-agent-consent','test-agent-contract',id,'INICIAL',TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE FROM politicas_privacidad
+      WHERE estado='PUBLICADA' AND vigente_desde<=NOW() ORDER BY vigente_desde DESC,created_at DESC,id DESC LIMIT 1`);
 
     // Autenticar agente
     const agentRes = await request(app)
       .post("/api/v1/auth/login")
-      .send({ correo: "agente@pulso360.co", contrasena: "Pulso360#2026" });
+      .send({ correo: "test-agent-contract@example.test", contrasena: "Pulso360#2026" });
     agentToken = agentRes.body.data.token;
 
     // Autenticar supervisor
@@ -32,10 +34,12 @@ describe("Sprint 2 Â· Agent Module & Privacy Contract Tests", () => {
 
   after(async () => {
     try {
-      await pool.query("DELETE FROM daily_checkins WHERE usuario_id = 'usr-1' AND checkin_date = $1", [today]);
-      await pool.query("DELETE FROM bitacoras WHERE usuario_id = 'usr-1' AND id LIKE 'jou-%' AND entry_date = $1", [today]);
-      await pool.query("DELETE FROM consentimientos WHERE usuario_id = 'usr-1' AND id != 'con-1'");
-      await pool.query("UPDATE consentimientos SET c1_checkin = TRUE, c2_bitacora = TRUE, c3_apoyo = TRUE, c4_analitica = TRUE, c5_contacto = TRUE WHERE id = 'con-1'");
+      await pool.query("DELETE FROM daily_checkins WHERE usuario_id = 'test-agent-contract' AND checkin_date = $1", [today]);
+      await pool.query("DELETE FROM bitacoras WHERE usuario_id = 'test-agent-contract' AND id LIKE 'jou-%' AND entry_date = $1", [today]);
+      await pool.query("DELETE FROM consentimientos WHERE usuario_id = 'test-agent-contract' AND id != 'test-agent-consent'");
+      await pool.query("UPDATE consentimientos SET c1_checkin = TRUE, c2_bitacora = TRUE, c3_apoyo = TRUE, c4_analitica = TRUE, c5_contacto = TRUE WHERE id = 'test-agent-consent'");
+      await pool.query("DELETE FROM consentimientos WHERE usuario_id='test-agent-contract'");
+      await pool.query("DELETE FROM usuarios WHERE id='test-agent-contract'");
       await pool.end();
     } catch {
       // Ignorar errores si pool ya fue cerrado

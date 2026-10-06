@@ -6,6 +6,9 @@ import pg from 'pg';
 import dotenv from 'dotenv';
 
 dotenv.config();
+if (process.env.NODE_ENV === 'test' && (!process.env.DB_NAME_TEST || process.env.DB_NAME_TEST === process.env.DB_NAME)) {
+  throw new Error('Las pruebas requieren DB_NAME_TEST distinta de DB_NAME.');
+}
 
 const { Pool } = pg;
 
@@ -39,6 +42,19 @@ pool.on('error', (err) => {
  * @returns {Promise<pg.QueryResult>}
  */
 export const query = (text, params) => pool.query(text, params);
+
+export async function transaction(operation) {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    const result = await operation(client);
+    await client.query('COMMIT');
+    return result;
+  } catch (error) {
+    await client.query('ROLLBACK');
+    throw error;
+  } finally { client.release(); }
+}
 
 /**
  * Prueba la conexión inicial al servidor PostgreSQL

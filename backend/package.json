@@ -5,11 +5,12 @@
   "description": "Backend API REST y persistencia PostgreSQL para Pulso360",
   "main": "src/index.js",
   "scripts": {
-    "test": "node --test test/contracts/*.test.js",
-    "test:contracts": "node --test test/contracts/*.test.js",
+    "test": "node test/run-contracts.js",
+    "test:contracts": "node test/run-contracts.js",
     "test:db": "node -e \"import('./src/infrastructure/db.js').then(m => m.testConnection().then(ok => process.exit(ok ? 0 : 1)))\"",
     "dev": "nodemon src/index.js",
-    "start": "node src/index.js"
+    "start": "node src/index.js",
+    "db:migrate": "node database/migrate.js"
   },
   "keywords": [],
   "author": "",
@@ -20,6 +21,7 @@
     "dotenv": "^18.0.4",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
+    "nodemailer": "^10.0.15",
     "pg": "^8.23.0"
   },
   "devDependencies": {

@@ -36,6 +36,13 @@ export const setUserStatus = async (req, res, next) => {
   }
 };
 
+export const updateUser = async (req, res, next) => {
+  try {
+    const data = await adminService.updateUser(req.params.id, req.body, req.user.id);
+    res.status(200).json({ success: true, data });
+  } catch (error) { next(error); }
+};
+
 export const getOrganization = async (req, res, next) => {
   try {
     const data = await adminService.getOrganization();
@@ -130,7 +137,7 @@ export const updateHabeasData = async (req, res, next) => {
   try {
     const { id } = req.params;
     const { status, note } = req.body;
-    const data = await adminService.updateHabeasData(id, status, note);
+    const data = await adminService.updateHabeasData(id, status, note, req.user.id);
     res.status(200).json({ success: true, data });
   } catch (error) {
     next(error);

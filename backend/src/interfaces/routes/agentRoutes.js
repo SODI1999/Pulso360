@@ -21,6 +21,7 @@ router.get('/checkin/history', agentController.getCheckinHistory);
 router.get('/journal', agentController.getJournalEntries);
 router.post('/journal', agentController.createJournalEntry);
 router.put('/journal/:id', agentController.updateJournalEntry);
+router.post('/journal/:id/corrections', agentController.correctJournal);
 router.delete('/journal/:id', agentController.deleteJournalEntry);
 
 // Solicitudes de Apoyo

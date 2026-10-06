@@ -1,5 +1,7 @@
 import { analyticsRepository } from '../../infrastructure/repositories/analyticsRepository.js';
 import { evaluarKAnonimato } from '../../domain/privacyRules.js';
+import { isCalendarDate } from '../../domain/calendarDate.js';
+import { AppError } from '../errors/AppError.js';
 
 export const analyticsService = {
   /**
@@ -20,8 +22,12 @@ export const analyticsService = {
    * @returns {Promise<Object>} Promedios calculados o mensaje de restricción de privacidad.
    */
   async getAggregatedMetrics({ campanaId, equipoId, desde, hasta }) {
+    if ([desde,hasta].some(value => value !== undefined && !isCalendarDate(value)) || (desde && hasta && desde > hasta)) {
+      throw new AppError('Periodo inválido','INVALID_METRICS_PERIOD',400);
+    }
     // 1. Contar participantes únicos en la cohorte para verificar el tamaño de la muestra.
-    const cohortCount = await analyticsRepository.countDistinctParticipants({ campanaId, equipoId, desde, hasta });
+    const snapshot = await analyticsRepository.getSnapshot({ campanaId, equipoId, desde, hasta });
+    const cohortCount = snapshot.cohort_count;
     
     // 2. Evaluar el umbral matemático usando la regla pura de dominio de la plataforma.
     const privacyCheck = evaluarKAnonimato(cohortCount);
@@ -38,7 +44,7 @@ export const analyticsService = {
     }
 
     // 4. Con k-anonimato garantizado, consultamos a la base de datos por los promedios seguros.
-    const averages = await analyticsRepository.getAggregatedAverages({ campanaId, equipoId, desde, hasta });
+    const averages = snapshot.metrics;
     
     return {
       protected: false,

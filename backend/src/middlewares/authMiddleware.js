@@ -24,10 +24,14 @@ export const authenticate = async (req, res, next) => {
     if (!user || user.estado !== 'Activo') {
       return next(new AppError('Usuario no encontrado o inactivo', 'AUTH_USER_INACTIVE', 401));
     }
+    if (Number(decoded.auth_version || 0) !== Number(user.auth_version || 0)) {
+      return next(new AppError('La sesión fue revocada', 'AUTH_SESSION_REVOKED', 401));
+    }
     
-    req.user = { ...decoded, ...user, role: user.rol_codigo, rol_codigo: user.rol_codigo };
+    req.user = { ...decoded, ...user, rol:user.rol_codigo,role: user.rol_codigo, rol_codigo: user.rol_codigo };
     next();
   } catch (err) {
+    if (!['JsonWebTokenError','TokenExpiredError','NotBeforeError'].includes(err.name)) return next(err);
     return next(new AppError('Token inválido o expirado', 'AUTH_TOKEN_INVALID', 401));
   }
 };

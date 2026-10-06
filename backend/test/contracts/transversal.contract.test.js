@@ -58,6 +58,7 @@ describe("Sprint 3 Â· Transversal Contract Tests", () => {
     });
   });
   describe("Ciclo de vida de reportes e Integridad (Canonical JSON)", () => {
+    after(async()=>{await pool.query('DELETE FROM reportes_generados WHERE id=$1',[reportId]);});
     let reportId = `rep-test-${Date.now()}`;
     it("debe retornar 200 OK en la descarga de un reporte intacto (Canonical JSON)", async () => {
       // Find supervisor user ID
@@ -77,7 +78,7 @@ describe("Sprint 3 Â· Transversal Contract Tests", () => {
       const hashReal = crypto.createHash('sha256').update(canonicalStringify(contentObj)).digest('hex');
 
       await pool.query(
-        "INSERT INTO reportes_generados (id, tipo_reporte, autor_id, fecha_corte, hash_integridad, parametros_filtro, ruta_archivo) VALUES ($1, $2, $3, $4, $5, $6, $7)",
+        "INSERT INTO reportes_generados (id, tipo_reporte, autor_id, fecha_corte, hash_integridad, parametros_filtro, ruta_archivo, campana_id, equipo_id) VALUES ($1, $2, $3, $4, $5, $6, $7, 'camp-1', 'team-alpha-1')",
         [reportId, "Test", supervisorId, "2026-10-01", hashReal, JSON.stringify({ snapshot_metrics: {} }), "ruta.json"]
       );
 

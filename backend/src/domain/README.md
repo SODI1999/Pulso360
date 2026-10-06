@@ -52,7 +52,7 @@ Cada registro de check-in debe verificar que todas las 6 dimensiones pertenezcan
 $$D = \{\text{energia}, \text{carga\_emocional}, \text{recuperacion}, \text{apoyo}, \text{distanciamiento}, \text{ineficacia}\}$$
 $$\forall d \in D, \quad d \in \{1, 2, 3, 4, 5\}$$
 
-Cualquier valor fraccionario, nulo o fuera del intervalo $[1, 5]$ es inválido en el dominio y debe ser rechazado inmediatamente.
+Las seis claves deben enviarse; `null` representa omisión voluntaria explícita y se conserva sin sustituirlo por cero. Los valores informados deben ser enteros entre 1 y 5; fracciones, cadenas y valores fuera del rango se rechazan.
 
 ---
 
@@ -64,9 +64,9 @@ El tratamiento de datos sensibles requiere autorización previa, expresa e infor
 | :--- | :--- | :--- | :--- |
 | **C1** | `c1_checkin` | Registro diario de check-in emocional. | Bloqueo de registro (`CONSENT_C1_REQUIRED`). |
 | **C2** | `c2_bitacora` | Creación de bitácora y desahogo de turno. | Bloqueo de creación (`CONSENT_C2_REQUIRED`). |
-| **C3** | `c3_apoyo` | Canal de solicitud de acompañamiento psicosocial. | Deshabilitación de solicitudes de apoyo. |
+| **C3** | `c3_apoyo` | Canal de solicitud de acompañamiento psicosocial y análisis léxico local de bitácora (junto con C2). | Bloqueo de nuevas solicitudes y persistencia de análisis/correcciones. |
 | **C4** | `c4_analitica` | Inclusión de métricas anonimizadas en tendencias grupales. | Exclusión de sus datos en reportes de $k$-anonimato. |
-| **C5** | `c5_contacto` | Notificaciones proactivas de pausas y autocuidado. | Supresión de avisos directos. |
+| **C5** | `c5_contacto` | Consentimiento para contacto preventivo proactivo; no bloquea solicitudes voluntarias de apoyo por C3. | Supresión de avisos directos. |
 
 ---
 
@@ -74,4 +74,6 @@ El tratamiento de datos sensibles requiere autorización previa, expresa e infor
 
 1. El motor de análisis procesa el texto de la bitácora exclusivamente mediante diccionarios léxicos versionados (`versiones_lexico`).
 2. **Prohibición**: Se prohíbe el uso de LLMs remotos probabilísticos para emitir diagnósticos clínicos no supervisados.
-3. Todo análisis automático emite una sugerencia preliminar que el propio agente tiene el derecho inalienable de confirmar, corregir o descartar (`revisiones_nlp`), en concordancia con el principio de autodeterminación informativa.
+3. Todo análisis automático emite una sugerencia preliminar que el propio agente tiene el derecho inalienable de confirmar, corregir o descartar (snapshot e historial de revisiones en `bitacoras.analysis_json`), en concordancia con el principio de autodeterminación informativa.
+
+La autorización de tratamiento exige además aceptación y coincidencia con la política publicada vigente. El servidor consulta estos datos; no confía en flags del navegador. Las lecturas históricas propias para revisar o ejercer derechos no constituyen una nueva autorización para analizar ni agregar.

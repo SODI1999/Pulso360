@@ -13,9 +13,12 @@ export const findAllUsers = async () => {
   const query = `
     SELECT u.id, u.rol_codigo, u.correo_institucional AS correo, u.nombres, u.apellidos, u.estado, 
            e.id AS equipo_id, e.nombre AS equipo_nombre,
-           c.id AS campana_id, c.nombre AS campana_nombre
+           c.id AS campana_id, c.nombre AS campana_nombre,
+           COALESCE((SELECT json_agg(json_build_object('equipo_id', a.equipo_id, 'tipo_asignacion', a.tipo_asignacion) ORDER BY a.fecha_inicio DESC, a.id DESC)
+             FROM asignaciones_usuario_equipo a WHERE a.usuario_id=u.id AND a.activa=TRUE), '[]'::json) AS asignaciones
     FROM usuarios u
-    LEFT JOIN asignaciones_usuario_equipo aue ON u.id = aue.usuario_id AND aue.activa = TRUE
+    LEFT JOIN LATERAL (SELECT equipo_id FROM asignaciones_usuario_equipo a
+      WHERE a.usuario_id=u.id AND a.activa=TRUE ORDER BY a.fecha_inicio DESC, a.id DESC LIMIT 1) aue ON TRUE
     LEFT JOIN equipos e ON aue.equipo_id = e.id
     LEFT JOIN campanas c ON e.campana_id = c.id
   `;
@@ -119,6 +122,7 @@ export const findAllCampaignsWithTeams = async () => {
                  'codigo', e.codigo, 
                  'nombre', e.nombre, 
                  'supervisor_nombre', e.supervisor_nombre, 
+                 'supervisor_id', (SELECT usuario_id FROM asignaciones_usuario_equipo WHERE equipo_id=e.id AND tipo_asignacion='SUPERVISOR' AND activa=TRUE ORDER BY fecha_inicio DESC LIMIT 1),
                  'n_miembros', e.n_miembros, 
                  'activo', e.activo
                )
@@ -136,27 +140,27 @@ export const findAllCampaignsWithTeams = async () => {
 /**
  * Crea una campaña.
  */
-export const createCampaign = async ({ id, codigo, nombre, descripcion }) => {
+export const createCampaign = async ({ id, codigo, nombre, descripcion, activa = true }, client = pool) => {
   const query = `
-    INSERT INTO campanas (id, codigo, nombre, descripcion) 
-    VALUES ($1, $2, $3, $4)
+    INSERT INTO campanas (id, codigo, nombre, descripcion, activa)
+    VALUES ($1, $2, $3, $4, $5)
     RETURNING *
   `;
-  const { rows } = await pool.query(query, [id, codigo, nombre, descripcion]);
+  const { rows } = await client.query(query, [id, codigo, nombre, descripcion, activa]);
   return rows[0];
 };
 
 /**
  * Actualiza una campaña.
  */
-export const updateCampaign = async (id, { nombre, activa }) => {
+export const updateCampaign = async (id, { nombre, activa }, client = pool) => {
   const query = `
     UPDATE campanas 
     SET nombre = COALESCE($2, nombre), activa = COALESCE($3, activa) 
     WHERE id = $1 
     RETURNING *
   `;
-  const { rows } = await pool.query(query, [id, nombre !== undefined ? nombre : null, activa !== undefined ? activa : null]);
+  const { rows } = await client.query(query, [id, nombre !== undefined ? nombre : null, activa !== undefined ? activa : null]);
   return rows[0];
 };
 
@@ -167,7 +171,7 @@ export const findUserById = async (id) => {
     WHERE id = $1
     LIMIT 1
   `;
-  const { rows } = await pool.query(query, [id]);
+  const { rows } = await client.query(query, [id]);
   return rows[0];
 };
 
@@ -187,7 +191,7 @@ export const createTeam = async ({ id, campanaId, codigo, nombre, descripcion, s
 /**
  * Actualiza un equipo.
  */
-export const updateTeam = async (id, { nombre, activo, supervisorNombre, nMiembros }) => {
+export const updateTeam = async (id, { nombre, activo, supervisorNombre, nMiembros }, client = pool) => {
   const query = `
     UPDATE equipos 
     SET nombre = COALESCE($2, nombre), 
@@ -197,7 +201,7 @@ export const updateTeam = async (id, { nombre, activo, supervisorNombre, nMiembr
     WHERE id = $1 
     RETURNING *
   `;
-  const { rows } = await pool.query(query, [
+  const { rows } = await client.query(query, [
     id, 
     nombre !== undefined ? nombre : null, 
     activo !== undefined ? activo : null, 
@@ -210,10 +214,10 @@ export const updateTeam = async (id, { nombre, activo, supervisorNombre, nMiembr
 /**
  * Actualiza equipo y realiza el relevo de supervisor de manera atómica
  */
-export const updateTeamWithSupervisorHandover = async (teamId, { nombre, activo, nMiembros }, supervisorId, supervisorNombre, nuevaAsignacionId) => {
-  const client = await pool.connect();
+export const updateTeamWithSupervisorHandover = async (teamId, { nombre, activo, nMiembros }, supervisorId, supervisorNombre, nuevaAsignacionId, externalClient) => {
+  const client = externalClient || await pool.connect();
   try {
-    await client.query('BEGIN');
+    if (!externalClient) await client.query('BEGIN');
 
     // 1. Actualizar el equipo
     const updateTeamQuery = `
@@ -235,7 +239,7 @@ export const updateTeamWithSupervisorHandover = async (teamId, { nombre, activo,
 
     const updatedTeam = teamRows[0];
     if (!updatedTeam) {
-      await client.query('ROLLBACK');
+      if (!externalClient) await client.query('ROLLBACK');
       return null;
     }
 
@@ -252,13 +256,13 @@ export const updateTeamWithSupervisorHandover = async (teamId, { nombre, activo,
       VALUES ($1, $2, $3, 'SUPERVISOR', CURRENT_DATE, TRUE)
     `, [nuevaAsignacionId, supervisorId, teamId]);
 
-    await client.query('COMMIT');
+    if (!externalClient) await client.query('COMMIT');
     return updatedTeam;
   } catch (error) {
-    await client.query('ROLLBACK');
+    if (!externalClient) await client.query('ROLLBACK');
     throw error;
   } finally {
-    client.release();
+    if (!externalClient) client.release();
   }
 };
 
@@ -304,14 +308,14 @@ export const findPolicies = async () => {
 /**
  * Crea una nueva política.
  */
-export const createPolicy = async ({ id, version, titulo, textoPolitica, textoAviso, creadoPorId }) => {
+export const createPolicy = async ({ id, version, titulo, textoPolitica, textoAviso, creadoPorId }, client = pool) => {
   const hashContenido = crypto.createHash('sha256').update(textoPolitica + (textoAviso || '')).digest('hex');
   const query = `
     INSERT INTO politicas_privacidad (id, version, titulo, texto_politica, texto_aviso_privacidad, hash_contenido, estado, vigente_desde, creado_por_id) 
     VALUES ($1, $2, $3, $4, $5, $6, 'PUBLICADA', CURRENT_TIMESTAMP, $7)
     RETURNING id, version, titulo, estado, vigente_desde
   `;
-  const { rows } = await pool.query(query, [id, version, titulo, textoPolitica, textoAviso, hashContenido, creadoPorId]);
+  const { rows } = await client.query(query, [id, version, titulo, textoPolitica, textoAviso, hashContenido, creadoPorId]);
   return rows[0];
 };
 
@@ -332,7 +336,7 @@ export const findHabeasDataRequests = async () => {
 /**
  * Actualiza el estado de una solicitud de habeas data.
  */
-export const updateHabeasDataStatus = async (id, status, note) => {
+export const updateHabeasDataStatus = async (id, status, note, client = pool) => {
   const query = `
     UPDATE solicitudes_habeas_data 
     SET status = $2::varchar, note = COALESCE($3::text, note), 
@@ -340,6 +344,16 @@ export const updateHabeasDataStatus = async (id, status, note) => {
     WHERE id = $1 
     RETURNING *
   `;
-  const { rows } = await pool.query(query, [id, status, note]);
+  const { rows } = await client.query(query, [id, status, note]);
   return rows[0];
+};
+
+export const createPolicyNotification = async (id, version, client) => {
+  await client.query(`INSERT INTO notificaciones (id,rol_destinatario,title,context,href)
+    VALUES ($1,'AGENTE',$2,'Revisa la política vigente y actualiza tus preferencias.','/consentimiento')`,
+  [id, `Nueva política (${version})`]);
+};
+
+export const findHabeasForUpdate = async (id, client) => {
+  return (await client.query('SELECT status FROM solicitudes_habeas_data WHERE id=$1 FOR UPDATE', [id])).rows[0];
 };

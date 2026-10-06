@@ -14,16 +14,18 @@ export const analyticsRepository = {
    * @param {string} params.hasta - Fecha final (YYYY-MM-DD)
    * @returns {Promise<number>} Número de participantes únicos
    */
-  async countDistinctParticipants({ campanaId, equipoId, desde, hasta }) {
+  async countDistinctParticipants({ campanaId, equipoId, desde, hasta }, client = pool) {
     let query = `
       SELECT COUNT(DISTINCT d.usuario_id) AS total_participantes
       FROM daily_checkins d
       JOIN usuarios u ON d.usuario_id = u.id
       JOIN (
-        SELECT DISTINCT ON (usuario_id) usuario_id, c4_analitica
+        SELECT DISTINCT ON (usuario_id) usuario_id, c4_analitica, acepta_politica, politica_id
         FROM consentimientos
-        ORDER BY usuario_id, registrado_en DESC
-      ) c4 ON c4.usuario_id = d.usuario_id AND c4.c4_analitica = TRUE
+        ORDER BY usuario_id, registrado_en DESC, id DESC
+      ) c4 ON c4.usuario_id = d.usuario_id AND c4.c4_analitica = TRUE AND c4.acepta_politica = TRUE
+        AND c4.politica_id = (SELECT id FROM politicas_privacidad WHERE estado='PUBLICADA' AND vigente_desde<=NOW()
+          ORDER BY vigente_desde DESC, created_at DESC, id DESC LIMIT 1)
       LEFT JOIN asignaciones_usuario_equipo a ON (d.asignacion_id = a.id OR (d.asignacion_id IS NULL AND d.usuario_id = a.usuario_id AND a.activa = TRUE))
       LEFT JOIN equipos eq ON a.equipo_id = eq.id
       WHERE 1=1
@@ -48,7 +50,7 @@ export const analyticsRepository = {
       values.push(equipoId);
     }
 
-    const { rows } = await pool.query(query, values);
+    const { rows } = await client.query(query, values);
     return Number(rows[0]?.total_participantes) || 0;
   },
 
@@ -64,9 +66,14 @@ export const analyticsRepository = {
    * @param {string} [params.hasta]
    * @returns {Promise<Object|null>} Promedios agregados redondeados a 2 decimales
    */
-  async getAggregatedAverages({ campanaId, equipoId, desde, hasta, minK = 5 }) {
+  async getSnapshot(params, client = pool) {
+    return this.getAggregatedAverages({ ...params, includeCohort: true }, client);
+  },
+
+  async getAggregatedAverages({ campanaId, equipoId, desde, hasta, minK = 5, includeCohort = false }, client = pool) {
     let query = `
       SELECT 
+        COUNT(DISTINCT d.usuario_id) AS cohort_count,
         COUNT(DISTINCT CASE WHEN d.energia IS NOT NULL THEN d.usuario_id END) AS count_energia,
         ROUND(AVG(d.energia), 2) AS energia,
         COUNT(DISTINCT CASE WHEN d.carga_emocional IS NOT NULL THEN d.usuario_id END) AS count_carga_emocional,
@@ -82,10 +89,12 @@ export const analyticsRepository = {
       FROM daily_checkins d
       JOIN usuarios u ON d.usuario_id = u.id
       JOIN (
-        SELECT DISTINCT ON (usuario_id) usuario_id, c4_analitica
+        SELECT DISTINCT ON (usuario_id) usuario_id, c4_analitica, acepta_politica, politica_id
         FROM consentimientos
-        ORDER BY usuario_id, registrado_en DESC
-      ) c4 ON c4.usuario_id = d.usuario_id AND c4.c4_analitica = TRUE
+        ORDER BY usuario_id, registrado_en DESC, id DESC
+      ) c4 ON c4.usuario_id = d.usuario_id AND c4.c4_analitica = TRUE AND c4.acepta_politica = TRUE
+        AND c4.politica_id = (SELECT id FROM politicas_privacidad WHERE estado='PUBLICADA' AND vigente_desde<=NOW()
+          ORDER BY vigente_desde DESC, created_at DESC, id DESC LIMIT 1)
       LEFT JOIN asignaciones_usuario_equipo a ON (d.asignacion_id = a.id OR (d.asignacion_id IS NULL AND d.usuario_id = a.usuario_id AND a.activa = TRUE))
       LEFT JOIN equipos eq ON a.equipo_id = eq.id
       WHERE 1=1
@@ -110,7 +119,7 @@ export const analyticsRepository = {
       values.push(equipoId);
     }
 
-    const { rows } = await pool.query(query, values);
+    const { rows } = await client.query(query, values);
     
     if (!rows[0]) return null;
 
@@ -118,7 +127,7 @@ export const analyticsRepository = {
 
     // Evaluate granular k-anonymity
     const resolveDimension = (countField, avgField) => {
-      return Number(row[countField]) >= minK ? (Number(row[avgField]) || 0) : null;
+      return Number(row[countField]) >= minK ? (row[avgField] === null ? null : Number(row[avgField])) : null;
     };
 
     const energia = resolveDimension('count_energia', 'energia');
@@ -130,10 +139,10 @@ export const analyticsRepository = {
 
     // If all dimensions are null due to k-anonymity (or really no data), return null overall.
     if (energia === null && carga_emocional === null && recuperacion === null && apoyo === null && distanciamiento === null && ineficacia === null) {
-      return null;
+      return includeCohort ? { cohort_count: Number(row.cohort_count), metrics: null } : null;
     }
 
-    return {
+    const metrics = {
       energia_avg: energia,
       carga_emocional_avg: carga_emocional,
       recuperacion_avg: recuperacion,
@@ -147,5 +156,6 @@ export const analyticsRepository = {
       distanciamiento,
       ineficacia
     };
+    return includeCohort ? { cohort_count: Number(row.cohort_count), metrics } : metrics;
   }
 };

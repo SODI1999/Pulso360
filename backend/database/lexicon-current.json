@@ -1,0 +1,106 @@
+{
+  "categories": {
+    "Sobrecarga percibida": [
+      "sobrecarga",
+      "saturado",
+      "saturada",
+      "demasiadas llamadas",
+      "mucho volumen",
+      "sin parar",
+      "cola",
+      "presión",
+      "presion"
+    ],
+    "Recuperación insuficiente": [
+      "agotado",
+      "agotada",
+      "sin descansar",
+      "no descansé",
+      "no descanse",
+      "cansancio",
+      "fatiga",
+      "sin recuperar",
+      "dormí mal",
+      "dormi mal"
+    ],
+    "Exigencia emocional": [
+      "insultos",
+      "gritos",
+      "cliente agresivo",
+      "cliente molesto",
+      "angustia",
+      "llorar",
+      "emocionalmente difícil",
+      "emocionalmente dificil"
+    ],
+    "Conflicto de rol": [
+      "instrucciones contradictorias",
+      "no sé qué hacer",
+      "no se que hacer",
+      "dos instrucciones",
+      "conflicto de rol",
+      "cambio de guion"
+    ],
+    "Bajo apoyo organizacional": [
+      "sin apoyo",
+      "no me apoyan",
+      "aislado",
+      "aislada",
+      "solo con esto",
+      "sola con esto",
+      "mi líder no ayuda",
+      "mi lider no ayuda"
+    ],
+    "Distanciamiento laboral": [
+      "me da igual",
+      "desconectado del trabajo",
+      "desconectada del trabajo",
+      "no me importa",
+      "distante",
+      "evito involucrarme"
+    ],
+    "Frustración por métricas operativas": [
+      "aht",
+      "fcr",
+      "csat",
+      "métrica",
+      "metrica",
+      "bono por meta",
+      "presión por tiempo",
+      "presion por tiempo",
+      "meta imposible"
+    ],
+    "Percepción de ineficacia": [
+      "no sirvo",
+      "no logro nada",
+      "ineficaz",
+      "mi trabajo no sirve",
+      "no fui capaz",
+      "no puedo hacerlo bien"
+    ]
+  },
+  "crisisPhrases": [
+    "no puedo más",
+    "no puedo mas",
+    "quiero morir",
+    "hacerme daño",
+    "hacerme dano",
+    "acabar con todo",
+    "no quiero seguir",
+    "lastimarme"
+  ],
+  "negators": [
+    "no",
+    "nunca",
+    "jamás",
+    "jamas",
+    "sin"
+  ],
+  "intensifiers": [
+    "muy",
+    "demasiado",
+    "demasiada",
+    "totalmente",
+    "siempre"
+  ]
+}
