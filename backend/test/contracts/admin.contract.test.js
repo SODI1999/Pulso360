@@ -4,15 +4,15 @@ import request from "supertest";
 import app from "../../src/app.js";
 import { pool } from "../../src/infrastructure/db.js";
 import { assertErrorContract, assertSuccessContract } from "../harness/contractValidator.js";
+import { randomUUID } from 'node:crypto';
 
 describe("Sprint 3 · Admin Contract Tests", () => {
   let adminToken = "";
+  const version = 'vTest-' + randomUUID().slice(0,12);
+  let createdPolicyId;
 
   before(async () => {
-    // 1. Limpieza
-    await pool.query("DELETE FROM politicas_privacidad WHERE version = 'vTest'");
-
-    // 2. Autenticación
+    // Autenticación; cada ejecución identifica sus propios registros.
     const adminRes = await request(app)
       .post("/api/v1/auth/login")
       .send({ correo: "admin@pulso360.co", contrasena: "Pulso360#2026" });
@@ -20,11 +20,8 @@ describe("Sprint 3 · Admin Contract Tests", () => {
   });
 
   after(async () => {
-    try {
-      await pool.query("DELETE FROM politicas_privacidad WHERE version = 'vTest'");
-    } catch {
-      // Ignorar
-    }
+    await pool.query('DELETE FROM notificaciones WHERE title=$1', [`Nueva política (${version})`]);
+    if (createdPolicyId) await pool.query('DELETE FROM politicas_privacidad WHERE id=$1 AND version=$2', [createdPolicyId, version]);
   });
 
   describe("GET /api/v1/admin/users", () => {
@@ -82,7 +79,7 @@ describe("Sprint 3 · Admin Contract Tests", () => {
   describe("POST /api/v1/admin/policies", () => {
     it("debe retornar 201 o 200 creando política válida con hash", async () => {
       const payload = {
-        version: "vTest-" + Date.now(),
+        version,
         titulo: "Política Test",
         textoPolitica: "Texto de prueba",
         textoAviso: "Aviso de prueba"
@@ -96,6 +93,7 @@ describe("Sprint 3 · Admin Contract Tests", () => {
         .expect(201); // Ojo si en el controller usa 200 o 201
 
       assertSuccessContract(res.body);
+      createdPolicyId = res.body.data.id;
       assert.ok(res.body.data.id);
       assert.equal(res.body.data.version, payload.version);
     });

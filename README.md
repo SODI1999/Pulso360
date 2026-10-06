@@ -81,13 +81,39 @@ npm run dev
 
 ---
 
-## Pruebas y Validación (Frontend)
+## Pruebas y Auditoría Integral de Calidad
 
-Para verificar la integridad del código del cliente:
+### 1. Gates automáticos de entrega
+Ejecuta tests de frontend dos veces, lint/build, conexión PostgreSQL, tests de backend y parseo JSON de OpenAPI. El runner guarda un resumen y logs locales; su resultado acredita esos controles, no sustituye la auditoría de integración, permisos y recuperación ni aprueba un despliegue:
 
 ```bash
+node .agents/skills/pre-flight-audit/scripts/run-all-gates.mjs
+```
+
+La skill `pre-flight-audit` completa las comprobaciones aplicables y entrega GO/NO-GO para un alcance declarado. Las skills locales están excluidas de Git; el comando requiere que esa carpeta esté disponible en el equipo.
+
+### 2. Pruebas por Módulo
+
+#### Frontend:
+```bash
 cd frontend
-npm test          # Pruebas automatizadas de regresión
-npm run lint      # Análisis estático de código
-npm run build     # Verificación de compilación de producción
+npm test          # 31 pruebas unitarias y de regresión
+npm test          # Segunda ejecución exigida por el contrato de calidad
+npm run lint      # Análisis estático con ESLint
+npm run build     # Verificación de compilación de producción (Vite)
+```
+
+#### Backend:
+```bash
+cd backend
+npm run test:db   # Verifica conectividad con PostgreSQL
+npm test          # Ejecuta 110 pruebas de contratos HTTP, RBAC y k-anonimato
+```
+
+### 3. Migraciones de Base de Datos (PostgreSQL)
+Para aplicar las migraciones incrementales en una base de datos específica:
+
+```bash
+cd backend
+npm run db:migrate -- --database pulso360_db
 ```

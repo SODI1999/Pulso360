@@ -2,8 +2,10 @@ import app from "./app.js";
 import dotenv from "dotenv";
 import { testConnection } from "./infrastructure/db.js";
 import { startAlertScheduler } from "./jobs/alertScheduler.js";
+import { getJwtSecret } from './infrastructure/jwtConfig.js';
 
 dotenv.config();
+getJwtSecret();
 
 const PORT = process.env.PORT || 3000;
 

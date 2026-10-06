@@ -32,8 +32,8 @@ app.get("/api/v1/health", async (req, res) => {
   try {
     await pool.query('SELECT 1');
     res.status(200).json({ status: 'ok', database: 'connected', timestamp: new Date().toISOString() });
-  } catch (err) {
-    res.status(503).json({ status: 'degraded', database: 'disconnected', error: err.message });
+  } catch {
+    res.status(503).json({ status: 'degraded', database: 'disconnected', error: 'Base de datos no disponible.', code: 'DATABASE_UNAVAILABLE' });
   }
 });
 

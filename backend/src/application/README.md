@@ -117,7 +117,7 @@
 #### 7. `getAggregatedMetrics({ campanaId, equipoId, desde, hasta })`
 * **Propósito**: Calcular promedios organizacionales respetando las salvaguardas éticas y legales.
 * **Regla Inviolable de Dominio ($k$-anonimato, $k \ge 5$)**:
-  1. Invocar al repositorio: `analyticsRepository.countDistinctParticipants({ campanaId, equipoId, desde, hasta })`.
+  1. Invocar `analyticsRepository.getSnapshot({ campanaId, equipoId, desde, hasta })`: obtiene participantes y medias coherentes en una consulta con consentimiento y política vigente.
   2. Evaluar:
      $$\text{cohortCount} = \text{COUNT(DISTINCT usuario\_id)}$$
   3. **Si $\text{cohortCount} < 5$**:
@@ -133,7 +133,7 @@
        }
        ```
   4. **Si $\text{cohortCount} \ge 5$**:
-     * Consultar promedios agregados: `analyticsRepository.getAverages(...)`.
+     * Usar las medias del mismo snapshot; cada dimensión conserva su protección cuando corresponde.
      * Retornar:
        ```typescript
        {
@@ -188,4 +188,4 @@ export class AppError extends Error {
   }
 }
 ```
-El middleware centralizado `errorMiddleware.js` captura estas instancias y las traduce directamente al formato unificado `{ success: false, error: { message, code, details } }`.
+El manejador centralizado en `src/app.js` traduce estas instancias al formato `{ success: false, error: { message, code } }`, sanitizando mensajes de errores internos. Health conserva su respuesta propia documentada.

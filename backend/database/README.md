@@ -5,7 +5,7 @@
 * **Componente C4**: `C08 · PostgreSQL` (Contenedor `pulso360-database`)
 * **Motor**: PostgreSQL 18 (Relacional nativo con driver `pg`)
 * **Base de Datos**: `pulso360_db`
-* **Total de Tablas**: **24 tablas canónicas** (100% trazabilidad con PPI RF-01 a RF-18, C01-C14 y diseño previo de Base de Datos II).
+* **Esquema vigente**: consultar `schema.sql` y las migraciones incrementales; el número de tablas depende del estado migrado del destino. Un conteo no acredita trazabilidad ni aprobación del esquema.
 
 ## 2. Inicialización y Migraciones (Bootstrap & Migrations)
 

@@ -3,7 +3,7 @@
 ## 1. Identificación y Responsabilidad
 * **Paquete Arquitectónico**: `P10 · infrastructure/repositories`
 * **Componente C4**: `C07 · Repositorios y persistencia`
-* **Motor Relacional**: PostgreSQL 18 (`pulso360_db`), esquema canónico de 24 tablas en [`backend/database/schema.sql`](../../../database/schema.sql).
+* **Motor Relacional**: PostgreSQL 18, esquema base en [`schema.sql`](../../../database/schema.sql) y migraciones incrementales. La conexión habitual y la de pruebas son destinos separados configurados por entorno.
 * **Patrón de Ejecución**: Consultas SQL nativas parametrizadas (`$1, $2, ...`) mediante el Pool de conexiones de `../db.js`.
 * **Regla Inviolable**: **Cero sentencias SQL fuera de este directorio**. Los servicios y controladores no conocen SQL.
 

@@ -2,6 +2,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { userRepository } from '../../infrastructure/repositories/userRepository.js';
 import { AppError } from '../errors/AppError.js';
+import { getJwtSecret } from '../../infrastructure/jwtConfig.js';
 
 export const authService = {
   async login({ correo, contrasena }) {
@@ -42,14 +43,8 @@ export const authService = {
       auth_version: user.auth_version
     };
 
-    const secret = process.env.JWT_SECRET;
-    if (!secret || secret === 'secret') {
-      if (process.env.NODE_ENV !== 'test') {
-        throw new AppError('Configuración crítica faltante: JWT_SECRET no seguro', 'INTERNAL_SERVER_ERROR', 500);
-      }
-    }
-
-    const token = jwt.sign(payload, secret || 'secret', {
+    const token = jwt.sign(payload, getJwtSecret(), {
+      algorithm: 'HS256',
       expiresIn: process.env.JWT_EXPIRES_IN || '8h'
     });
 

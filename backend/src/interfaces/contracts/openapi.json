@@ -51,6 +51,23 @@
                 }
               }
             }
+          },
+          "503": {
+            "description": "Base de datos no disponible; no expone detalles de infraestructura",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["status", "database", "error", "code"],
+                  "properties": {
+                    "status": { "const": "degraded" },
+                    "database": { "const": "disconnected" },
+                    "error": { "type": "string" },
+                    "code": { "const": "DATABASE_UNAVAILABLE" }
+                  }
+                }
+              }
+            }
           }
         }
       }

@@ -6,6 +6,7 @@ import pg from 'pg';
 import dotenv from 'dotenv';
 
 dotenv.config();
+if (process.env.NODE_ENV === 'test') dotenv.config({ path:'.env.test' });
 if (process.env.NODE_ENV === 'test' && (!process.env.DB_NAME_TEST || process.env.DB_NAME_TEST === process.env.DB_NAME)) {
   throw new Error('Las pruebas requieren DB_NAME_TEST distinta de DB_NAME.');
 }
@@ -24,8 +25,8 @@ export const pool = new Pool({
   host: process.env.DB_HOST,
   port: parseInt(process.env.DB_PORT, 10),
   database: (process.env.NODE_ENV === 'test' && process.env.DB_NAME_TEST) ? process.env.DB_NAME_TEST : process.env.DB_NAME,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
+  user: process.env.NODE_ENV === 'test' ? process.env.DB_TEST_USER || process.env.DB_USER : process.env.DB_USER,
+  password: process.env.NODE_ENV === 'test' ? process.env.DB_TEST_PASSWORD || process.env.DB_PASSWORD : process.env.DB_PASSWORD,
   max: parseInt(process.env.DB_POOL_MAX || '20', 10),
   idleTimeoutMillis: parseInt(process.env.DB_IDLE_TIMEOUT || '30000', 10),
   connectionTimeoutMillis: parseInt(process.env.DB_CONNECTION_TIMEOUT || '2000', 10),

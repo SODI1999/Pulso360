@@ -6,27 +6,33 @@ import app from '../../src/app.js';
 import pool from '../../src/infrastructure/db.js';
 const marker = `fixture-${crypto.randomUUID().slice(0,8)}`;
 let token, userId, campaignId, teamId;
+const supervisorId = marker + '-supervisor';
 const call = (method,path,body) => request(app)[method](`/api/v1/admin${path}`).set('Authorization',`Bearer ${token}`).send(body);
 before(async () => {
   assert.equal(process.env.DB_NAME_TEST,'pulso360_plan_test_20261005');
   const login=await request(app).post('/api/v1/auth/login').send({ correo:'admin@pulso360.co',contrasena:'Pulso360#2026' }).expect(200);
   token=login.body.data.token;
+  await pool.query(`INSERT INTO usuarios(id,rol_codigo,correo_institucional,contrasena_hash,nombres,apellidos,estado)
+    SELECT $1,'SUPERVISOR',$2,contrasena_hash,'Fixture','Supervisor','Activo' FROM usuarios WHERE id='usr-2'`,
+    [supervisorId,supervisorId+'@example.test']);
 });
 after(async () => {
   if(userId){await pool.query('DELETE FROM asignaciones_usuario_equipo WHERE usuario_id=$1',[userId]);await pool.query('DELETE FROM usuarios WHERE id=$1',[userId]);}
   if(teamId) { await pool.query('DELETE FROM asignaciones_usuario_equipo WHERE equipo_id=$1',[teamId]); await pool.query('DELETE FROM equipos WHERE id=$1',[teamId]); }
   if(campaignId) await pool.query('DELETE FROM campanas WHERE id=$1',[campaignId]);
+  await pool.query('DELETE FROM asignaciones_usuario_equipo WHERE usuario_id=$1',[supervisorId]);
+  await pool.query('DELETE FROM usuarios WHERE id=$1',[supervisorId]);
   await pool.end();
 });
 test('campaña inactiva y equipo con supervisor real se conservan', async () => {
   const campaign=await call('post','/campaigns',{ codigo:marker,nombre:marker,activa:false }).expect(201);
   campaignId=campaign.body.data.id;
   assert.equal(campaign.body.data.activa,false);
-  const team=await call('post','/teams',{ campanaId:campaignId,codigo:marker,nombre:marker,supervisorId:'usr-2',nMiembros:0,activo:false }).expect(201);
+  const team=await call('post','/teams',{ campanaId:campaignId,codigo:marker,nombre:marker,supervisorId,nMiembros:0,activo:false }).expect(201);
   teamId=team.body.data.id;
   assert.equal(team.body.data.activo,false);
   const assignment=await pool.query("SELECT usuario_id FROM asignaciones_usuario_equipo WHERE equipo_id=$1 AND tipo_asignacion='SUPERVISOR' AND activa=TRUE",[teamId]);
-  assert.equal(assignment.rows[0].usuario_id,'usr-2');
+  assert.equal(assignment.rows[0].usuario_id,supervisorId);
 });
 test('alta suspendida exige contraseña y asignación inválida no deja filas parciales', async () => {
   const body={ correo:`${marker}@example.test`,nombres:'Fixture',apellidos:'Admin',rolCodigo:'AGENTE',status:'Suspendido' };

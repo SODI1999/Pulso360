@@ -8,7 +8,17 @@ Servicio de backend para la plataforma Pulso360, desarrollado en **Node.js, Expr
 
 ## 1. Stack Tecnológico Oficial
 
-* **Entorno de Ejecución**: Node.js (v18+ / v20 LTS) con Módulos ECMAScript (`"type": "module"`).
+### Configuración segura local
+
+`JWT_SECRET` debe ser una clave aleatoria exclusiva de al menos 32 caracteres; el ejemplo queda vacío y no se admite el antiguo valor público. Se puede generar con `node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"` y guardar solo en `.env` ignorado. Rotar la clave y reiniciar la API invalida las firmas de sesiones previas. No publicar la salida del generador ni credenciales.
+
+La API carga únicamente `.env` con `DB_USER`/`DB_PASSWORD` sin superusuario ni DDL. Migraciones cargan además `.env.maintenance` con `DB_MIGRATION_USER`/`DB_MIGRATION_PASSWORD`; las pruebas cargan `.env.test` con `DB_TEST_USER`/`DB_TEST_PASSWORD` exclusivamente en `DB_NAME_TEST`. Ambos archivos están ignorados y no deben copiarse a la configuración de ejecución de la API. La suite genera un secreto JWT efímero y necesita un propietario técnico del esquema para sus disparadores de rollback.
+
+En una instalación local ya migrada que todavía utiliza un usuario privilegiado, `node database/provision-local-app.js --database NOMBRE` crea el rol nuevo `pulso360_app`, otorga CRUD en tablas de dominio y lectura de migraciones, rota JWT y actualiza el `.env` local conservando credenciales de mantenimiento/prueba. Exige localhost, nombre coincidente y ausencia de ese rol; no se ejecuta automáticamente ni reinicializa datos. Después reiniciar la API. No repetirlo sobre un rol existente ni utilizarlo en un servidor remoto. Tablas nuevas de migraciones requieren otorgar permisos de dominio al usuario API con la cuenta de mantenimiento.
+
+El 2026-10-06 esta operación se ejecutó sobre `pulso360_db` local como parte de las correcciones autorizadas. No aplica a otros destinos. Las credenciales de mantenimiento siguen siendo sensibles y no deben distribuirse con el frontend ni copiarse en informes.
+
+* **Entorno de Ejecución**: Node.js 22.19 o posterior de la rama 22, con Módulos ECMAScript (`"type": "module"`). Las pruebas utilizan `--test-force-exit` y desarrollo usa `node --watch`.
 * **Framework Web**: Express.js 5 (`express.Router()`).
 * **Base de Datos**: PostgreSQL 18 (Relacional con consultas SQL nativas parametrizadas).
 * **Driver de BD**: `pg` (node-postgres) con Pool de conexiones persistente.
@@ -27,7 +37,7 @@ El directorio `backend/` sigue de manera estricta el diseño de paquetes (`P05` 
 backend/
 ├── database/                    # [P11 · persistence / C08] Esquema relacional DDL e inicialización
 │   ├── README.md                # Especificación SDD del modelo relacional (ERD)
-│   ├── schema.sql               # DDL oficial de 9 tablas, llaves foráneas e índices
+│   ├── schema.sql               # Esquema base; completar con migraciones incrementales
 │   └── seed.sql                 # Datos de prueba con los 5 usuarios demo (hashes bcrypt)
 ├── src/
 │   ├── interfaces/              # [P05 · interfaces/http / C02] Capa de transporte y HTTP
@@ -36,17 +46,14 @@ backend/
 │   │   └── controllers/         # Controladores HTTP (parseo req/res, sin SQL ni lógica)
 │   ├── middlewares/             # [P06 · middleware / C03] Filtros de seguridad y control
 │   │   ├── README.md            # Especificación SDD de autenticación, RBAC y consentimiento
-│   │   ├── authMiddleware.js    # Verificador de token JWT (Authorization: Bearer)
-│   │   ├── rbacMiddleware.js    # Guardias de autorización por rol
-│   │   └── errorMiddleware.js   # Manejador global de excepciones HTTP
+│   │   └── authMiddleware.js    # authenticate y requireRole; JWT y roles
 │   ├── domain/                  # [P08 · domain] Invariantes puros de negocio y ética
 │   │   ├── README.md            # Especificación de privacidad (bitácora aislada, k >= 5)
 │   │   └── privacyRules.js      # Lógica de validación de k-anonimato y dimensiones
 │   ├── application/             # [P07 · application / C04 y C05] Casos de uso
 │   │   ├── README.md            # Especificación SDD de servicios y reglas de negocio
-│   │   ├── authService.js       # Lógica de login, tokens y perfil
-│   │   ├── agentService.js      # Registro de check-ins y bitácoras
-│   │   └── sstService.js        # Gestión de alertas, intervenciones y reportes
+│   │   ├── services/            # Login, registros propios, SST, reportes y otros casos de uso
+│   │   └── errors/AppError.js   # Error de aplicación con código y estado HTTP
 │   ├── infrastructure/          # [P10 · infrastructure / C07] Acceso a BD y utilidades
 │   │   ├── README.md            # Especificación SDD del pool de conexiones y repositorios
 │   │   ├── db.js                # Instancia y exportación del Pool de conexiones de `pg`
@@ -70,7 +77,7 @@ backend/
 
 ### Prerrequisitos
 * PostgreSQL 18 instalado y corriendo localmente en el puerto `5432`.
-* Node.js v18+ y npm instalados.
+* Node.js 22.19 o posterior de la rama 22 y npm instalados.
 
 ### 1. Variables de Entorno (`.env`)
 Asegúrate de que el archivo `.env` en la raíz de `backend/` contenga:
@@ -82,23 +89,23 @@ NODE_ENV=development
 DB_HOST=127.0.0.1
 DB_PORT=5432
 DB_NAME=pulso360_db
-DB_USER=postgres
-DB_PASSWORD=postgres
+DB_USER=pulso360_app
+DB_PASSWORD=
 
-JWT_SECRET=pulso360_super_secret_jwt_key_2026_academica
+JWT_SECRET=
 JWT_EXPIRES_IN=8h
 CORS_ORIGIN=http://localhost:5173
 ```
+
+Los valores vacíos requieren credenciales locales propias y el secreto aleatorio descrito arriba; esta plantilla no permite iniciar la API sin completarlos. No utilizar cuentas de superusuario en la ejecución normal. Para una instalación nueva, el administrador crea la base/esquema con su cuenta de mantenimiento y provisiona el rol de aplicación antes de arrancar la API.
 
 ### 2. Inicialización de Base de Datos (Si se requiere recrear)
 La actualización de los contratos C01–C25 utiliza las migraciones incrementales de la sección 6. No ejecutar `schema.sql` ni `seed.sql` sobre una base con datos para aplicar esta actualización.
 Para cargar el esquema DDL y los datos demo en PostgreSQL:
 
 ```powershell
-$env:PGPASSWORD = "postgres"
-& "C:\Program Files\PostgreSQL\18\bin\psql.exe" -U postgres -h 127.0.0.1 -d pulso360_db -f backend/database/schema.sql
-& "C:\Program Files\PostgreSQL\18\bin\psql.exe" -U postgres -h 127.0.0.1 -d pulso360_db -f backend/database/seed.sql
-$env:PGPASSWORD = $null
+& "C:\Program Files\PostgreSQL\18\bin\psql.exe" -U postgres -h 127.0.0.1 -d pulso360_db -f database/schema.sql
+& "C:\Program Files\PostgreSQL\18\bin\psql.exe" -U postgres -h 127.0.0.1 -d pulso360_db -f database/seed.sql
 ```
 
 ### 3. Comprobar Conexión con PostgreSQL
@@ -147,7 +154,7 @@ Los contratos completos están en [OpenAPI](src/interfaces/contracts/openapi.jso
 - `001_integration_contracts`: tokens de recuperación, versión de autenticación, contenido de léxico e historial de activaciones, propuesta/aprobación de reglas, formato de hash de auditoría y motivo de descarte separado.
 - `002_current_lexicon`: registra únicamente el diccionario existente `lexico-v1.2`, conservado en `database/lexicon-current.json`, con hash SHA-256 canónico. No agrega términos ni versiones de producto. Las versiones sin contenido íntegro no son activables.
 - `003_followup_action`: conserva el tipo de acción que ya ofrece el formulario de seguimiento; las notas históricas permanecen intactas.
-- `004_weekly_alert_job`: agrega cursor, ejecuciones, motivos sin datos personales y metadatos de alertas semanales. Su aplicación y activación en la base habitual están pendientes de aprobación específica.
+- `004_weekly_alert_job`: agrega cursor, ejecuciones, motivos sin datos personales y metadatos de alertas semanales. Verificar su registro y checksum en cada destino antes de activar el job. En la lectura local del 2026-10-06 ya estaba aplicada en principal y prueba; no acredita otros entornos ni un scheduler activo.
 
 Validación reproducible desde `backend/`, con la base separada ya preparada a partir del esquema canónico y su semilla académica:
 

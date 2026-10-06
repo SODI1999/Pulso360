@@ -4,41 +4,37 @@ import request from "supertest";
 import app from "../../src/app.js";
 import { pool } from "../../src/infrastructure/db.js";
 import { assertErrorContract, assertSuccessContract } from "../harness/contractValidator.js";
+import { randomUUID } from 'node:crypto';
 
 describe("Sprint 3 · SST, Supervision & k-Anonymity Analytics Contract Tests", () => {
   let sstToken = "";
   let supervisorToken = "";
   let agentToken = "";
+  const marker = 'test-sst-' + randomUUID().slice(0,8);
+  const userIds = [1,2,3,4,5].map(i => `${marker}-usr-${i}`);
+  let interventionId, supportId;
 
   before(async () => {
-    // 1. Limpieza preventiva de datos previos de pruebas
-    await pool.query("DELETE FROM daily_checkins WHERE id LIKE 'test-chk-%'");
-    await pool.query("DELETE FROM asignaciones_usuario_equipo WHERE id LIKE 'test-asig-%'");
-    await pool.query("DELETE FROM consentimientos WHERE id LIKE 'test-con-%'");
-    await pool.query("DELETE FROM usuarios WHERE id LIKE 'test-usr-%'");
-    await pool.query("DELETE FROM sst_intervenciones WHERE id LIKE 'int-%' AND id NOT IN ('int-1', 'int-2')");
-    await pool.query("DELETE FROM solicitudes_apoyo WHERE id LIKE 'sup-%' AND id NOT IN ('req-1')");
-
-    // 2. Insertar 4 usuarios agentes adicionales para conformar cohorte de k >= 5 en team-alpha-1 (junto con usr-1)
+    // Cohorte propia: no borrar registros técnicos de otras ejecuciones o recorridos.
     for (let i = 1; i <= 5; i++) {
       await pool.query(
         "INSERT INTO usuarios (id, rol_codigo, correo_institucional, contrasena_hash, nombres, apellidos) SELECT $1, 'AGENTE', $2, contrasena_hash, 'Fixture', $3 FROM usuarios WHERE id='usr-1' ON CONFLICT (id) DO NOTHING",
-        [`test-usr-${i}`, `testagent${i}@pulso360.co`, `Agente ${i}`]
+        [userIds[i-1], `${userIds[i-1]}@example.test`, `Agente ${i}`]
       );
 
       await pool.query(
         "INSERT INTO asignaciones_usuario_equipo (id, usuario_id, equipo_id, tipo_asignacion, fecha_inicio, activa) VALUES ($1, $2, 'team-alpha-1', 'AGENTE', '2026-01-01', TRUE) ON CONFLICT (id) DO NOTHING",
-        [`test-asig-${i}`, `test-usr-${i}`]
+        [`${marker}-asig-${i}`, userIds[i-1]]
       );
 
       await pool.query(
         "INSERT INTO daily_checkins (id, usuario_id, asignacion_id, journey_key, checkin_date, energia, carga_emocional, recuperacion, apoyo, distanciamiento, ineficacia) VALUES ($1, $2, $3, 'TEST', '2026-08-20', 4, 3, 3, 4, 2, 2) ON CONFLICT (id) DO NOTHING",
-        [`test-chk-${i}`, `test-usr-${i}`, `test-asig-${i}`]
+        [`${marker}-chk-${i}`, userIds[i-1], `${marker}-asig-${i}`]
       );
       
       await pool.query(
         "INSERT INTO consentimientos (id, usuario_id, politica_id, tipo_evento, acepta_politica, acepta_aviso_privacidad, c1_checkin, c2_bitacora, c3_apoyo, c4_analitica, c5_contacto) SELECT $1, $2, id, 'INICIAL', TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE FROM politicas_privacidad WHERE estado='PUBLICADA' AND vigente_desde<=NOW() ORDER BY vigente_desde DESC,created_at DESC,id DESC LIMIT 1 ON CONFLICT (id) DO NOTHING",
-        [`test-con-${i}`, `test-usr-${i}`]
+        [`${marker}-con-${i}`, userIds[i-1]]
       );
     }
 
@@ -55,22 +51,19 @@ describe("Sprint 3 · SST, Supervision & k-Anonymity Analytics Contract Tests", 
 
     const agentRes = await request(app)
       .post("/api/v1/auth/login")
-      .send({ correo: "testagent1@pulso360.co", contrasena: "Pulso360#2026" });
+      .send({ correo: `${userIds[0]}@example.test`, contrasena: "Pulso360#2026" });
     agentToken = agentRes.body.data.token;
   });
 
   after(async () => {
     try {
-      await pool.query("DELETE FROM daily_checkins WHERE id LIKE 'test-chk-%'");
-      await pool.query("DELETE FROM consentimientos WHERE id LIKE 'test-con-%'");
-      await pool.query("DELETE FROM asignaciones_usuario_equipo WHERE id LIKE 'test-asig-%'");
-      await pool.query("DELETE FROM usuarios WHERE id LIKE 'test-usr-%'");
-      await pool.query("DELETE FROM sst_intervenciones WHERE id LIKE 'int-%' AND id NOT IN ('int-1', 'int-2')");
-      await pool.query("DELETE FROM solicitudes_apoyo WHERE id LIKE 'sup-%' AND id NOT IN ('req-1')");
-      await pool.end();
-    } catch {
-      // Ignorar errores si pool ya fue cerrado
-    }
+      if (supportId) await pool.query('DELETE FROM solicitudes_apoyo WHERE id=$1', [supportId]);
+      if (interventionId) await pool.query('DELETE FROM sst_intervenciones WHERE id=$1', [interventionId]);
+      await pool.query('DELETE FROM daily_checkins WHERE usuario_id=ANY($1::varchar[])', [userIds]);
+      await pool.query('DELETE FROM consentimientos WHERE usuario_id=ANY($1::varchar[])', [userIds]);
+      await pool.query('DELETE FROM asignaciones_usuario_equipo WHERE usuario_id=ANY($1::varchar[])', [userIds]);
+      await pool.query('DELETE FROM usuarios WHERE id=ANY($1::varchar[])', [userIds]);
+    } finally { await pool.end(); }
   });
 
   describe("Autenticación y tokens de roles", () => {
@@ -224,6 +217,7 @@ describe("Sprint 3 · SST, Supervision & k-Anonymity Analytics Contract Tests", 
       const data = res.body.data;
       assert.ok(data.id, "Debe incluir el id generado");
       assert.equal(data.status, "Activa", "El estado inicial debe ser 'Activa'");
+      interventionId = data.id;
       assert.ok(data.created_at, "Debe contener timestamp created_at");
     });
 
@@ -290,6 +284,7 @@ describe("Sprint 3 · SST, Supervision & k-Anonymity Analytics Contract Tests", 
       assert.ok(data.id, "Debe retornar id de la solicitud");
       assert.ok(data.code, "Debe retornar código de radicado");
       assert.ok(data.code.startsWith("ANON-"), "Código anónimo debe iniciar con prefijo ANON-");
+      supportId = data.id;
       assert.equal(data.status, "Recibida", "El estado inicial debe ser 'Recibida'");
       assert.equal(data.sla, "24 h habiles", "El SLA estándar debe ser '24 h habiles'");
     });

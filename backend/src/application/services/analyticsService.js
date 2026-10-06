@@ -25,7 +25,7 @@ export const analyticsService = {
     if ([desde,hasta].some(value => value !== undefined && !isCalendarDate(value)) || (desde && hasta && desde > hasta)) {
       throw new AppError('Periodo inválido','INVALID_METRICS_PERIOD',400);
     }
-    // 1. Contar participantes únicos en la cohorte para verificar el tamaño de la muestra.
+    // Una única consulta obtiene muestra y medias del mismo conjunto con consentimiento vigente.
     const snapshot = await analyticsRepository.getSnapshot({ campanaId, equipoId, desde, hasta });
     const cohortCount = snapshot.cohort_count;
     
@@ -43,7 +43,7 @@ export const analyticsService = {
       };
     }
 
-    // 4. Con k-anonimato garantizado, consultamos a la base de datos por los promedios seguros.
+    // El snapshot aplica también protección por dimensión; no realizar otra consulta de medias.
     const averages = snapshot.metrics;
     
     return {

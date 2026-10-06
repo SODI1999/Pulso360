@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { AppError } from '../application/errors/AppError.js';
 import { userRepository } from '../infrastructure/repositories/userRepository.js';
+import { getJwtSecret } from '../infrastructure/jwtConfig.js';
 
 export const authenticate = async (req, res, next) => {
   const authHeader = req.headers.authorization;
@@ -14,11 +15,7 @@ export const authenticate = async (req, res, next) => {
 
   const token = authHeader.split(' ')[1];
   try {
-    const rawSecret = process.env.JWT_SECRET || 'secret';
-    if (process.env.NODE_ENV !== 'test' && (rawSecret === 'secret' || rawSecret.trim().length < 5)) {
-      return next(new AppError('Configuración insegura: no se permite llave trivial en entorno real', 'AUTH_INSECURE_CONFIG', 500));
-    }
-    const decoded = jwt.verify(token, rawSecret);
+    const decoded = jwt.verify(token, getJwtSecret(), { algorithms: ['HS256'] });
     
     const user = await userRepository.findProfileById(decoded.id);
     if (!user || user.estado !== 'Activo') {
