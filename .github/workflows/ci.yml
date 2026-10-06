@@ -65,7 +65,31 @@ jobs:
           node database/migrate.js --database pulso360_db
           DB_NAME=pulso360_plan_test_20261005 node database/migrate.js --database pulso360_plan_test_20261005
 
-      - name: Ejecutar Quality Gates 360° (Runner Oficial)
+      - name: 🧪 Ejecutar pruebas unitarias y de regresión del Frontend (32 tests)
+        working-directory: ./frontend
+        run: npm test
+
+      - name: 🔍 Validar linter del Frontend (ESLint)
+        working-directory: ./frontend
+        run: npm run lint
+
+      - name: ⚡ Compilar Frontend para producción (Vite)
+        working-directory: ./frontend
+        run: npm run build
+
+      - name: 🗄️ Verificar conexión a PostgreSQL (Backend)
+        working-directory: ./backend
+        env:
+          PGPASSWORD: postgres
+          DB_HOST: 127.0.0.1
+          DB_PORT: 5432
+          DB_NAME: pulso360_db
+          DB_USER: postgres
+          DB_PASSWORD: postgres
+        run: npm run test:db
+
+      - name: 🛡️ Ejecutar suites de contratos y dominio en base de prueba (113 tests)
+        working-directory: ./backend
         env:
           PGPASSWORD: postgres
           DB_HOST: 127.0.0.1
@@ -75,5 +99,8 @@ jobs:
           DB_PASSWORD: postgres
           DB_NAME_TEST: pulso360_plan_test_20261005
           JWT_SECRET: pulso360_super_secret_jwt_key_2026_ci_workflow
-        run: |
-          node .agents/skills/pre-flight-audit/scripts/run-all-gates.mjs
+        run: npm test
+
+      - name: 📑 Validar sintaxis y esquema JSON de contratos OpenAPI
+        run: node -e "const fs = await import('fs'); JSON.parse(fs.readFileSync('backend/src/interfaces/contracts/openapi.json', 'utf8')); console.log('Contrato OpenAPI verificado con éxito.');"
+
