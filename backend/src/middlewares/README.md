@@ -13,4 +13,7 @@ La capa de middlewares (`backend/src/middlewares/`) implementa filtros de seguri
 - `notFoundHandler`: Captura peticiones a rutas inexistentes y devuelve respuesta semántica 404 (`RESOURCE_NOT_FOUND`).
 - `errorHandler`: Middleware global de captura de excepciones no controladas `(err, req, res, next)`. Formatea la respuesta con el sobre unificado `{ success: false, error: { message, code } }` y previene fugas de información interna en errores 5xx.
 
+### 4. `validationMiddleware.js` (Validación de Formularios / Sanitización)
+- `validateBody(schema, defaultErrorCode)`: Intercepta el cuerpo HTTP (`req.body`) antes de que alcance los controladores. Aplica el principio de *Fail-Fast* verificando campos obligatorios, tipos y longitudes mínimas. Responde 400 Bad Request ante formularios incompletos para no sobrecargar los servicios de dominio.
+
 Las finalidades de tratamiento de datos personales se comprueban en los servicios de aplicación conforme a la política vigente (C1 check-in, C2 bitácora, C3 análisis/apoyo y C4 agregación). La titularidad de los registros se valida a nivel de servicio y repositorio; ocultar controles en la interfaz no autoriza una operación.

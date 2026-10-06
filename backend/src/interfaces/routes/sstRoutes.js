@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { sstController } from '../controllers/sstController.js';
 import { authenticate, requireRole } from '../../middlewares/authMiddleware.js';
+import { validateBody } from '../../middlewares/validationMiddleware.js';
 import { listRules, proposeRule } from '../../application/services/rulesService.js';
 
 const router = Router();
@@ -54,6 +55,13 @@ router.post(
   '/interventions',
   authenticate,
   requireRole(['SST']),
+  validateBody(
+    {
+      title: { required: true, message: 'Faltan campos obligatorios para crear la intervención.', code: 'INTERVENTION_MISSING_REQUIRED_FIELDS' },
+      type: { required: true, message: 'Faltan campos obligatorios para crear la intervención.', code: 'INTERVENTION_MISSING_REQUIRED_FIELDS' }
+    },
+    'INTERVENTION_MISSING_REQUIRED_FIELDS'
+  ),
   sstController.createIntervention
 );
 

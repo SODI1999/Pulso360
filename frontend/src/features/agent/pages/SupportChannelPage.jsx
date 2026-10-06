@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 
 import { Icon } from '../../../core/components/Icon';
 import { SupportRequestForm } from '../components/SupportRequestForm';
+import { SupportChatCard } from '../components/SupportChatCard';
 import '../../../styles/apoyo.css';
 
 export function SupportChannelPage() {
@@ -93,6 +94,9 @@ export function SupportChannelPage() {
           visible para supervisores ni coordinadores de campaña.
         </p>
       </header>
+
+      {/* Chat interactivo de orientación psicosocial en tiempo real */}
+      <SupportChatCard />
 
       {/* Formulario continuo estructurado */}
       <SupportRequestForm

@@ -1,9 +1,10 @@
 import { env } from '../../../core/config/env';
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useSstDashboard } from '../hooks/useSstDashboard';
 import { Icon } from '../../../core/components/Icon';
 import { HeatmapGrid } from '../components/HeatmapGrid';
+import { useSocket } from '../../../core/socket/socketClient';
 
 import '../../../styles/sst.css';
 import '../../../styles/umbral.css';
@@ -31,6 +32,20 @@ export function SstDashboardPage() {
     reason
   } = useSstDashboard();
 
+  const { socket } = useSocket();
+  const [realtimeAlert, setRealtimeAlert] = useState(null);
+
+  useEffect(() => {
+    function handleIncomingAlert(data) {
+      setRealtimeAlert(data || { title: 'Nueva condición de riesgo psicosocial detectada.' });
+    }
+
+    socket.on('alert:new', handleIncomingAlert);
+    return () => {
+      socket.off('alert:new', handleIncomingAlert);
+    };
+  }, [socket]);
+
   // Cálculo derivado del índice de bienestar agregado
   const wellbeingScore = useMemo(() => {
     if (isProtected || !metrics) return null;
@@ -55,6 +70,43 @@ export function SstDashboardPage() {
 
   return (
     <div>
+      {realtimeAlert && (
+        <div
+          role="status"
+          aria-live="assertive"
+          className="alert-banner warning"
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '1.25rem',
+            padding: '0.85rem 1.25rem',
+            borderRadius: 'var(--radio-md)',
+            borderLeft: '4px solid #f59e0b',
+            backgroundColor: '#fffbeb'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+            <Icon name="bell" size={20} />
+            <div>
+              <strong style={{ color: '#92400e' }}>¡Alerta en Tiempo Real Detectada!</strong>
+              <div style={{ fontSize: '0.88rem', color: '#78350f' }}>
+                {realtimeAlert.campana_nombre ? `Campaña ${realtimeAlert.campana_nombre}: ` : ''}
+                {realtimeAlert.title || 'Se ha registrado una variación de carga o fatiga en la operación.'}
+              </div>
+            </div>
+          </div>
+          <button
+            type="button"
+            className="btn btn-secondary btn-sm"
+            onClick={() => setRealtimeAlert(null)}
+            aria-label="Cerrar notificación de alerta en tiempo real"
+          >
+            Entendido
+          </button>
+        </div>
+      )}
+
       {/* Cabecera */}
       <div className="page-header">
         <div>
