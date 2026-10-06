@@ -1,6 +1,6 @@
 // src/App.jsx
 // Enrutador principal de Pulso360 con arquitectura RBAC y Layout Maestro
-import { useEffect } from 'react';
+import { useEffect, lazy, Suspense } from 'react';
 import axios from 'axios';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { authService, roleHomePaths } from './core/auth/authService';
@@ -8,56 +8,90 @@ import { ProtectedRoute } from './core/auth/ProtectedRoute';
 import { AppLayout } from './core/layout/AppLayout';
 import { env } from './core/config/env';
 
+// Helper para carga perezosa de componentes con exportación nombrada
+const lazyPage = (factory, name) => lazy(() => factory().then(m => ({ default: m[name] })));
+
 // Páginas de Autenticación (Hito 1)
-import { LoginPage } from './features/auth/pages/LoginPage';
-import { ConsentPage } from './features/auth/pages/ConsentPage';
-import { ForgotPasswordPage } from './features/auth/pages/ForgotPasswordPage';
-import { ResetPasswordPage } from './features/auth/pages/ResetPasswordPage';
-import { ForbiddenPage } from './features/auth/pages/ForbiddenPage';
+const LoginPage = lazyPage(() => import('./features/auth/pages/LoginPage'), 'LoginPage');
+const ConsentPage = lazyPage(() => import('./features/auth/pages/ConsentPage'), 'ConsentPage');
+const ForgotPasswordPage = lazyPage(() => import('./features/auth/pages/ForgotPasswordPage'), 'ForgotPasswordPage');
+const ResetPasswordPage = lazyPage(() => import('./features/auth/pages/ResetPasswordPage'), 'ResetPasswordPage');
+const ForbiddenPage = lazyPage(() => import('./features/auth/pages/ForbiddenPage'), 'ForbiddenPage');
 
 // Páginas del Módulo Agente (Hito 3)
-import { AgentDashboardPage } from './features/agent/pages/AgentDashboardPage';
-import { CheckinWizardPage } from './features/agent/pages/CheckinWizardPage';
-import { JournalPage } from './features/agent/pages/JournalPage';
-import { MyAnalysisPage } from './features/agent/pages/MyAnalysisPage';
-import { MyWellbeingPage } from './features/agent/pages/MyWellbeingPage';
-import { SupportChannelPage } from './features/agent/pages/SupportChannelPage';
-import { MyDataPrivacyPage } from './features/agent/pages/MyDataPrivacyPage';
-import { CrisisSupportPage } from './features/agent/pages/CrisisSupportPage';
+const AgentDashboardPage = lazyPage(() => import('./features/agent/pages/AgentDashboardPage'), 'AgentDashboardPage');
+const CheckinWizardPage = lazyPage(() => import('./features/agent/pages/CheckinWizardPage'), 'CheckinWizardPage');
+const JournalPage = lazyPage(() => import('./features/agent/pages/JournalPage'), 'JournalPage');
+const MyAnalysisPage = lazyPage(() => import('./features/agent/pages/MyAnalysisPage'), 'MyAnalysisPage');
+const MyWellbeingPage = lazyPage(() => import('./features/agent/pages/MyWellbeingPage'), 'MyWellbeingPage');
+const SupportChannelPage = lazyPage(() => import('./features/agent/pages/SupportChannelPage'), 'SupportChannelPage');
+const MyDataPrivacyPage = lazyPage(() => import('./features/agent/pages/MyDataPrivacyPage'), 'MyDataPrivacyPage');
+const CrisisSupportPage = lazyPage(() => import('./features/agent/pages/CrisisSupportPage'), 'CrisisSupportPage');
 
 // Páginas del Módulo Supervisor (Hito 4)
-import { TeamDashboardPage } from './features/supervisor/pages/TeamDashboardPage';
-import { ActionsPage } from './features/supervisor/pages/ActionsPage';
+const TeamDashboardPage = lazyPage(() => import('./features/supervisor/pages/TeamDashboardPage'), 'TeamDashboardPage');
+const ActionsPage = lazyPage(() => import('./features/supervisor/pages/ActionsPage'), 'ActionsPage');
 
 // Páginas del Módulo SST (Hito 5)
-import { SstDashboardPage } from './features/sst/pages/SstDashboardPage';
-import { AlertsInboxPage } from './features/sst/pages/AlertsInboxPage';
-import { AlertRulesPage } from './features/sst/pages/AlertRulesPage';
-import { InterventionsPage } from './features/sst/pages/InterventionsPage';
-import { SupportInboxPage } from './features/sst/pages/SupportInboxPage';
+const SstDashboardPage = lazyPage(() => import('./features/sst/pages/SstDashboardPage'), 'SstDashboardPage');
+const AlertsInboxPage = lazyPage(() => import('./features/sst/pages/AlertsInboxPage'), 'AlertsInboxPage');
+const AlertRulesPage = lazyPage(() => import('./features/sst/pages/AlertRulesPage'), 'AlertRulesPage');
+const InterventionsPage = lazyPage(() => import('./features/sst/pages/InterventionsPage'), 'InterventionsPage');
+const SupportInboxPage = lazyPage(() => import('./features/sst/pages/SupportInboxPage'), 'SupportInboxPage');
 
 // Páginas del Módulo Auditor (Hito 6)
-import { AuditLogPage } from './features/auditor/pages/AuditLogPage';
+const AuditLogPage = lazyPage(() => import('./features/auditor/pages/AuditLogPage'), 'AuditLogPage');
 
 // Páginas del Módulo Administrador (Hito 6)
-import { OrganizationPage } from './features/admin/pages/OrganizationPage';
-import { UsersRolesPage } from './features/admin/pages/UsersRolesPage';
-import { SystemParamsPage } from './features/admin/pages/SystemParamsPage';
-import { CsvImportPage } from './features/admin/pages/CsvImportPage';
-import { HabeasDataPage } from './features/admin/pages/HabeasDataPage';
+const OrganizationPage = lazyPage(() => import('./features/admin/pages/OrganizationPage'), 'OrganizationPage');
+const UsersRolesPage = lazyPage(() => import('./features/admin/pages/UsersRolesPage'), 'UsersRolesPage');
+const SystemParamsPage = lazyPage(() => import('./features/admin/pages/SystemParamsPage'), 'SystemParamsPage');
+const CsvImportPage = lazyPage(() => import('./features/admin/pages/CsvImportPage'), 'CsvImportPage');
+const HabeasDataPage = lazyPage(() => import('./features/admin/pages/HabeasDataPage'), 'HabeasDataPage');
 
 // Páginas Compartidas y Cierre (Hito 7)
-import { ReportsPage } from './features/reports/pages/ReportsPage';
-import { NotificationsPage } from './features/notifications/pages/NotificationsPage';
-import { LandingPage } from './features/landing/pages/LandingPage';
-import { ContactenosPage } from './features/landing/pages/ContactenosPage';
-import { AcademicFoundationPage } from './features/landing/pages/AcademicFoundationPage';
+const ReportsPage = lazyPage(() => import('./features/reports/pages/ReportsPage'), 'ReportsPage');
+const NotificationsPage = lazyPage(() => import('./features/notifications/pages/NotificationsPage'), 'NotificationsPage');
+const LandingPage = lazyPage(() => import('./features/landing/pages/LandingPage'), 'LandingPage');
+const ContactenosPage = lazyPage(() => import('./features/landing/pages/ContactenosPage'), 'ContactenosPage');
+const AcademicFoundationPage = lazyPage(() => import('./features/landing/pages/AcademicFoundationPage'), 'AcademicFoundationPage');
 
 // Componente para resolver la ruta raíz según el rol del usuario conectado
 function RootRedirect() {
   const user = authService.getCurrentUser();
   if (!user) return <Navigate to="/login" replace />;
   return <Navigate to={roleHomePaths[user.role] || '/login'} replace />;
+}
+
+function PageLoadingFallback() {
+  return (
+    <div
+      role="status"
+      aria-live="polite"
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: '50vh',
+        padding: '32px',
+        color: 'var(--color-text-muted, #64748b)'
+      }}
+    >
+      <div
+        style={{
+          width: '32px',
+          height: '32px',
+          border: '3px solid rgba(0,0,0,0.08)',
+          borderTopColor: 'var(--color-primary, #0284c7)',
+          borderRadius: '50%',
+          animation: 'spin 0.8s linear infinite',
+          marginBottom: '12px'
+        }}
+      />
+      <span style={{ fontSize: '14px', fontWeight: 500 }}>Cargando módulo de Pulso360...</span>
+    </div>
+  );
 }
 
 function App() {
@@ -74,7 +108,8 @@ function App() {
 
   return (
     <BrowserRouter>
-      <Routes>
+      <Suspense fallback={<PageLoadingFallback />}>
+        <Routes>
         {/* 1. Rutas Públicas de Autenticación y Demostración */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/recuperar-clave" element={<ForgotPasswordPage />} />
@@ -305,6 +340,7 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      </Suspense>
     </BrowserRouter>
   );
 }
