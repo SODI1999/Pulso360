@@ -1,4 +1,5 @@
 import { Icon } from '../../../core/components/Icon';
+import { env } from '../../../core/config/env';
 
 export function ReportConfiguration({
   handleGenerateReport,
@@ -42,12 +43,12 @@ export function ReportConfiguration({
           >
             {availableScopes.map((scope) => (
               <option key={scope.id} value={scope.id}>
-                {scope.label} (N = {scope.n})
+                {scope.label}{scope.n == null ? '' : ` (N = ${scope.n})`}
               </option>
             ))}
           </select>
           <span className="form-hint">
-            {currentScope?.n < minThreshold ? (
+            {currentScope?.n == null ? 'El servidor comprobará la muestra del periodo seleccionado.' : currentScope.n < minThreshold ? (
               <strong style={{ color: '#b45309' }}>
                 Corte con N = {currentScope.n} (Bajo umbral confidencial N &ge; {minThreshold})
               </strong>
@@ -110,11 +111,13 @@ export function ReportConfiguration({
               <input
                 type="checkbox"
                 checked={sections.participacion}
+                disabled={!env.useMockStorage}
                 onChange={(e) => setSections({ ...sections, participacion: e.target.checked })}
               />
               <span>Participación en check-in</span>
             </label>
           </div>
+          {!env.useMockStorage && <p className="form-hint">La tasa de participación no está disponible: el contrato actual no ofrece el total de personas elegibles del periodo.</p>}
         </div>
 
         {/* Formato de Exportación */}
@@ -139,7 +142,7 @@ export function ReportConfiguration({
                 checked={format === 'PDF'}
                 onChange={() => setFormat('PDF')}
               />
-              <span>PDF</span>
+              <span>PDF mediante impresión</span>
             </label>
             <label className="reports-radio-label">
               <input

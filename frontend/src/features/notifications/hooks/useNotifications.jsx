@@ -11,6 +11,8 @@ export function useNotifications() {
   const currentUser = authService.getCurrentUser();
   const navigate = useNavigate();
   const [version, setVersion] = useState(0);
+  const [loadError,setLoadError] = useState('');
+  const [loading,setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState('all'); // 'all' | 'unread'
   const [apiNotifications, setApiNotifications] = useState(null);
 
@@ -22,11 +24,12 @@ export function useNotifications() {
 
   useEffect(() => {
     let active = true;
+    setLoading(true); setLoadError('');
     fetchNotifications().then(data => {
       if (active && data) {
         setApiNotifications(data);
       }
-    });
+    }).catch(error => { if(active) setLoadError(error.message); }).finally(() => { if(active) setLoading(false); });
     return () => { active = false; };
   }, [version]);
 
@@ -68,7 +71,8 @@ export function useNotifications() {
   const handleNotificationClick = async (e, notif) => {
     e.preventDefault();
 
-    if (await markNotificationRead(notif)) setVersion((v) => v + 1);
+    try { const result = await markNotificationRead(notif); if (result.success !== true) throw new Error(result.error?.message || 'No se pudo actualizar la lectura.'); setVersion((v) => v + 1); }
+    catch(error) { setLoadError(error.message); return; }
     if (notif.href) {
       navigate(notif.href);
     }
@@ -76,7 +80,8 @@ export function useNotifications() {
 
   // Marcar todas las notificaciones como leídas
   const handleMarkAllRead = async () => {
-    if (await markAllRead(currentUser)) setVersion((v) => v + 1);
+    try { const result = await markAllRead(currentUser); if (result.success !== true) throw new Error(result.error?.message || 'No se pudo actualizar la lectura.'); setVersion((v) => v + 1); }
+    catch(error) { setLoadError(error.message); }
   };
 
   const formatDate = (isoString) => {
@@ -97,7 +102,7 @@ export function useNotifications() {
     navigate(roleHomePath);
   };
 
-  return {
+  return { loading,loadError,
     activeFilter,
     setActiveFilter,
     userNotifications,

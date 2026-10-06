@@ -15,7 +15,7 @@ import '../../../styles/agent.css';
 
 export function CheckinWizardPage() {
   const navigate = useNavigate();
-  const {
+  const { loading,loadError,
     data,
     consent,
     isOutsideShift,
@@ -37,6 +37,9 @@ export function CheckinWizardPage() {
     updateDraftValue,
     handleSubmit
   } = useCheckinWizard();
+  if (loading) return <p className="agent-page" role="status">Cargando tus registros…</p>;
+  if (loadError) return <p className="agent-page alert-banner danger" role="alert">{loadError}</p>;
+
 
   if (!consent?.c1) {
     return (

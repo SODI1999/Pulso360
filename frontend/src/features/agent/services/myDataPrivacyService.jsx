@@ -6,13 +6,13 @@ import { env } from '../../../core/config/env';
 export async function createHabeasRequest(requestType, currentUser, noteText) {
   if (!env.useMockStorage) {
     if (!getAuthToken()) {
-      return { error: 'Sesión no válida o token ausente' };
+      return { success:false,data:null,error: 'Sesión no válida o token ausente' };
     }
     try {
       const res = await apiClient.post('/agent/habeas-data', { type: requestType, note: noteText });
-      return { generatedId: res.data.id };
+      return { ...res,generatedId: res.data.id };
     } catch (err) {
-      return { error: err.response?.data?.error?.message || 'Error al crear solicitud Habeas Data en el servidor' };
+      return { success:false,data:null,error: err.response?.data?.error?.message || 'Error al crear solicitud Habeas Data en el servidor' };
     }
   }
 
@@ -43,7 +43,7 @@ export async function createHabeasRequest(requestType, currentUser, noteText) {
     target: `${generatedId} · ${requestType}`
   });
 
-  return { generatedId };
+  return { success:true,data:{id:generatedId},generatedId };
 }
 
 const addBusinessDays = (startDate, daysCount) => {

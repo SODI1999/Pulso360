@@ -25,12 +25,15 @@ export function MyAnalysisPage() {
   const currentUser = authService.getCurrentUser();
   const [data, setData] = useState(() => getAgentRecords(currentUser?.id));
 
+  const [loadError,setLoadError] = useState('');
+  const [loading,setLoading] = useState(!env.useMockStorage);
   useEffect(() => {
     let mounted = true;
     if (!env.useMockStorage && currentUser?.id) {
       fetchAgentRecords(currentUser.id).then((remoteData) => {
         if (mounted && remoteData) setData(remoteData);
-      });
+      }).catch(error => { if(mounted) setLoadError(error.message); })
+        .finally(() => { if(mounted) setLoading(false); });
     }
     return () => { mounted = false; };
   }, [currentUser?.id]);
@@ -57,6 +60,8 @@ export function MyAnalysisPage() {
       .sort((a, b) => b.count - a.count);
   }, [analyzedJournals]);
 
+  if (loading) return <p role="status">Cargando análisis…</p>;
+  if (loadError) return <p className="alert-banner danger" role="alert">{loadError}</p>;
   return (
     <div className="agent-page analysis-editorial-page">
       {/* 1. Subnavegación secundaria sobria */}
@@ -92,7 +97,7 @@ export function MyAnalysisPage() {
       <section className="agent-notice agent-notice--flat analysis-privacy-notice" aria-label="Garantía de privacidad">
         <Icon name="shieldCheck" size={18} className="agent-notice-icon" />
         <div className="agent-notice-text">
-          <strong>Espacio personal y procesamiento local:</strong> Este análisis se genera exclusivamente en la memoria de tu dispositivo a partir de tus notas. Es confidencial para tu autorreflexión y no se comparte con supervisión ni SST.
+          <strong>Espacio personal y procesamiento local:</strong> La clasificación se calcula en tu dispositivo y su resultado se guarda con tu entrada privada. Es confidencial para tu autorreflexión y no se comparte con supervisión ni SST.
         </div>
       </section>
 

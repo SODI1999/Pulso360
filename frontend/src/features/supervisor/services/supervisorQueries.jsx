@@ -1,8 +1,10 @@
 import { pulsoStore } from '../../../core/storage/pulsoStore';
 import { apiClient, getAuthToken } from '../../../core/api/apiClient';
+import { normalizeIntervention } from '../../../core/api/interventionContract';
 import { env } from '../../../core/config/env';
 
 export function getSupervisorData() {
+  if (!env.useMockStorage) return { settings: { umbralMinimo:5 }, interventions:[] };
   const { settings, interventions } = pulsoStore.get();
   return { settings, interventions };
 }
@@ -17,19 +19,19 @@ export function getSupervisorData() {
  * @param {string} campanaId
  * @returns {Promise<Object>}
  */
-export async function fetchSupervisorMetrics(campanaId = 'camp-1', equipoId = 'team-alpha-1', scopeFilter = 'all') {
+export async function fetchSupervisorMetrics(campanaId = null, equipoId = null, scopeFilter = 'all', periodFilter = 'w34') {
   let cId = campanaId;
   let eqId = equipoId;
   let sFilter = scopeFilter;
 
   if (typeof campanaId === 'object' && campanaId !== null) {
-    cId = campanaId.campanaId || 'camp-1';
-    eqId = campanaId.equipoId || 'team-alpha-1';
+    cId = campanaId.campanaId || null;
+    eqId = campanaId.equipoId || null;
     sFilter = campanaId.scopeFilter || 'all';
   }
 
   // Simulación contextual si se selecciona un subgrupo deliberadamente protegido (N < 5)
-  if (sFilter === 'small') {
+  if (env.useMockStorage && sFilter === 'small') {
     return {
       protected: true,
       reason: 'Información protegida: la cohorte seleccionada (N=3) no alcanza el umbral mínimo de k-anonimato (k < 5) para prevenir la reidentificación de respuestas.',
@@ -42,7 +44,9 @@ export async function fetchSupervisorMetrics(campanaId = 'camp-1', equipoId = 't
   if (!env.useMockStorage) {
     if (!getAuthToken()) return { error: 'No autorizado' };
     try {
-      const response = await apiClient.get('/sst/metrics', { params: { campana_id: cId, equipo_id: eqId } });
+      if (!cId && !eqId) return { error: 'No tienes un ámbito operativo asignado.' };
+      const period = periodFilter === 'm08' ? {desde:'2026-08-01',hasta:'2026-08-31'} : {desde:'2026-08-18',hasta:'2026-08-24'};
+      const response = await apiClient.get('/sst/metrics', { params: { campana_id: cId, equipo_id: eqId, ...period } });
       const payload = response?.data !== undefined ? response.data : response;
       if (payload) {
         return payload;
@@ -62,18 +66,14 @@ export async function fetchSupervisorMetrics(campanaId = 'camp-1', equipoId = 't
  */
 export async function fetchSupervisorActions() {
   if (!env.useMockStorage) {
-    if (!getAuthToken()) return [];
+    if (!getAuthToken()) throw new Error('Sesión no válida o expirada.');
     try {
       const res = await apiClient.get('/supervisor/actions');
       const payload = res.data?.data !== undefined ? res.data.data : res.data;
       const arrayPayload = Array.isArray(payload) ? payload : [];
-      return arrayPayload.map(item => ({
-        ...item,
-        assignedTo: item.assigned_to || item.assignedTo
-      }));
+      return arrayPayload.map(normalizeIntervention);
     } catch (err) {
-      console.warn('Backend inalcanzable, retornando vacío.', err.message);
-      return [];
+      throw new Error(err.response?.data?.error?.message || 'No se pudieron cargar las acciones.');
     }
   }
 

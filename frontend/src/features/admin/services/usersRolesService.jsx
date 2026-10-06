@@ -4,14 +4,14 @@ import { pulsoStore } from '../../../core/storage/pulsoStore';
 import { apiClient, getAuthToken } from '../../../core/api/apiClient';
 import { env } from '../../../core/config/env';
 
-export async function saveCreateUser(email, orgScopes, orgScopeId, name, role, status) {
+export async function saveCreateUser(email, orgScopes, orgScopeId, name, role, status, password) {
   if (!env.useMockStorage) {
     if (!getAuthToken()) {
-      return { error: 'Sesión no válida o token ausente' };
+      return { success:false,data:null,error: 'Sesión no válida o token ausente' };
     }
     const targetScope = orgScopes.find((s) => s.id === orgScopeId);
     if (!targetScope) {
-      return { error: 'La asignación organizacional seleccionada no es válida.' };
+      return { success:false,data:null,error: 'La asignación organizacional seleccionada no es válida.' };
     }
     const parts = name.trim().split(/\s+/);
     const nombres = parts[0] || name.trim();
@@ -22,11 +22,11 @@ export async function saveCreateUser(email, orgScopes, orgScopeId, name, role, s
         nombres,
         apellidos,
         rolCodigo: role.toUpperCase(),
-        equipoId: targetScope?.teamId
+        equipoId: targetScope?.teamId, status, contrasena: password
       });
-      return { newUser: res.data };
+      return { ...res, newUser: res.data };
     } catch (error) {
-      return { error: error.response?.data?.error?.message || 'Error al registrar usuario en el servidor.' };
+      return { success:false,data:null,error: error.response?.data?.error?.message || 'Error al registrar usuario en el servidor.' };
     }
   }
 
@@ -35,12 +35,12 @@ export async function saveCreateUser(email, orgScopes, orgScopeId, name, role, s
   // Validación atómica: correo único
   const emailExists = (data.users || []).some((u) => u.email.toLowerCase() === email.toLowerCase());
   if (emailExists) {
-    return { error: `El correo institucional "${email}" ya se encuentra asignado a otra cuenta.` };
+    return { success:false,data:null,error: `El correo institucional "${email}" ya se encuentra asignado a otra cuenta.` };
   }
 
   const targetScope = orgScopes.find((s) => s.id === orgScopeId);
   if (!targetScope) {
-    return { error: 'La asignación organizacional seleccionada no es válida.' };
+    return { success:false,data:null,error: 'La asignación organizacional seleccionada no es válida.' };
   }
 
   const newUserId = `usr-${Date.now()}`;
@@ -73,20 +73,21 @@ export async function saveCreateUser(email, orgScopes, orgScopeId, name, role, s
   data.users.push(newUser);
   pulsoStore.save(data);
 
-  return { newUser };
+  return { success:true,data:newUser, newUser };
 }
 
 export async function manageUser(userId, newRole, newOrgScopeId, newStatus, orgScopes, actorLabel) {
   if (!env.useMockStorage) {
     if (!getAuthToken()) {
-      return { error: 'Sesión no válida o token ausente' };
+      return { success:false,data:null,error: 'Sesión no válida o token ausente' };
     }
     try {
-      // Nota: Asumiendo que se actualiza el estado según la instrucción del plan
-      await apiClient.patch('/admin/users/' + userId + '/status', { status: newStatus });
-      return { user: { id: userId, role: newRole, status: newStatus } };
+      const scope = orgScopes.find(s => s.id === newOrgScopeId);
+      if (!scope) return { success:false,data:null,error: 'La asignación seleccionada no es válida.' };
+      const res = await apiClient.patch('/admin/users/' + userId, { status: newStatus, rolCodigo: newRole.toUpperCase(), equipoId: scope.teamId });
+      return { ...res,user: { ...res.data, name: [res.data.nombres, res.data.apellidos].join(' ') } };
     } catch (error) {
-      return { error: error.response?.data?.error?.message || 'Error al actualizar estado en el servidor.' };
+      return { success:false,data:null,error: error.response?.data?.error?.message || 'Error al actualizar estado en el servidor.' };
     }
   }
 
@@ -94,12 +95,12 @@ export async function manageUser(userId, newRole, newOrgScopeId, newStatus, orgS
   const userIndex = (data.users || []).findIndex((u) => u.id === userId);
 
   if (userIndex === -1) {
-    return { error: 'El usuario no existe.' };
+    return { success:false,data:null,error: 'El usuario no existe.' };
   }
 
   const targetScope = orgScopes.find((s) => s.id === newOrgScopeId);
   if (!targetScope) {
-    return { error: 'La asignación organizacional no es válida.' };
+    return { success:false,data:null,error: 'La asignación organizacional no es válida.' };
   }
 
   const user = data.users[userIndex];
@@ -143,11 +144,11 @@ export async function manageUser(userId, newRole, newOrgScopeId, newStatus, orgS
   }
 
   if (auditEntries.length === 0) {
-    return { unchanged: true };
+    return {success:true,data:user,unchanged:true};
   }
 
   pulsoStore.save(data);
   auditEntries.forEach((entry) => pulsoStore.audit(entry));
 
-  return { user };
+  return { success:true,data:user,user };
 }

@@ -5,13 +5,13 @@ import { env } from '../../../core/config/env';
 export async function generateReport(newReportRecord) {
   if (!env.useMockStorage) {
     if (!getAuthToken()) {
-      return { error: 'Sesión no válida o token ausente' };
+      return { success:false,data:null,error: 'Sesión no válida o token ausente' };
     }
     try {
       const res = await apiClient.post('/reports', newReportRecord);
-      return { reportPayload: res.data };
+      return { ...res, reportPayload: res.data };
     } catch (err) {
-      return { error: err.response?.data?.error?.message || 'Error en el servidor' };
+      return { success:false,data:null,error: err.response?.data?.error?.message || 'Error en el servidor' };
     }
   }
 
@@ -20,5 +20,5 @@ export async function generateReport(newReportRecord) {
   data.reportHistory.unshift(newReportRecord);
   pulsoStore.save(data);
 
-  return {};
+  return {success:true,data:null};
 }

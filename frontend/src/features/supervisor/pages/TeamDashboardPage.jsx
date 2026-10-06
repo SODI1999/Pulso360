@@ -16,7 +16,7 @@ import '../../../styles/umbral.css';
 
 export function TeamDashboardPage() {
   const user = authService.getCurrentUser();
-  const [scopeFilter, setScopeFilter] = useState('all');
+  const [scopeFilter, setScopeFilter] = useState(() => user?.scopes?.[0]?.id || (env.useMockStorage ? 'all' : ''));
   const [periodFilter, setPeriodFilter] = useState('w34');
 
   const {
@@ -29,8 +29,8 @@ export function TeamDashboardPage() {
     reason,
     kpis
   } = useSupervisorMetrics({
-    campanaId: 'camp-1',
-    equipoId: 'team-alpha-1',
+    campanaId: user?.scopes?.find(s => s.id===scopeFilter)?.campana_id || user?.campaignId,
+    equipoId: env.useMockStorage ? user?.teamId : scopeFilter,
     scopeFilter,
     periodFilter
   });
@@ -53,19 +53,19 @@ export function TeamDashboardPage() {
   // Factores derivados de las métricas agregadas del equipo
   const teamFactors = useMemo(() => {
     if (!metrics) return undefined;
-    return [
+    const factors = [
       {
         name: 'Apoyo Social entre Pares',
-        score: `${toScore100(metrics.apoyo ?? metrics.apoyo_avg, 82)} / 100`,
-        status: toScore100(metrics.apoyo ?? metrics.apoyo_avg, 82) >= 70 ? 'Favorable' : 'En observación',
-        statusType: toScore100(metrics.apoyo ?? metrics.apoyo_avg, 82) >= 70 ? 'ok' : 'warn',
+        score: `${toScore100(metrics.apoyo ?? metrics.apoyo_avg)} / 100`,
+        status: toScore100(metrics.apoyo ?? metrics.apoyo_avg) >= 70 ? 'Favorable' : 'En observación',
+        statusType: toScore100(metrics.apoyo ?? metrics.apoyo_avg) >= 70 ? 'ok' : 'warn',
         recommendation: 'Mantener dinámicas de inicio de turno'
       },
       {
         name: 'Recuperación agregada',
-        score: `${toScore100(metrics.recuperacion ?? metrics.recuperacion_avg, 78)} / 100`,
-        status: toScore100(metrics.recuperacion ?? metrics.recuperacion_avg, 78) >= 70 ? 'Favorable' : 'Atención',
-        statusType: toScore100(metrics.recuperacion ?? metrics.recuperacion_avg, 78) >= 70 ? 'ok' : 'warn',
+        score: `${toScore100(metrics.recuperacion ?? metrics.recuperacion_avg)} / 100`,
+        status: toScore100(metrics.recuperacion ?? metrics.recuperacion_avg) >= 70 ? 'Favorable' : 'Atención',
+        statusType: toScore100(metrics.recuperacion ?? metrics.recuperacion_avg) >= 70 ? 'ok' : 'warn',
         recommendation: 'Resolución de dudas rápida en chat y micropausas'
       },
       {
@@ -76,6 +76,10 @@ export function TeamDashboardPage() {
         recommendation: kpis.overloadIndex > 65 ? 'Reforzar descansos cognitivos' : 'Seguimiento preventivo regular'
       }
     ];
+    return factors.map((f,index) => {
+      const value = index===0 ? (metrics.apoyo ?? metrics.apoyo_avg) : index===1 ? (metrics.recuperacion ?? metrics.recuperacion_avg) : kpis.overloadIndex;
+      return value == null ? {...f,score:'No disponible o protegido',status:'No disponible',statusType:'neutral',recommendation:'No se publica esta dimensión.'} : f;
+    });
   }, [metrics, kpis.overloadIndex]);
 
   return (
@@ -83,7 +87,7 @@ export function TeamDashboardPage() {
       {/* Cabecera del Panel */}
       <div className="page-header">
         <div>
-          <h1 className="page-title">Panel de Supervisión · Campaña Soporte Alpha</h1>
+          <h1 className="page-title">Panel de Supervisión · {user?.campaign || 'Ámbito asignado'}</h1>
           <p className="page-subtitle">
             Visualización agregada protegida por umbral de privacidad (N ≥ {minThreshold}). Esta vista no
             incluye datos individuales.
@@ -102,8 +106,8 @@ export function TeamDashboardPage() {
               value={scopeFilter}
               onChange={(e) => setScopeFilter(e.target.value)}
             >
-              <option value="all">Equipo Alpha 1 (N={!isBlocked && cohortCount > 0 ? cohortCount : 14})</option>
-              <option value="small">Subgrupo protegido (N=3)</option>
+              {env.useMockStorage ? <><option value="all">Equipo de demostración</option><option value="small">Subgrupo de muestra protegido</option></>
+                : (user?.scopes || []).map(s => <option key={s.id} value={s.id}>{s.campana_nombre} · {s.nombre}</option>)}
             </select>
           </div>
 
@@ -142,7 +146,7 @@ export function TeamDashboardPage() {
       {error && (
         <div className="alert-banner warn" role="alert" style={{ marginBottom: 'var(--space-4)' }}>
           <Icon name="alertTriangle" size={18} />
-          <span>No fue posible sincronizar las métricas en tiempo real. Mostrando último consolidado disponible.</span>
+          <span>{error.message || 'No se pudieron consultar las métricas.'}</span>
         </div>
       )}
 
@@ -161,7 +165,7 @@ export function TeamDashboardPage() {
           <Icon name="refresh" size={24} className="icon-spin" />
           <p style={{ marginTop: 'var(--space-2)' }}>Consultando métricas agregadas del equipo...</p>
         </div>
-      ) : isBlocked ? (
+      ) : error ? <p role="alert">La consulta no está disponible. Reintenta cambiando el periodo.</p> : isBlocked ? (
         <PrivacyBlockedCard sampleCount={cohortCount} minThreshold={minThreshold} customMessage={reason} />
       ) : (
         <div id="teamDashboard">
@@ -178,18 +182,18 @@ export function TeamDashboardPage() {
             <div className="supervisor-analytics-main">
               <div className="supervisor-analytics-header">
                 <div>
-                  <h2 className="supervisor-analytics-title">Tendencia Agregada del Equipo (Semanas 1 a 4)</h2>
-                  <p className="supervisor-analytics-subtitle">Evolución del índice de bienestar colectivo</p>
+                  <h2 className="supervisor-analytics-title">{env.useMockStorage ? "Tendencia Agregada del Equipo (Semanas 1 a 4)" : "Serie histórica del equipo"}</h2>
+                  <p className="supervisor-analytics-subtitle">{env.useMockStorage ? "Evolución del índice de bienestar colectivo" : "Esta consulta ofrece promedios del periodo; no ofrece una serie histórica."}</p>
                 </div>
                 <span className="badge badge-info">N = {cohortCount} Agentes</span>
               </div>
               <div className="supervisor-chart-container">
-                <TrendLineChart
+                {env.useMockStorage && <TrendLineChart
                   labels={['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4']}
                   values={kpis.trendValues}
                   strokeColor="#2563eb"
                   height={220}
-                />
+                />}
               </div>
             </div>
 
@@ -201,8 +205,7 @@ export function TeamDashboardPage() {
               <div className="supervisor-aside-body">
                 <h4 className="supervisor-aside-topic">Pausas &amp; Recuperación</h4>
                 <p className="supervisor-aside-text">
-                  SST recomienda coordinar pausas de 5 min escalonadas para el turno de la tarde ante reportes
-                  de alta carga de llamadas en colas críticas.
+                  Consulta los planes de intervención y sus responsables antes de coordinar cambios operativos.
                 </p>
               </div>
               <Link

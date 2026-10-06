@@ -1,3 +1,5 @@
+import { ruleScopeLabel } from '../../../core/api/ruleContract';
+import { authService } from '../../../core/auth/authService';
 import { Icon } from '../../../core/components/Icon';
 
 export function PendingAlertRules({ rules, handleApproveRule }) {
@@ -7,7 +9,7 @@ export function PendingAlertRules({ rules, handleApproveRule }) {
         <div>
           <h2 className="card-title">Aprobación Institucional de Reglas de Alerta</h2>
           <div className="card-subtitle">
-            Reglas automáticas propuestas por el equipo de SST pendientes de activación (RF-15).
+            Propuestas SST para revisión. Su aprobación no ejecuta alertas automáticas.
           </div>
         </div>
       </div>
@@ -18,13 +20,13 @@ export function PendingAlertRules({ rules, handleApproveRule }) {
         </p>
       ) : (
         rules.map((r) => {
-          const isPending = r.pendingApproval || !r.active;
+          const isPending = r.pendingApproval;
 
           return (
             <div key={r.id} className="rule-approval-card">
               <div>
                 <strong>{r.metric}</strong> {r.operator} <strong>{r.value}%</strong> durante {r.persistence}{' '}
-                {r.unit} · Ámbito: <em>{r.scope}</em> ({r.severity})
+                {r.unit} · Ámbito: <em>{ruleScopeLabel(r.scope, authService.getCurrentUser()?.scopes)}</em> ({r.severity})
               </div>
 
               <div>
@@ -35,10 +37,10 @@ export function PendingAlertRules({ rules, handleApproveRule }) {
                     onClick={() => handleApproveRule(r.id)}
                   >
                     <Icon name="check" size={14} />
-                    <span>Aprobar y activar</span>
+                    <span>Aprobar propuesta</span>
                   </button>
                 ) : (
-                  <span className="badge badge-ok">Activa en producción</span>
+                  <span className="badge badge-ok">Aprobada</span>
                 )}
               </div>
             </div>

@@ -10,6 +10,8 @@ import { ROLE_LABELS } from '../data/usersRolesData';
 export function useUsersRoles() {
   const currentUser = authService.getCurrentUser();
   const [version, setVersion] = useState(0);
+  const [loading, setLoading] = useState(!env.useMockStorage);
+  const [loadError, setLoadError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [roleFilter, setRoleFilter] = useState('ALL');
   const [feedback, setFeedback] = useState('');
@@ -23,6 +25,7 @@ export function useUsersRoles() {
   useEffect(() => {
     let active = true;
     const loadData = async () => {
+      setLoading(true); setLoadError('');
       if (!env.useMockStorage) {
         try {
           const [usersData, orgData] = await Promise.all([
@@ -36,10 +39,12 @@ export function useUsersRoles() {
             });
           }
         } catch (error) {
-          console.error('Error fetching live users/roles data:', error);
-        }
+          if (active) setLoadError(error.message);
+          if (active) setFeedback(`Error: ${error.message}`);
+        } finally { if (active) setLoading(false); }
       } else {
         setStoreData(getUserManagementData());
+        setLoading(false);
       }
     };
     loadData();
@@ -123,16 +128,16 @@ export function useUsersRoles() {
   }, [users, searchTerm, roleFilter]);
 
   // Creación atómica de usuario (RF-15)
-  const handleSaveCreateUser = async ({ name, email, role, orgScopeId, status, onError }) => {
-    const operationResult = await saveCreateUser(email, orgScopes, orgScopeId, name, role, status);
-    if (operationResult.error) {
+  const handleSaveCreateUser = async ({ name, email, role, orgScopeId, status, password, onError }) => {
+    const operationResult = await saveCreateUser(email, orgScopes, orgScopeId, name, role, status, password);
+    if (operationResult.success !== true) {
       onError(operationResult.error);
       return;
     }
     const { newUser } = operationResult;
 
     // Auditoría inmutable
-    pulsoStore.audit({
+    if (env.useMockStorage) pulsoStore.audit({
       actor: actorLabel,
       action: 'CREACION_USUARIO',
       target: `${newUser.id} (${newUser.email}) · Rol: ${ROLE_LABELS[newUser.role] || newUser.role} · Ámbito: ${newUser.teamName} · Estado: ${newUser.status}`
@@ -146,7 +151,7 @@ export function useUsersRoles() {
   // Gestión / edición de usuario (RF-15)
   const handleSaveManageUser = async ({ userId, newRole, newOrgScopeId, newStatus, onError }) => {
     const result = await manageUser(userId, newRole, newOrgScopeId, newStatus, orgScopes, actorLabel);
-    if (result.error) {
+    if (result.success !== true) {
       onError(result.error);
       return;
     }
@@ -158,6 +163,7 @@ export function useUsersRoles() {
   };
 
   return {
+    loading, loadError,
     currentUser,
     searchTerm,
     setSearchTerm,

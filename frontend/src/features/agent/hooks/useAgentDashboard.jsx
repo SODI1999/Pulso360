@@ -12,12 +12,15 @@ export function useAgentDashboard() {
   const navigate = useNavigate();
   const [storeData, setStoreData] = useState(() => getAgentRecords(currentUser?.id));
 
+  const [loadError,setLoadError] = useState('');
+  const [loading,setLoading] = useState(!env.useMockStorage);
   useEffect(() => {
     let mounted = true;
     if (!env.useMockStorage && currentUser?.id) {
       fetchAgentRecords(currentUser.id).then((remoteData) => {
         if (mounted && remoteData) setStoreData(remoteData);
-      });
+      }).catch(error => { if(mounted) setLoadError(error.message); })
+        .finally(() => { if(mounted) setLoading(false); });
     }
     return () => { mounted = false; };
   }, [currentUser?.id]);
@@ -158,7 +161,7 @@ export function useAgentDashboard() {
   const [isResetModalOpen, setIsResetModalOpen] = useState(false);
   const [isPerspectiveModalOpen, setIsPerspectiveModalOpen] = useState(false);
 
-  return {
+  return { loading,loadError,
     currentUser,
     consent,
     greeting,

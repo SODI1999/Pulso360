@@ -1,3 +1,7 @@
+import { useExpiredFormDraft } from '../../../core/auth/useExpiredFormDraft';
+import { ruleScopeLabel } from '../../../core/api/ruleContract';
+import { env } from '../../../core/config/env';
+import { authService } from '../../../core/auth/authService';
 // src/features/sst/components/RuleFormCard.jsx
 // Formulario y simulador reactivo para configuración de reglas preventivas de alertas (RF-08)
 
@@ -14,21 +18,25 @@ export function RuleFormCard({ onSaveRule }) {
   const [simulationResult, setSimulationResult] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
+  useExpiredFormDraft('rule:new', { metric, operator, value, persistence, severity, scope }, draft => {
+    setMetric(draft.metric); setOperator(draft.operator); setValue(draft.value); setPersistence(draft.persistence);
+    setSeverity(draft.severity); setScope(draft.scope);
+  });
   // Sentencia en lenguaje natural autogenerada
-  const ruleSentence = `Avísame cuando ${metric} ${operator} ${value}% durante ${persistence} semanas en ${scope}, con severidad ${severity}; solo si el grupo supera el umbral de privacidad (N ≥ 5).`;
+  const ruleSentence = `Propuesta: observar si ${metric} ${operator} ${value}% durante ${persistence} semanas en ${ruleScopeLabel(scope, authService.getCurrentUser()?.scopes)}, con severidad ${severity}; solo si el grupo supera el umbral de privacidad (N ≥ 5).`;
 
   const handleSimulate = () => {
     setSimulationResult(
-      `Simulación retrospectiva: esta regla habría generado 4 alertas sobre grupos evaluables en los últimos 90 días. No se crean alertas reales durante la simulación.`
+      `Demostración con datos de muestra: esta regla habría generado 4 alertas sobre grupos evaluables en los últimos 90 días. No se crean alertas reales durante la simulación.`
     );
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
 
     const newRule = {
-      id: `rule-${Date.now()}`,
+      ...(env.useMockStorage ? { id:`rule-${Date.now()}` } : {}),
       metric,
       operator,
       value: Number(value),
@@ -42,8 +50,7 @@ export function RuleFormCard({ onSaveRule }) {
       sentence: ruleSentence
     };
 
-    onSaveRule(newRule);
-    setSubmitting(false);
+    try { await onSaveRule(newRule); } finally { setSubmitting(false); }
   };
 
   return (
@@ -52,7 +59,7 @@ export function RuleFormCard({ onSaveRule }) {
         <div>
           <h2 className="card-title">Definir nueva regla preventiva</h2>
           <p className="card-subtitle">
-            Configura umbrales estadísticos agregados para activar alertas preventivas automáticas.
+            Propón condiciones para revisión administrativa. No se ejecutan alertas automáticas.
           </p>
         </div>
       </div>
@@ -152,8 +159,8 @@ export function RuleFormCard({ onSaveRule }) {
             onChange={(e) => setScope(e.target.value)}
           >
             <option value="cualquier equipo">Cualquier equipo con N ≥ 5</option>
-            <option value="Campaña Soporte Alpha">Campaña Soporte Alpha</option>
-            <option value="Campaña Retención Beta">Campaña Retención Beta</option>
+            {env.useMockStorage ? <><option value="Campaña Soporte Alpha">Campaña Soporte Alpha</option><option value="Campaña Retención Beta">Campaña Retención Beta</option></> :
+              [...new Map((authService.getCurrentUser()?.scopes || []).map(t => [t.campana_id,t.campana_nombre])).entries()].map(([id,name]) => <option key={id} value={id}>{name}</option>)}
           </select>
         </div>
 
@@ -182,9 +189,9 @@ export function RuleFormCard({ onSaveRule }) {
         )}
 
         <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-          <button type="button" className="btn btn-secondary" onClick={handleSimulate}>
+          <button type="button" className="btn btn-secondary" onClick={handleSimulate} disabled={!env.useMockStorage}>
             <Icon name="play" size={16} />
-            <span>Simular impacto</span>
+            <span>{env.useMockStorage ? 'Simular ejemplo de muestra' : 'Simulación no disponible'}</span>
           </button>
           <button type="submit" className="btn btn-primary" disabled={submitting}>
             <Icon name="save" size={16} />

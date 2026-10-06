@@ -66,15 +66,25 @@ apiClient.interceptors.request.use(
  */
 apiClient.interceptors.response.use(
   (response) => {
-    // Axios retorna un objeto de respuesta, normalmente los datos de negocio vienen en response.data
-    // Simplificamos la vida de los servicios retornando la data directamente.
+    if (response.data?.success === false) {
+      const error = new Error(response.data.error?.message || 'La operación no se completó.');
+      error.code = response.data.error?.code;
+      error.response = response;
+      return Promise.reject(error);
+    }
+    if (typeof window !== 'undefined' && ['post','put','patch','delete'].includes(response.config?.method)
+        && !response.config.url?.startsWith('/auth/') && response.config.url !== '/agent/consent') {
+      window.dispatchEvent(new Event('pulso360-api-mutation'));
+    }
     return response.data;
   },
   (error) => {
     // Si la respuesta es 401 (No autorizado), limpiamos el token y sesión.
     if (error.response && error.response.status === 401) {
+      if (typeof window !== 'undefined') window.dispatchEvent(new Event('pulso360-session-expired'));
       removeAuthToken();
       sessionData.removeItem('pulso360_current_session');
+      if (typeof window !== 'undefined') window.dispatchEvent(new Event('pulso360-session-changed'));
     }
     return Promise.reject(error);
   }

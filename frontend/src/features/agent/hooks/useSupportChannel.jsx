@@ -1,3 +1,4 @@
+import { useExpiredFormDraft } from '../../../core/auth/useExpiredFormDraft';
 import { fetchAgentRecords, getAgentRecords } from '../services/agentQueries';
 import { createSupportRequest } from '../services/supportChannelService';
 import { useState, useMemo, useEffect, useCallback } from 'react';
@@ -20,12 +21,15 @@ export function useSupportChannel() {
     }
   }, [currentUser?.id]);
 
+  const [loadError,setLoadError] = useState('');
+  const [loading,setLoading] = useState(!env.useMockStorage);
   useEffect(() => {
     let mounted = true;
     if (!env.useMockStorage && currentUser?.id) {
       fetchAgentRecords(currentUser.id).then((remoteData) => {
         if (mounted && remoteData) setData(remoteData);
-      });
+      }).catch(error => { if(mounted) setLoadError(error.message); })
+        .finally(() => { if(mounted) setLoading(false); });
     }
     return () => { mounted = false; };
   }, [currentUser?.id]);
@@ -41,6 +45,11 @@ export function useSupportChannel() {
   const [timeWindow, setTimeWindow] = useState('Cualquiera');
   const [feedback, setFeedback] = useState('');
 
+
+  useExpiredFormDraft('support:new', { supportMode, reason, details, urgency, contactPreference, timeWindow }, draft => {
+    setSupportMode(draft.supportMode); setReason(draft.reason); setDetails(draft.details); setUrgency(draft.urgency);
+    setContactPreference(draft.contactPreference); setTimeWindow(draft.timeWindow);
+  });
 
   const userRequests = useMemo(() => {
     return (data.supportRequests || []).filter((r) => r.ownerUserId === currentUser?.id);
@@ -62,19 +71,19 @@ export function useSupportChannel() {
       timeWindow
     );
 
-    if (result.error) {
+    if (result.success !== true) {
       setFeedback(`Error: ${result.error}`);
       return;
     }
 
     setDetails('');
     setFeedback(`Solicitud enviada exitosamente. Tu radicado de seguimiento es ${result.code}.`);
-    loadData();
+    loadData().catch(error => setFeedback(`Solicitud guardada; no se pudo actualizar el historial: ${error.message}`));
   };
 
   // 1. Caso: Bloqueo pedagógico por falta de consentimiento C5 (Ruta pública de apoyo permanece habilitada)
 
-  return {
+  return { loading,loadError,
     navigate,
     consent,
     setSupportMode,

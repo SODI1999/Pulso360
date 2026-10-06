@@ -1,3 +1,4 @@
+import { useExpiredFormDraft } from '../../../core/auth/useExpiredFormDraft';
 // src/features/admin/components/CampaignModal.jsx
 // Modal para creación y edición de campañas operativas (RF-15)
 
@@ -9,6 +10,7 @@ export function CampaignModal({ isOpen, onClose, onSave, campaign = null }) {
   const [name, setName] = useState('');
   const [active, setActive] = useState(true);
   const [error, setError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
   const modalRef = useRef(null);
 
   useModalA11y({ isOpen, onClose, modalRef });
@@ -24,9 +26,12 @@ export function CampaignModal({ isOpen, onClose, onSave, campaign = null }) {
     setError('');
   }, [campaign, isOpen]);
 
+  useExpiredFormDraft(`campaign:${campaign?.id || 'new'}`, { name, active }, draft => {
+    setName(draft.name); setActive(draft.active);
+  }, isOpen);
   if (!isOpen) return null;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const trimmedName = name.trim();
 
@@ -35,11 +40,16 @@ export function CampaignModal({ isOpen, onClose, onSave, campaign = null }) {
       return;
     }
 
-    onSave({
-      id: campaign?.id || null,
-      name: trimmedName,
-      active
-    });
+    setSubmitting(true);
+    try {
+      const result = await onSave({
+        id: campaign?.id || null,
+        name: trimmedName,
+        active
+      });
+      if (result?.success === false) setError(result.error?.message || result.error);
+    } catch (error) { setError(error.message); }
+    finally { setSubmitting(false); }
   };
 
   return (
@@ -103,7 +113,7 @@ export function CampaignModal({ isOpen, onClose, onSave, campaign = null }) {
             <button type="button" className="btn btn-secondary" onClick={onClose}>
               Cancelar
             </button>
-            <button type="submit" className="btn btn-primary">
+            <button type="submit" disabled={submitting} className="btn btn-primary">
               <Icon name="check" size={16} />
               <span>{campaign ? 'Guardar Cambios' : 'Crear Campaña'}</span>
             </button>

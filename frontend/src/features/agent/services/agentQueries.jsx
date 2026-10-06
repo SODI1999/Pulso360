@@ -1,9 +1,15 @@
 import { pulsoStore } from '../../../core/storage/pulsoStore';
-
 import { apiClient, getAuthToken } from '../../../core/api/apiClient';
 import { env } from '../../../core/config/env';
 
+import { normalizeConsent } from '../../../core/auth/consentContract';
+export const normalizeCheckin = (row,userId) => ({ ...row,userId,
+  journeyKey:row.checkin_date || row.journeyKey,date:row.checkin_date || row.date,
+  cargaEmocional:row.carga_emocional ?? row.cargaEmocional,
+  submittedAt:row.submitted_at || row.submittedAt });
+
 export function getAgentRecords(userId) {
+  if (!env.useMockStorage) return { settings: {}, consents: {}, checkins: [], journals: [], supportRequests: [], habeasRequests: [] };
   const data = pulsoStore.get();
   return {
     settings: data.settings,
@@ -18,15 +24,15 @@ export function getAgentRecords(userId) {
 export async function fetchAgentRecords(userId) {
   if (!env.useMockStorage) {
     if (!getAuthToken()) {
-      return { settings: {}, consents: {}, checkins: [], journals: [], supportRequests: [], habeasRequests: [] };
+      throw new Error('Sesión no válida o expirada.');
     }
     try {
       const [checkinsRes, journalsRes, supportsRes, habeasRes, consentRes] = await Promise.all([
-        apiClient.get('/agent/checkin/history').catch(() => ({ data: [] })),
-        apiClient.get('/agent/journal').catch(() => ({ data: [] })),
-        apiClient.get('/agent/support-requests').catch(() => ({ data: [] })),
-        apiClient.get('/agent/habeas-data').catch(() => ({ data: [] })),
-        apiClient.get('/agent/consent').catch(() => ({ data: null }))
+        apiClient.get('/agent/checkin/history'),
+        apiClient.get('/agent/journal'),
+        apiClient.get('/agent/support-requests'),
+        apiClient.get('/agent/habeas-data'),
+        apiClient.get('/agent/consent')
       ]);
       
       const extract = (res) => res?.data?.data || res?.data || [];
@@ -36,14 +42,16 @@ export async function fetchAgentRecords(userId) {
       const rawJournals = extract(journalsRes);
       const rawSupport = extract(supportsRes);
       const rawHabeas = extract(habeasRes);
-      const consentData = extractSingle(consentRes);
+
+      const normalizedConsent = normalizeConsent(extractSingle(consentRes));
 
       return {
         settings: {
-          policyVersion: env.policyVersion || 'v1.0.0',
-          policyEffectiveDate: env.policyEffectiveDate || '2026-08-01'
+          policyVersion: normalizedConsent?.policy?.version || null,
+          policyEffectiveDate: normalizedConsent?.policy?.vigente_desde || null,
+          checkinEditHours: 2, umbralMinimo: 5
         },
-        consents: { [userId]: consentData },
+        consents: { [userId]: normalizedConsent },
         checkins: (Array.isArray(rawCheckins) ? rawCheckins : []).map((c) => ({
            id: c.id,
            userId,
@@ -55,18 +63,20 @@ export async function fetchAgentRecords(userId) {
            apoyo: c.apoyo,
            distanciamiento: c.distanciamiento,
            ineficacia: c.ineficacia,
-           submittedAt: c.created_at || c.submittedAt
+           submittedAt: c.submitted_at || c.created_at || c.submittedAt
         })),
         journals: (Array.isArray(rawJournals) ? rawJournals : []).map((j) => ({
            id: j.id,
            userId,
            context: j.context,
            text: j.content || j.text,
-           date: j.created_at?.slice(0, 10) || j.date,
+           date: j.entry_date?.slice(0, 10) || j.date,
            createdAt: j.created_at || j.createdAt,
            updatedAt: j.updated_at || j.updatedAt,
-           analysis: j.analysis_result || j.analysis,
-           correctedCategories: j.corrected_categories || j.correctedCategories,
+           analysis: j.analysis_json || j.analysis || null,
+           contentHash: j.content_hash,
+           analysisHistory: j.analysis_history || [],
+           correctedCategories: j.corrected_categories_json ?? j.correctedCategories,
            correctionNote: j.correction_note || j.correctionNote,
            correctionHistory: j.correction_history || j.correctionHistory || []
         })),
@@ -76,7 +86,7 @@ export async function fetchAgentRecords(userId) {
            ownerUserId: userId,
            identityUserId: r.mode === 'anonimo' ? null : userId,
            mode: r.mode,
-           date: r.created_at?.slice(0, 10) || r.date,
+           date: r.request_date?.slice(0, 10) || r.date,
            urgency: r.urgency,
            reason: r.reason,
            description: r.description,
@@ -91,14 +101,14 @@ export async function fetchAgentRecords(userId) {
            code: h.code,
            userId,
            date: h.created_at?.slice(0, 10) || h.date,
+           createdAt: h.created_at || h.createdAt,
            type: h.request_type || h.type,
            status: h.status,
-           details: h.details
+           details: h.note || h.details, note: h.note, deadline: h.deadline
         }))
       };
     } catch (err) {
-      console.error('Error fetching agent records:', err);
-      return { settings: {}, consents: {}, checkins: [], journals: [], supportRequests: [], habeasRequests: [] };
+      throw new Error(err.response?.data?.error?.message || 'No se pudieron cargar tus registros.');
     }
   }
 

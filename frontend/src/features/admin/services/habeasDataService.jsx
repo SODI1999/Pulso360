@@ -5,13 +5,13 @@ import { env } from '../../../core/config/env';
 export async function confirmAdvance(requestId, nextStatus, note, actorLabel) {
   if (!env.useMockStorage) {
     if (!getAuthToken()) {
-      return { error: 'Sesión no válida o token ausente' };
+      return { success:false,data:null,error: 'Sesión no válida o token ausente' };
     }
     try {
       const res = await apiClient.patch('/admin/habeas-data/' + requestId, { status: nextStatus, note });
-      return { req: res.data };
+      return { ...res, req: res.data };
     } catch (error) {
-      return { error: error.response?.data?.error?.message || 'Error en el servidor' };
+      return { success:false,data:null,error: error.response?.data?.error?.message || 'Error en el servidor' };
     }
   }
 
@@ -30,5 +30,5 @@ export async function confirmAdvance(requestId, nextStatus, note, actorLabel) {
     target: `${req.id} (${req.type}) -> Estado: ${nextStatus} · Constancia: ${note || 'Sin nota'}`
   });
 
-  return { req };
+  return { success:true,data:req, req };
 }

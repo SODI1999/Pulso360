@@ -1,25 +1,37 @@
 // src/features/sst/components/DismissAlertModal.jsx
 // Modal accesible para registro obligatorio de motivo de descarte de alerta (RF-08)
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Icon } from '../../../core/components/Icon';
+import { useModalA11y } from '../../../core/hooks/useModalA11y';
+import { useExpiredFormDraft } from '../../../core/auth/useExpiredFormDraft';
 
 export function DismissAlertModal({ alertItem, onClose, onConfirm }) {
   const [reason, setReason] = useState('');
+  const [saving,setSaving] = useState(false);
+  const [error,setError] = useState('');
+  const modalRef = useRef(null);
+  useModalA11y({ isOpen:!!alertItem,onClose,modalRef });
+  useExpiredFormDraft(`alert:dismiss:${alertItem?.id}`, { reason }, draft=>setReason(draft.reason), !!alertItem);
   const minLength = 20;
   const isValid = reason.trim().length >= minLength;
 
   if (!alertItem) return null;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!isValid) return;
-    onConfirm(alertItem.id, reason.trim());
+    setSaving(true); setError('');
+    try {
+      const result = await onConfirm(alertItem.id, reason.trim());
+      if (result?.success !== true) setError(result?.error || 'No se pudo descartar la alerta.');
+    } catch (error) { setError(error.message); }
+    finally { setSaving(false); }
   };
 
   return (
     <div className="modal-overlay active" role="dialog" aria-modal="true" aria-labelledby="modalDismissTitle">
-      <div className="modal-box" style={{ maxWidth: '500px' }}>
+      <div className="modal-box" ref={modalRef} style={{ maxWidth: '500px' }}>
         <div className="modal-header">
           <div>
             <h2 id="modalDismissTitle" className="modal-title">
@@ -35,6 +47,7 @@ export function DismissAlertModal({ alertItem, onClose, onConfirm }) {
         </div>
 
         <form onSubmit={handleSubmit}>
+          {error && <p className="alert-banner danger" role="alert">{error}</p>}
           <p style={{ fontSize: '13.5px', color: 'var(--c-texto)', lineHeight: '1.5', marginBottom: '14px' }}>
             Para garantizar la trazabilidad de seguridad y salud en el trabajo, debes registrar una
             justificación técnica o contextual para descartar esta alerta.
@@ -85,7 +98,7 @@ export function DismissAlertModal({ alertItem, onClose, onConfirm }) {
             style={{ padding: '10px 14px', fontSize: '12.5px', marginBottom: '16px' }}
           >
             <Icon name="info" size={16} />
-            <span>Esta justificación se registrará de manera inmutable en la cadena de auditoría.</span>
+            <span>El motivo se guarda en la alerta. La auditoría registra el descarte y su actor, sin copiar el texto de la justificación.</span>
           </div>
 
           <div
@@ -98,10 +111,10 @@ export function DismissAlertModal({ alertItem, onClose, onConfirm }) {
             <button
               type="submit"
               className="btn btn-primary"
-              disabled={!isValid}
-              style={{ opacity: isValid ? 1 : 0.6 }}
+              disabled={!isValid || saving}
+              style={{ opacity: isValid && !saving ? 1 : 0.6 }}
             >
-              Confirmar descarte
+              {saving ? 'Guardando…' : 'Confirmar descarte'}
             </button>
           </div>
         </form>

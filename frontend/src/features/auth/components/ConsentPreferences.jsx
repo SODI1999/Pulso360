@@ -6,6 +6,7 @@ export function ConsentPreferences({
   consents,
   handleCheckboxChange,
   policyAccepted,
+  canSubmit,
   setPolicyAccepted,
   openModal,
   activeCount,
@@ -115,7 +116,7 @@ export function ConsentPreferences({
             <button
               type="submit"
               className="btn btn-primary consent-save-button"
-              disabled={!policyAccepted || isSaving}
+              disabled={!canSubmit || isSaving}
             >
               {isSaving ? (
                 <>

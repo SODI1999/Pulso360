@@ -9,8 +9,12 @@ import { ActionFollowupModal } from '../components/ActionFollowupModal';
 import '../../../styles/supervisor.css';
 
 export function ActionsPage() {
-  const { selectedIntervention, setSelectedIntervention, feedback, interventions, handleSaveFollowup } =
+  const {
+    loading, loadError, selectedIntervention, setSelectedIntervention, feedback, interventions, handleSaveFollowup } =
     useActions();
+
+  if (loading) return <p role="status">Cargando datos del servidor…</p>;
+  if (loadError) return <p className="alert-banner danger" role="alert">No se pudieron cargar los datos: {loadError}</p>;
 
   return (
     <div className="supervisor-page">
@@ -34,8 +38,8 @@ export function ActionsPage() {
 
       {/* Mensaje de Feedback */}
       {feedback && (
-        <div className="alert-banner ok" role="status">
-          <Icon name="checkCircle" size={18} />
+        <div className={`alert-banner ${feedback.startsWith("Error") ? "danger" : "ok"}`} role={feedback.startsWith("Error") ? "alert" : "status"}>
+          <Icon name={feedback.startsWith("Error") ? "alertTriangle" : "checkCircle"} size={18} />
           <span>{feedback}</span>
         </div>
       )}
@@ -82,6 +86,9 @@ export function ActionsPage() {
                   <tr key={item.id}>
                     <td>
                       <strong>{item.title}</strong>
+                      {item.target && <div className="card-subtitle">{item.target}</div>}
+                      {item.startDate && <div className="card-subtitle">{item.startDate} — {item.endDate || "Sin fecha de cierre"}</div>}
+                      {item.lastFollowup && <div className="card-subtitle">Último seguimiento ({item.lastFollowup.date}): {item.lastFollowup.actionType && `${item.lastFollowup.actionType} · `}{item.lastFollowup.note} · {item.lastFollowup.progress}%</div>}
                       {item.externalAction && (
                         <div style={{ fontSize: '11.5px', color: 'var(--c-texto-mutado)', marginTop: '2px' }}>
                           Ejecución manual recomendada
@@ -90,7 +97,7 @@ export function ActionsPage() {
                     </td>
                     <td>{item.type}</td>
                     <td>{item.indicator}</td>
-                    <td>{item.baseline} / 100</td>
+                    <td>{item.baseline == null ? "No publicable" : `${item.baseline} / 100`}</td>
                     <td>
                       <div className="intervention-progress-wrapper">
                         <div className="intervention-progress-track">

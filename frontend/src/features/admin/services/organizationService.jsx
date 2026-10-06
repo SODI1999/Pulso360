@@ -7,13 +7,13 @@ export async function toggleCampaign(campId, currentActive, actorLabel) {
 
   if (!env.useMockStorage) {
     if (!getAuthToken()) {
-      return { error: 'Sesión no válida o token ausente' };
+      return { success:false,data:null,error: 'Sesión no válida o token ausente' };
     }
     try {
-      await apiClient.patch('/admin/campaigns/' + campId, { activa: newActive });
-      return { camp: { id: campId, active: newActive }, newStatus: newActive ? 'Activa' : 'Inactiva' };
+      const response = await apiClient.patch('/admin/campaigns/' + campId, { activa: newActive });
+      return { ...response,camp:response.data,newStatus:response.data.activa ? 'Activa' : 'Inactiva' };
     } catch (error) {
-      return { error: error.response?.data?.error?.message || 'Error en el servidor' };
+      return { success:false,data:null,error: error.response?.data?.error?.message || 'Error en el servidor' };
     }
   }
 
@@ -30,7 +30,7 @@ export async function toggleCampaign(campId, currentActive, actorLabel) {
     action: 'CAMBIO_ESTADO_CAMPANA',
     target: `${camp.id} (${camp.name}) -> ${newStatus}`
   });
-  return { camp, newStatus };
+  return {success:true,data:camp,camp,newStatus};
 }
 
 export async function toggleTeam(campId, teamId, currentActive, actorLabel) {
@@ -38,13 +38,13 @@ export async function toggleTeam(campId, teamId, currentActive, actorLabel) {
 
   if (!env.useMockStorage) {
     if (!getAuthToken()) {
-      return { error: 'Sesión no válida o token ausente' };
+      return { success:false,data:null,error: 'Sesión no válida o token ausente' };
     }
     try {
-      await apiClient.patch('/admin/teams/' + teamId, { activo: newActive });
-      return { team: { id: teamId, active: newActive }, newStatus: newActive ? 'Activo' : 'Inactivo' };
+      const response = await apiClient.patch('/admin/teams/' + teamId, { activo: newActive });
+      return { ...response,team:response.data,newStatus:response.data.activo ? 'Activo' : 'Inactivo' };
     } catch (error) {
-      return { error: error.response?.data?.error?.message || 'Error en el servidor' };
+      return { success:false,data:null,error: error.response?.data?.error?.message || 'Error en el servidor' };
     }
   }
 
@@ -62,19 +62,19 @@ export async function toggleTeam(campId, teamId, currentActive, actorLabel) {
     action: 'CAMBIO_ESTADO_EQUIPO',
     target: `Equipo "${team.name}" (${camp.name}) -> ${newStatus}`
   });
-  return { team, newStatus };
+  return {success:true,data:team,team,newStatus};
 }
 
 export async function saveSupervisorAssignment(campId, teamId, newSupervisor, actorLabel, previousSupervisor) {
   if (!env.useMockStorage) {
     if (!getAuthToken()) {
-      return { error: 'Sesión no válida o token ausente' };
+      return { success:false,data:null,error: 'Sesión no válida o token ausente' };
     }
     try {
-      await apiClient.patch('/admin/teams/' + teamId, { supervisorNombre: newSupervisor });
-      return { team: { id: teamId, supervisor: newSupervisor } };
+      const response = await apiClient.patch('/admin/teams/' + teamId, { supervisorId: newSupervisor });
+      return { ...response,team:response.data };
     } catch (error) {
-      return { error: error.response?.data?.error?.message || 'Error en el servidor' };
+      return { success:false,data:null,error: error.response?.data?.error?.message || 'Error en el servidor' };
     }
   }
 
@@ -83,7 +83,7 @@ export async function saveSupervisorAssignment(campId, teamId, newSupervisor, ac
   const team = camp?.teams?.find((t) => t.id === teamId);
   if (!team) return null;
 
-  team.supervisor = newSupervisor;
+  team.supervisor = data.users.find(user => user.id === newSupervisor)?.name || newSupervisor;
   pulsoStore.save(data);
 
   pulsoStore.audit({
@@ -92,24 +92,24 @@ export async function saveSupervisorAssignment(campId, teamId, newSupervisor, ac
     target: `Equipo "${team.name}" (${camp.name}) · Supervisor anterior: ${previousSupervisor} -> Nuevo supervisor: ${newSupervisor}`
   });
 
-  return { team };
+  return {success:true,data:team,team};
 }
 export async function saveCampaign(id, name, active, actorLabel) {
   if (!env.useMockStorage) {
     if (!getAuthToken()) {
-      return { error: 'Sesión no válida o token ausente' };
+      return { success:false,data:null,error: 'Sesión no válida o token ausente' };
     }
     try {
       if (id) {
-        await apiClient.patch('/admin/campaigns/' + id, { nombre: name, activa: active });
-        return `Campaña "${name}" actualizada con éxito.`;
+        const response = await apiClient.patch('/admin/campaigns/' + id, { nombre: name, activa: active });
+        return { ...response,message:`Campaña "${name}" actualizada con éxito.` };
       } else {
         const codigo = name.toUpperCase().replace(/\s+/g, '-').slice(0, 20);
-        await apiClient.post('/admin/campaigns', { codigo, nombre: name, descripcion: 'Campaña ' + name });
-        return `Campaña "${name}" creada exitosamente.`;
+        const response = await apiClient.post('/admin/campaigns', { codigo, nombre: name, descripcion: 'Campaña ' + name, activa: active });
+        return { ...response,message:`Campaña "${name}" creada exitosamente.` };
       }
     } catch (error) {
-      return { error: error.response?.data?.error?.message || 'Error en el servidor' };
+      return { success:false,data:null,error: error.response?.data?.error?.message || 'Error en el servidor' };
     }
   }
 
@@ -152,25 +152,25 @@ export async function saveCampaign(id, name, active, actorLabel) {
     message = `Campaña "${name}" creada exitosamente.`;
   }
 
-  return message;
+  return message ? {success:true,data:null,message} : {success:false,error:"Registro no disponible."};
 }
 
 export async function saveTeam(campId, teamId, name, n, supervisor, active, actorLabel) {
   if (!env.useMockStorage) {
     if (!getAuthToken()) {
-      return { error: 'Sesión no válida o token ausente' };
+      return { success:false,data:null,error: 'Sesión no válida o token ausente' };
     }
     try {
       if (teamId) {
-        await apiClient.patch('/admin/teams/' + teamId, { nombre: name, nMiembros: n, supervisorNombre: supervisor, activo: active });
-        return `Equipo "${name}" modificado con éxito.`;
+        const response = await apiClient.patch('/admin/teams/' + teamId, { nombre: name, nMiembros: n, supervisorId: supervisor, activo: active });
+        return { ...response,message:`Equipo "${name}" modificado con éxito.` };
       } else {
         const codigo = name.toUpperCase().replace(/\s+/g, '-').slice(0, 20);
-        await apiClient.post('/admin/teams', { campanaId: campId, codigo, nombre: name, descripcion: 'Equipo ' + name, supervisorNombre: supervisor, nMiembros: n });
-        return `Equipo "${name}" creado exitosamente.`;
+        const response = await apiClient.post('/admin/teams', { campanaId: campId, codigo, nombre: name, descripcion: 'Equipo ' + name, supervisorId: supervisor, nMiembros: n, activo: active });
+        return { ...response,message:`Equipo "${name}" creado exitosamente.` };
       }
     } catch (error) {
-      return { error: error.response?.data?.error?.message || 'Error en el servidor' };
+      return { success:false,data:null,error: error.response?.data?.error?.message || 'Error en el servidor' };
     }
   }
 
@@ -190,6 +190,7 @@ export async function saveTeam(campId, teamId, name, n, supervisor, active, acto
       team.name = name;
       team.n = n;
       team.active = active;
+      team.supervisor = data.users.find(user => user.id === supervisor)?.name || supervisor;
       pulsoStore.save(data);
 
       pulsoStore.audit({
@@ -205,7 +206,7 @@ export async function saveTeam(campId, teamId, name, n, supervisor, active, acto
       id: `team-${Date.now()}`,
       name,
       n,
-      supervisor,
+      supervisor: data.users.find(user => user.id === supervisor)?.name || supervisor,
       active
     };
     camp.teams.push(newTeam);
@@ -219,10 +220,11 @@ export async function saveTeam(campId, teamId, name, n, supervisor, active, acto
     message = `Equipo "${name}" creado exitosamente en "${camp.name}".`;
   }
 
-  return message;
+  return message ? {success:true,data:null,message} : {success:false,error:"Registro no disponible."};
 }
 
 export function resetDemo(actorLabel) {
+  if (!env.useMockStorage) return {success:false,error:"El restablecimiento solo está disponible en la demostración local."};
   pulsoStore.reset();
   pulsoStore.audit({
     actor: actorLabel,

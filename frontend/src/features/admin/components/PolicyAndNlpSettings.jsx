@@ -1,4 +1,7 @@
+import { useState } from 'react';
+import { useExpiredFormDraft } from '../../../core/auth/useExpiredFormDraft';
 import { Icon } from '../../../core/components/Icon';
+import { env } from '../../../core/config/env';
 
 export function PolicyAndNlpSettings({
   settings,
@@ -12,6 +15,13 @@ export function PolicyAndNlpSettings({
   handleRevertNlp,
   nlpFeedback
 }) {
+  const [policyTitle,setPolicyTitle] = useState('');
+  const [policyText,setPolicyText] = useState('');
+  const [noticeText,setNoticeText] = useState('');
+  useExpiredFormDraft('policy:publication', { policyTitle, policyText, noticeText, newPolicyVersion, newNlpVersion }, draft => {
+    setPolicyTitle(draft.policyTitle); setPolicyText(draft.policyText); setNoticeText(draft.noticeText);
+    setNewPolicyVersion(draft.newPolicyVersion); setNewNlpVersion(draft.newNlpVersion);
+  });
   return (
     <div className="params-grid-2" style={{ marginBottom: 'var(--space-6)' }}>
       {/* Políticas de Tratamiento */}
@@ -37,6 +47,14 @@ export function PolicyAndNlpSettings({
         </div>
 
         <form onSubmit={handlePublishPolicy}>
+          {!env.useMockStorage && <>
+            <label className="form-label" htmlFor="policyTitle">Título de la política</label>
+            <input id="policyTitle" name="policyTitle" value={policyTitle} onChange={e=>setPolicyTitle(e.target.value)} className="form-input" required />
+            <label className="form-label" htmlFor="policyText">Texto de la política</label>
+            <textarea id="policyText" name="policyText" value={policyText} onChange={e=>setPolicyText(e.target.value)} className="form-textarea" required rows={5} />
+            <label className="form-label" htmlFor="noticeText">Aviso de privacidad</label>
+            <textarea id="noticeText" name="noticeText" value={noticeText} onChange={e=>setNoticeText(e.target.value)} className="form-textarea" required rows={3} />
+          </>}
           <div className="version-input-group">
             <input
               type="text"
@@ -54,8 +72,8 @@ export function PolicyAndNlpSettings({
         </form>
 
         {policyFeedback && (
-          <div className="alert-banner ok" role="status" style={{ marginTop: 'var(--space-3)' }}>
-            <Icon name="checkCircle" size={16} />
+          <div className={`alert-banner ${policyFeedback.startsWith("Error") ? "danger" : "ok"}`} role={policyFeedback.startsWith("Error") ? "alert" : "status"} style={{ marginTop: 'var(--space-3)' }}>
+            <Icon name={policyFeedback.startsWith("Error") ? "alertTriangle" : "checkCircle"} size={16} />
             <span>{policyFeedback}</span>
           </div>
         )}
@@ -67,7 +85,7 @@ export function PolicyAndNlpSettings({
           <div>
             <h2 className="card-title">Versiones de Léxico NLP</h2>
             <div className="card-subtitle">
-              Control de modelos de análisis semántico para bitácoras (RF-15).
+              Diccionarios registrados del motor léxico determinista.
             </div>
           </div>
         </div>
@@ -85,16 +103,20 @@ export function PolicyAndNlpSettings({
 
         <form onSubmit={handleActivateNlp}>
           <div className="version-input-group">
-            <input
+            {!env.useMockStorage ? <select className="form-select" aria-label="Versión de léxico registrada"
+              required value={newNlpVersion} onChange={e => setNewNlpVersion(e.target.value)}>
+              <option value="">Selecciona una versión registrada</option>
+              {(settings.lexiconCatalog || []).map(v => <option key={v.id} value={v.id} disabled={!v.has_content}>{v.version}{!v.has_content ? ' · sin diccionario' : ''}</option>)}
+            </select> : <input
               type="text"
               className="form-input"
               placeholder="Ej. lexico-v1.3"
               value={newNlpVersion}
               onChange={(e) => setNewNlpVersion(e.target.value)}
               style={{ maxWidth: '160px' }}
-            />
+            />}
             <button type="submit" className="btn btn-primary btn-sm">
-              <span>Activar modelo</span>
+              <span>Activar léxico</span>
             </button>
             <button type="button" className="btn btn-secondary btn-sm" onClick={handleRevertNlp}>
               <span>Revertir</span>
@@ -103,8 +125,8 @@ export function PolicyAndNlpSettings({
         </form>
 
         {nlpFeedback && (
-          <div className="alert-banner ok" role="status" style={{ marginTop: 'var(--space-3)' }}>
-            <Icon name="checkCircle" size={16} />
+          <div className={`alert-banner ${nlpFeedback.startsWith("Error") ? "danger" : "ok"}`} role={nlpFeedback.startsWith("Error") ? "alert" : "status"} style={{ marginTop: 'var(--space-3)' }}>
+            <Icon name={nlpFeedback.startsWith("Error") ? "alertTriangle" : "checkCircle"} size={16} />
             <span>{nlpFeedback}</span>
           </div>
         )}

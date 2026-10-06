@@ -1,8 +1,10 @@
 import { roleHomePaths } from '../../../core/auth/roleNavigation';
 import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
 import { authService } from '../../../core/auth/authService';
 export function useLoginCredentials(navigate) {
+  const location = useLocation();
   const [email, setEmail] = useState('');
 
   const [password, setPassword] = useState('');
@@ -15,11 +17,13 @@ export function useLoginCredentials(navigate) {
 
   useEffect(() => {
     authService.clearSession();
+    if (location.state?.userId) setFeedback({ type:'error',
+      message:'Tu sesión terminó. Ingresa con la misma cuenta para recuperar el borrador en esta pestaña; si era un modal, vuelve a abrirlo. Se conserva en memoria durante 30 minutos.' });
     const lockMs = authService.getRemainingLockMs();
     if (lockMs > 0) {
       setLockedRemainingMs(lockMs);
     }
-  }, []);
+  }, [location.state?.userId]);
 
   useEffect(() => {
     if (lockedRemainingMs <= 0) return;
@@ -72,10 +76,10 @@ export function useLoginCredentials(navigate) {
           return;
         }
 
-        navigate(roleHomePaths[user.role] || '/agente/panel');
+        const previousPath = location.state?.userId === user.id ? location.state?.from?.pathname : null;
+        navigate(previousPath || roleHomePaths[user.role] || '/agente/panel');
       }, 300);
-    } catch (error) {
-      console.error('Login error:', error);
+    } catch {
       setLoading(false);
       setFeedback({ type: 'error', message: 'Error al conectar con el servicio de autenticación.' });
     }

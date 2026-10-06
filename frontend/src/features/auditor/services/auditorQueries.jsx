@@ -1,45 +1,32 @@
 import { pulsoStore } from '../../../core/storage/pulsoStore';
-import { apiClient, getAuthToken } from '../../../core/api/apiClient';
+import { apiClient } from '../../../core/api/apiClient';
 import { env } from '../../../core/config/env';
 
 export function getAuditData() {
-  const { auditLogs } = pulsoStore.get();
-  return { auditLogs };
+  return env.useMockStorage ? { auditLogs:pulsoStore.get().auditLogs || [] } : { auditLogs:[] };
 }
-
-/**
- * Recupera los registros de auditoría del sistema de manera asíncrona.
- * Consulta al backend si la integración está activa, de lo contrario
- * utiliza el almacenamiento local como respaldo.
- *
- * @param {Object} filters - Parámetros de filtrado para la consulta.
- * @returns {Promise<Array>} Lista de registros normalizados.
- */
-export async function fetchAuditLogs(filters = {}) {
-  const token = getAuthToken();
-
-  if (!env.useMockStorage && token) {
-    try {
-      const res = await apiClient.get('/auditor/logs', { params: filters });
-      const payload = res.data?.data?.logs || res.data?.logs || (Array.isArray(res.data?.data) ? res.data.data : (Array.isArray(res.data) ? res.data : []));
-      const records = Array.isArray(payload) ? payload : [];
-      
-      return records.map((log) => ({
-        id: log.id,
-        date: log.created_at || log.timestamp || '',
-        actor: (log.nombres && log.apellidos) ? `${log.nombres} ${log.apellidos}` : (log.usuario_nombre || log.usuario_id || log.actor || 'Sistema'),
-        action: log.action || 'SISTEMA',
-        target: log.resource ? `${log.resource}: ${typeof log.details === 'object' ? JSON.stringify(log.details) : (log.details || '')}` : (log.target || (typeof log.details === 'object' ? JSON.stringify(log.details) : log.details) || ''),
-        ip: log.ip_address || log.ip || '0.0.0.0',
-        status: log.status || 'SUCCESS',
-        prevHash: log.prev_hash || log.prevHash || '',
-        hash: log.hash || ''
-      }));
-    } catch (error) {
-      console.error('Error al recuperar registros de auditoría desde el backend:', error);
-      // Retorna fallback en caso de error
-    }
+const normalizeLog = log => ({
+  id:String(log.id),date:log.created_at || log.date || '',
+  actor:log.nombres ? `${log.nombres} ${log.apellidos}` : log.actor_reference || log.usuario_id || log.actor || 'Sistema',
+  action:log.action,target:log.resource ? `${log.resource}: ${JSON.stringify(log.details || {})}` : log.target || '',
+  ip:log.ip_address || log.ip || '',status:log.status || 'SUCCESS',prevHash:log.prev_hash || log.prevHash,hash:log.hash
+});
+export async function fetchAuditPage(filters={}) {
+  if (env.useMockStorage) {
+    const logs = getAuditData().auditLogs;
+    const offset=filters.offset || 0,limit=filters.limit || 50;
+    return { logs:logs.slice(offset,offset+limit).map(normalizeLog),pagination:{ total:logs.length,hasMore:offset+limit<logs.length } };
   }
-
-  return pulsoStore.get().auditLogs || [];
+  const response = await apiClient.get('/auditor/logs',{ params:filters });
+  return { logs:response.data.map(normalizeLog),pagination:response.pagination };
+}
+export async function fetchAuditLogs(filters={}) { return (await fetchAuditPage(filters)).logs; }
+export async function verifyAudit() {
+  if (env.useMockStorage) return { chainValid:true,contentValid:false,totalRecords:getAuditData().auditLogs.length,
+    verifiedRecords:0,legacyUnverifiable:getAuditData().auditLogs.length,coverage:'Demostración local sin verificación criptográfica del servidor.' };
+  return (await apiClient.get('/auditor/integrity')).data;
+}
+export async function exportAudit(filters) {
+  if (env.useMockStorage) return { logs:getAuditData().auditLogs,metadata:{ demonstration:true } };
+  return (await apiClient.post('/auditor/export',filters)).data;
 }

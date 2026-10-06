@@ -15,11 +15,11 @@ const CATEGORY_ICONS = {
 };
 
 export function NlpAnalysisPanel({ journal, onOpenCorrection, onOpenHistory }) {
-  if (!journal?.analysis) return null;
+  if (!journal?.analysis) return journal?.analysisHistory?.length ? <button type="button" className="btn btn-secondary" onClick={onOpenHistory}>Ver análisis de versiones anteriores del texto</button> : null;
 
   const activeCategories = journal.correctedCategories || journal.analysis.categories.map((c) => c.name);
   const uniqueEvidence = [...new Set((journal.analysis.categories || []).flatMap((c) => c.evidence || []))];
-  const historyCount = (journal.correctionHistory || []).length;
+  const historyCount = (journal.correctionHistory || []).length + (journal.analysisHistory || []).length;
   const isCorrected = Boolean(journal.correctedCategories);
 
   return (

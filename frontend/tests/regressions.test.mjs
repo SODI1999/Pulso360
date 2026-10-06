@@ -26,6 +26,7 @@ async function withApp(run, storage = memoryStorage()) {
   try {
     const { pulsoStore } = await server.ssrLoadModule('/src/core/storage/pulsoStore.jsx');
     const { env } = await server.ssrLoadModule('/src/core/config/env.jsx');
+    env.useMockStorage = true; // Esta suite verifica deliberadamente el almacén simulado.
     await run({ pulsoStore, storage, key: env.storageKey, load: (file) => server.ssrLoadModule(file) });
   } finally {
     await server.close();
@@ -158,9 +159,14 @@ test('el titular puede crear, editar, analizar, corregir y eliminar sin confiar 
       'Editada'
     );
     assert.equal(updated.journalPayload.date, journalPayload.date);
-    assert.ok(!service.saveJournalAnalysis(journalPayload, { categories: [] }, user).error);
+    assert.ok(service.saveJournalAnalysis(journalPayload, { categories: [] }, user).error);
+    assert.ok(!service.saveJournalAnalysis(updated.journalPayload, { version:'lexico-v1.2',categories: [] }, user).error);
     assert.ok(!service.saveCorrection(journalPayload.id, ['Test'], 'Nota', user).error);
     assert.equal(pulsoStore.get().journals[0].correctionNote, 'Nota');
+    const editedAgain=await service.saveJournal(journalPayload.id,user,null,'turno','Otro texto técnico');
+    assert.equal(editedAgain.journalPayload.analysis,null);
+    assert.equal(editedAgain.journalPayload.analysisHistory[0].content,'Editada');
+    assert.equal(editedAgain.journalPayload.analysisHistory[0].correctionHistory[0].note,'Nota');
     assert.ok(!(await service.deleteJournal(journalPayload.id, user)).error);
     assert.ok(!pulsoStore.get().journals.some((item) => item.id === journalPayload.id));
     assert.ok((await service.deleteJournal(journalPayload.id, user)).error);

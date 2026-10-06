@@ -4,6 +4,7 @@ import { env } from '../../../core/config/env';
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { authService } from '../../../core/auth/authService';
+import { useExpiredFormDraft } from '../../../core/auth/useExpiredFormDraft';
 import { useBodyScrollLock } from '../../../core/hooks/useBodyScrollLock';
 
 import { CONSENT_PURPOSES } from '../data/consentData';
@@ -25,14 +26,16 @@ export function useConsent() {
     c5: false
   });
   const [policyAccepted, setPolicyAccepted] = useState(false);
+  const [previouslyAccepted, setPreviouslyAccepted] = useState(false);
   const [history, setHistory] = useState([]);
   const [statusMessage, setStatusMessage] = useState('');
   const [isSaving, setIsSaving] = useState(false);
+  const [loaded, setLoaded] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   useBodyScrollLock(isModalOpen);
   const [settings, setSettings] = useState({
-    policyVersion: 'v2.4',
-    policyEffectiveDate: '15/08/2026'
+    policyVersion: null,
+    policyEffectiveDate: null
   });
 
   // Gestión de foco para el modal accesible (R-26 / R-32)
@@ -43,6 +46,7 @@ export function useConsent() {
   // Cargar historial inmutable de consentimientos
   const loadConsentHistory = useCallback(() => {
     if (!currentUserId) return;
+    if (!env.useMockStorage) return;
     const data = getConsentData(currentUserId);
     const rows = (data.consentHistory || []).filter((item) => item.userId === currentUserId);
     setHistory(rows);
@@ -57,48 +61,38 @@ export function useConsent() {
         return;
       }
 
-      const data = getConsentData(currentUserId);
-      if (mounted && data.settings) {
-        setSettings(data.settings);
-      }
-
-      const activePolicyVersion = data.settings?.policyVersion || 'v2.4';
-      let userConsent = data.consents?.[currentUserId] || {};
-
-      if (!env.useMockStorage) {
-        const remoteConsent = await fetchConsent(currentUserId);
-        if (remoteConsent && mounted) {
-          userConsent = {
-            c1: remoteConsent.c1_checkin,
-            c2: remoteConsent.c2_bitacora,
-            c3: remoteConsent.c3_apoyo,
-            c4: remoteConsent.c4_analitica,
-            c5: remoteConsent.c5_contacto,
-            policyAccepted: remoteConsent.acepta_politica,
-            policyVersion: activePolicyVersion
-          };
-        }
-      }
-
-      if (mounted) {
-        setConsents({
-          c1: Boolean(userConsent.c1),
-          c2: Boolean(userConsent.c2),
-          c3: Boolean(userConsent.c3),
-          c4: Boolean(userConsent.c4),
-          c5: Boolean(userConsent.c5)
+      try {
+        const data = env.useMockStorage ? getConsentData(currentUserId) : null;
+        const userConsent = env.useMockStorage ? (data.consents?.[currentUserId] || {}) : await fetchConsent(currentUserId);
+        if (!mounted) return;
+        const activeVersion = data?.settings?.policyVersion || userConsent?.policy?.version;
+        setSettings(data?.settings || {
+          policyVersion: activeVersion, policyEffectiveDate: userConsent?.policy?.vigente_desde,
+          policyText: userConsent?.policy?.texto_politica, noticeText: userConsent?.policy?.texto_aviso_privacidad
         });
-
-        setPolicyAccepted(
-          Boolean(userConsent.policyAccepted && userConsent.policyVersion === activePolicyVersion)
-        );
-        loadConsentHistory();
+        setConsents(Object.fromEntries(['c1','c2','c3','c4','c5'].map(key => [key, Boolean(userConsent?.[key])])));
+        setPolicyAccepted(Boolean(userConsent?.policyAccepted && userConsent.policyVersion === activeVersion));
+        setPreviouslyAccepted(Boolean(userConsent?.policyAccepted));
+        setHistory(data?.consentHistory || userConsent?.history || []);
+        if (!env.useMockStorage) authService.updateConsent(userConsent);
+      } catch (error) {
+        if (mounted) setStatusMessage(error.message);
+      } finally {
+        if (mounted) setLoaded(true);
       }
     }
     
     init();
     return () => { mounted = false; };
   }, [currentUserId, currentUser, navigate, loadConsentHistory]);
+
+  useExpiredFormDraft('consent:preferences', { consents, policyAccepted, policyVersion:settings.policyVersion }, draft => {
+    if (draft.policyVersion !== settings.policyVersion) {
+      setStatusMessage('La política cambió. Revisa la versión vigente antes de confirmar tus preferencias.');
+      return;
+    }
+    setConsents(draft.consents); setPolicyAccepted(draft.policyAccepted);
+  }, loaded);
 
   // Control accesible de tecla Escape en modal
   useEffect(() => {
@@ -145,7 +139,7 @@ export function useConsent() {
   // Guardar consentimiento y registrar evento inmutable
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!policyAccepted || !currentUser) return;
+    if (!settings.policyVersion || (!policyAccepted && !previouslyAccepted) || !currentUser) return;
 
     setIsSaving(true);
     setStatusMessage('');
@@ -155,26 +149,22 @@ export function useConsent() {
       policyAccepted,
       noticeAccepted: policyAccepted
     });
-    if (result.error) {
+    if (result.success !== true) {
       setIsSaving(false);
       setStatusMessage(`Error: ${result.error}`);
       return;
     }
 
     if (!env.useMockStorage && result.payload) {
-      setConsents({
-        c1: Boolean(result.payload.c1_checkin),
-        c2: Boolean(result.payload.c2_bitacora),
-        c3: Boolean(result.payload.c3_apoyo),
-        c4: Boolean(result.payload.c4_analitica),
-        c5: Boolean(result.payload.c5_contacto)
-      });
-      setPolicyAccepted(Boolean(result.payload.acepta_politica));
+      setConsents(Object.fromEntries(['c1','c2','c3','c4','c5'].map(key => [key, Boolean(result.payload[key])])));
+      setPolicyAccepted(result.payload.policyAccepted);
+      setHistory(result.payload.history || []);
+      authService.updateConsent(result.payload);
     }
 
     loadConsentHistory();
     setIsSaving(false);
-    setStatusMessage('Preferencias actualizadas en tu estación de trabajo.');
+    setStatusMessage('Preferencias guardadas.');
 
     if (comesFromLogin) {
       setTimeout(() => {
@@ -209,6 +199,7 @@ export function useConsent() {
     comesFromLogin,
     consents,
     policyAccepted,
+    canSubmit: Boolean(settings.policyVersion && (policyAccepted || previouslyAccepted)),
     setPolicyAccepted,
     history,
     statusMessage,

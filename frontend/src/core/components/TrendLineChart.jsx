@@ -34,7 +34,7 @@ export function TrendLineChart({
     const chartWidth = Math.max(1, width - padding * 2);
     const chartHeight = Math.max(1, height - padding * 2);
 
-    const maxValue = Math.max(...chartValues, 5);
+    const maxValue = Math.max(...chartValues.filter(value => value != null && Number.isFinite(value)), 5);
     const minValue = 0;
 
     // 1. Línea base del eje X
@@ -49,7 +49,7 @@ export function TrendLineChart({
     const points = chartValues.map((value, index) => {
       const denominator = chartValues.length > 1 ? chartValues.length - 1 : 1;
       const x = padding + (index / denominator) * chartWidth;
-      const y = height - padding - ((value - minValue) / (maxValue - minValue)) * chartHeight;
+      const y = value == null || !Number.isFinite(value) ? null : height - padding - ((value - minValue) / (maxValue - minValue)) * chartHeight;
       return { x, y, value };
     });
 
@@ -59,17 +59,21 @@ export function TrendLineChart({
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
     ctx.beginPath();
-    points.forEach((point, index) => {
-      if (index === 0) {
+    let connected = false;
+    points.forEach((point) => {
+      if (point.y == null) { connected = false; return; }
+      if (!connected) {
         ctx.moveTo(point.x, point.y);
       } else {
         ctx.lineTo(point.x, point.y);
       }
+      connected = true;
     });
     ctx.stroke();
 
     // 4. Dibujar puntos circulares y etiquetas numéricas
     points.forEach((point, index) => {
+      if (point.y == null) return;
       // Punto exterior
       ctx.fillStyle = activeColor;
       ctx.beginPath();
@@ -109,7 +113,7 @@ export function TrendLineChart({
           {chartValues.map((val, idx) => (
             <tr key={idx}>
               <td>{labels[idx] || `Punto ${idx + 1}`}</td>
-              <td>{val}</td>
+              <td>{val == null ? 'Sin dato' : val}</td>
             </tr>
           ))}
         </tbody>

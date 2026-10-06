@@ -11,6 +11,7 @@ import '../../../styles/admin.css';
 
 export function HabeasDataPage() {
   const {
+    loading, loadError,
     feedback,
     advanceModalState,
     setAdvanceModalState,
@@ -20,6 +21,9 @@ export function HabeasDataPage() {
     handleOpenAdvance,
     handleConfirmAdvance
   } = useHabeasData();
+
+  if (loading) return <p role="status">Cargando datos del servidor…</p>;
+  if (loadError) return <p className="alert-banner danger" role="alert">No se pudieron cargar los datos: {loadError}</p>;
 
   return (
     <div>
@@ -38,16 +42,14 @@ export function HabeasDataPage() {
       <div className="alert-banner info" style={{ marginBottom: 'var(--space-5)' }}>
         <Icon name="info" size={18} />
         <div>
-          <strong>Cálculo de Plazos Legales:</strong> La fecha objetivo se calcula en días hábiles
-          institucionales. La gestión de solicitudes de portabilidad y rectificación no altera bitácoras
-          históricas selladas, preservando la inmutabilidad de la cadena de auditoría.
+          <strong>Fechas objetivo del trámite:</strong> El cálculo omite fines de semana; los festivos colombianos no están incluidos. Cada cambio de estado registra al administrador que lo realizó; el avance del trámite no modifica automáticamente los datos del titular.
         </div>
       </div>
 
       {/* Mensaje de feedback */}
       {feedback && (
-        <div className="alert-banner ok" role="status" style={{ marginBottom: 'var(--space-4)' }}>
-          <Icon name="checkCircle" size={18} />
+        <div className={`alert-banner ${feedback.startsWith("Error") ? "danger" : "ok"}`} role={feedback.startsWith("Error") ? "alert" : "status"} style={{ marginBottom: 'var(--space-4)' }}>
+          <Icon name={feedback.startsWith("Error") ? "alertTriangle" : "checkCircle"} size={18} />
           <span>{feedback}</span>
         </div>
       )}
@@ -91,10 +93,10 @@ export function HabeasDataPage() {
                 requests.map((r) => {
                   const targetUser = users.find((u) => u.id === r.userId);
                   const currentIndex = STATUS_WORKFLOW.indexOf(r.status);
-                  const canAdvance = currentIndex >= 0 && currentIndex < STATUS_WORKFLOW.length - 1;
+                  const canAdvance = !["Respondida", "Rechazada"].includes(r.status) && currentIndex >= 0 && currentIndex < STATUS_WORKFLOW.length - 1;
 
                   // Verificación de vencimiento
-                  const dueDate = r.deadline ? new Date(`${r.deadline}T23:59:59`) : null;
+                  const dueDate = r.deadline ? new Date(`${r.deadline.slice(0,10)}T23:59:59-05:00`) : null;
                   const isOverdue =
                     dueDate &&
                     dueDate.getTime() < Date.now() &&

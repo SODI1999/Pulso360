@@ -190,7 +190,7 @@ export function NlpCorrectionModal({
   );
 }
 
-export function NlpHistoryModal({ isOpen, history = [], onClose }) {
+export function NlpHistoryModal({ isOpen, history = [], analyses = [], onClose }) {
   const dialogRef = useRef(null);
   useAgentModalAccessibility({ isOpen, onClose, dialogRef });
 
@@ -222,6 +222,14 @@ export function NlpHistoryModal({ isOpen, history = [], onClose }) {
         </div>
 
         <div className="agent-modal-scroll">
+          {analyses.map((analysis,index) => <div className="agent-modal-history-item" key={`${analysis.contentHash}-${index}`}>
+            <strong>Análisis anterior · {analysis.version}</strong>
+            <p>Contenido analizado: {analysis.contentHash?.slice(0,12)}… · {new Date(analysis.archivedAt).toLocaleString('es-CO')}</p>
+            <p>{analysis.categories?.map(category => category.name).join(', ') || 'Sin categorías'}</p>
+            {analysis.content && <p>Texto de esa versión: {analysis.content}</p>}
+            {(analysis.correctionHistory || []).map(revision => <p key={revision.id}>Revisión: {revision.categories.join(', ') || 'Ninguna aplica'}{revision.note ? ` · ${revision.note}` : ''}</p>)}
+          </div>)}
+          {!history.length && !analyses.length && <p>No hay revisiones anteriores.</p>}
           {history.map((h, idx) => {
             const itemNumber = history.length - idx;
             return (

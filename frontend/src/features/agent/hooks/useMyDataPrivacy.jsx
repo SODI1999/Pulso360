@@ -1,3 +1,5 @@
+import { useExpiredFormDraft } from '../../../core/auth/useExpiredFormDraft';
+import { env } from '../../../core/config/env';
 import { fetchAgentRecords } from '../services/agentQueries';
 import { createHabeasRequest as registerHabeasRequest } from '../services/myDataPrivacyService';
 import { useState, useMemo, useEffect } from 'react';
@@ -14,13 +16,17 @@ export function useMyDataPrivacy() {
   const [suppressionConfirmText, setSuppressionConfirmText] = useState('');
   const [suppressionFeedback, setSuppressionFeedback] = useState('');
 
+  useExpiredFormDraft('habeas:new', { rectificationText, suppressionConfirmText }, draft => {
+    setRectificationText(draft.rectificationText); setSuppressionConfirmText(draft.suppressionConfirmText);
+  });
+
   const [requestsVersion, setRequestsVersion] = useState(0);
 
   // Formatear fechas en formato colombiano
   const formatDate = (val) => {
     if (!val) return '–';
-    const str = val.includes('T') ? val : `${val}T12:00:00`;
-    return new Intl.DateTimeFormat('es-CO', { year: 'numeric', month: '2-digit', day: '2-digit' }).format(
+    const str = val.includes('T') ? val : `${val}T12:00:00Z`;
+    return new Intl.DateTimeFormat('es-CO', { timeZone:'America/Bogota', year: 'numeric', month: '2-digit', day: '2-digit' }).format(
       new Date(str)
     );
   };
@@ -30,7 +36,7 @@ export function useMyDataPrivacy() {
     const values = rows
       .map((item) => item[dateField])
       .filter(Boolean)
-      .map((val) => new Date(val.includes('T') ? val : `${val}T12:00:00`))
+      .map((val) => new Date(val.includes('T') ? val : `${val}T12:00:00Z`))
       .sort((a, b) => a - b);
 
     if (!values.length) return 'Sin registros';
@@ -49,6 +55,8 @@ export function useMyDataPrivacy() {
   });
 
 
+  const [loadError,setLoadError] = useState('');
+  const [loading,setLoading] = useState(true);
   useEffect(() => {
     let mounted = true;
     async function load() {
@@ -63,14 +71,14 @@ export function useMyDataPrivacy() {
         requests: storeData.habeasRequests || []
       });
     }
-    load();
+    load().catch(error => { if(mounted) setLoadError(error.message); }).finally(() => { if(mounted) setLoading(false); });
     return () => { mounted = false; };
   }, [currentUser?.id, requestsVersion]);
 
   // Crear solicitud de Habeas Data
   const createHabeasRequest = async (requestType, noteText) => {
     const result = await registerHabeasRequest(requestType, currentUser, noteText);
-    if (result.error) {
+    if (result.success !== true) {
       throw new Error(result.error);
     }
     setRequestsVersion((prev) => prev + 1);
@@ -105,7 +113,7 @@ export function useMyDataPrivacy() {
   }, [currentUserId, currentUserEmail, currentUserName, summary]);
 
   const handleDownloadPortability = (format) => {
-    pulsoStore.audit({
+    if (env.useMockStorage) pulsoStore.audit({
       actor: `${currentUser.id} (${roleLabels[currentUser.role] || currentUser.role})`,
       action: 'PORTABILIDAD_DATOS',
       target: format.toUpperCase()
@@ -148,7 +156,7 @@ export function useMyDataPrivacy() {
 
   const isSuppressionConfirmed = suppressionConfirmText.trim() === 'SUPRIMIR';
 
-  return {
+  return { loading,loadError,
     rectificationText,
     setRectificationText,
     rectificationFeedback,

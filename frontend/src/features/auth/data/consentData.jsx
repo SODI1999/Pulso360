@@ -21,7 +21,7 @@ export const CONSENT_PURPOSES = [
     key: 'c3',
     code: 'C3',
     title: 'Acompañamiento y Canal de Apoyo Psicosocial',
-    desc: 'Habilita la solicitud y canal de contacto seguro con SST.',
+    desc: 'Autoriza el análisis léxico de tu bitácora y la solicitud de apoyo a SST.',
     consequence: 'La bitácora funcionará como editor básico sin detección de señales.',
     activeLabel: 'Autorizado',
     inactiveLabel: 'Pausado'
@@ -40,7 +40,7 @@ export const CONSENT_PURPOSES = [
     code: 'C5',
     title: 'Contacto Preventivo Proactivo',
     desc: 'Permite al área de SST sugerir pausas activas o recursos de apoyo.',
-    consequence: 'El acceso directo se desactiva en tu menú; las rutas públicas continúan habilitadas.',
+    consequence: 'No se habilitarán contactos preventivos proactivos; puedes seguir solicitando apoyo voluntariamente.',
     activeLabel: 'Autorizado',
     inactiveLabel: 'Pausado'
   }

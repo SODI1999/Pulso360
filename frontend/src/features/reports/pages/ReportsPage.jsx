@@ -15,6 +15,7 @@ import '../../../styles/reports.css';
 
 export function ReportsPage() {
   const {
+    historyLoading, historyError,
     currentUser,
     storeData,
     minThreshold,
@@ -63,7 +64,7 @@ export function ReportsPage() {
 
       {/* Mensaje de feedback si aplica */}
       {feedback && (
-        <div className={`alert-banner ${isAllowedByPrivacy ? 'ok' : 'danger'}`} role="status">
+        <div className={`alert-banner ${feedback.startsWith('Error') || !isAllowedByPrivacy ? 'danger' : 'ok'}`} role={feedback.startsWith("Error") ? "alert" : "status"}>
           <Icon name={isAllowedByPrivacy ? 'checkCircle' : 'alertTriangle'} size={18} />
           <span>{feedback}</span>
         </div>
@@ -99,10 +100,11 @@ export function ReportsPage() {
             />
           ) : (
             <ReportPreviewCard
-              scopeLabel={currentScope?.label}
-              period={selectedPeriod}
+              scopeLabel={generatedReport?.scope || currentScope?.label}
+              period={generatedReport?.period || selectedPeriod}
               minThreshold={minThreshold}
-              sections={sections}
+              sections={generatedReport?.sections || sections}
+              metrics={generatedReport?.metrics || null}
               requesterName={currentUser?.name}
               nlpVersion={storeData.settings?.nlpVersion}
             />
@@ -122,7 +124,7 @@ export function ReportsPage() {
       </div>
 
       {/* Historial Modular Abierto de Reportes Generados */}
-      <ReportHistoryTable reportHistory={reportHistory} />
+      <ReportHistoryTable loading={historyLoading} error={historyError} reportHistory={reportHistory} />
     </div>
   );
 }

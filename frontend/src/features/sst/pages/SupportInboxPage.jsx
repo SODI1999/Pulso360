@@ -8,7 +8,11 @@ import { Icon } from '../../../core/components/Icon';
 import '../../../styles/sst.css';
 
 export function SupportInboxPage() {
-  const { feedback, storeData, requests, handleAdvanceStatus } = useSupportInbox();
+  const {
+    loading, loadError, feedback, storeData, requests, handleAdvanceStatus } = useSupportInbox();
+
+  if (loading) return <p role="status">Cargando datos del servidor…</p>;
+  if (loadError) return <p className="alert-banner danger" role="alert">No se pudieron cargar los datos: {loadError}</p>;
 
   return (
     <div>
@@ -28,14 +32,14 @@ export function SupportInboxPage() {
         <div>
           <strong>Privacidad y reserva:</strong> En la modalidad anónima, el flujo no solicita datos de
           contacto y muestra un código de seguimiento. En la modalidad identificada, el detalle de contacto se
-          presenta al profesional SST asignado según los controles activos del despliegue.
+          presenta al equipo SST autorizado.
         </div>
       </div>
 
       {/* Mensaje de feedback */}
       {feedback && (
-        <div className="alert-banner ok" role="status" style={{ marginBottom: 'var(--space-5)' }}>
-          <Icon name="checkCircle" size={18} />
+        <div className={`alert-banner ${feedback.startsWith("Error") ? "danger" : "ok"}`} role={feedback.startsWith("Error") ? "alert" : "status"} style={{ marginBottom: 'var(--space-5)' }}>
+          <Icon name={feedback.startsWith("Error") ? "alertTriangle" : "checkCircle"} size={18} />
           <span>{feedback}</span>
         </div>
       )}
@@ -93,7 +97,7 @@ export function SupportInboxPage() {
                           {isAnon ? 'Anónimo' : 'Identificado'}
                         </span>
                       </td>
-                      <td>{item.requestDate || item.request_date || item.date || (item.createdAt || item.created_at)?.substring(0, 10) || 'Sin fecha'}</td>
+                      <td>{item.date || (item.requestDate || item.request_date || item.createdAt || item.created_at)?.substring(0, 10) || 'Sin fecha'}</td>
                       <td>{item.reason}</td>
                       <td>
                         {isAnon ? (
@@ -107,8 +111,9 @@ export function SupportInboxPage() {
                         ) : (
                           <div>
                             <strong style={{ color: 'var(--c-texto)' }}>
-                              {identityUser || item.userName || 'Agente Registrado'}
+                              {identityUser || item.userName || 'Identidad no disponible'}
                             </strong>
+                            <div>{item.contactPreference || 'Sin preferencia'} · {item.timeWindow || 'Sin ventana indicada'}</div>
                             <div style={{ fontSize: '11px', color: 'var(--c-primario)', marginTop: '2px' }}>
                               Uso reservado SST
                             </div>

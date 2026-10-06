@@ -13,7 +13,7 @@ export function ReportResult({
       <div className="reports-result-header">
         <div>
           <h3 className="reports-result-title">
-            Reporte preparado y certificado
+            Reporte generado
           </h3>
           <div className="reports-result-meta">
             {generatedReport.scope} · {generatedReport.format}
@@ -23,7 +23,7 @@ export function ReportResult({
       </div>
 
       <p className="reports-result-hash">
-        Hash criptográfico demo: <code className="audit-code-cell">{generatedReport.hash}</code>
+        Código de integridad: <code className="audit-code-cell">{generatedReport.hash}</code>
       </p>
 
       <div className="reports-actions-row">

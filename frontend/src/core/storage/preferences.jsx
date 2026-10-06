@@ -1,6 +1,32 @@
 import { localData, sessionData } from './browserStorage';
 
+// Solo durante reautenticación en esta pestaña. Nunca se escribe contenido sensible al almacenamiento persistente.
+const expiredFormDrafts = new Map();
+
 export const preferences = {
+  rememberExpiredForm: (ownerId, key, values) => {
+    if (!ownerId) return;
+    const cacheKey = `${ownerId}:${key}`;
+    clearTimeout(expiredFormDrafts.get(cacheKey)?.timer);
+    const timer = setTimeout(() => expiredFormDrafts.delete(cacheKey), 30*60*1000);
+    timer.unref?.();
+    expiredFormDrafts.set(cacheKey, { values, expiresAt:Date.now()+30*60*1000, timer });
+  },
+  takeExpiredForm: (ownerId, key) => {
+    const entry = expiredFormDrafts.get(`${ownerId}:${key}`);
+    clearTimeout(entry?.timer);
+    expiredFormDrafts.delete(`${ownerId}:${key}`);
+    return entry?.expiresAt > Date.now() ? entry.values : null;
+  },
+  clearExpiredForms: () => {
+    for (const entry of expiredFormDrafts.values()) clearTimeout(entry.timer);
+    expiredFormDrafts.clear();
+  },
+  retainExpiredFormsFor: (ownerId) => {
+    for (const [key,entry] of expiredFormDrafts) {
+      if (!key.startsWith(`${ownerId}:`)) { clearTimeout(entry.timer); expiredFormDrafts.delete(key); }
+    }
+  },
   readCheckinDraft: (key) => JSON.parse(localData.getItem(key) || '{}'),
   saveCheckinDraft: (key, draft) => localData.setItem(key, JSON.stringify(draft)),
   removeCheckinDraft: (key) => localData.removeItem(key),

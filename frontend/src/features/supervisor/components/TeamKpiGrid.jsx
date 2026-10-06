@@ -4,10 +4,10 @@
 import { Icon } from '../../../core/components/Icon';
 
 export function TeamKpiGrid({
-  energyIndex = 76.2,
-  energyDelta = '+2.1% frente a semana previa',
-  overloadIndex = 68.5,
-  participationRate = '87.5%'
+  energyIndex = null,
+  energyDelta = 'N/D',
+  overloadIndex = null,
+  participationRate = 'N/D'
 }) {
   return (
     <div className="supervisor-metrics-strip" role="region" aria-label="Indicadores clave del equipo">
@@ -15,7 +15,7 @@ export function TeamKpiGrid({
       <div className="supervisor-metric-cell">
         <span className="supervisor-metric-label">Índice de Energía Agregado</span>
         <div className="supervisor-kpi-highlight">
-          {energyIndex}
+          {energyIndex ?? 'N/D'}
           <span className="supervisor-kpi-unit">/ 100</span>
         </div>
         <div className="kpi-delta ok">
@@ -28,12 +28,12 @@ export function TeamKpiGrid({
       <div className="supervisor-metric-cell">
         <span className="supervisor-metric-label">Percepción de Sobrecarga</span>
         <div className="supervisor-kpi-highlight warn">
-          {overloadIndex}
+          {overloadIndex ?? 'N/D'}
           <span className="supervisor-kpi-unit">/ 100</span>
         </div>
         <div className="kpi-delta warn">
           <Icon name="alertTriangle" size={15} />
-          <span>Tendencia por encima del umbral</span>
+          <span>Valor agregado del periodo</span>
         </div>
       </div>
 

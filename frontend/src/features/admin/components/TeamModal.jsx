@@ -1,3 +1,4 @@
+import { useExpiredFormDraft } from '../../../core/auth/useExpiredFormDraft';
 // src/features/admin/components/TeamModal.jsx
 // Modal para creación y edición de equipos operativos (RF-15)
 
@@ -10,25 +11,29 @@ export function TeamModal({ isOpen, onClose, onSave, campaign, team = null, supe
   const [supervisor, setSupervisor] = useState('');
   const [active, setActive] = useState(true);
   const [error, setError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     if (team) {
       setName(team.name || '');
-      setN(team.n || 5);
-      setSupervisor(team.supervisor || '');
+      setN(team.n ?? 0);
+      setSupervisor(team.supervisorId || '');
       setActive(team.active !== false);
     } else {
       setName('');
       setN(10);
-      setSupervisor(supervisorsList[0] || '');
+      setSupervisor(supervisorsList[0]?.id || '');
       setActive(true);
     }
     setError('');
   }, [team, isOpen, supervisorsList]);
 
+  useExpiredFormDraft(`team:${campaign?.id}:${team?.id || 'new'}`, { name, n, supervisor, active }, draft => {
+    setName(draft.name); setN(draft.n); setSupervisor(draft.supervisor); setActive(draft.active);
+  }, isOpen);
   if (!isOpen) return null;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const trimmedName = name.trim();
     const parsedN = parseInt(n, 10);
@@ -48,14 +53,19 @@ export function TeamModal({ isOpen, onClose, onSave, campaign, team = null, supe
       return;
     }
 
-    onSave({
-      campId: campaign.id,
-      teamId: team?.id || null,
-      name: trimmedName,
-      n: parsedN,
-      supervisor: team ? supervisor || team.supervisor : supervisor,
-      active
-    });
+    setSubmitting(true);
+    try {
+      const result = await onSave({
+        campId: campaign.id,
+        teamId: team?.id || null,
+        name: trimmedName,
+        n: parsedN,
+        supervisor: team ? supervisor || team.supervisor : supervisor,
+        active
+      });
+      if (result?.success === false) setError(result.error?.message || result.error);
+    } catch (error) { setError(error.message); }
+    finally { setSubmitting(false); }
   };
 
   const isLowK = parseInt(n, 10) < 5;
@@ -137,8 +147,8 @@ export function TeamModal({ isOpen, onClose, onSave, campaign, team = null, supe
                 >
                   <option value="">Selecciona un supervisor...</option>
                   {supervisorsList.map((sup) => (
-                    <option key={sup} value={sup}>
-                      {sup}
+                    <option key={sup.id} value={sup.id}>
+                      {sup.name}
                     </option>
                   ))}
                 </select>
@@ -165,7 +175,7 @@ export function TeamModal({ isOpen, onClose, onSave, campaign, team = null, supe
             <button type="button" className="btn btn-secondary" onClick={onClose}>
               Cancelar
             </button>
-            <button type="submit" className="btn btn-primary">
+            <button type="submit" disabled={submitting} className="btn btn-primary">
               <Icon name="check" size={16} />
               <span>{team ? 'Guardar Cambios' : 'Crear Equipo'}</span>
             </button>

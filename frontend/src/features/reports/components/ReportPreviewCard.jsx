@@ -7,14 +7,17 @@ export function ReportPreviewCard({
   minThreshold = 5,
   sections = { energia: true, carga: true, recuperacion: true, participacion: true },
   requesterName = '',
-  nlpVersion = 'v1.0-lex'
+  nlpVersion = null,
+  metrics = null
 }) {
+  const hasData = metrics && Object.keys(metrics).length > 0;
+
   return (
     <div className="reports-preview-card">
       <div className="reports-preview-header">
         <div>
           <div className="reports-preview-eyebrow">
-            Previsualización en tiempo real
+            Snapshot del reporte generado
           </div>
           <h3 className="reports-preview-title">
             Pulso360 · Reporte consolidado
@@ -27,36 +30,42 @@ export function ReportPreviewCard({
       </div>
 
       {/* Grid de Indicadores Previsualizados */}
-      <div className="reports-kpis-container">
-        {sections.energia && (
-          <div className="reports-kpi-item">
-            <div className="reports-kpi-label">Energía agregada</div>
-            <div className="reports-kpi-value">76</div>
-          </div>
-        )}
-        {sections.carga && (
-          <div className="reports-kpi-item">
-            <div className="reports-kpi-label">Carga emocional agregada</div>
-            <div className="reports-kpi-value">68</div>
-          </div>
-        )}
-        {sections.recuperacion && (
-          <div className="reports-kpi-item">
-            <div className="reports-kpi-label">Recuperación agregada</div>
-            <div className="reports-kpi-value">58</div>
-          </div>
-        )}
-        {sections.participacion && (
-          <div className="reports-kpi-item">
-            <div className="reports-kpi-label">Participación promedio</div>
-            <div className="reports-kpi-value">92%</div>
-          </div>
-        )}
-      </div>
+      {!hasData ? (
+        <div className="reports-meta-footer" style={{ padding: '2rem 1rem', textAlign: 'center', backgroundColor: 'var(--surface-color)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)' }}>
+          <p style={{ color: 'var(--text-secondary)' }}>Genera el reporte para consultar el snapshot guardado por el servidor.</p>
+        </div>
+      ) : (
+        <div className="reports-kpis-container">
+          {sections.energia && (
+            <div className="reports-kpi-item">
+              <div className="reports-kpi-label">Energía agregada</div>
+              <div className="reports-kpi-value">{metrics.energia == null ? 'N/D' : `${metrics.energia} / 5`}</div>
+            </div>
+          )}
+          {sections.carga && (
+            <div className="reports-kpi-item">
+              <div className="reports-kpi-label">Carga emocional agregada</div>
+              <div className="reports-kpi-value">{metrics.carga == null ? 'N/D' : `${metrics.carga} / 5`}</div>
+            </div>
+          )}
+          {sections.recuperacion && (
+            <div className="reports-kpi-item">
+              <div className="reports-kpi-label">Recuperación agregada</div>
+              <div className="reports-kpi-value">{metrics.recuperacion == null ? 'N/D' : `${metrics.recuperacion} / 5`}</div>
+            </div>
+          )}
+          {sections.participacion && (
+            <div className="reports-kpi-item">
+              <div className="reports-kpi-label">Participación promedio</div>
+              <div className="reports-kpi-value">{metrics.participacion == null ? 'N/D' : `${metrics.participacion}%`}</div>
+            </div>
+          )}
+        </div>
+      )}
 
       <div className="reports-meta-footer">
         Documento institucional confidencial · Indicadores agregados · Solicitado por:{' '}
-        <strong>{requesterName}</strong> · Modelo de análisis: {nlpVersion}. No contiene bitácoras privadas,
+        <strong>{requesterName}</strong> · Versionado léxico: {nlpVersion || 'No incluido en este reporte'}. No contiene bitácoras privadas,
         check-ins individuales ni solicitudes de acompañamiento.
       </div>
     </div>

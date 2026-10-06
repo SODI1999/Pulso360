@@ -19,13 +19,15 @@ export function InterventionsPage() {
   const [feedback, setFeedback] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [interventions, setInterventions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState('');
 
   useEffect(() => {
-    if (!env.useMockStorage) {
-      fetchSstInterventions().then(setInterventions).catch(console.error);
-    } else {
-      setInterventions(getSstData().interventions || []);
-    }
+    let active = true; setLoading(true); setLoadError('');
+    fetchSstInterventions().then(rows => { if (active) setInterventions(rows); })
+      .catch(error => { if (active) setLoadError(error.message); })
+      .finally(() => { if (active) setLoading(false); });
+    return () => { active = false; };
   }, [version]);
 
   const handleSaveIntervention = async (newIntervention) => {
@@ -33,13 +35,13 @@ export function InterventionsPage() {
     setErrorMessage('');
     const result = await saveIntervention(newIntervention);
 
-    if (result?.error) {
+    if (result?.success !== true) {
       setErrorMessage(result.error);
-      return;
+      return { success: false, error: result.error };
     }
 
     // Registro inmutable de auditoría (RF-09)
-    pulsoStore.audit({
+    if (env.useMockStorage) pulsoStore.audit({
       actor: `${user?.name || 'Profesional SST'} (${user?.role || 'sst'})`,
       action: 'CREACION_INTERVENCION',
       target: `${newIntervention.title} · ${newIntervention.campaign}${newIntervention.team ? ' / ' + newIntervention.team : ''} · línea base ${newIntervention.baseline}`
@@ -49,7 +51,11 @@ export function InterventionsPage() {
       `Intervención "${newIntervention.title}" registrada exitosamente y sincronizada con el módulo de supervisión operativa.`
     );
     setVersion((v) => v + 1);
+    return { success: true };
   };
+
+  if (loading) return <p role="status">Cargando intervenciones…</p>;
+  if (loadError) return <p className="alert-banner danger" role="alert">No se pudieron cargar las intervenciones: {loadError}</p>;
 
   return (
     <div>
@@ -132,6 +138,9 @@ export function InterventionsPage() {
                   <tr key={item.id}>
                     <td>
                       <strong>{item.title}</strong>
+                      {item.target && <div className="card-subtitle">{item.target}</div>}
+                      {item.startDate && <div className="card-subtitle">{item.startDate} — {item.endDate || "Sin fecha de cierre"}</div>}
+                      {item.lastFollowup && <div className="card-subtitle">Último seguimiento ({item.lastFollowup.date}): {item.lastFollowup.actionType && `${item.lastFollowup.actionType} · `}{item.lastFollowup.note} · {item.lastFollowup.progress}%</div>}
                       {item.externalAction && (
                         <div style={{ fontSize: '11.5px', color: 'var(--c-texto-mutado)', marginTop: '2px' }}>
                           Requiere acción externa manual
@@ -144,7 +153,7 @@ export function InterventionsPage() {
                         <div style={{ fontSize: '12px', color: 'var(--c-texto-suave)' }}>{item.team}</div>
                       )}
                     </td>
-                    <td>{item.assignedTo === 'usr-2' ? 'Supervisor Operativo' : 'Profesional SST'}</td>
+                    <td>{item.assignedName || 'Sin responsable asignado'}</td>
                     <td>{item.indicator || 'Recuperación agregada'}</td>
                     <td>{item.baseline != null ? `${item.baseline} / 100` : 'No publicable'}</td>
                     <td>

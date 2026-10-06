@@ -15,21 +15,8 @@ export async function saveParams(
   actorLabel
 ) {
   if (!env.useMockStorage) {
-    if (!getAuthToken()) {
-      return { error: 'Sesión no válida o token ausente' };
-    }
-    try {
-      await Promise.all([
-        apiClient.put('/admin/params/umbral_k_anonimato', { valor: { valor: parsedN, minimo_permitido: 3 } }),
-        apiClient.put('/admin/params/slas_atencion', { valor: { alta_horas: parsedAlta, media_horas: parsedMedia, baja_horas: parsedBaja, solicitudes_horas: parsedSol } }),
-        apiClient.put('/admin/params/gobernanza_checkin', { valor: { horas_edicion_permitidas: Number(checkinEditHours), granularidad_minima: minGranularity, retencion_auditoria_anios: parsedAudit } })
-      ]);
-      return {};
-    } catch (error) {
-      return { error: error.response?.data?.error?.message || 'Error en el servidor' };
-    }
+    return { success:false,error:'Estos parámetros son de solo lectura en esta versión.' };
   }
-
   const data = pulsoStore.get();
   data.settings = data.settings || {};
   data.settings.umbralMinimo = parsedN;
@@ -50,24 +37,24 @@ export async function saveParams(
     target: `N=${parsedN}; Granularidad=${minGranularity}; Retención=${parsedAudit}a; SLAs(Alta=${parsedAlta}h, Media=${parsedMedia}h, Baja=${parsedBaja}h, Sol=${parsedSol}h) · Justificación: ${justificationText}`
   });
 
-  return {};
+  return {success:true,data:null};
 }
 
 export async function publishPolicy(v, actorLabel, title, policyText, noticeText) {
   if (!env.useMockStorage) {
     if (!getAuthToken()) {
-      return { error: 'Sesión no válida o token ausente' };
+      return { success:false,data:null,error: 'Sesión no válida o token ausente' };
     }
     try {
-      await apiClient.post('/admin/policies', {
+      const response = await apiClient.post('/admin/policies', {
         version: v,
-        titulo: title || ('Política de Privacidad ' + v),
-        textoPolitica: policyText || 'Política de Privacidad y Tratamiento de Datos Personales Pulso360 versión ' + v,
-        textoAviso: noticeText || 'Aviso de Privacidad Integral conforme a la Ley 1581 de 2012.'
+        titulo: title,
+        textoPolitica: policyText,
+        textoAviso: noticeText
       });
-      return {};
+      return response;
     } catch (error) {
-      return { error: error.response?.data?.error?.message || error.message || 'Error en el servidor' };
+      return { success:false,data:null,error: error.response?.data?.error?.message || error.message || 'Error en el servidor' };
     }
   }
 
@@ -107,10 +94,14 @@ export async function publishPolicy(v, actorLabel, title, policyText, noticeText
     target: `Versión ${v} publicada. Se requiere re-consentimiento de titulares.`
   });
 
-  return {};
+  return {success:true,data:null};
 }
 
-export function activateNlp(v, actorLabel) {
+export async function activateNlp(v, actorLabel) {
+  if (!env.useMockStorage) {
+    try { const response = await apiClient.post(`/admin/nlp/versions/${encodeURIComponent(v)}/activate`); return { ...response,...response.data }; }
+    catch(error) { return { success:false,error:error.response?.data?.error?.message || error.message }; }
+  }
   const data = pulsoStore.get();
   data.settings = data.settings || {};
   data.settings.nlpVersions = data.settings.nlpVersions || [];
@@ -127,10 +118,14 @@ export function activateNlp(v, actorLabel) {
     action: 'ACTIVACION_LEXICO_NLP',
     target: `Modelo activo: ${v}`
   });
-  return {};
+  return {success:true,data:null};
 }
 
-export function approveRule(ruleId, actorLabel) {
+export async function approveRule(ruleId, actorLabel) {
+  if (!env.useMockStorage) {
+    try { const response = await apiClient.patch(`/admin/rules/${encodeURIComponent(ruleId)}/approval`,{}); return { success:true,data:response.data }; }
+    catch(error) { return { success:false,error:error.response?.data?.error?.message || error.message }; }
+  }
   const data = pulsoStore.get();
   const rule = (data.rules || []).find((r) => r.id === ruleId);
   if (!rule) return null;
@@ -144,15 +139,19 @@ export function approveRule(ruleId, actorLabel) {
     action: 'APROBACION_REGLA_ALERTA',
     target: `${rule.id} (${rule.metric} ${rule.operator} ${rule.value}%) aprobada y activada`
   });
-  return {};
+  return {success:true,data:null};
 }
-export function revertNlp(actorLabel) {
+export async function revertNlp(actorLabel) {
+  if (!env.useMockStorage) {
+    try { const response = await apiClient.post('/admin/nlp/revert'); return { ...response,...response.data }; }
+    catch(error) { return { success:false,error:error.response?.data?.error?.message || error.message }; }
+  }
   const data = pulsoStore.get();
   const versions = data.settings?.nlpVersions || [];
   const currentIndex = versions.indexOf(data.settings?.nlpVersion);
 
   if (currentIndex <= 0) {
-    return { error: 'No hay una versión previa registrada a la cual revertir.' };
+    return { success:false,data:null,error: 'No hay una versión previa registrada a la cual revertir.' };
   }
 
   const prevVersion = versions[currentIndex - 1];
@@ -165,5 +164,5 @@ export function revertNlp(actorLabel) {
     target: `Revertido a versión: ${prevVersion}`
   });
 
-  return { prevVersion };
+  return {success:true,data:{prevVersion},prevVersion};
 }

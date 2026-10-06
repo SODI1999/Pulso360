@@ -9,12 +9,15 @@ export function useMyWellbeing() {
   const currentUser = authService.getCurrentUser();
   const [data, setData] = useState(() => getAgentRecords(currentUser?.id));
 
+  const [loadError,setLoadError] = useState('');
+  const [loading,setLoading] = useState(!env.useMockStorage);
   useEffect(() => {
     let mounted = true;
     if (!env.useMockStorage && currentUser?.id) {
       fetchAgentRecords(currentUser.id).then((remoteData) => {
         if (mounted && remoteData) setData(remoteData);
-      });
+      }).catch(error => { if(mounted) setLoadError(error.message); })
+        .finally(() => { if(mounted) setLoading(false); });
     }
     return () => { mounted = false; };
   }, [currentUser?.id]);
@@ -48,19 +51,20 @@ export function useMyWellbeing() {
         const parts = (c.journeyKey || '').split('-');
         return parts.length === 3 ? `${parts[2]}/${parts[1]}` : 'Turno';
       }),
-      values: recent.map((c) => c.energia ?? c.recuperacion ?? 0)
+      values: recent.map((c) => c.energia ?? null)
     };
   }, [recentShifts]);
 
   const averageEnergy = useMemo(() => {
-    if (!trendData.values.length) return 0;
-    const sum = trendData.values.reduce((acc, curr) => acc + curr, 0);
-    return (sum / trendData.values.length).toFixed(1);
+    const values = trendData.values.filter(value => value != null);
+    if (!values.length) return null;
+    const sum = values.reduce((acc,curr) => acc + curr,0);
+    return (sum / values.length).toFixed(1);
   }, [trendData.values]);
 
   const isViewingLatest = activeShift.id === recentShifts[0]?.id;
 
-  return {
+  return { loading,loadError,
     navigate,
     checkinRecords,
     recentShifts,

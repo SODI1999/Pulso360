@@ -19,7 +19,7 @@ export function AuditLogPage() {
     filteredLogs,
     exportContent,
     handleVerifyIntegrity,
-    handleExportCrypto
+    handleExportCrypto, error, loading, busy, pagination, loadMore
   } = useAuditLog();
 
   return (
@@ -29,25 +29,24 @@ export function AuditLogPage() {
         <div>
           <h1 className="page-title">Registro de auditoría y cumplimiento</h1>
           <p className="page-subtitle">
-            Representación de registro inmutable de solo adición. Permite verificar la continuidad de la
-            cadena de hashes sin almacenar contenido individual sensible.
+            Registro de operaciones con hashes encadenados. La comprobación indica qué enlaces y contenidos se pudieron verificar, incluidos sus límites históricos.
           </p>
         </div>
         <div className="audit-header-actions">
-          <button type="button" className="btn btn-secondary" onClick={handleVerifyIntegrity}>
+          <button type="button" className="btn btn-secondary" onClick={handleVerifyIntegrity} disabled={busy}>
             <Icon name="shieldCheck" size={16} />
             <span>Verificar integridad</span>
           </button>
-          <DownloadLink
+          <button type="button" className="btn btn-primary" onClick={handleExportCrypto} disabled={busy}>Preparar exportación (máx. 10 000)</button>
+          {exportContent && <DownloadLink
             className="btn btn-primary"
             content={exportContent}
             mimeType="application/json"
             fileName={`pulso360-auditoria-${new Date().toISOString().substring(0, 10)}.json`}
-            onDownload={handleExportCrypto}
           >
             <Icon name="download" size={16} />
             <span>Exportar registro auditado</span>
-          </DownloadLink>
+          </DownloadLink>}
         </div>
       </div>
 
@@ -55,9 +54,8 @@ export function AuditLogPage() {
       <div className="alert-banner info" style={{ marginBottom: 'var(--space-5)' }}>
         <Icon name="info" size={18} />
         <div>
-          <strong>Trazabilidad y Principio de Privacidad:</strong> La bitácora registra únicamente metadatos
-          de eventos operativos y transacciones de gobernanza. Ninguna entrada almacena respuestas directas de
-          check-ins ni el texto libre de las bitácoras individuales.
+          <strong>Trazabilidad y Principio de Privacidad:</strong> Los eventos nuevos registran metadatos
+          de operaciones y gobernanza sin copiar respuestas individuales de check-ins, notas de acompañamiento ni texto de bitácoras. Los registros históricos se conservan.
         </div>
       </div>
 
@@ -76,6 +74,8 @@ export function AuditLogPage() {
         </div>
       )}
 
+      {error && <p className="alert-banner danger" role="alert">{error}</p>}
+      {loading && <p role="status">Cargando registros…</p>}
       {/* Tabla Modular de Registros */}
       <AuditLogTable
         logs={filteredLogs}
@@ -85,6 +85,8 @@ export function AuditLogPage() {
         statusFilter={statusFilter}
         onStatusFilterChange={setStatusFilter}
       />
+      <p>{filteredLogs.length} registros visibles de {pagination.total} consultados.</p>
+      {pagination.hasMore && <button type="button" className="btn btn-secondary" disabled={busy} onClick={loadMore}>Cargar siguientes 50</button>}
     </div>
   );
 }

@@ -26,7 +26,7 @@ export function WellbeingHistory({ trendData, averageEnergy }) {
         <div className="wellbeing-trend-footer">
           <span>Escala: 1 (Sin batería) a 5 (Plena y enfocado)</span>
           <span>
-            Promedio en los últimos {trendData.labels.length} turnos: <strong>{averageEnergy} / 5</strong>
+            Promedio de energía disponible en los últimos {trendData.labels.length} turnos: <strong>{averageEnergy == null ? 'Sin dato' : `${averageEnergy} / 5`}</strong>
           </span>
         </div>
       </div>

@@ -9,6 +9,8 @@ import { STATUS_WORKFLOW } from '../data/habeasDataData';
 export function useHabeasData() {
   const currentUser = authService.getCurrentUser();
   const [version, setVersion] = useState(0);
+  const [loading, setLoading] = useState(!env.useMockStorage);
+  const [loadError, setLoadError] = useState('');
   const [feedback, setFeedback] = useState('');
   const [advanceModalState, setAdvanceModalState] = useState({
     isOpen: false,
@@ -21,6 +23,7 @@ export function useHabeasData() {
   useEffect(() => {
     let active = true;
     const loadData = async () => {
+      setLoading(true); setLoadError('');
       if (!env.useMockStorage) {
         try {
           const [reqs, usersData] = await Promise.all([
@@ -34,10 +37,12 @@ export function useHabeasData() {
             });
           }
         } catch (error) {
-          console.error('Error fetching live habeas data:', error);
-        }
+          if (active) setLoadError(error.message);
+          if (active) setFeedback(`Error: ${error.message}`);
+        } finally { if (active) setLoading(false); }
       } else {
         setStoreData(getHabeasData());
+        setLoading(false);
       }
     };
     loadData();
@@ -52,9 +57,10 @@ export function useHabeasData() {
   // Formatear fechas
   const formatDate = (value) => {
     if (!value) return '—';
-    const dateStr = value.includes('T') ? value : `${value}T12:00:00`;
+    const dateStr = value.includes('T') ? value : `${value}T12:00:00Z`;
     try {
       return new Intl.DateTimeFormat('es-CO', {
+        timeZone: 'America/Bogota',
         year: 'numeric',
         month: '2-digit',
         day: '2-digit'
@@ -66,6 +72,7 @@ export function useHabeasData() {
 
   // Abrir modal para avanzar
   const handleOpenAdvance = (request) => {
+    if (['Respondida','Rechazada'].includes(request.status)) return;
     const currentIndex = STATUS_WORKFLOW.indexOf(request.status);
     if (currentIndex >= 0 && currentIndex < STATUS_WORKFLOW.length - 1) {
       const nextStatus = STATUS_WORKFLOW[currentIndex + 1];
@@ -81,18 +88,20 @@ export function useHabeasData() {
   const handleConfirmAdvance = async ({ requestId, nextStatus, note }) => {
     const operationResult = await confirmAdvance(requestId, nextStatus, note, actorLabel);
     if (!operationResult) return;
-    if (operationResult.error) {
+    if (operationResult.success !== true) {
       setFeedback(`Error: ${operationResult.error}`);
-      return;
+      return operationResult;
     }
     const { req } = operationResult;
 
     setFeedback(`Radicado ${req?.id || requestId} actualizado exitosamente al estado "${nextStatus}".`);
     setAdvanceModalState({ isOpen: false, request: null, nextStatus: '' });
     setVersion((v) => v + 1);
+    return operationResult;
   };
 
   return {
+    loading, loadError,
     feedback,
     advanceModalState,
     setAdvanceModalState,

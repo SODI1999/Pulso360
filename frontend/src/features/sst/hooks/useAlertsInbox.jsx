@@ -1,9 +1,8 @@
-import { getSstData, fetchSstAlerts } from '../services/sstQueries';
+import { fetchSstAlerts } from '../services/sstQueries';
 import { updateStatus, confirmDismiss, createIntervention } from '../services/alertsInboxService';
 import { useState, useEffect } from 'react';
 
 import { authService } from '../../../core/auth/authService';
-import { env } from '../../../core/config/env';
 
 export function useAlertsInbox() {
   const user = authService.getCurrentUser();
@@ -11,26 +10,28 @@ export function useAlertsInbox() {
   const [dismissingAlert, setDismissingAlert] = useState(null);
   const [feedback, setFeedback] = useState('');
   const [alerts, setAlerts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState('');
 
   useEffect(() => {
-    if (!env.useMockStorage) {
-      fetchSstAlerts().then(setAlerts).catch(console.error);
-    } else {
-      setAlerts(getSstData().alerts || []);
-    }
+    let active = true; setLoading(true); setLoadError('');
+    fetchSstAlerts().then(rows => { if (active) setAlerts(rows); })
+      .catch(error => { if (active) setLoadError(error.message); })
+      .finally(() => { if (active) setLoading(false); });
+    return () => { active = false; };
   }, [version]);
 
   // Actualizar estado general de la alerta
   const handleUpdateStatus = async (alertId, newStatus) => {
     const operationResult = await updateStatus(alertId, newStatus, user);
     if (!operationResult) return;
-    if (operationResult.error) {
+    if (operationResult.success !== true) {
       setFeedback(`Error: ${operationResult.error}`);
-      return;
+      return operationResult;
     }
     const { alertItem } = operationResult;
 
-    setFeedback(`La alerta "${alertItem.rule}" pasó a estado "${newStatus.replace('_', ' ')}".`);
+    setFeedback(`La alerta "${alertItem.rule || alerts.find(item => item.id === alertId)?.rule || alertId}" pasó a estado "${newStatus.replace('_', ' ')}".`);
     setVersion((v) => v + 1);
   };
 
@@ -38,32 +39,34 @@ export function useAlertsInbox() {
   const handleConfirmDismiss = async (alertId, reason) => {
     const operationResult = await confirmDismiss(alertId, reason, user);
     if (!operationResult) return;
-    if (operationResult.error) {
+    if (operationResult.success !== true) {
       setFeedback(`Error: ${operationResult.error}`);
-      return;
+      return operationResult;
     }
 
     setDismissingAlert(null);
-    setFeedback(`Alerta descartada con justificación técnica registrada en auditoría.`);
+    setFeedback('Alerta descartada con justificación guardada en su registro. La operación quedó auditada.');
     setVersion((v) => v + 1);
+    return operationResult;
   };
 
   // Crear intervención colectiva automáticamente desde la alerta
   const handleCreateIntervention = async (alertItem) => {
     const operationResult = await createIntervention(alertItem, user);
     if (!operationResult) return;
-    if (operationResult.error) {
+    if (operationResult.success !== true) {
       setFeedback(`Error: ${operationResult.error}`);
       return;
     }
 
     setFeedback(
-      `Intervención creada exitosamente. Se asignó el plan al supervisor y la alerta avanzó a "Intervención creada".`
+      `Intervención creada en el ámbito de la alerta. La alerta avanzó a "Intervención creada".`
     );
     setVersion((v) => v + 1);
   };
 
   return {
+    loading, loadError,
     dismissingAlert,
     setDismissingAlert,
     feedback,

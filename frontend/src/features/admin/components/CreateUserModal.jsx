@@ -1,7 +1,9 @@
+import { useExpiredFormDraft } from '../../../core/auth/useExpiredFormDraft';
 // src/features/admin/components/CreateUserModal.jsx
 // Modal para creación atómica de usuarios institucionales (RF-15)
 
 import { useState, useEffect } from 'react';
+import { env } from '../../../core/config/env';
 import { Icon } from '../../../core/components/Icon';
 
 const CANONICAL_ROLES = [
@@ -18,10 +20,13 @@ export function CreateUserModal({ isOpen, onClose, onSave, orgScopes = [] }) {
   const [role, setRole] = useState('agente');
   const [orgScopeId, setOrgScopeId] = useState('');
   const [status, setStatus] = useState('Activo');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     setName('');
+    setPassword('');
     setEmail('');
     setRole('agente');
     setOrgScopeId(orgScopes[0]?.id || '');
@@ -29,9 +34,14 @@ export function CreateUserModal({ isOpen, onClose, onSave, orgScopes = [] }) {
     setError('');
   }, [isOpen, orgScopes]);
 
+  useExpiredFormDraft('user:new', { name, email, role, orgScopeId, status }, draft => {
+    setName(draft.name); setEmail(draft.email); setRole(draft.role); setOrgScopeId(draft.orgScopeId);
+    setStatus(draft.status); setPassword('');
+    setError('Borrador recuperado. Vuelve a ingresar la contraseña inicial.');
+  }, isOpen);
   if (!isOpen) return null;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const trimmedName = name.trim();
     const trimmedEmail = email.trim().toLowerCase();
@@ -51,14 +61,19 @@ export function CreateUserModal({ isOpen, onClose, onSave, orgScopes = [] }) {
       return;
     }
 
-    onSave({
-      name: trimmedName,
-      email: trimmedEmail,
-      role,
-      orgScopeId,
-      status,
-      onError: (msg) => setError(msg)
-    });
+    setSubmitting(true);
+    try {
+      const result = await onSave({
+        name: trimmedName,
+        email: trimmedEmail,
+        role,
+        orgScopeId,
+        status, password,
+        onError: (msg) => setError(msg)
+      });
+      if (result?.success === false) setError(result.error?.message || result.error);
+    } catch (error) { setError(error.message); }
+    finally { setSubmitting(false); }
   };
 
   return (
@@ -115,6 +130,11 @@ export function CreateUserModal({ isOpen, onClose, onSave, orgScopes = [] }) {
               />
             </div>
 
+            {!env.useMockStorage && <div className="form-group">
+              <label className="form-label" htmlFor="createUserPassword">Contraseña inicial</label>
+              <input id="createUserPassword" type="password" className="form-input" autoComplete="new-password"
+                required minLength={8} maxLength={72} value={password} onChange={e => setPassword(e.target.value)} />
+            </div>}
             <div className="form-group">
               <label className="form-label" htmlFor="createUserRole">
                 Rol canónico asignado <span style={{ color: 'var(--c-critico)' }}>*</span>
@@ -172,7 +192,7 @@ export function CreateUserModal({ isOpen, onClose, onSave, orgScopes = [] }) {
             <button type="button" className="btn btn-secondary" onClick={onClose}>
               Cancelar
             </button>
-            <button type="submit" className="btn btn-primary">
+            <button type="submit" disabled={submitting} className="btn btn-primary">
               <Icon name="check" size={16} />
               <span>Crear Cuenta</span>
             </button>

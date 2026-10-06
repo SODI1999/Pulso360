@@ -2,6 +2,8 @@
 // Motor léxico determinista de Procesamiento de Lenguaje Natural (NLP) para detección de riesgos psicosociales
 
 import { pulsoStore } from '../storage/pulsoStore';
+import { env } from '../config/env';
+import { apiClient } from '../api/apiClient';
 
 // Categorías clínicas/operativas y sus respectivos términos asociados
 export const NLP_CATEGORIES = {
@@ -100,6 +102,12 @@ export const CRISIS_PHRASES = [
 // Palabras para detectar negaciones e intensificadores gramaticales
 const NEGATORS = ['no', 'nunca', 'jamás', 'jamas', 'sin'];
 const INTENSIFIERS = ['muy', 'demasiado', 'demasiada', 'totalmente', 'siempre'];
+let activeLexicon = null;
+function dictionary() {
+  if (env.useMockStorage) return { categories:NLP_CATEGORIES,crisis:CRISIS_PHRASES,negators:NEGATORS,intensifiers:INTENSIFIERS };
+  if (!activeLexicon) throw new Error('Carga el léxico autorizado antes de analizar.');
+  return { ...activeLexicon.dictionary,crisis:activeLexicon.dictionary.crisisPhrases };
+}
 
 // Normalización de texto (minúsculas, colapso de espacios múltiples)
 const normalize = (text = '') => text.toLowerCase().replace(/\s+/g, ' ').trim();
@@ -115,26 +123,33 @@ const hasNegationNear = (text, phrase) => {
     .split(/\s+/)
     .filter(Boolean)
     .slice(-3);
-  return wordsBefore.some((word) => NEGATORS.includes(word));
+  return wordsBefore.some((word) => dictionary().negators.includes(word));
 };
 
 export const nlpEngine = {
+  loadActiveLexicon: async () => {
+    if (env.useMockStorage) return;
+    // Se vuelve a consultar: una activación o revocación no puede usar una caché indefinida.
+    activeLexicon = null;
+    const response = await apiClient.get('/nlp/lexicon/active');
+    activeLexicon = response.data;
+  },
   // Versión activa del clasificador léxico configurada en el sistema
-  getVersion: () => pulsoStore?.get?.().settings?.nlpVersion || 'lexico-v1.2',
+  getVersion: () => env.useMockStorage ? pulsoStore.get().settings?.nlpVersion || 'lexico-v1.2' : activeLexicon?.version,
 
   // Lista de nombres de categorías soportadas
-  getCategoryNames: () => Object.keys(NLP_CATEGORIES),
+  getCategoryNames: () => Object.keys(env.useMockStorage ? NLP_CATEGORIES : activeLexicon?.dictionary?.categories || {}),
 
   // Análisis de texto determinista
   analyze: (rawText = '') => {
     const text = normalize(rawText);
 
     // 1. Detección preventiva de alerta de crisis
-    const isCrisisAlert = CRISIS_PHRASES.some((phrase) => text.includes(phrase));
+    const isCrisisAlert = dictionary().crisis.some((phrase) => text.includes(phrase));
 
     // 2. Evaluación de cada categoría contra el léxico
     const results = [];
-    Object.entries(NLP_CATEGORIES).forEach(([name, lexicon]) => {
+    Object.entries(dictionary().categories).forEach(([name, lexicon]) => {
       let score = 0;
       const evidence = [];
 
@@ -151,7 +166,7 @@ export const nlpEngine = {
           .filter(Boolean);
         const previousWord = precedingWords.slice(-1)[0] || '';
 
-        if (INTENSIFIERS.includes(previousWord)) {
+        if (dictionary().intensifiers.includes(previousWord)) {
           score += 1.5;
         } else {
           score += 1;

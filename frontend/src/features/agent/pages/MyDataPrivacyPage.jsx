@@ -13,7 +13,7 @@ import '../../../styles/agent.css';
 
 export function MyDataPrivacyPage() {
   const navigate = useNavigate();
-  const {
+  const { loading,loadError,
     rectificationText,
     setRectificationText,
     rectificationFeedback,
@@ -30,6 +30,8 @@ export function MyDataPrivacyPage() {
     isSuppressionConfirmed
   } = useMyDataPrivacy();
 
+  if (loading) return <p role="status">Cargando tus datos…</p>;
+  if (loadError) return <p className="alert-banner danger" role="alert">{loadError}</p>;
   return (
     <div className="agent-page agent-page--privacy">
       {/* Subnavegación unificada */}
@@ -80,8 +82,7 @@ export function MyDataPrivacyPage() {
       <div className="card" style={{ marginBottom: '24px' }}>
         <div className="card-title">Portabilidad de datos propios</div>
         <p style={{ fontSize: '13px', color: 'var(--c-texto-suave)', margin: '8px 0 16px' }}>
-          Descarga una copia estructurada de tus datos registrados. La exportación queda asentada en la cadena
-          inmutable de auditoría.
+          Descarga una copia estructurada de los registros asociados a tu cuenta. La descarga se prepara en tu navegador.
         </p>
         <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
           <DownloadLink
@@ -127,9 +128,7 @@ export function MyDataPrivacyPage() {
           Solicitud formal de supresión de datos
         </div>
         <p style={{ fontSize: '13px', color: 'var(--c-texto-suave)', margin: '8px 0 16px' }}>
-          Se eliminarán o disociarán datos personales conforme a la política vigente. Los agregados ya
-          consolidados y los eventos de auditoría no se eliminan retrospectivamente para preservar la
-          integridad del sistema.
+          Esta acción registra una solicitud para revisión administrativa. El registro del trámite no ejecuta automáticamente la supresión o disociación de datos.
         </p>
 
         <div
@@ -144,7 +143,7 @@ export function MyDataPrivacyPage() {
           }}
         >
           <div>
-            <strong style={{ fontSize: '12.5px', color: 'var(--c-texto)' }}>Se elimina o disocia:</strong>
+            <strong style={{ fontSize: '12.5px', color: 'var(--c-texto)' }}>Información que puedes solicitar revisar:</strong>
             <ul
               style={{
                 fontSize: '12px',
@@ -153,14 +152,14 @@ export function MyDataPrivacyPage() {
                 marginTop: '6px'
               }}
             >
-              <li>Texto de bitácoras sujeto a supresión</li>
+              <li>Textos de tus bitácoras</li>
               <li>Clasificación NLP vinculada a tus textos</li>
-              <li>Vínculo personal de registros que corresponda disociar</li>
+              <li>Tus check-ins y solicitudes de apoyo</li>
             </ul>
           </div>
           <div>
             <strong style={{ fontSize: '12.5px', color: 'var(--c-texto)' }}>
-              Se conserva por política y ley:
+              Datos que conserva el radicado:
             </strong>
             <ul
               style={{
@@ -170,9 +169,9 @@ export function MyDataPrivacyPage() {
                 marginTop: '6px'
               }}
             >
-              <li>Métricas agregadas ya consolidadas</li>
-              <li>Metadatos de auditoría (con pseudonimización)</li>
-              <li>Prueba de consentimientos históricos</li>
+              <li>Tipo de solicitud y nota del titular</li>
+              <li>Estado del trámite y fecha de vencimiento</li>
+              <li>Respuesta administrativa registrada</li>
             </ul>
           </div>
         </div>

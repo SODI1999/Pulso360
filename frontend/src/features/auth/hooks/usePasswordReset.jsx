@@ -86,8 +86,7 @@ export function usePasswordReset(mode, tokenParam, onResetComplete) {
       } else {
         setResetFeedback({ type: 'error', message: result.message });
       }
-    } catch (err) {
-      console.error('Reset password error:', err);
+    } catch {
       setResetLoading(false);
       setResetFeedback({ type: 'error', message: 'Ocurrió un error inesperado al guardar la contraseña.' });
     }

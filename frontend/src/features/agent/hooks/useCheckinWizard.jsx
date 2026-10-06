@@ -11,12 +11,15 @@ export function useCheckinWizard() {
   const user = authService.getCurrentUser();
   const [data, setData] = useState(() => getAgentRecords(user?.id));
 
+  const [loadError,setLoadError] = useState('');
+  const [loading,setLoading] = useState(!env.useMockStorage);
   useEffect(() => {
     let mounted = true;
     if (!env.useMockStorage && user?.id) {
       fetchAgentRecords(user.id).then((remoteData) => {
         if (mounted && remoteData) setData(remoteData);
-      });
+      }).catch(error => { if(mounted) setLoadError(error.message); })
+        .finally(() => { if(mounted) setLoading(false); });
     }
     return () => { mounted = false; };
   }, [user?.id]);
@@ -154,7 +157,7 @@ export function useCheckinWizard() {
 
     const result = await saveCheckin(existingCheckin, user, journeyKey, draft);
 
-    if (result.error) {
+    if (result.success !== true) {
       setValidationError(result.error);
       return;
     }
@@ -167,7 +170,7 @@ export function useCheckinWizard() {
 
   // 1. Caso: Bloqueo por falta de consentimiento C1
 
-  return {
+  return { loading,loadError,
     data,
     consent,
     journeyKey,

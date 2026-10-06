@@ -20,6 +20,7 @@ export function ConsentPage() {
     comesFromLogin,
     consents,
     policyAccepted,
+    canSubmit,
     setPolicyAccepted,
     history,
     statusMessage,
@@ -83,6 +84,7 @@ export function ConsentPage() {
         consents={consents}
         handleCheckboxChange={handleCheckboxChange}
         policyAccepted={policyAccepted}
+        canSubmit={canSubmit}
         setPolicyAccepted={setPolicyAccepted}
         openModal={openModal}
         activeCount={activeCount}

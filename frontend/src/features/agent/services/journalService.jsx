@@ -3,8 +3,8 @@ import { pulsoStore } from '../../../core/storage/pulsoStore';
 import { apiClient, getAuthToken } from '../../../core/api/apiClient';
 import { env } from '../../../core/config/env';
 
-const unavailableJournal = () => ({ error: 'La entrada no está disponible para este usuario.' });
-const missingConsent = () => ({ error: 'La finalidad de bitácora no está activa para este usuario.' });
+const unavailableJournal = () => ({ success:false,error: 'La entrada no está disponible para este usuario.' });
+const missingConsent = () => ({ success:false,error: 'La finalidad requerida no está activa para este usuario.' });
 const canUseJournal = (data, user) => {
   const consent = data.consents?.[user?.id];
   return Boolean(
@@ -18,19 +18,18 @@ const ownsJournal = (journal, user) =>
 export async function saveJournal(currentJournalId, currentUser, currentJournal, contextTag, trimmed) {
   const isNew = !currentJournalId;
 
-  const isTestOrSsr = typeof window?.document === 'undefined' || globalThis.process?.env?.NODE_ENV === 'test';
-  if (!env.useMockStorage && !isTestOrSsr) {
-    if (!getAuthToken()) return { error: 'Sesión no válida o expirada.' };
+  if (!env.useMockStorage) {
+    if (!getAuthToken()) return { success:false,data:null,error: 'Sesión no válida o expirada.' };
     try {
       if (isNew) {
         const res = await apiClient.post('/agent/journal', { context: contextTag, content: trimmed });
-        return { journalPayload: res.data };
+        return { ...res,journalPayload: res.data };
       } else {
-        const res = await apiClient.put('/agent/journal/' + currentJournalId, { content: trimmed });
-        return { journalPayload: res.data };
+        const res = await apiClient.put('/agent/journal/' + currentJournalId, { content: trimmed,context:contextTag });
+        return { ...res,journalPayload: res.data };
       }
     } catch (err) {
-      return { error: err.response?.data?.error?.message || 'Error al guardar bitácora en el servidor' };
+      return { success:false,data:null,error: err.response?.data?.error?.message || 'Error al guardar bitácora en el servidor' };
     }
   }
 
@@ -43,6 +42,11 @@ export async function saveJournal(currentJournalId, currentUser, currentJournal,
   currentJournal = storedJournal;
   const now = new Date();
   const dateStr = now.toISOString().slice(0, 10);
+  const contentChanged = currentJournal && currentJournal.text !== trimmed;
+  const analysisHistory = [...(currentJournal?.analysisHistory || [])];
+  if (contentChanged && currentJournal.analysis) analysisHistory.unshift({
+    ...currentJournal.analysis,content:currentJournal.text,correctionHistory:currentJournal.correctionHistory || [],archivedAt:now.toISOString()
+  });
 
   const journalPayload = {
     id: currentJournalId || `jrn-${Date.now()}`,
@@ -52,10 +56,11 @@ export async function saveJournal(currentJournalId, currentUser, currentJournal,
     updatedAt: now.toISOString(),
     context: contextTag,
     text: trimmed,
-    analysis: currentJournal?.analysis || null,
-    correctedCategories: currentJournal?.correctedCategories || null,
-    correctionNote: currentJournal?.correctionNote || null,
-    correctionHistory: currentJournal?.correctionHistory || []
+    analysis: contentChanged ? null : currentJournal?.analysis || null,
+    correctedCategories: contentChanged ? null : currentJournal?.correctedCategories || null,
+    correctionNote: contentChanged ? null : currentJournal?.correctionNote || null,
+    correctionHistory: contentChanged ? [] : currentJournal?.correctionHistory || [],
+    analysisHistory
   };
 
   if (isNew) {
@@ -72,18 +77,16 @@ export async function saveJournal(currentJournalId, currentUser, currentJournal,
     target: `Bitácora ${journalPayload.id}`
   });
 
-  return { journalPayload };
+  return { success:true,data:journalPayload,journalPayload };
 }
 
 export async function deleteJournal(currentJournalId, currentUser) {
-  const isTestOrSsr = typeof window?.document === 'undefined' || globalThis.process?.env?.NODE_ENV === 'test';
-  if (!env.useMockStorage && !isTestOrSsr) {
-    if (!getAuthToken()) return { error: 'Sesión no válida o expirada.' };
+  if (!env.useMockStorage) {
+    if (!getAuthToken()) return { success:false,data:null,error: 'Sesión no válida o expirada.' };
     try {
-      await apiClient.delete('/agent/journal/' + currentJournalId);
-      return {};
+      return await apiClient.delete('/agent/journal/' + currentJournalId);
     } catch (err) {
-      return { error: err.response?.data?.error?.message || 'Error al eliminar bitácora en el servidor' };
+      return { success:false,data:null,error: err.response?.data?.error?.message || 'Error al eliminar bitácora en el servidor' };
     }
   }
 
@@ -99,14 +102,22 @@ export async function deleteJournal(currentJournalId, currentUser) {
     target: `Bitácora ${currentJournalId}`
   });
 
-  return {};
+  return {success:true};
 }
 
-export function saveCorrection(currentJournalId, selectedCategories, correctionNote, currentUser) {
+export function saveCorrection(currentJournalId, selectedCategories, correctionNote, currentUser, contentHash) {
+  if (!env.useMockStorage) {
+    if (!getAuthToken()) return Promise.resolve({ success:false,data:null,error: 'Sesión no válida o expirada.' });
+    return apiClient.post(`/agent/journal/${currentJournalId}/corrections`, {
+      categories: selectedCategories.filter(c => c !== 'Ninguna aplica'),
+      note: correctionNote.trim(), contentHash
+    }).then(res => ({ ...res, journalPayload: res.data }))
+      .catch(err => ({ success: false, error: err.response?.data?.error?.message || 'No se pudo guardar la corrección.' }));
+  }
   const storeData = pulsoStore.get();
   const target = storeData.journals.find((j) => j.id === currentJournalId);
   if (!ownsJournal(target, currentUser)) return unavailableJournal();
-  if (!canUseJournal(storeData, currentUser)) return missingConsent();
+  if (!canAnalyze(storeData, currentUser)) return missingConsent();
 
   let finalCategories = selectedCategories.filter((c) => c !== 'Ninguna aplica');
   const previousCats = target.correctedCategories
@@ -139,13 +150,21 @@ export function saveCorrection(currentJournalId, selectedCategories, correctionN
     action: 'CORRECCION_NLP',
     target: `Bitácora ${target.id} (Corrección #${target.correctionHistory.length})`
   });
-  return {};
+  return {success:true};
 }
 export function saveJournalAnalysis(journalPayload, analysisResult, currentUser) {
+  if (!env.useMockStorage) {
+    if (!getAuthToken() || !journalPayload?.id) return Promise.resolve({ success:false,data:null,error: 'Sesión o entrada no válida.' });
+    return apiClient.put(`/agent/journal/${journalPayload.id}`, {
+      analysis: analysisResult, contentHash: journalPayload.content_hash || journalPayload.contentHash
+    }).then(res => ({ ...res, journalPayload: res.data }))
+      .catch(err => ({ success: false, error: err.response?.data?.error?.message || 'No se pudo guardar el análisis.' }));
+  }
   const storeData = pulsoStore.get();
   const target = storeData.journals.find((j) => j.id === journalPayload.id);
   if (!ownsJournal(target, currentUser)) return unavailableJournal();
   if (!canAnalyze(storeData, currentUser)) return missingConsent();
+  if (target.text !== (journalPayload.text ?? journalPayload.content)) return {success:false,error:'Cambió el texto. Vuelve a analizar la entrada.'};
   if (target) {
     target.analysis = analysisResult;
     pulsoStore.save(storeData);
@@ -156,36 +175,35 @@ export function saveJournalAnalysis(journalPayload, analysisResult, currentUser)
     action: 'EJECUCION_NLP',
     target: `Bitácora ${journalPayload.id}`
   });
-  return {};
+  return {success:true};
 }
 
 export async function createPriorityRequest(currentUser, crisisMode) {
-  const isTestOrSsr = typeof window?.document === 'undefined' || globalThis.process?.env?.NODE_ENV === 'test';
-  if (!env.useMockStorage && !isTestOrSsr) {
+  if (!env.useMockStorage) {
     if (!getAuthToken()) {
-      return { error: 'Sesión no válida o token ausente' };
+      return { success:false,data:null,error: 'Sesión no válida o token ausente' };
     }
     try {
       const isAnonymous = crisisMode === 'anonimo';
       const res = await apiClient.post('/sst/support-requests', {
-        mode: crisisMode,
+        mode: isAnonymous ? 'anonimo' : 'identificado',
         urgency: 'alta',
         reason: 'Contacto prioritario solicitado por el titular',
         description: 'Contacto prioritario originado desde la bitácora.',
         contactPreference: isAnonymous ? 'app' : 'directo'
       });
-      return { code: res.data.code };
+      return { ...res,code: res.data.code };
     } catch (err) {
-      return { error: err.response?.data?.error?.message || 'Error al solicitar contacto prioritario en el servidor' };
+      return { success:false,data:null,error: err.response?.data?.error?.message || 'Error al solicitar contacto prioritario en el servidor' };
     }
   }
 
   const storeData = pulsoStore.get();
   const currentConsent = storeData.consents?.[currentUser?.id];
 
-  if (!currentConsent?.c5) {
+  if (!currentConsent?.c3) {
     return {
-      error: 'Se requiere tener activa la finalidad C5 de consentimiento para canalizar solicitudes a SST.'
+      error: 'Se requiere tener activa la finalidad C3 de consentimiento para solicitar apoyo a SST.'
     };
   }
 
@@ -226,5 +244,5 @@ export async function createPriorityRequest(currentUser, crisisMode) {
     target: `Caso ${code} (${isAnonymous ? 'Modalidad Anónima' : 'Modalidad Confidencial Identificada'})`
   });
 
-  return { code };
+  return { success:true,data:{code},code };
 }

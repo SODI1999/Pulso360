@@ -1,3 +1,4 @@
+import { useExpiredFormDraft } from '../../../core/auth/useExpiredFormDraft';
 // src/features/admin/components/HabeasAdvanceModal.jsx
 // Modal para avanzar estado y registrar respuesta en solicitud de Habeas Data (RF-14)
 
@@ -7,29 +8,37 @@ import { useModalA11y } from '../../../core/hooks/useModalA11y';
 
 export function HabeasAdvanceModal({ isOpen, onClose, onConfirm, request, nextStatus }) {
   const [note, setNote] = useState('');
+  const [error, setError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
   const modalRef = useRef(null);
 
   useModalA11y({ isOpen, onClose, modalRef });
 
   useEffect(() => {
     if (nextStatus === 'Respondida') {
-      setNote(request?.note || 'Respuesta administrativa formal procesada y remitida al titular.');
+      setNote(request?.note || '');
     } else if (nextStatus === 'Cerrada') {
-      setNote(request?.note || 'Trámite concluido y archivado administrativamente.');
+      setNote(request?.note || '');
     } else {
       setNote(request?.note || '');
     }
   }, [request, nextStatus, isOpen]);
 
+  useExpiredFormDraft(`habeas:${request?.id}:${nextStatus}`, { note }, draft => setNote(draft.note), isOpen && !!request);
   if (!isOpen || !request) return null;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onConfirm({
-      requestId: request.id,
-      nextStatus,
-      note: note.trim()
-    });
+    setSubmitting(true);
+    try {
+      const result = await onConfirm({
+        requestId: request.id,
+        nextStatus,
+        note: note.trim()
+      });
+      if (result?.success === false) setError(result.error?.message || result.error);
+    } catch (error) { setError(error.message); }
+    finally { setSubmitting(false); }
   };
 
   return (
@@ -48,6 +57,7 @@ export function HabeasAdvanceModal({ isOpen, onClose, onConfirm, request, nextSt
         </div>
 
         <form onSubmit={handleSubmit}>
+          {error && <p className="alert-banner danger" role="alert">{error}</p>}
           <div className="modal-body">
             <p style={{ fontSize: '13.5px', marginBottom: 'var(--space-3)' }}>
               La solicitud pasará del estado <span className="badge badge-info">{request.status}</span> al
@@ -68,7 +78,7 @@ export function HabeasAdvanceModal({ isOpen, onClose, onConfirm, request, nextSt
                 autoFocus
               />
               <span className="form-hint">
-                Esta observación quedará registrada en el radicado y en el asiento inmutable de auditoría.
+                Esta observación quedará registrada en el radicado y en el registro de auditoría.
               </span>
             </div>
           </div>
@@ -77,7 +87,7 @@ export function HabeasAdvanceModal({ isOpen, onClose, onConfirm, request, nextSt
             <button type="button" className="btn btn-secondary" onClick={onClose}>
               Cancelar
             </button>
-            <button type="submit" className="btn btn-primary">
+            <button type="submit" disabled={submitting} className="btn btn-primary">
               <Icon name="check" size={16} />
               <span>Confirmar Transición</span>
             </button>

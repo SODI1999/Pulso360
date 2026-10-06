@@ -1,4 +1,5 @@
 import { Icon } from '../../../core/components/Icon';
+import { env } from '../../../core/config/env';
 
 export function ConsentPolicyModal({
   backdropRef,
@@ -37,7 +38,16 @@ export function ConsentPolicyModal({
         </header>
 
         <div className="consent-modal-scrollable-body">
-          <div className="consent-modal-text-flow">
+          {!env.useMockStorage ? <div className="consent-modal-text-flow">
+            <section className="consent-modal-clause">
+              <h3 className="consent-modal-clause-heading">Política publicada</h3>
+              <p className="consent-modal-clause-text" style={{ whiteSpace: 'pre-wrap' }}>{settings.policyText || 'No hay una política vigente disponible.'}</p>
+            </section>
+            <section className="consent-modal-clause">
+              <h3 className="consent-modal-clause-heading">Aviso de privacidad</h3>
+              <p className="consent-modal-clause-text" style={{ whiteSpace: 'pre-wrap' }}>{settings.noticeText || 'La política publicada no incluye un aviso adicional.'}</p>
+            </section>
+          </div> : <div className="consent-modal-text-flow">
             <section className="consent-modal-clause">
               <h3 className="consent-modal-clause-heading">
                 1. Aislamiento de la supervisión y k-anonimato (RF-07)
@@ -88,7 +98,7 @@ export function ConsentPolicyModal({
                 ni trámite burocrático; entra en vigencia de inmediato al guardar tus preferencias.
               </p>
             </section>
-          </div>
+          </div>}
 
           <div className="consent-modal-contact-note">
             <Icon name="info" size={16} />

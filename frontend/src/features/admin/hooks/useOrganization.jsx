@@ -7,6 +7,8 @@ import { authService } from '../../../core/auth/authService';
 export function useOrganization() {
   const currentUser = authService.getCurrentUser();
   const [version, setVersion] = useState(0);
+  const [loading, setLoading] = useState(!env.useMockStorage);
+  const [loadError, setLoadError] = useState('');
   const [feedback, setFeedback] = useState('');
 
   // Estados de modales
@@ -19,6 +21,7 @@ export function useOrganization() {
   useEffect(() => {
     let active = true;
     const loadData = async () => {
+      setLoading(true); setLoadError('');
       if (!env.useMockStorage) {
         try {
           const [org, usersData, paramsData] = await Promise.all([
@@ -34,10 +37,12 @@ export function useOrganization() {
             });
           }
         } catch (error) {
-          console.error('Error fetching live organization data:', error);
-        }
+          if (active) setLoadError(error.message);
+          if (active) setFeedback(`Error: ${error.message}`);
+        } finally { if (active) setLoading(false); }
       } else {
         setStoreData(getOrganizationData());
+        setLoading(false);
       }
     };
     loadData();
@@ -48,32 +53,20 @@ export function useOrganization() {
   const minThreshold = storeData.settings?.umbralMinimo || 5;
 
   // Lista combinada de supervisores disponibles
-  const supervisorsList = useMemo(() => {
-    const fromUsers = (storeData.users || []).filter((u) => u.role === 'supervisor').map((u) => u.name);
-
-    const fromTeams = [];
-    campaigns.forEach((c) => {
-      (c.teams || []).forEach((t) => {
-        if (t.supervisor && !fromTeams.includes(t.supervisor)) {
-          fromTeams.push(t.supervisor);
-        }
-      });
-    });
-
-    const combined = Array.from(
-      new Set([...fromUsers, ...fromTeams, 'Carlos Mendoza', 'Supervisor Alpha 2', 'Supervisor Beta'])
-    );
-    return combined.sort();
-  }, [storeData, campaigns]);
+  const supervisorsList = useMemo(() => (storeData.users || [])
+    .filter(u => u.role === 'supervisor' && u.status === 'Activo')
+    .map(u => ({ id: u.id, name: u.name })).sort((a,b) => a.name.localeCompare(b.name)), [storeData]);
 
   const actorLabel = `${currentUser?.name || 'Administrador'} (${currentUser?.role || 'admin'})`;
 
   // --- Handlers de Campaña ---
   const handleSaveCampaign = async ({ id, name, active }) => {
     const message = await saveCampaign(id, name, active, actorLabel);
-    if (message) setFeedback(message);
+    if (message?.success !== true) { setFeedback(`Error: ${message.error}`); return message; }
+    if (message) setFeedback(message.message);
     setCampaignModalState({ isOpen: false, campaign: null });
     setVersion((v) => v + 1);
+    return message;
   };
 
   const handleToggleCampaign = async (campId) => {
@@ -83,6 +76,7 @@ export function useOrganization() {
 
     const operationResult = await toggleCampaign(campId, currentActive, actorLabel);
     if (!operationResult) return;
+    if (operationResult.success !== true) { setFeedback(`Error: ${operationResult.error}`); return; }
     const { camp, newStatus } = operationResult;
 
     setFeedback(`Campaña "${camp.name || campId}" marcada como ${newStatus}.`);
@@ -93,9 +87,11 @@ export function useOrganization() {
   const handleSaveTeam = async ({ campId, teamId, name, n, supervisor, active }) => {
     const message = await saveTeam(campId, teamId, name, n, supervisor, active, actorLabel);
     if (message === null) return;
-    if (message) setFeedback(message);
+    if (message?.success !== true) { setFeedback(`Error: ${message.error}`); return message; }
+    if (message) setFeedback(message.message);
     setTeamModalState({ isOpen: false, campaign: null, team: null });
     setVersion((v) => v + 1);
+    return message;
   };
 
   const handleToggleTeam = async (campId, teamId) => {
@@ -106,9 +102,10 @@ export function useOrganization() {
 
     const operationResult = await toggleTeam(campId, teamId, currentActive, actorLabel);
     if (!operationResult) return;
+    if (operationResult.success !== true) { setFeedback(`Error: ${operationResult.error}`); return; }
     const { team, newStatus } = operationResult;
 
-    setFeedback(`Equipo "${team.name || teamId}" marcado como ${newStatus}.`);
+    setFeedback(`Equipo "${team.name || team.nombre || teamId}" marcado como ${newStatus}.`);
     setVersion((v) => v + 1);
   };
 
@@ -121,15 +118,18 @@ export function useOrganization() {
       previousSupervisor
     );
     if (!operationResult) return;
+    if (operationResult.success !== true) { setFeedback(`Error: ${operationResult.error}`); return operationResult; }
     const { team } = operationResult;
 
-    setFeedback(`Supervisor "${newSupervisor}" asignado al equipo "${team.name}".`);
+    setFeedback(`Supervisor "${team.supervisor || team.supervisor_nombre || newSupervisor}" asignado al equipo "${team.name || team.nombre || teamId}".`);
     setAssignModalState({ isOpen: false, campaign: null, team: null });
     setVersion((v) => v + 1);
+    return operationResult;
   };
 
   // Restablecer datos iniciales demo
   const handleResetDemo = () => {
+    if (!env.useMockStorage) { setFeedback('El restablecimiento solo está disponible en la demostración local.'); return; }
     if (window.confirm('¿Deseas restablecer todos los datos demo a su configuración original de fábrica?')) {
       resetDemo(actorLabel);
 
@@ -139,6 +139,7 @@ export function useOrganization() {
   };
 
   return {
+    loading, loadError,
     feedback,
     campaignModalState,
     setCampaignModalState,

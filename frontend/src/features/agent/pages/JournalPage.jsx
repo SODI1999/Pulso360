@@ -17,7 +17,7 @@ import '../../../styles/agent.css';
 
 export function JournalPage() {
   const navigate = useNavigate();
-  const {
+  const { loading,loadError,
     consent,
     journals,
     currentJournalId,
@@ -54,6 +54,8 @@ export function JournalPage() {
     handleContinueFromCrisis
   } = useJournal();
 
+  if (loading) return <p role="status">Cargando bitácora…</p>;
+  if (loadError) return <p className="alert-banner danger" role="alert">{loadError}</p>;
   if (!consent?.c2) {
     return (
       <div className="agent-page agent-page--journal">
@@ -197,6 +199,7 @@ export function JournalPage() {
       <NlpHistoryModal
         isOpen={showHistoryModal}
         history={currentJournal?.correctionHistory || []}
+        analyses={currentJournal?.analysisHistory || []}
         onClose={() => setShowHistoryModal(false)}
       />
     </div>

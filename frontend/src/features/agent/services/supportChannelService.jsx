@@ -15,20 +15,20 @@ export async function createSupportRequest(
 ) {
   if (!env.useMockStorage) {
     if (!getAuthToken()) {
-      return { error: 'Sesión no válida o token ausente' };
+      return { success:false,data:null,error: 'Sesión no válida o token ausente' };
     }
     try {
       const res = await apiClient.post('/sst/support-requests', {
-        mode: supportMode,
+        mode: isAnonymous ? 'anonimo' : 'identificado',
         reason,
         description: details.trim(),
         urgency,
         contact_preference: isAnonymous ? 'app' : (contactPreference || 'app'),
         time_window: isAnonymous ? 'No aplica' : (timeWindow || 'No aplica')
       });
-      return { code: res.data.code };
+      return { ...res,code: res.data.code };
     } catch (err) {
-      return { error: err.response?.data?.error?.message || 'Error al crear solicitud de apoyo en el servidor' };
+      return { success:false,data:null,error: err.response?.data?.error?.message || 'Error al crear solicitud de apoyo en el servidor' };
     }
   }
 
@@ -69,5 +69,5 @@ export async function createSupportRequest(
     target: `Caso ${code}`
   });
 
-  return { code };
+  return { success:true,data:{code},code };
 }

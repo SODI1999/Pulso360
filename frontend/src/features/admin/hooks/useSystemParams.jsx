@@ -8,6 +8,8 @@ import { authService } from '../../../core/auth/authService';
 export function useSystemParams() {
   const currentUser = authService.getCurrentUser();
   const [version, setVersion] = useState(0);
+  const [loading, setLoading] = useState(!env.useMockStorage);
+  const [loadError, setLoadError] = useState('');
 
   // Almacén
   const [storeData, setStoreData] = useState(() => getSystemParameters());
@@ -15,20 +17,23 @@ export function useSystemParams() {
   useEffect(() => {
     let active = true;
     const loadData = async () => {
+      setLoading(true); setLoadError('');
       if (!env.useMockStorage) {
         try {
           const paramsData = await fetchAdminParams();
           if (active) {
             setStoreData((prev) => ({
               ...prev,
-              settings: paramsData
+              settings: paramsData, rules:paramsData.rules || []
             }));
           }
         } catch (error) {
-          console.error('Error fetching live system params:', error);
-        }
+          if (active) setLoadError(error.message);
+          if (active) setParamError(error.message);
+        } finally { if (active) setLoading(false); }
       } else {
         setStoreData(getSystemParameters());
+        setLoading(false);
       }
     };
     loadData();
@@ -47,6 +52,19 @@ export function useSystemParams() {
   const [slaMedia, setSlaMedia] = useState(settings.slaMediaHoras || 48);
   const [slaBaja, setSlaBaja] = useState(settings.slaBajaHoras || 72);
   const [slaSolicitudes, setSlaSolicitudes] = useState(settings.slaSolicitudesHoras || 24);
+
+  useEffect(() => {
+    if (storeData.settings) {
+      setUmbralN(storeData.settings.umbralMinimo || 5);
+      setCheckinEditHours(storeData.settings.checkinEditHours || 2);
+      setMinGranularity(storeData.settings.minGranularity || 'semanal');
+      setAuditRetentionYears(storeData.settings.auditRetentionYears || 5);
+      setSlaAlta(storeData.settings.slaAltaHoras || 24);
+      setSlaMedia(storeData.settings.slaMediaHoras || 48);
+      setSlaBaja(storeData.settings.slaBajaHoras || 72);
+      setSlaSolicitudes(storeData.settings.slaSolicitudesHoras || 24);
+    }
+  }, [storeData.settings]);
 
   const [justification, setJustification] = useState('');
   const [paramFeedback, setParamFeedback] = useState('');
@@ -112,7 +130,7 @@ export function useSystemParams() {
       return;
     }
 
-    await saveParams(
+    const result = await saveParams(
       parsedN,
       checkinEditHours,
       minGranularity,
@@ -125,6 +143,7 @@ export function useSystemParams() {
       actorLabel
     );
 
+    if (result.success !== true) { setParamError(result.error); return; }
     setParamFeedback('Parámetros y SLAs guardados y registrados en la cadena de auditoría.');
     setJustification('');
     setVersion((v) => v + 1);
@@ -141,8 +160,10 @@ export function useSystemParams() {
       return;
     }
 
-    const res = await publishPolicy(v, actorLabel);
-    if (res && res.error) {
+    const form = e.currentTarget;
+    const res = await publishPolicy(v, actorLabel, form.elements.policyTitle?.value,
+      form.elements.policyText?.value, form.elements.noticeText?.value);
+    if (res?.success !== true) {
       setPolicyFeedback(`Error al publicar política: ${res.error}`);
       return;
     }
@@ -153,46 +174,31 @@ export function useSystemParams() {
   };
 
   // Activación de nuevo léxico NLP (RF-15)
-  const handleActivateNlp = (e) => {
+  const handleActivateNlp = async (e) => {
     e.preventDefault();
-    setNlpFeedback('');
-    const v = newNlpVersion.trim();
-
-    if (!/^lexico-v\d+\.\d+$/.test(v)) {
-      alert('Formato inválido. Usa el estándar "lexico-v1.3".');
-      return;
-    }
-
-    activateNlp(v, actorLabel);
-
-    setNlpFeedback(`Léxico ${v} activado correctamente. Análisis de bitácoras actualizado.`);
+    const result = await activateNlp(newNlpVersion.trim(), actorLabel);
+    if (result.success !== true) { setNlpFeedback(`Error: ${result.error}`); return; }
+    setNlpFeedback(`Léxico ${result.version || newNlpVersion} activado para los próximos análisis.`);
     setNewNlpVersion('');
-    setVersion((v) => v + 1);
+    setVersion(v => v + 1);
   };
-
-  // Reversión de modelo NLP
-  const handleRevertNlp = () => {
-    const result = revertNlp(actorLabel);
-    if (result.error) {
-      alert(result.error);
-      return;
-    }
-    const { prevVersion } = result;
-    setNlpFeedback(`Modelo léxico revertido a la versión previa: ${prevVersion}.`);
-    setVersion((v) => v + 1);
+  const handleRevertNlp = async () => {
+    const result = await revertNlp(actorLabel);
+    if (result.success !== true) { setNlpFeedback(`Error: ${result.error}`); return; }
+    setNlpFeedback(`Léxico revertido a ${result.prevVersion}.`);
+    setVersion(v => v + 1);
   };
-
-  // Aprobación de Regla de Alerta SST
-  const handleApproveRule = (ruleId) => {
-    const operationResult = approveRule(ruleId, actorLabel);
-    if (!operationResult) return;
-
-    setVersion((v) => v + 1);
+  const handleApproveRule = async (id) => {
+    const result = await approveRule(id, actorLabel);
+    if (result?.success !== true) { setParamError(result.error); return; }
+    setParamFeedback('Propuesta aprobada y registrada. La evaluación automática no está implementada.');
+    setVersion(v => v + 1);
   };
 
   const rules = storeData.rules || [];
 
   return {
+    loading, loadError,
     settings,
     umbralN,
     setUmbralN,

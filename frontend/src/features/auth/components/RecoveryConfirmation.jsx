@@ -5,7 +5,7 @@ export function RecoveryConfirmation({ dispatchedData, navigate, setDispatchedDa
     <div className="recovery-dispatched-card">
       <div className="dispatched-pill-status">
         <Icon name="checkCircle" size={15} />
-        <span>Correo enviado correctamente</span>
+        <span>{dispatchedData.message || 'Solicitud de recuperación recibida'}</span>
       </div>
 
       {dispatchedData.devLink && (

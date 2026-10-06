@@ -7,12 +7,14 @@ import { useSystemParams } from '../hooks/useSystemParams';
 // src/features/admin/pages/SystemParamsPage.jsx
 // Módulo de Administración de Parámetros Globales, SLAs y Versiones de Política (RF-15)
 
+import { env } from '../../../core/config/env';
 import { Icon } from '../../../core/components/Icon';
 
 import '../../../styles/admin.css';
 
 export function SystemParamsPage() {
   const {
+    loading, loadError,
     settings,
     umbralN,
     setUmbralN,
@@ -50,6 +52,9 @@ export function SystemParamsPage() {
     rules
   } = useSystemParams();
 
+  if (loading) return <p role="status">Cargando datos del servidor…</p>;
+  if (loadError) return <p className="alert-banner danger" role="alert">No se pudieron cargar los datos: {loadError}</p>;
+
   return (
     <div>
       {/* Cabecera */}
@@ -65,6 +70,8 @@ export function SystemParamsPage() {
 
       {/* Formulario Principal de Parámetros y SLAs */}
       <form onSubmit={handleSaveParams} className="params-section">
+        {!env.useMockStorage && <p role="note">Solo lectura. Esta versión usa k=5 y dos horas de edición. Los SLAs y la granularidad son referencias; la retención no ejecuta borrado automático.</p>}
+        <fieldset disabled={!env.useMockStorage} style={{ border: 0, padding: 0, margin: 0 }}>
         <div className="card" style={{ marginBottom: 'var(--space-6)' }}>
           <div className="card-header">
             <div>
@@ -168,6 +175,7 @@ export function SystemParamsPage() {
             </button>
           </div>
         </div>
+      </fieldset>
       </form>
 
       {/* Grid de Versionado de Políticas y Modelos NLP */}

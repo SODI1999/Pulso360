@@ -1,3 +1,4 @@
+import { useExpiredFormDraft } from '../../../core/auth/useExpiredFormDraft';
 import { getReportData, fetchReports } from '../services/reportsQueries';
 import { generateReport } from '../services/reportsService';
 import { useState, useMemo, useEffect } from 'react';
@@ -7,11 +8,19 @@ import { apiClient } from '../../../core/api/apiClient';
 import { env } from '../../../core/config/env';
 
 import { BASE_SCOPES } from '../data/reportsData';
+const PERIODS = {
+  'Semana 34 (18–24 Ago 2026)': { desde:'2026-08-18',hasta:'2026-08-24' },
+  'Semana 33 (11–17 Ago 2026)': { desde:'2026-08-11',hasta:'2026-08-17' },
+  'Mes de Agosto 2026': { desde:'2026-08-01',hasta:'2026-08-31' },
+  'Trimestre Q3 2026': { desde:'2026-07-01',hasta:'2026-09-30' }
+};
 
 export function useReports() {
   const currentUser = authService.getCurrentUser();
   const [version, setVersion] = useState(0);
   const [apiHistory, setApiHistory] = useState([]);
+  const [historyLoading, setHistoryLoading] = useState(true);
+  const [historyError, setHistoryError] = useState('');
 
   const storeData = useMemo(() => {
     void version;
@@ -20,26 +29,29 @@ export function useReports() {
 
   // Filtrar alcances según el rol del usuario
   const availableScopes = useMemo(() => {
-    return Object.values(BASE_SCOPES).filter((s) => s.allowed.includes(currentUser?.role || 'admin'));
-  }, [currentUser?.role]);
+    if (env.useMockStorage) return Object.values(BASE_SCOPES).filter(s => s.allowed.includes(currentUser?.role));
+    const scopes = new Map();
+    for (const team of currentUser?.scopes || []) {
+      scopes.set(team.id,{id:team.id,label:team.campana_nombre+' · '+team.nombre,campanaId:team.campana_id,equipoId:team.id});
+      scopes.set(team.campana_id,{id:team.campana_id,label:team.campana_nombre,campanaId:team.campana_id,equipoId:null});
+    }
+    return [...scopes.values()];
+  }, [currentUser?.role,currentUser?.scopes]);
 
-  const [selectedScopeId, setSelectedScopeId] = useState(availableScopes[0]?.id || 'team-alpha-1');
+  const [selectedScopeId, setSelectedScopeId] = useState(availableScopes[0]?.id || '');
   const [selectedPeriod, setSelectedPeriod] = useState('Semana 34 (18–24 Ago 2026)');
 
   useEffect(() => {
-    let active = true;
-    const isTeam = selectedScopeId.startsWith('team-');
-    const isCamp = selectedScopeId.startsWith('camp-');
-    const cId = isCamp || isTeam ? (isTeam ? null : selectedScopeId) : null;
-    const tId = isTeam ? selectedScopeId : null;
-    
+    let active = true; setHistoryLoading(true); setHistoryError('');
+    const scope = availableScopes.find(s => s.id === selectedScopeId);
+    const cId = scope?.campanaId, tId = scope?.equipoId;
     fetchReports(cId, tId).then(data => {
       if (active && data) {
         setApiHistory(data);
       }
-    });
+    }).catch(error => { if (active) setHistoryError(error.message); }).finally(() => { if (active) setHistoryLoading(false); });
     return () => { active = false; };
-  }, [version, selectedScopeId]);
+  }, [version, selectedScopeId,availableScopes]);
 
   const minThreshold = storeData.settings?.umbralMinimo || 5;
 
@@ -47,15 +59,21 @@ export function useReports() {
     energia: true,
     carga: true,
     recuperacion: true,
-    participacion: true
+    participacion: env.useMockStorage
   });
   const [format, setFormat] = useState('CSV');
 
   const [generatedReport, setGeneratedReport] = useState(null);
   const [feedback, setFeedback] = useState('');
 
+  useExpiredFormDraft('report:configuration', { selectedScopeId, selectedPeriod, sections, format }, draft => {
+    setSelectedScopeId(draft.selectedScopeId); setSelectedPeriod(draft.selectedPeriod); setSections(draft.sections); setFormat(draft.format);
+  });
+
   const currentScope = availableScopes.find((s) => s.id === selectedScopeId) || availableScopes[0];
-  const isAllowedByPrivacy = currentScope && currentScope.n >= minThreshold;
+  const isAllowedByPrivacy = currentScope && (!env.useMockStorage || currentScope.n >= minThreshold);
+
+  useEffect(() => { setGeneratedReport(null); }, [selectedScopeId,selectedPeriod,sections,format]);
 
   // Función determinista de hash demo (RF-12)
   const computeHash = (str) => {
@@ -108,12 +126,13 @@ export function useReports() {
     
     const newReportRecord = {
       tipoReporte: selectedScopeId === 'all' ? 'general' : (isTeam ? 'equipo' : 'campana'),
-      campanaId: isCamp || isTeam ? (isTeam ? null : selectedScopeId) : null,
-      equipoId: isTeam ? selectedScopeId : null,
+      campanaId: env.useMockStorage ? (isCamp ? selectedScopeId : null) : currentScope.campanaId,
+      equipoId: env.useMockStorage ? (isTeam ? selectedScopeId : null) : currentScope.equipoId,
       fechaCorte: new Date().toISOString().slice(0, 10),
-      parametrosFiltro: { scope: selectedScopeId, format, sections },
+      ...PERIODS[selectedPeriod], dimensions:activeSections,
+      parametrosFiltro: { scope: selectedScopeId, format, sections, scope_label:currentScope.label, requester_name:currentUser.name },
       rutaArchivo: null,
-      id: `rep-${Date.now()}`,
+      ...(env.useMockStorage ? {id:`rep-${Date.now()}`} : {}),
       date: meta.fecha,
       user: meta.solicitante,
       scope: meta.alcance,
@@ -122,7 +141,7 @@ export function useReports() {
     };
 
     const res = await generateReport(newReportRecord);
-    if (res && res.error) {
+    if (res?.success !== true) {
       setFeedback(`Error: ${res.error.message || res.error}`);
       return;
     }
@@ -139,7 +158,9 @@ export function useReports() {
     if (isApi && finalReport.id) {
       try {
         const downloadRes = await apiClient.get(`/reports/${finalReport.id}/download`, { responseType: 'text' });
-        finalReport.serverContent = downloadRes.data || downloadRes;
+        const content = downloadRes?.data ?? downloadRes;
+        finalReport.serverContent = typeof content === 'string' ? content : JSON.stringify(content);
+        finalReport.metrics = res.reportPayload.metrics;
       } catch (err) {
         setFeedback(`Error al descargar reporte del servidor: ${err.response?.data?.error?.message || err.message}`);
         setGeneratedReport(null);
@@ -148,6 +169,11 @@ export function useReports() {
     }
 
     const finalHash = finalReport.hash;
+    if (isApi) {
+      finalReport.scope = res.reportPayload.parametrosFiltro.scope_label || currentScope.label;
+      finalReport.sections = res.reportPayload.parametrosFiltro.sections;
+      finalReport.period = res.reportPayload.parametrosFiltro.desde+' — '+res.reportPayload.parametrosFiltro.hasta;
+    }
 
     // Auditoría inmutable (RF-12 / RF-13)
     if (env.useMockStorage) {
@@ -221,7 +247,7 @@ export function useReports() {
 
   const reportHistory = env.useMockStorage ? (storeData.reportHistory || []) : apiHistory;
 
-  return {
+  return { historyLoading, historyError,
     currentUser,
     storeData,
     minThreshold,

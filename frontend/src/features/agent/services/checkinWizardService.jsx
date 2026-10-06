@@ -3,10 +3,11 @@ import { roleLabels } from '../../../core/auth/authService';
 import { pulsoStore } from '../../../core/storage/pulsoStore';
 import { apiClient, getAuthToken } from '../../../core/api/apiClient';
 import { env } from '../../../core/config/env';
+import { normalizeCheckin } from './agentQueries';
 
 export async function saveCheckin(existingCheckin, user, journeyKey, draft) {
   if (!env.useMockStorage) {
-    if (!getAuthToken()) return { error: 'Sesión no válida o expirada.' };
+    if (!getAuthToken()) return { success:false,data:null,error: 'Sesión no válida o expirada.' };
     try {
       const payloadBody = {
         journey_key: journeyKey,
@@ -19,15 +20,10 @@ export async function saveCheckin(existingCheckin, user, journeyKey, draft) {
         ineficacia: draft.ineficacia != null ? Number(draft.ineficacia) : null
       };
 
-      let res;
-      if (existingCheckin && existingCheckin.id) {
-        res = await apiClient.put(`/agent/checkin/${existingCheckin.id}`, payloadBody);
-      } else {
-        res = await apiClient.post('/agent/checkin', payloadBody);
-      }
-      return { payload: res.data };
+      const res = await apiClient.post('/agent/checkin', payloadBody);
+      return { ...res,payload:normalizeCheckin(res.data,user.id) };
     } catch (err) {
-      return { error: err.response?.data?.error?.message || 'Error al registrar check-in' };
+      return { success:false,data:null,error: err.response?.data?.error?.message || 'Error al registrar check-in' };
     }
   }
 
@@ -57,5 +53,5 @@ export async function saveCheckin(existingCheckin, user, journeyKey, draft) {
     target: `Jornada ${journeyKey}`
   });
 
-  return { payload };
+  return { success:true,data:payload, payload };
 }

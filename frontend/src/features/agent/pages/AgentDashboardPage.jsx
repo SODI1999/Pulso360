@@ -19,7 +19,7 @@ import '../../../styles/agent.css';
 // del Check-in Wizard (no se inventa un concepto ni una escala paralela).
 
 export function AgentDashboardPage() {
-  const {
+  const { loading,loadError,
     currentUser,
     consent,
     greeting,
@@ -36,6 +36,9 @@ export function AgentDashboardPage() {
     isPerspectiveModalOpen,
     setIsPerspectiveModalOpen
   } = useAgentDashboard();
+  if (loading) return <p className="agent-page" role="status">Cargando tus registros…</p>;
+  if (loadError) return <p className="agent-page alert-banner danger" role="alert">{loadError}</p>;
+
 
   return (
     <div className="agent-page calm-home">

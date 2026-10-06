@@ -9,16 +9,18 @@ export function useActions() {
   const [feedback, setFeedback] = useState('');
   const [version, setVersion] = useState(0);
   const [asyncInterventions, setAsyncInterventions] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState('');
 
   useEffect(() => {
-    let mounted = true;
+    let mounted = true; setLoading(true); setLoadError('');
     async function load() {
       const result = await fetchSupervisorActions();
       if (mounted) {
         setAsyncInterventions(result || []);
       }
     }
-    load();
+    load().catch(error => { if (mounted) setLoadError(error.message); }).finally(() => { if (mounted) setLoading(false); });
     return () => { mounted = false; };
   }, [version]);
 
@@ -26,7 +28,7 @@ export function useActions() {
   const interventions = useMemo(() => {
     void version;
     if (asyncInterventions) {
-      return asyncInterventions.filter((item) => item.assignedTo === user?.id);
+      return asyncInterventions;
     }
     const data = getSupervisorData();
     return (data.interventions || []).filter(
@@ -36,12 +38,14 @@ export function useActions() {
 
   const handleSaveFollowup = async ({ interventionId, actionType, notes, progress }) => {
     const message = await saveFollowup(interventionId, actionType, notes, progress, user);
+    if (message?.success !== true) { setFeedback(`Error: ${message.error}`); return message; }
     if (message) {
-      setFeedback(message);
+      setFeedback(message.message);
       setVersion((v) => v + 1);
     }
     setSelectedIntervention(null);
+    return message;
   };
 
-  return { selectedIntervention, setSelectedIntervention, feedback, interventions, handleSaveFollowup };
+  return { loading, loadError, selectedIntervention, setSelectedIntervention, feedback, interventions, handleSaveFollowup };
 }

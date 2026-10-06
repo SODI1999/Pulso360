@@ -1,13 +1,14 @@
 // src/core/layout/AppLayout.jsx
 // Plantilla maestra con sidebar colapsable (expandido con árbol guía / compacto solo iconos) y topbar ergonómico
 
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { authService, roleLabels, roleHomePaths } from '../auth/authService';
 import { pulsoStore } from '../storage/pulsoStore';
 import { preferences } from '../storage/preferences';
 import { Icon } from '../components/Icon';
 import { InactivityModal } from '../components/InactivityModal';
+import { env } from '../config/env';
 
 // Formatea "8" como "08:00" para el bloque de turno del topbar
 const formatShiftHour = (hour) => `${String(hour).padStart(2, '0')}:00`;
@@ -17,7 +18,23 @@ const shiftLabelFromHour = (start) => (start >= 5 && start < 12 ? 'mañana' : st
 
 export function AppLayout() {
   const navigate = useNavigate();
-  const user = authService.getCurrentUser();
+  const [user, setUser] = useState(() => authService.getCurrentUser());
+  const [countsError,setCountsError] = useState('');
+  const refreshCounts = useCallback(() => {
+    authService.refreshSession().then(() => setCountsError('')).catch(() => {
+      setCountsError('No se pudieron actualizar los avisos y pendientes.');
+    });
+  }, []);
+  useEffect(() => {
+    const refresh = () => setUser(authService.getCurrentUser());
+    window.addEventListener('pulso360-session-changed', refresh);
+    return () => window.removeEventListener('pulso360-session-changed', refresh);
+  }, []);
+  useEffect(() => {
+    if (env.useMockStorage) return;
+    window.addEventListener('pulso360-api-mutation',refreshCounts);
+    return () => window.removeEventListener('pulso360-api-mutation',refreshCounts);
+  }, [refreshCounts]);
 
   // Estado del sidebar colapsable (persiste en preferencias)
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => preferences.readSidebarCollapsed(false));
@@ -88,16 +105,17 @@ export function AppLayout() {
   }
 
   // Badges discretos en ítems de menú (pastel suave) según datos reales de la operación
-  const storeData = pulsoStore.get();
-  const pendingAlerts = (storeData.alerts || []).filter(
+  const storeData = env.useMockStorage ? pulsoStore.get() : {};
+  const navigationCounts = countsError ? {} : user.navigationCounts || {};
+  const pendingAlerts = env.useMockStorage ? (storeData.alerts || []).filter(
     (a) => a.status === 'GENERADA' || a.status === 'EN_REVISION'
-  ).length;
-  const pendingSupport = (storeData.supportRequests || []).filter(
+  ).length : navigationCounts.alerts;
+  const pendingSupport = env.useMockStorage ? (storeData.supportRequests || []).filter(
     (s) => s.status !== 'Cerrada' && s.status !== 'Resuelta'
-  ).length;
-  const pendingHabeas = (storeData.habeasRequests || []).filter(
+  ).length : navigationCounts.support;
+  const pendingHabeas = env.useMockStorage ? (storeData.habeasRequests || []).filter(
     (h) => h.status === 'En trámite'
-  ).length;
+  ).length : navigationCounts.habeas;
 
   const getItemBadge = (href) => {
     if (href === '/sst/alertas' && pendingAlerts > 0) {
@@ -128,9 +146,9 @@ export function AppLayout() {
 
   // Calcular notificaciones no leídas para el usuario o su rol
   const notifications = storeData.notifications || [];
-  const unreadCount = notifications.filter(
+  const unreadCount = env.useMockStorage ? notifications.filter(
     (n) => !n.read && (n.role === user.role || n.userId === user.id)
-  ).length;
+  ).length : navigationCounts.unread;
 
   const handleLogout = () => {
     authService.logout();
@@ -391,6 +409,9 @@ export function AppLayout() {
         </header>
 
         <main className="page-container">
+          {countsError && <div className="alert-banner danger" role="alert">
+            <span>{countsError}</span><button type="button" className="btn btn-secondary btn-sm" onClick={refreshCounts}>Reintentar</button>
+          </div>}
           <Outlet />
         </main>
       </div>

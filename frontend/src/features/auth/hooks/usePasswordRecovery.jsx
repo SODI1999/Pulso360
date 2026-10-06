@@ -26,8 +26,7 @@ export function usePasswordRecovery() {
       } else {
         setRecoveryFeedback({ type: 'error', message: res.message });
       }
-    } catch (err) {
-      console.error('Recovery request error:', err);
+    } catch {
       setRecoveryLoading(false);
       setRecoveryFeedback({ type: 'error', message: 'Error inesperado al solicitar recuperación.' });
     }

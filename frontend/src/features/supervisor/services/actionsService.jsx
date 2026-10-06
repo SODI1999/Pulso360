@@ -5,13 +5,13 @@ import { env } from '../../../core/config/env';
 export async function saveFollowup(interventionId, actionType, notes, progress, user) {
   if (!env.useMockStorage) {
     if (!getAuthToken()) {
-      return { error: 'Sesión no válida o token ausente' };
+      return { success:false,data:null,error: 'Sesión no válida o token ausente' };
     }
     try {
-      await apiClient.post('/supervisor/actions/' + interventionId + '/followup', { actionType, notes, progress });
-      return `Seguimiento guardado exitosamente. Avance actualizado al ${progress}%.`;
+      const response = await apiClient.post('/supervisor/actions/' + interventionId + '/followup', { actionType, notes, progress });
+      return { ...response,message:`Seguimiento guardado exitosamente. Avance actualizado al ${progress}%.` };
     } catch (err) {
-      return { error: err.response?.data?.error?.message || 'Error en el servidor' };
+      return { success:false,data:null,error: err.response?.data?.error?.message || 'Error en el servidor' };
     }
   }
 
@@ -42,6 +42,7 @@ export async function saveFollowup(interventionId, actionType, notes, progress, 
       target: `${intervention.title} · ${actionType} (${progress}% avance)`
     });
 
-    return `Seguimiento guardado exitosamente para "${intervention.title}". Avance actualizado al ${progress}%.`;
+    return {success:true,data:intervention,message:`Seguimiento guardado exitosamente para "${intervention.title}". Avance actualizado al ${progress}%.`};
   }
+  return {success:false,data:null,error:'Intervención no disponible para este supervisor.'};
 }

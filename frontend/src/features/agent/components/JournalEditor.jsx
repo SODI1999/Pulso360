@@ -136,8 +136,9 @@ export function JournalEditor({
       </form>
 
       {/* 3. Panel de Análisis NLP Explicable */}
+      {currentJournal && journalText.trim() !== currentJournal.text && <p role="status">El texto tiene cambios sin guardar. El análisis anterior corresponde a la versión guardada.</p>}
       <NlpAnalysisPanel
-        journal={currentJournal}
+        journal={currentJournal && journalText.trim() === currentJournal.text ? currentJournal : null}
         onOpenCorrection={handleOpenCorrection}
         onOpenHistory={() => setShowHistoryModal(true)}
       />

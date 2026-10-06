@@ -47,7 +47,9 @@ export function AlertCard({ alertItem, onUpdateStatus, onDismissRequest, onCreat
         </span>
       </div>
 
-      <p className="alert-card-desc">{alertItem.description}</p>
+      <p className="alert-card-desc">{alertItem.protected
+        ? 'Evidencia protegida: esta alerta tiene menos de 5 participantes. El servidor omite la descripción y los valores agregados.'
+        : alertItem.description}</p>
 
       {/* Evidencia histórica agregada */}
       {alertItem.evidence && alertItem.evidence.length > 0 && (

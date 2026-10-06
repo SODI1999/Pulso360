@@ -58,7 +58,7 @@ export function PrivacyParameters({
           <option value="quincenal">Quincenal</option>
           <option value="mensual">Mensual</option>
         </select>
-        <span className="form-hint">Evita correlaciones por turnos diarios.</span>
+        <span className="form-hint">Referencia de presentación; no restringe los periodos de consulta en esta versión.</span>
       </div>
 
       <div className="form-group">
@@ -75,7 +75,7 @@ export function PrivacyParameters({
           onChange={(e) => setAuditRetentionYears(e.target.value)}
         />
         <span className="form-hint">
-          Período de retención institucional conforme a la política SG-SST de la organización.
+          Referencia de retención; no hay borrado automático de auditoría implementado.
         </span>
       </div>
     </div>

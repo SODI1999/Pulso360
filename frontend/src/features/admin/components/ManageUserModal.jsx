@@ -1,3 +1,4 @@
+import { useExpiredFormDraft } from '../../../core/auth/useExpiredFormDraft';
 // src/features/admin/components/ManageUserModal.jsx
 // Modal para gestión y actualización atómica de usuario (RF-15)
 
@@ -17,6 +18,7 @@ export function ManageUserModal({ isOpen, onClose, onSave, user, orgScopes = [],
   const [orgScopeId, setOrgScopeId] = useState('');
   const [status, setStatus] = useState('Activo');
   const [error, setError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
   const isSelf = user?.id === currentUserId;
 
@@ -38,9 +40,12 @@ export function ManageUserModal({ isOpen, onClose, onSave, user, orgScopes = [],
     setError('');
   }, [user, isOpen, orgScopes]);
 
+  useExpiredFormDraft(`user:${user?.id}`, { role, orgScopeId, status }, draft => {
+    setRole(draft.role); setOrgScopeId(draft.orgScopeId); setStatus(draft.status);
+  }, isOpen && !!user);
   if (!isOpen || !user) return null;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Regla de Protección: no permitir auto-suspensión
@@ -64,13 +69,18 @@ export function ManageUserModal({ isOpen, onClose, onSave, user, orgScopes = [],
       return;
     }
 
-    onSave({
-      userId: user.id,
-      newRole: role,
-      newOrgScopeId: orgScopeId,
-      newStatus: status,
-      onError: (msg) => setError(msg)
-    });
+    setSubmitting(true);
+    try {
+      const result = await onSave({
+        userId: user.id,
+        newRole: role,
+        newOrgScopeId: orgScopeId,
+        newStatus: status,
+        onError: (msg) => setError(msg)
+      });
+      if (result?.success === false) setError(result.error?.message || result.error);
+    } catch (error) { setError(error.message); }
+    finally { setSubmitting(false); }
   };
 
   return (
@@ -176,7 +186,7 @@ export function ManageUserModal({ isOpen, onClose, onSave, user, orgScopes = [],
             <button type="button" className="btn btn-secondary" onClick={onClose}>
               Cancelar
             </button>
-            <button type="submit" className="btn btn-primary">
+            <button type="submit" disabled={submitting} className="btn btn-primary">
               <Icon name="check" size={16} />
               <span>Guardar Cambios</span>
             </button>

@@ -1,7 +1,9 @@
 // src/features/reports/components/ReportHistoryTable.jsx
 // Tabla abierta con el historial de exportaciones realizadas y hash criptográfico demo (RF-12, Sin Carditis)
 
-export function ReportHistoryTable({ reportHistory = [] }) {
+export function ReportHistoryTable({ reportHistory = [], loading, error }) {
+  if (loading) return <p role="status">Cargando historial de reportes…</p>;
+  if (error) return <p className="alert-banner danger" role="alert">No se pudo cargar el historial: {error}</p>;
   return (
     <section className="reports-history-section" aria-labelledby="historyTableTitle">
       <div className="reports-history-header">
@@ -10,7 +12,7 @@ export function ReportHistoryTable({ reportHistory = [] }) {
             Historial de exportaciones realizadas
           </h2>
           <p className="reports-history-subtitle">
-            Registro de reportes generados con trazabilidad de hash demo (RF-12).
+            Reportes persistidos, con periodo, ámbito y hash de su snapshot.
           </p>
         </div>
         <span className="badge badge-neutral">{reportHistory.length} registros</span>
@@ -34,7 +36,7 @@ export function ReportHistoryTable({ reportHistory = [] }) {
                   colSpan="5"
                   style={{ textAlign: 'center', padding: 'var(--space-6)', color: 'var(--c-texto-suave)' }}
                 >
-                  Aún no se han generado exportaciones de reportes en esta sesión.
+                  Aún no hay reportes registrados para tus ámbitos autorizados.
                 </td>
               </tr>
             ) : (

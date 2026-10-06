@@ -1,3 +1,4 @@
+import { useExpiredFormDraft } from '../../../core/auth/useExpiredFormDraft';
 // src/features/supervisor/components/ActionFollowupModal.jsx
 // Modal estándar para registrar notas operativas de seguimiento en intervenciones de SST (RF-09)
 
@@ -8,24 +9,31 @@ import { useModalA11y } from '../../../core/hooks/useModalA11y';
 export function ActionFollowupModal({ intervention, onClose, onSave }) {
   const [actionType, setActionType] = useState('Ajuste de pausas y descansos');
   const [notes, setNotes] = useState('');
-  const [progress, setProgress] = useState(intervention?.progress || 55);
+  const [progress, setProgress] = useState(intervention?.progress ?? 55);
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
   const modalRef = useRef(null);
 
   useModalA11y({ isOpen: !!intervention, onClose, modalRef });
 
+  useExpiredFormDraft(`followup:${intervention?.id}`, { actionType, notes, progress }, draft => {
+    setActionType(draft.actionType); setNotes(draft.notes); setProgress(draft.progress);
+  }, !!intervention);
   if (!intervention) return null;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);
 
-    onSave({
+    try { const result = await onSave({
       interventionId: intervention.id,
       actionType,
       notes: notes.trim() || 'Seguimiento y revisión operativa registrada por el supervisor.',
       progress: Number(progress)
     });
+      if (result?.success === false) setError(result.error?.message || result.error);
+    } catch (error) { setError(error.message); }
+    finally { setSaving(false); }
   };
 
   const handleOverlayClick = (e) => {
@@ -58,6 +66,7 @@ export function ActionFollowupModal({ intervention, onClose, onSave }) {
 
         {/* Formulario */}
         <form onSubmit={handleSubmit}>
+          {error && <p className="alert-banner danger" role="alert">{error}</p>}
           <div className="form-group" style={{ marginBottom: '14px' }}>
             <label className="form-label" htmlFor="followupActionType">
               Tipo de acción ejecutada
@@ -124,7 +133,7 @@ export function ActionFollowupModal({ intervention, onClose, onSave }) {
           >
             <Icon name="info" size={16} />
             <span>
-              Esta nota quedará vinculada al registro inmutable de auditoría para trazabilidad ante SST.
+              La nota se guarda en el seguimiento con tu identidad de supervisor. La auditoría registra la operación sin copiar su contenido.
             </span>
           </div>
 

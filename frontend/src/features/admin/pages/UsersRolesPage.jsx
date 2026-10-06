@@ -12,6 +12,7 @@ import '../../../styles/admin.css';
 
 export function UsersRolesPage() {
   const {
+    loading, loadError,
     currentUser,
     searchTerm,
     setSearchTerm,
@@ -28,6 +29,9 @@ export function UsersRolesPage() {
     handleSaveCreateUser,
     handleSaveManageUser
   } = useUsersRoles();
+
+  if (loading) return <p role="status">Cargando datos del servidor…</p>;
+  if (loadError) return <p className="alert-banner danger" role="alert">No se pudieron cargar los datos: {loadError}</p>;
 
   return (
     <div>
@@ -52,14 +56,14 @@ export function UsersRolesPage() {
         <div>
           <strong>Control de Acceso Basado en Roles (RBAC):</strong> Cada cuenta tiene asignado uno de los 5
           roles canónicos estrictos. Cualquier cambio de perfil, traslado entre campañas o suspensión de
-          acceso genera un asiento inmutable de auditoría.
+          acceso registra una operación en la cadena de auditoría.
         </div>
       </div>
 
       {/* Mensaje de feedback */}
       {feedback && (
-        <div className="alert-banner ok" role="status" style={{ marginBottom: 'var(--space-4)' }}>
-          <Icon name="checkCircle" size={18} />
+        <div className={`alert-banner ${feedback.startsWith("Error") ? "danger" : "ok"}`} role={feedback.startsWith("Error") ? "alert" : "status"} style={{ marginBottom: 'var(--space-4)' }}>
+          <Icon name={feedback.startsWith("Error") ? "alertTriangle" : "checkCircle"} size={18} />
           <span>{feedback}</span>
         </div>
       )}

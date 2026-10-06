@@ -11,7 +11,7 @@ import '../../../styles/agent.css';
 import '../../../styles/notifications.css';
 
 export function NotificationsPage() {
-  const {
+  const { loading,loadError,
     activeFilter,
     setActiveFilter,
     userNotifications,
@@ -28,6 +28,8 @@ export function NotificationsPage() {
 
   return (
     <div className="agent-page notif-inbox-layout">
+      {loading && <p role="status">Cargando notificaciones…</p>}
+      {loadError && <p className="alert-banner danger" role="alert">{loadError}</p>}
       {/* 1. Subnavegación secundaria sobria */}
       <nav className="agent-subnav" aria-label="Navegación secundaria">
         <button

@@ -4,15 +4,15 @@ import { env } from '../../../core/config/env';
 
 export async function saveIntervention(newIntervention) {
   if (!env.useMockStorage) {
-    if (!getAuthToken()) return { error: 'Sesión no válida o expirada.' };
+    if (!getAuthToken()) return { success:false,data:null,error: 'Sesión no válida o expirada.' };
     try {
       const res = await apiClient.post('/sst/interventions', {
         ...newIntervention,
         status: 'Activa'
       });
-      return { payload: res.data };
+      return { ...res, payload: res.data };
     } catch (err) {
-      return { error: err.response?.data?.error?.message || 'Error al crear intervención en el servidor' };
+      return { success:false,data:null,error: err.response?.data?.error?.message || 'Error al crear intervención en el servidor' };
     }
   }
 
@@ -20,5 +20,5 @@ export async function saveIntervention(newIntervention) {
   storeData.interventions = storeData.interventions || [];
   storeData.interventions.unshift({ ...newIntervention, status: 'Planeada' });
   pulsoStore.save(storeData);
-  return {};
+  return {success:true,data:null};
 }

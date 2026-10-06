@@ -1,7 +1,12 @@
+import { useExpiredFormDraft } from '../../../core/auth/useExpiredFormDraft';
 // src/features/sst/components/NewInterventionForm.jsx
 // Formulario para registro de planes de acción e intervenciones colectivas (RF-09)
 
-import { useState } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+import { authService } from '../../../core/auth/authService';
+import { bogotaCalendarDate } from '../../../core/time/calendarDate';
+import { env } from '../../../core/config/env';
+import { fetchSstMetrics } from '../services/sstQueries';
 
 import { Icon } from '../../../core/components/Icon';
 
@@ -14,31 +19,56 @@ const SCOPES = {
 };
 
 export function NewInterventionForm({ onSaveIntervention, minThreshold }) {
+  const user = authService.getCurrentUser();
+  const scopes = useMemo(() => {
+    if (env.useMockStorage) return SCOPES;
+    const result = {};
+    for (const scope of user?.scopes || []) {
+      result[scope.id] = { campaign:scope.campana_nombre, team:scope.nombre, campanaId:scope.campana_id, equipoId:scope.id };
+      result[scope.campana_id] = { campaign:scope.campana_nombre, team:'', campanaId:scope.campana_id, equipoId:null };
+    }
+    return result;
+  }, [user?.scopes]);
+  const [measurement,setMeasurement] = useState(null);
   const [title, setTitle] = useState('');
   const [type, setType] = useState('Pausas cognitivas');
-  const [scopeKey, setScopeKey] = useState('team-alpha-1');
-  const [assignedTo, setAssignedTo] = useState('usr-2');
+  const [scopeKey, setScopeKey] = useState(() => Object.keys(scopes)[0] || '');
+  const [assignedTo, setAssignedTo] = useState(user?.id || '');
   const [indicator, setIndicator] = useState('Recuperación agregada');
   const [target, setTarget] = useState('Mejorar recuperación percibida y pausas activas');
-  const [startDate, setStartDate] = useState(new Date().toISOString().substring(0, 10));
-  const [endDate, setEndDate] = useState(() => {
-    const d = new Date();
-    d.setDate(d.getDate() + 28);
-    return d.toISOString().substring(0, 10);
-  });
+  const [startDate, setStartDate] = useState(() => bogotaCalendarDate());
+  const [endDate, setEndDate] = useState(() => bogotaCalendarDate(new Date(), 28));
   const [externalAction, setExternalAction] = useState(false);
   const [error, setError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
-  const currentScope = SCOPES[scopeKey] || SCOPES['team-alpha-1'];
+  useExpiredFormDraft('intervention:new', { title, type, scopeKey, assignedTo, indicator, target, startDate, endDate, externalAction }, draft => {
+    setTitle(draft.title); setType(draft.type); setScopeKey(draft.scopeKey); setAssignedTo(draft.assignedTo);
+    setIndicator(draft.indicator); setTarget(draft.target); setStartDate(draft.startDate); setEndDate(draft.endDate);
+    setExternalAction(draft.externalAction);
+  });
+  const scope = scopes[scopeKey] || {};
+  const currentScope = env.useMockStorage ? scope : { ...scope, n:measurement?.cohort_count ?? null,
+    baseline:measurement?.metrics?.[{'Recuperación agregada':'recuperacion_avg','Carga emocional':'carga_emocional_avg','Apoyo social':'apoyo_avg'}[indicator]] == null ? null
+      : Number(measurement.metrics[{'Recuperación agregada':'recuperacion_avg','Carga emocional':'carga_emocional_avg','Apoyo social':'apoyo_avg'}[indicator]])*20 };
+  useEffect(() => {
+    if (env.useMockStorage || !scope.campanaId) return;
+    let active = true; setMeasurement(null); setError('');
+    const now = new Date();
+    fetchSstMetrics({ campanaId:scope.campanaId,equipoId:scope.equipoId,desde:bogotaCalendarDate(now,-27),hasta:bogotaCalendarDate(now) })
+      .then(result => { if (!active) return; if (result.error) setError(result.error); else setMeasurement(result); })
+      .catch(error => { if(active) setError(error.message); });
+    return () => { active = false; };
+  }, [scope.campanaId,scope.equipoId]);
   const isAllowed = currentScope.n >= minThreshold && currentScope.baseline != null;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
     if (!isAllowed) {
       setError(
-        `No es posible crear una intervención medible para este ámbito: cuenta con N=${currentScope.n} (menor al umbral de privacidad N ≥ ${minThreshold}).`
+        currentScope.n == null ? 'Espera la consulta del ámbito o reintenta si hubo un error.' : currentScope.n < minThreshold ? `Muestra protegida: N=${currentScope.n} (mínimo ${minThreshold}).` : 'La dimensión seleccionada no tiene una línea base publicable.'
       );
       return;
     }
@@ -49,7 +79,7 @@ export function NewInterventionForm({ onSaveIntervention, minThreshold }) {
     }
 
     const newIntervention = {
-      id: `int-${Date.now()}`,
+      ...(env.useMockStorage ? { id: `int-${Date.now()}` } : {}),
       title: title.trim(),
       type,
       campaign: currentScope.campaign,
@@ -58,7 +88,7 @@ export function NewInterventionForm({ onSaveIntervention, minThreshold }) {
       equipoId: currentScope.equipoId,
       campana_id: currentScope.campanaId,
       equipo_id: currentScope.equipoId,
-      creator: 'usr-3',
+      creator: user.id,
       assignedTo,
       status: 'Activa',
       startDate,
@@ -71,7 +101,12 @@ export function NewInterventionForm({ onSaveIntervention, minThreshold }) {
       externalAction
     };
 
-    onSaveIntervention(newIntervention);
+    setSubmitting(true);
+    let result;
+    try { result = await onSaveIntervention(newIntervention); }
+    catch (error) { setError(error.message); return; }
+    finally { setSubmitting(false); }
+    if (!result?.success) { setError(result?.error || 'No se pudo guardar el plan.'); return; }
 
     // Limpiar formulario
     setTitle('');
@@ -133,11 +168,7 @@ export function NewInterventionForm({ onSaveIntervention, minThreshold }) {
               value={scopeKey}
               onChange={(e) => setScopeKey(e.target.value)}
             >
-              <option value="team-alpha-1">Equipo Alpha 1 (N=14)</option>
-              <option value="team-alpha-2">Equipo Alpha 2 (N=4 · Protegido)</option>
-              <option value="team-beta-2">Equipo Beta 2 (N=22)</option>
-              <option value="camp-1">Toda Campaña Alpha (N=18)</option>
-              <option value="camp-2">Toda Campaña Beta (N=22)</option>
+              {Object.entries(scopes).map(([key, scope]) => <option key={key} value={key}>{scope.campaign}{scope.team ? ' · '+scope.team : ''}</option>)}
             </select>
           </div>
 
@@ -178,7 +209,7 @@ export function NewInterventionForm({ onSaveIntervention, minThreshold }) {
             <div className="baseline-note">
               {isAllowed
                 ? 'Calculada automáticamente sobre las últimas 4 semanas.'
-                : `Muestra insuficiente (N=${currentScope.n} < ${minThreshold}). Privacidad protegida.`}
+                : error ? 'No se pudo consultar la línea base.' : currentScope.n == null ? 'Consultando la línea base…' : currentScope.n < minThreshold ? `Muestra insuficiente (N=${currentScope.n} < ${minThreshold}). Privacidad protegida.` : 'La dimensión seleccionada no tiene una línea base publicable.'}
             </div>
           </div>
 
@@ -192,8 +223,8 @@ export function NewInterventionForm({ onSaveIntervention, minThreshold }) {
               value={assignedTo}
               onChange={(e) => setAssignedTo(e.target.value)}
             >
-              <option value="usr-2">Supervisor Operativo (Carlos Mendoza)</option>
-              <option value="usr-3">Profesional SST (Directo)</option>
+              <option value={user.id}>{user.name} (SST)</option>
+              {(user.supervisors || []).filter(s => !currentScope.equipoId || s.team_ids?.includes(currentScope.equipoId)).map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
             </select>
           </div>
 
@@ -272,7 +303,7 @@ export function NewInterventionForm({ onSaveIntervention, minThreshold }) {
         <button
           type="submit"
           className="btn btn-primary"
-          disabled={!isAllowed}
+          disabled={!isAllowed || submitting}
           style={{ opacity: isAllowed ? 1 : 0.6 }}
         >
           <Icon name="plus" size={16} />

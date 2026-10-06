@@ -13,6 +13,7 @@ import '../../../styles/sst.css';
 
 export function AlertsInboxPage() {
   const {
+    loading, loadError,
     dismissingAlert,
     setDismissingAlert,
     feedback,
@@ -22,6 +23,9 @@ export function AlertsInboxPage() {
     handleCreateIntervention
   } = useAlertsInbox();
 
+  if (loading) return <p role="status">Cargando datos del servidor…</p>;
+  if (loadError) return <p className="alert-banner danger" role="alert">No se pudieron cargar los datos: {loadError}</p>;
+
   return (
     <div>
       {/* Cabecera */}
@@ -29,7 +33,7 @@ export function AlertsInboxPage() {
         <div>
           <h1 className="page-title">Bandeja de alertas tempranas</h1>
           <p className="page-subtitle">
-            Detección oportuna de patrones estadísticos de agotamiento y fatiga a nivel colectivo.
+            Consulta de alertas preventivas registradas y gestión de acciones colectivas.
           </p>
         </div>
 
@@ -51,8 +55,8 @@ export function AlertsInboxPage() {
 
       {/* Feedback contextual */}
       {feedback && (
-        <div className="alert-banner ok" role="status" style={{ marginBottom: 'var(--space-5)' }}>
-          <Icon name="checkCircle" size={18} />
+        <div className={`alert-banner ${feedback.startsWith("Error") ? "danger" : "ok"}`} role={feedback.startsWith("Error") ? "alert" : "status"} style={{ marginBottom: 'var(--space-5)' }}>
+          <Icon name={feedback.startsWith("Error") ? "alertTriangle" : "checkCircle"} size={18} />
           <span>{feedback}</span>
         </div>
       )}

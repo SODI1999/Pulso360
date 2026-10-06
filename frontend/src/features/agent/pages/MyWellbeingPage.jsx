@@ -12,7 +12,7 @@ import { Icon } from '../../../core/components/Icon';
 import '../../../styles/bienestar.css';
 
 export function MyWellbeingPage() {
-  const {
+  const { loading,loadError,
     navigate,
     checkinRecords,
     recentShifts,
@@ -22,6 +22,9 @@ export function MyWellbeingPage() {
     averageEnergy,
     isViewingLatest
   } = useMyWellbeing();
+  if (loading) return <p className="agent-page" role="status">Cargando tus registros…</p>;
+  if (loadError) return <p className="agent-page alert-banner danger" role="alert">{loadError}</p>;
+
 
   return (
     <div className="agent-page wellbeing-editorial-page">

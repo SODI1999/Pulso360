@@ -12,18 +12,17 @@ export function useSupportInbox() {
   const [version, setVersion] = useState(0);
   const [feedback, setFeedback] = useState('');
   const [requests, setRequests] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState('');
 
   const storeData = getSstData();
 
   useEffect(() => {
-    if (!env.useMockStorage) {
-      fetchSstSupportRequests().then((data) => {
-        // Preservando que las solicitudes con mode === 'anonimo' no expongan la identidad
-        setRequests(data);
-      }).catch(console.error);
-    } else {
-      setRequests(getSstData().supportRequests || []);
-    }
+    let active = true; setLoading(true); setLoadError('');
+    fetchSstSupportRequests().then(rows => { if (active) setRequests(rows); })
+      .catch(error => { if (active) setLoadError(error.message); })
+      .finally(() => { if (active) setLoading(false); });
+    return () => { active = false; };
   }, [version]);
 
   // Avanzar estado del caso según flujo predefinido
@@ -33,14 +32,14 @@ export function useSupportInbox() {
     
     const operationResult = await advanceStatus(requestId, WORKFLOW_STATES, localReq.status);
     if (!operationResult) return;
-    if (operationResult.error) {
+    if (operationResult.success !== true) {
       setFeedback(`Error: ${operationResult.error}`);
       return;
     }
     const { req, nextStatus } = operationResult;
 
     // Registro inmutable de auditoría (RF-10)
-    pulsoStore.audit({
+    if (env.useMockStorage) pulsoStore.audit({
       actor: `${user?.name || 'Profesional SST'} (${user?.role || 'sst'})`,
       action: 'GESTION_CASO_ACOMPANAMIENTO',
       target: `Caso ${req.code || req.id} -> ${nextStatus}`
@@ -50,5 +49,5 @@ export function useSupportInbox() {
     setVersion((v) => v + 1);
   };
 
-  return { feedback, storeData, requests, handleAdvanceStatus };
+  return { loading, loadError, feedback, storeData, requests, handleAdvanceStatus };
 }

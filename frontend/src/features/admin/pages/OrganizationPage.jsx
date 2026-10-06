@@ -1,3 +1,4 @@
+import { env } from '../../../core/config/env';
 import { CampaignCard } from '../components/CampaignCard';
 import { useOrganization } from '../hooks/useOrganization';
 
@@ -15,6 +16,7 @@ import '../../../styles/admin.css';
 
 export function OrganizationPage() {
   const {
+    loading, loadError,
     feedback,
     campaignModalState,
     setCampaignModalState,
@@ -32,6 +34,9 @@ export function OrganizationPage() {
     handleSaveSupervisorAssignment,
     handleResetDemo
   } = useOrganization();
+
+  if (loading) return <p role="status">Cargando datos del servidor…</p>;
+  if (loadError) return <p className="alert-banner danger" role="alert">No se pudieron cargar los datos: {loadError}</p>;
 
   return (
     <div>
@@ -57,7 +62,7 @@ export function OrganizationPage() {
             <Icon name="tune" size={16} />
             <span>Parámetros y SLAs</span>
           </Link>
-          <button type="button" className="btn btn-secondary" onClick={handleResetDemo}>
+          <button type="button" className="btn btn-secondary" onClick={handleResetDemo} disabled={!env.useMockStorage} title={!env.useMockStorage ? "Disponible únicamente en la demostración local" : undefined}>
             <Icon name="refresh" size={16} />
             <span>Restablecer demo</span>
           </button>
@@ -75,8 +80,8 @@ export function OrganizationPage() {
 
       {/* Mensaje de feedback */}
       {feedback && (
-        <div className="alert-banner ok" role="status" style={{ marginBottom: 'var(--space-4)' }}>
-          <Icon name="checkCircle" size={18} />
+        <div className={`alert-banner ${feedback.startsWith("Error") ? "danger" : "ok"}`} role={feedback.startsWith("Error") ? "alert" : "status"} style={{ marginBottom: 'var(--space-4)' }}>
+          <Icon name={feedback.startsWith("Error") ? "alertTriangle" : "checkCircle"} size={18} />
           <span>{feedback}</span>
         </div>
       )}

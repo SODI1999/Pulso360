@@ -8,7 +8,7 @@ import { fetchSupervisorMetrics } from '../services/supervisorQueries';
  * @param {number} fallback
  * @returns {number}
  */
-export function toScore100(val, fallback = 0) {
+export function toScore100(val, fallback = null) {
   if (val == null || isNaN(Number(val))) return fallback;
   const num = Number(val);
   if (num <= 5) {
@@ -29,8 +29,8 @@ export function toScore100(val, fallback = 0) {
  * @returns {Object} Estado de carga, métricas procesadas y estado de protección
  */
 export function useSupervisorMetrics({
-  campanaId = 'camp-1',
-  equipoId = 'team-alpha-1',
+  campanaId = null,
+  equipoId = null,
   scopeFilter = 'all',
   periodFilter = 'w34'
 } = {}) {
@@ -40,11 +40,12 @@ export function useSupervisorMetrics({
 
   useEffect(() => {
     let active = true;
-    setLoading(true);
+    setLoading(true); setData(null); setError(null);
 
-    fetchSupervisorMetrics(campanaId, equipoId, scopeFilter)
+    fetchSupervisorMetrics(campanaId, equipoId, scopeFilter,periodFilter)
       .then((res) => {
         if (active) {
+          if (res?.error) { setError(new Error(res.error)); setData(null); return; }
           setData(res || null);
           setError(null);
         }
@@ -74,23 +75,23 @@ export function useSupervisorMetrics({
   const processedKpis = useMemo(() => {
     if (isProtected || !rawMetrics) {
       return {
-        energyIndex: 0,
+        energyIndex: null,
         energyDelta: '–',
-        overloadIndex: 0,
-        participationRate: '0%',
-        trendValues: [0, 0, 0, 0]
+        overloadIndex: null,
+        participationRate: 'N/D',
+        trendValues: []
       };
     }
 
     const energy = rawMetrics.energia != null
       ? toScore100(rawMetrics.energia)
-      : (rawMetrics.energia_avg != null ? toScore100(rawMetrics.energia_avg) : 0);
+      : (rawMetrics.energia_avg != null ? toScore100(rawMetrics.energia_avg) : null);
 
     const overload = rawMetrics.carga_emocional != null
       ? toScore100(rawMetrics.carga_emocional)
       : (rawMetrics.carga_emocional_avg != null
         ? toScore100(rawMetrics.carga_emocional_avg)
-        : (rawMetrics.agotamiento != null ? toScore100(rawMetrics.agotamiento) : 0));
+        : null);
 
     const participation = rawMetrics.participacion_pct != null
       ? `${rawMetrics.participacion_pct}%`

@@ -4,14 +4,14 @@ import { env } from '../../../core/config/env';
 
 export async function advanceStatus(requestId, WORKFLOW_STATES, currentStatus) {
   if (!env.useMockStorage) {
-    if (!getAuthToken()) return { error: 'No autorizado' };
+    if (!getAuthToken()) return { success:false,data:null,error: 'No autorizado' };
     const currentIndex = WORKFLOW_STATES.indexOf(currentStatus);
     const nextStatus = WORKFLOW_STATES[Math.min(currentIndex + 1, WORKFLOW_STATES.length - 1)];
     try {
       const res = await apiClient.patch('/sst/support-requests/' + requestId + '/status', { status: nextStatus });
-      return { req: res.data, nextStatus };
+      return { ...res,req:res.data,nextStatus };
     } catch (err) {
-      return { error: err.response?.data?.error?.message || 'Error al avanzar caso en el servidor' };
+      return { success:false,data:null,error: err.response?.data?.error?.message || 'Error al avanzar caso en el servidor' };
     }
   }
 
@@ -24,5 +24,5 @@ export async function advanceStatus(requestId, WORKFLOW_STATES, currentStatus) {
   req.status = nextStatus;
   pulsoStore.save(data);
 
-  return { req, nextStatus };
+  return { success:true,data:req,req,nextStatus };
 }

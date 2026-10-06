@@ -5,14 +5,12 @@ import { env } from '../../../core/config/env';
 export async function markAllRead(currentUser) {
   if (!env.useMockStorage) {
     if (!getAuthToken()) {
-      return false;
+      throw new Error('Sesión no válida o expirada.');
     }
     try {
-      await apiClient.patch('/notifications/read-all');
-      return true;
+      return await apiClient.patch('/notifications/read-all');
     } catch (err) {
-      console.warn('Error markAllRead API', err);
-      return false;
+      throw new Error(err.response?.data?.error?.message || 'No se pudo actualizar la lectura.');
     }
   }
 
@@ -32,20 +30,18 @@ export async function markAllRead(currentUser) {
     pulsoStore.save(data);
   }
 
-  return updated;
+  return {success:true,data:{updated}};
 }
 
 export async function markNotificationRead(notif) {
   if (!env.useMockStorage) {
     if (!getAuthToken()) {
-      return false;
+      throw new Error('Sesión no válida o expirada.');
     }
     try {
-      await apiClient.patch('/notifications/' + notif.id + '/read');
-      return true;
+      return await apiClient.patch('/notifications/' + notif.id + '/read');
     } catch (err) {
-      console.warn('Error markNotificationRead API', err);
-      return false;
+      throw new Error(err.response?.data?.error?.message || 'No se pudo actualizar la lectura.');
     }
   }
 
@@ -60,5 +56,5 @@ export async function markNotificationRead(notif) {
     }
   }
 
-  return updated;
+  return {success:true,data:{updated}};
 }

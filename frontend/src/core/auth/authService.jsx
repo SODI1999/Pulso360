@@ -4,10 +4,23 @@ import { localData, sessionData } from '../storage/browserStorage';
 
 import { pulsoStore } from '../storage/pulsoStore';
 import { env } from '../config/env';
-import { apiClient, setAuthToken, removeAuthToken } from '../api/apiClient';
+import { apiClient, getAuthToken, setAuthToken, removeAuthToken } from '../api/apiClient';
+
+import { normalizeConsent } from './consentContract';
+import { preferences } from '../storage/preferences';
+
+const normalizeUser = (u, previous = {}) => ({
+  ...previous, id: u.id, name: `${u.nombres || ''} ${u.apellidos || ''}`.trim(),
+  email: u.correo, role: u.rol_codigo?.toLowerCase(), rol_codigo: u.rol_codigo, status: u.estado,
+  team: u.equipo_nombre || null, teamId: u.equipo_id || null, campaign: u.campana_nombre || null,
+  campaignId: u.campana_id || null, shiftStartHour: u.shift_start_hour ?? 8,
+  scopes: u.scopes || [], supervisors: u.supervisors || [], lastActivity: previous.lastActivity || Date.now(),
+  assignments:u.assignments || [], navigationCounts:u.navigation_counts || {}
+});
 
 const SESSION_KEY = 'pulso360_current_session';
 const GUARD_KEY = 'pulso360_login_guard';
+let refreshSequence = 0;
 
 import { roleLabels, roleMenus } from './roleNavigation';
 export { roleLabels, roleMenus, roleHomePaths } from './roleNavigation';
@@ -24,9 +37,12 @@ const getGuard = () => {
 const saveGuard = (guardData) => localData.setItem(GUARD_KEY, JSON.stringify(guardData));
 
 export const authService = {
-  touchSession: (user) =>
-    sessionData.setItem(SESSION_KEY, JSON.stringify({ ...user, lastActivity: Date.now() })),
-  clearSession: () => sessionData.removeItem(SESSION_KEY),
+  touchSession: (user) => {
+    preferences.retainExpiredFormsFor(user.id);
+    sessionData.setItem(SESSION_KEY, JSON.stringify({ ...user, lastActivity: Date.now() }));
+    globalThis.window?.dispatchEvent?.(new Event('pulso360-session-changed'));
+  },
+  clearSession: () => { refreshSequence++; sessionData.removeItem(SESSION_KEY); },
   getRememberedEmail: () => localData.getItem('pulso360_remembered_email'),
   rememberEmail: (email) => localData.setItem('pulso360_remembered_email', email),
   forgetEmail: () => localData.removeItem('pulso360_remembered_email'),
@@ -47,8 +63,7 @@ export const authService = {
       return null;
     }
 
-    const isTestOrSsr = typeof window?.document === 'undefined' || globalThis.process?.env?.NODE_ENV === 'test';
-    if (!env.useMockStorage && !isTestOrSsr) {
+    if (!env.useMockStorage) {
       return stored;
     }
 
@@ -118,34 +133,16 @@ export const authService = {
           const { usuario, token } = payload.data;
           setAuthToken(token); // Guardar JWT de sesión segura
 
-          /**
-           * Implementación del patrón Adapter para la homologación bidireccional
-           * entre la nomenclatura relacional del backend ('AGENTE') y las
-           * rutas dinámicas del cliente ('agente').
-           */
-          const roleMap = { AGENTE: 'agente', SUPERVISOR: 'supervisor', SST: 'sst', AUDITOR: 'auditor', ADMIN: 'admin' };
-          const normalizedRole = roleMap[usuario.rol_codigo] || usuario.rol_codigo?.toLowerCase() || 'agente';
+          const session = normalizeUser(usuario);
 
-          const session = {
-            id: usuario.id,
-            name: `${usuario.nombres || ''} ${usuario.apellidos || ''}`.trim() || 'Usuario Backend',
-            email: usuario.correo,
-            role: normalizedRole,
-            rol_codigo: usuario.rol_codigo,
-            team: usuario.equipo_nombre || 'Equipo Principal',
-            campaign: usuario.campana_nombre || 'Campaña General',
-            status: usuario.estado || 'Activo',
-            lastActivity: Date.now()
-          };
+          if (session.role === 'agente') {
+            const res = await apiClient.get('/agent/consent');
+            session.consent = normalizeConsent(res.data);
+          }
 
           saveGuard({ failed: 0, blockedUntil: 0 });
           sessionData.setItem(SESSION_KEY, JSON.stringify(session));
 
-          pulsoStore.audit({
-            actor: `${session.id} (${roleLabels[session.role] || session.role})`,
-            action: 'INICIO_SESION',
-            target: 'Portal Web (vía API)'
-          });
 
           return { success: true, user: session };
         }
@@ -157,18 +154,9 @@ export const authService = {
           return { success: false, message: error.response?.data?.error?.message || 'Credenciales inválidas' };
         }
 
-        if (isNetworkError) {
-          const isTestOrSsr = typeof window?.document === 'undefined' || globalThis.process?.env?.NODE_ENV === 'test';
-          if (env.useMockStorage || isTestOrSsr) {
-            console.info('Backend no disponible, ejecutando en modo de respaldo local para entorno de prueba');
-            // Allow it to fall through to mock local logic
-          } else {
-            return { success: false, message: 'Error de conexión con el servidor' };
-          }
-        } else {
-          return { success: false, message: error.response?.data?.error?.message || 'Ocurrió un error en el servidor. Intenta de nuevo más tarde.' };
-        }
+        return { success: false, message: isNetworkError ? 'Error de conexión con el servidor' : (error.response?.data?.error?.message || 'No se pudo iniciar sesión.') };
       }
+      return { success: false, message: 'Respuesta de autenticación inválida.' };
     }
 
     // INTENTO 2: FALLBACK A DATOS LOCALES (Si useMockStorage es true, o API caída por red)
@@ -245,10 +233,33 @@ export const authService = {
     return { success: true, user: session };
   },
 
+  updateConsent: (consent) => {
+    const user = authService.getCurrentUser();
+    if (user) authService.touchSession({ ...user, consent });
+  },
+  refreshSession: async () => {
+    const user = authService.getCurrentUser();
+    if (!user || env.useMockStorage) return user;
+    const sequence = ++refreshSequence;
+    const token = getAuthToken();
+    const response = await apiClient.get('/auth/me');
+    const session = normalizeUser(response.data, user);
+    if (session.role === 'agente') {
+      const consent = await apiClient.get('/agent/consent');
+      session.consent = normalizeConsent(consent.data);
+    }
+    if (sequence !== refreshSequence || token !== getAuthToken() || authService.getCurrentUser()?.id !== user.id) {
+      return authService.getCurrentUser();
+    }
+    authService.touchSession(session);
+    return session;
+  },
   // Cierre de sesión
   logout: () => {
+    refreshSequence++;
+    preferences.clearExpiredForms();
     const user = authService.getCurrentUser();
-    if (user) {
+    if (user && env.useMockStorage) {
       pulsoStore.audit({
         actor: `${user.id} (${roleLabels[user.role] || user.role})`,
         action: 'CIERRE_SESION',
@@ -262,6 +273,9 @@ export const authService = {
   // Revisa si un agente debe aceptar la póliza de privacidad antes de entrar
   needsConsent: (user) => {
     if (!user || user.role !== 'agente') return false;
+
+    if (!env.useMockStorage) return !user.consent?.active;
+    if (user.consent !== undefined) return !user.consent?.active;
     const data = pulsoStore.get();
     const consent = data.consents?.[user.id];
     return !consent?.policyAccepted || consent?.policyVersion !== data.settings.policyVersion;
@@ -273,12 +287,12 @@ export const authService = {
     const baseItems = roleMenus[user.role] || [];
     if (user.role !== 'agente') return baseItems;
 
-    const consent = pulsoStore.get().consents?.[user.id] || {};
+    const consent = user.consent || (env.useMockStorage ? pulsoStore.get().consents?.[user.id] : {}) || {};
     return baseItems.filter((item) => {
       if (item.href.includes('checkin')) return Boolean(consent.c1);
       if (item.href.includes('bitacora')) return Boolean(consent.c2);
       if (item.href.includes('mi-analisis')) return Boolean(consent.c2 && consent.c3);
-      if (item.href.includes('apoyo')) return Boolean(consent.c5);
+      if (item.href.includes('apoyo')) return Boolean(consent.c3);
       return true;
     });
   },
@@ -289,6 +303,12 @@ export const authService = {
   // =========================================================================
 
   requestPasswordReset: async (email) => {
+    if (!env.useMockStorage) {
+      try {
+        const response = await apiClient.post('/auth/password-reset/request', { correo: email.trim().toLowerCase() });
+        return { success: true, ...response.data };
+      } catch (error) { return { success: false, message: error.response?.data?.error?.message || 'No se pudo solicitar la recuperación.' }; }
+    }
     await new Promise((r) => setTimeout(r, 450));
     const cleanEmail = String(email || '')
       .trim()
@@ -349,6 +369,10 @@ export const authService = {
   },
 
   validateResetToken: async (token) => {
+    if (!env.useMockStorage) {
+      try { const response = await apiClient.post('/auth/password-reset/validate', { token }); return response.data; }
+      catch (error) { return { valid: false, message: error.response?.data?.error?.message || 'No se pudo validar el enlace.' }; }
+    }
     await new Promise((r) => setTimeout(r, 200));
 
     if (!token) {
@@ -404,6 +428,13 @@ export const authService = {
   },
 
   resetPassword: async (token, newPassword) => {
+    if (!env.useMockStorage) {
+      try {
+        const response = await apiClient.post('/auth/password-reset/confirm', { token, contrasena: newPassword });
+        removeAuthToken(); authService.clearSession();
+        return { success: true, ...response.data };
+      } catch (error) { return { success: false, message: error.response?.data?.error?.message || 'No se pudo restablecer la contraseña.' }; }
+    }
     await new Promise((r) => setTimeout(r, 450));
 
     const validation = await authService.validateResetToken(token);
@@ -449,8 +480,8 @@ export const validatePasswordStrength = (password) => {
   if (!password || typeof password !== 'string') {
     return { valid: false, message: 'La contraseña institucional es requerida.' };
   }
-  if (password.length < 8) {
-    return { valid: false, message: 'La contraseña debe contener al menos 8 caracteres.' };
+  if (password.length < 8 || password.length > 72) {
+    return { valid: false, message: 'La contraseña debe tener entre 8 y 72 caracteres.' };
   }
   if (!(/[A-Z]/.test(password) && /[a-z]/.test(password))) {
     return { valid: false, message: 'La contraseña debe contener letras mayúsculas y minúsculas.' };

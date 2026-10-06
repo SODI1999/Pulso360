@@ -1,3 +1,4 @@
+import { useExpiredFormDraft } from '../../../core/auth/useExpiredFormDraft';
 import { fetchAgentRecords, getAgentRecords } from '../services/agentQueries';
 import { createPriorityRequest } from '../services/journalService';
 import { saveJournalAnalysis } from '../services/journalService';
@@ -12,6 +13,9 @@ import { nlpEngine } from '../../../core/nlp/nlpEngine';
 export function useJournal() {
   const currentUser = authService.getCurrentUser();
   const [storeState, setStoreState] = useState(() => getAgentRecords(currentUser?.id));
+  const [loading,setLoading] = useState(true);
+  const [loadError,setLoadError] = useState('');
+  const savingRef = useRef(false);
   const consent = storeState.consents?.[currentUser?.id] || {};
 
   // Estados del editor
@@ -33,6 +37,14 @@ export function useJournal() {
 
   const [showHistoryModal, setShowHistoryModal] = useState(false);
 
+  useExpiredFormDraft('journal:editor', { currentJournalId, journalText, contextTag, selectedCategories, correctionNote,
+    showCorrectionModal, showCrisisModal, crisisPriorityStep, crisisMode }, draft => {
+    setCurrentJournalId(draft.currentJournalId); setJournalText(draft.journalText); setContextTag(draft.contextTag);
+    setSelectedCategories(draft.selectedCategories); setCorrectionNote(draft.correctionNote);
+    setShowCorrectionModal(draft.showCorrectionModal); setShowCrisisModal(draft.showCrisisModal);
+    setCrisisPriorityStep(draft.crisisPriorityStep); setCrisisMode(draft.crisisMode);
+  });
+
   const pendingAnalysisRef = useRef(null);
   const textareaRef = useRef(null);
 
@@ -53,7 +65,7 @@ export function useJournal() {
   }, [currentUser?.id]);
 
   useEffect(() => {
-    loadJournals();
+    loadJournals().catch(error => setLoadError(error.message)).finally(() => setLoading(false));
   }, [loadJournals]);
 
   // Detección pedagógica de datos de terceros (nombres en mitad de frase, cédulas/teléfonos de 7+ dígitos o emails)
@@ -97,17 +109,22 @@ export function useJournal() {
       return;
     }
 
+    if (savingRef.current) return;
+    savingRef.current = true;
+    setIsAnalyzing(true);
+    try {
     const result = await saveJournal(currentJournalId, currentUser, currentJournal, contextTag, trimmed);
 
-    if (result.error) {
+    if (result.success !== true) {
       setFeedback({ type: 'warn', message: result.error });
       return;
     }
     const { journalPayload } = result;
     setCurrentJournalId(journalPayload.id);
-    loadJournals();
+    await loadJournals();
 
-    const latestConsent = getAgentRecords(currentUser?.id).consents?.[currentUser?.id] || {};
+    const currentData = await fetchAgentRecords(currentUser.id);
+    const latestConsent = currentData.consents?.[currentUser.id] || {};
 
     // Si no tiene C3 autorizado, no analiza con NLP
     if (!latestConsent.c3) {
@@ -121,9 +138,8 @@ export function useJournal() {
     // Ejecución de análisis NLP con estado de carga visual
     setIsAnalyzing(true);
 
-    setTimeout(() => {
-      const currentData = getAgentRecords(currentUser?.id);
-      const activeConsent = currentData.consents?.[currentUser?.id];
+    try {
+      const activeConsent = latestConsent;
       if (
         !activeConsent?.policyAccepted ||
         activeConsent.policyVersion !== currentData.settings.policyVersion ||
@@ -137,26 +153,33 @@ export function useJournal() {
         });
         return;
       }
+      await nlpEngine.loadActiveLexicon();
       const analysisResult = nlpEngine.analyze(trimmed);
 
-      const finishProcessing = () => {
-        const result = saveJournalAnalysis(journalPayload, analysisResult, currentUser);
-        if (result.error) {
+      const finishProcessing = async () => {
+        try {
+        const result = await saveJournalAnalysis(journalPayload, analysisResult, currentUser);
+        if (result.success !== true) {
           setIsAnalyzing(false);
           setFeedback({ type: 'warn', message: result.error });
-          return;
+          return false;
         }
 
         setIsAnalyzing(false);
-        loadJournals();
+        await loadJournals();
         setFeedback({
           type: 'success',
           message: 'Entrada analizada y guardada con éxito.'
         });
+        return true;
+        } catch(error) {
+          setFeedback({type:'warn',message:`No se pudo completar o recargar el análisis: ${error.message}`});
+          return false;
+        } finally { setIsAnalyzing(false); }
       };
 
       if (analysisResult.isCrisisAlert) {
-        pulsoStore.audit({
+        if (env.useMockStorage) pulsoStore.audit({
           actor: `${currentUser.id} (${roleLabels[currentUser.role] || currentUser.role})`,
           action: 'RUTA_APOYO_MOSTRADA',
           target: 'Ruta de apoyo prioritario'
@@ -165,9 +188,14 @@ export function useJournal() {
         setShowCrisisModal(true);
         setCrisisPriorityStep(false);
       } else {
-        finishProcessing();
+        await finishProcessing();
       }
-    }, 450);
+    } catch (error) {
+      setIsAnalyzing(false);
+      setFeedback({ type: 'warn', message: error.message });
+    }
+    } catch(error) { setFeedback({type:'warn',message:error.message || 'No se pudo guardar la entrada.'}); }
+    finally { savingRef.current = false; setIsAnalyzing(false); }
   };
 
   // Eliminar entrada (con confirmación de 2 pasos y escritura de palabra ELIMINAR)
@@ -188,18 +216,21 @@ export function useJournal() {
     }
 
     const result = await deleteJournal(currentJournalId, currentUser);
-    if (result.error) {
+    if (result.success !== true) {
       setFeedback({ type: 'warn', message: result.error });
       return;
     }
 
     handleNewEntry();
-    loadJournals();
+    try { await loadJournals(); }
+    catch(error) { setFeedback({type:'warn',message:`Entrada eliminada; no se pudo recargar: ${error.message}`}); return; }
     setFeedback({ type: 'success', message: 'Entrada eliminada definitivamente.' });
   };
 
   // Abrir modal de corrección humana
-  const handleOpenCorrection = () => {
+  const handleOpenCorrection = async () => {
+    try { await nlpEngine.loadActiveLexicon(); }
+    catch(error) { setFeedback({type:'warn',message:error.response?.data?.error?.message || error.message}); return; }
     if (!currentJournal?.analysis) return;
     const initial = currentJournal.correctedCategories
       ? [...currentJournal.correctedCategories]
@@ -232,14 +263,15 @@ export function useJournal() {
   };
 
   // Guardar corrección humana
-  const handleSaveCorrection = () => {
-    const operationResult = saveCorrection(currentJournalId, selectedCategories, correctionNote, currentUser);
-    if (operationResult.error) {
+  const handleSaveCorrection = async () => {
+    const operationResult = await saveCorrection(currentJournalId, selectedCategories, correctionNote, currentUser, currentJournal?.contentHash);
+    if (operationResult.success !== true) {
       setFeedback({ type: 'warn', message: operationResult.error });
       return;
     }
 
-    loadJournals();
+    try { await loadJournals(); }
+    catch(error) { setFeedback({type:'warn',message:`Corrección guardada; no se pudo recargar: ${error.message}`}); return; }
     setShowCorrectionModal(false);
     setFeedback({ type: 'success', message: 'Corrección humana aplicada y registrada en auditoría.' });
   };
@@ -247,15 +279,19 @@ export function useJournal() {
   // Confirmar solicitud prioritaria de crisis con SST
   const handleConfirmCrisisPriority = async () => {
     const result = await createPriorityRequest(currentUser, crisisMode);
-    if (result.error) {
+    if (result.success !== true) {
       setFeedback({ type: 'warn', message: result.error });
       return;
     }
     const { code } = result;
     setShowCrisisModal(false);
     if (pendingAnalysisRef.current) {
-      pendingAnalysisRef.current();
+      const analyzed = await pendingAnalysisRef.current();
       pendingAnalysisRef.current = null;
+      if (!analyzed) {
+        setFeedback({type:'warn',message:`Solicitud registrada (Caso ${code}); el análisis no se pudo completar o recargar. El texto de tu bitácora no se transmitió a SST.`});
+        return;
+      }
     }
 
     setFeedback({
@@ -264,10 +300,10 @@ export function useJournal() {
     });
   };
 
-  const handleContinueFromCrisis = () => {
+  const handleContinueFromCrisis = async () => {
     setShowCrisisModal(false);
     if (pendingAnalysisRef.current) {
-      pendingAnalysisRef.current();
+      await pendingAnalysisRef.current();
       pendingAnalysisRef.current = null;
     }
   };
@@ -275,7 +311,7 @@ export function useJournal() {
   // 1. Caso: Bloqueo por falta de consentimiento C2
   // 1. Caso: Bloqueo por falta de consentimiento C2
 
-  return {
+  return { loading,loadError,
     consent,
     journals,
     currentJournalId,

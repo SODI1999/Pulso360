@@ -1,3 +1,4 @@
+import { useExpiredFormDraft } from '../../../core/auth/useExpiredFormDraft';
 // src/features/admin/components/AssignSupervisorModal.jsx
 // Modal para asignar supervisor responsable a un equipo (RF-15)
 
@@ -8,32 +9,41 @@ import { useModalA11y } from '../../../core/hooks/useModalA11y';
 export function AssignSupervisorModal({ isOpen, onClose, onSave, campaign, team, supervisorsList = [] }) {
   const [selectedSupervisor, setSelectedSupervisor] = useState('');
   const [error, setError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
   const modalRef = useRef(null);
 
   useModalA11y({ isOpen, onClose, modalRef });
 
   useEffect(() => {
     if (team) {
-      setSelectedSupervisor(team.supervisor || '');
+      setSelectedSupervisor(team.supervisorId || '');
     }
     setError('');
   }, [team, isOpen]);
 
+  useExpiredFormDraft(`supervisor:${team?.id}`, { selectedSupervisor }, draft => {
+    setSelectedSupervisor(draft.selectedSupervisor);
+  }, isOpen && !!team);
   if (!isOpen || !team) return null;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!selectedSupervisor) {
       setError('Debes seleccionar un supervisor responsable.');
       return;
     }
 
-    onSave({
-      campId: campaign.id,
-      teamId: team.id,
-      previousSupervisor: team.supervisor || 'Sin asignar',
-      newSupervisor: selectedSupervisor
-    });
+    setSubmitting(true);
+    try {
+      const result = await onSave({
+        campId: campaign.id,
+        teamId: team.id,
+        previousSupervisor: team.supervisor || 'Sin asignar',
+        newSupervisor: selectedSupervisor
+      });
+      if (result?.success === false) setError(result.error?.message || result.error);
+    } catch (error) { setError(error.message); }
+    finally { setSubmitting(false); }
   };
 
   return (
@@ -77,8 +87,8 @@ export function AssignSupervisorModal({ isOpen, onClose, onSave, campaign, team,
               >
                 <option value="">Selecciona un supervisor...</option>
                 {supervisorsList.map((sup) => (
-                  <option key={sup} value={sup}>
-                    {sup}
+                  <option key={sup.id} value={sup.id}>
+                    {sup.name}
                   </option>
                 ))}
               </select>
@@ -92,7 +102,7 @@ export function AssignSupervisorModal({ isOpen, onClose, onSave, campaign, team,
             <button type="button" className="btn btn-secondary" onClick={onClose}>
               Cancelar
             </button>
-            <button type="submit" className="btn btn-primary">
+            <button type="submit" disabled={submitting} className="btn btn-primary">
               <Icon name="check" size={16} />
               <span>Confirmar Asignación</span>
             </button>

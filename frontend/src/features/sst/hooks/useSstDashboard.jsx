@@ -2,6 +2,7 @@ import { getSstData, fetchSstAlerts, fetchSstSupportRequests, fetchSstMetrics } 
 import { useEffect, useMemo, useState } from 'react';
 
 import { authService } from '../../../core/auth/authService';
+import { env } from '../../../core/config/env';
 import { pulsoStore } from '../../../core/storage/pulsoStore';
 
 export function useSstDashboard({ campanaId, equipoId, desde, hasta } = {}) {
@@ -28,6 +29,7 @@ export function useSstDashboard({ campanaId, equipoId, desde, hasta } = {}) {
         if (active) {
           setAlerts(al || []);
           setRequests(req || []);
+          if (met?.error) { setError(new Error(met.error)); setMetricsResponse(null); return; }
           setMetricsResponse(met || null);
           setError(null);
         }
@@ -60,7 +62,7 @@ export function useSstDashboard({ campanaId, equipoId, desde, hasta } = {}) {
 
   // Distribución agregada de las 8 categorías léxicas de NLP
   const nlpCategories = useMemo(
-    () => [
+    () => !env.useMockStorage ? [] : [
       { name: 'Sobrecarga percibida', count: 12, percent: 37 },
       { name: 'Recuperación insuficiente', count: 10, percent: 31 },
       { name: 'Exigencia emocional', count: 9, percent: 28 },
@@ -76,7 +78,7 @@ export function useSstDashboard({ campanaId, equipoId, desde, hasta } = {}) {
   // Registro de auditoría preventiva (RF-07 / RF-11)
   useEffect(() => {
     if (!user) return;
-    pulsoStore.audit({
+    if (env.useMockStorage) pulsoStore.audit({
       actor: `${user.name} (${user.role})`,
       action: 'CONSULTA_AGREGADA',
       target: 'SST · Vigilancia epidemiológica y distribución agregada NLP'

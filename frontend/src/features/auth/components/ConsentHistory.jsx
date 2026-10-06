@@ -7,7 +7,7 @@ export function ConsentHistory({ history, formatDateTime }) {
             Historial de cambios
           </h2>
           <p className="consent-section-caption">
-            Registro temporal inmutable de cada actualización efectuada por el titular en su estación.
+            Preferencias guardadas por el titular, con su política y fecha de registro.
           </p>
         </div>
         <span className="consent-audit-counter">
@@ -28,9 +28,9 @@ export function ConsentHistory({ history, formatDateTime }) {
               <th scope="col">Fecha y hora</th>
               <th scope="col">C1 Check-in</th>
               <th scope="col">C2 Bitácora</th>
-              <th scope="col">C3 NLP</th>
+              <th scope="col">C3 NLP y apoyo</th>
               <th scope="col">C4 Agregados</th>
-              <th scope="col">C5 Acompañamiento</th>
+              <th scope="col">C5 Contacto proactivo</th>
             </tr>
           </thead>
           <tbody>

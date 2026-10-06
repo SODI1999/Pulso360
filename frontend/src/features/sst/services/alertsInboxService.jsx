@@ -1,17 +1,18 @@
 import { pulsoStore } from '../../../core/storage/pulsoStore';
 import { apiClient, getAuthToken } from '../../../core/api/apiClient';
+import { bogotaCalendarDate } from '../../../core/time/calendarDate';
 import { env } from '../../../core/config/env';
 
 export async function updateStatus(alertId, newStatus, user) {
   if (!env.useMockStorage) {
     if (!getAuthToken()) {
-      return { error: 'Sesión no válida o token ausente' };
+      return { success:false,data:null,error: 'Sesión no válida o token ausente' };
     }
     try {
       const res = await apiClient.patch('/sst/alerts/' + alertId, { status: newStatus });
-      return { alertItem: res.data };
+      return { ...res, alertItem: res.data };
     } catch (error) {
-      return { error: error.response?.data?.error?.message || 'Error al actualizar alerta en el servidor' };
+      return { success:false,data:null,error: error.response?.data?.error?.message || 'Error al actualizar alerta en el servidor' };
     }
   }
 
@@ -28,19 +29,19 @@ export async function updateStatus(alertId, newStatus, user) {
     target: `${alertItem.id} (${alertItem.rule}) -> ${newStatus}`
   });
 
-  return { alertItem };
+  return { success:true,data:alertItem, alertItem };
 }
 
 export async function confirmDismiss(alertId, reason, user) {
   if (!env.useMockStorage) {
     if (!getAuthToken()) {
-      return { error: 'Sesión no válida o token ausente' };
+      return { success:false,data:null,error: 'Sesión no válida o token ausente' };
     }
     try {
       await apiClient.patch('/sst/alerts/' + alertId, { status: 'DESCARTADA', dismissReason: reason });
-      return {};
+      return {success:true,data:null};
     } catch (error) {
-      return { error: error.response?.data?.error?.message || 'Error al descartar alerta en el servidor' };
+      return { success:false,data:null,error: error.response?.data?.error?.message || 'Error al descartar alerta en el servidor' };
     }
   }
 
@@ -58,22 +59,23 @@ export async function confirmDismiss(alertId, reason, user) {
     target: `${alertItem.id} -> DESCARTADA | Justificación: "${reason}"`
   });
 
-  return {};
+  return {success:true,data:null};
 }
 
 export async function createIntervention(alertItem, user) {
   if (!env.useMockStorage) {
     if (!getAuthToken()) {
-      return { error: 'Sesión no válida o token ausente' };
+      return { success:false,data:null,error: 'Sesión no válida o token ausente' };
     }
     try {
       const campanaId = alertItem.campana_id || alertItem.campaignId;
       const equipoId = alertItem.equipo_id || alertItem.teamId;
       if (!campanaId || !equipoId) {
-        return { error: 'Faltan parámetros requeridos de campaña o equipo para crear la intervención.' };
+        return { success:false,data:null,error: 'Faltan parámetros requeridos de campaña o equipo para crear la intervención.' };
       }
-      const startDate = new Date().toISOString().substring(0, 10);
-      const endDate = new Date(Date.now() + 28 * 86400000).toISOString().substring(0, 10);
+      const now = new Date();
+      const startDate = bogotaCalendarDate(now);
+      const endDate = bogotaCalendarDate(now, 28);
       const ruleTitle = alertItem.rule || alertItem.description || 'Alerta preventiva';
 
       const res = await apiClient.post('/sst/interventions', {
@@ -94,9 +96,9 @@ export async function createIntervention(alertItem, user) {
         target_desc: 'Intervención preventiva coordinada con supervisión para mitigar la tendencia de alerta.',
         targetDesc: 'Intervención preventiva coordinada con supervisión para mitigar la tendencia de alerta.'
       });
-      return { intervention: res.data };
+      return { ...res, intervention: res.data };
     } catch (err) {
-      return { error: err.response?.data?.error?.message || 'Error al crear intervención en el servidor' };
+      return { success:false,data:null,error: err.response?.data?.error?.message || 'Error al crear intervención en el servidor' };
     }
   }
 
@@ -114,8 +116,8 @@ export async function createIntervention(alertItem, user) {
     creator: user?.id || 'usr-3',
     assignedTo: 'usr-2',
     status: 'Planeada',
-    startDate: new Date().toISOString().substring(0, 10),
-    endDate: new Date(Date.now() + 28 * 86400000).toISOString().substring(0, 10),
+    startDate: bogotaCalendarDate(),
+    endDate: bogotaCalendarDate(new Date(), 28),
     indicator: 'Recuperación agregada',
     baseline: targetAlert.evidence?.slice(-1)[0] || 58,
     after: null,
@@ -137,5 +139,5 @@ export async function createIntervention(alertItem, user) {
     target: `${newIntervention.title} asignada a ${targetAlert.campaign}`
   });
 
-  return {};
+  return {success:true,data:null};
 }

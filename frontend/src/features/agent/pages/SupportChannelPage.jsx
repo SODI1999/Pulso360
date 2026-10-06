@@ -10,7 +10,7 @@ import { SupportRequestForm } from '../components/SupportRequestForm';
 import '../../../styles/apoyo.css';
 
 export function SupportChannelPage() {
-  const {
+  const { loading,loadError,
     navigate,
     consent,
     setSupportMode,
@@ -29,8 +29,11 @@ export function SupportChannelPage() {
     isAnonymous,
     handleSubmit
   } = useSupportChannel();
+  if (loading) return <p className="agent-page" role="status">Cargando tus registros…</p>;
+  if (loadError) return <p className="agent-page alert-banner danger" role="alert">{loadError}</p>;
 
-  if (!consent?.c5) {
+
+  if (!consent?.c3) {
     return (
       <div className="agent-page support-editorial-page">
         <nav className="agent-subnav" aria-label="Navegación secundaria">
