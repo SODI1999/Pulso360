@@ -2,7 +2,8 @@ import { useExpiredFormDraft } from '../../../core/auth/useExpiredFormDraft';
 // src/features/admin/components/CreateUserModal.jsx
 // Modal para creación atómica de usuarios institucionales (RF-15)
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { useModalA11y } from '../../../core/hooks/useModalA11y';
 import { env } from '../../../core/config/env';
 import { Icon } from '../../../core/components/Icon';
 
@@ -15,6 +16,8 @@ const CANONICAL_ROLES = [
 ];
 
 export function CreateUserModal({ isOpen, onClose, onSave, orgScopes = [] }) {
+  const modalRef = useRef(null);
+  useModalA11y({ isOpen, onClose, modalRef });
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [role, setRole] = useState('agente');
@@ -77,11 +80,11 @@ export function CreateUserModal({ isOpen, onClose, onSave, orgScopes = [] }) {
   };
 
   return (
-    <div className="modal-overlay active" onClick={onClose} role="dialog" aria-modal="true">
+    <div className="modal-overlay active" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="create-user-title" ref={modalRef}>
       <div className="modal-card" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <div>
-            <h2 className="modal-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <h2 id="create-user-title" className="modal-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <Icon name="userPlus" size={20} />
               <span>Crear nuevo usuario</span>
             </h2>
@@ -112,7 +115,6 @@ export function CreateUserModal({ isOpen, onClose, onSave, orgScopes = [] }) {
                 placeholder="Ej. Andrés Restrepo"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                autoFocus
               />
             </div>
 

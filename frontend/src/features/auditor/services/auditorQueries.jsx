@@ -9,7 +9,7 @@ const normalizeLog = log => ({
   id:String(log.id),date:log.created_at || log.date || '',
   actor:log.nombres ? `${log.nombres} ${log.apellidos}` : log.actor_reference || log.usuario_id || log.actor || 'Sistema',
   action:log.action,target:log.resource ? `${log.resource}: ${JSON.stringify(log.details || {})}` : log.target || '',
-  ip:log.ip_address || log.ip || '',status:log.status || 'SUCCESS',prevHash:log.prev_hash || log.prevHash,hash:log.hash
+  ip:log.ip_address || log.ip || '',status:log.status === 'SUCCESS' ? 'EXITO' : log.status || 'NO_REGISTRADO',prevHash:log.prev_hash || log.prevHash,hash:log.hash
 });
 export async function fetchAuditPage(filters={}) {
   if (env.useMockStorage) {

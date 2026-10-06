@@ -47,11 +47,11 @@ export function AssignSupervisorModal({ isOpen, onClose, onSave, campaign, team,
   };
 
   return (
-    <div className="modal-overlay active" onClick={onClose} role="dialog" aria-modal="true">
+    <div className="modal-overlay active" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="assign-supervisor-title">
       <div className="modal-card" ref={modalRef} onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <div>
-            <h2 className="modal-title">Asignar Supervisor de Equipo</h2>
+            <h2 id="assign-supervisor-title" className="modal-title">Asignar Supervisor de Equipo</h2>
             <div className="modal-subtitle">
               Equipo: <strong>{team.name}</strong> · Campaña: {campaign?.name}
             </div>
@@ -83,7 +83,6 @@ export function AssignSupervisorModal({ isOpen, onClose, onSave, campaign, team,
                 className="form-select"
                 value={selectedSupervisor}
                 onChange={(e) => setSelectedSupervisor(e.target.value)}
-                autoFocus
               >
                 <option value="">Selecciona un supervisor...</option>
                 {supervisorsList.map((sup) => (

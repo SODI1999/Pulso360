@@ -8,12 +8,7 @@ import { apiClient } from '../../../core/api/apiClient';
 import { env } from '../../../core/config/env';
 
 import { BASE_SCOPES } from '../data/reportsData';
-const PERIODS = {
-  'Semana 34 (18–24 Ago 2026)': { desde:'2026-08-18',hasta:'2026-08-24' },
-  'Semana 33 (11–17 Ago 2026)': { desde:'2026-08-11',hasta:'2026-08-17' },
-  'Mes de Agosto 2026': { desde:'2026-08-01',hasta:'2026-08-31' },
-  'Trimestre Q3 2026': { desde:'2026-07-01',hasta:'2026-09-30' }
-};
+import { bogotaCalendarDate } from '../../../core/time/calendarDate';
 
 export function useReports() {
   const currentUser = authService.getCurrentUser();
@@ -39,7 +34,9 @@ export function useReports() {
   }, [currentUser?.role,currentUser?.scopes]);
 
   const [selectedScopeId, setSelectedScopeId] = useState(availableScopes[0]?.id || '');
-  const [selectedPeriod, setSelectedPeriod] = useState('Semana 34 (18–24 Ago 2026)');
+  const [periodStart, setPeriodStart] = useState(() => bogotaCalendarDate().slice(0, 7) + '-01');
+  const [periodEnd, setPeriodEnd] = useState(() => bogotaCalendarDate());
+  const selectedPeriod = `${periodStart} — ${periodEnd}`;
   const historyScope = availableScopes.find(scope => scope.id === selectedScopeId);
   const historyCampaignId = historyScope?.campanaId;
   const historyTeamId = historyScope?.equipoId;
@@ -68,8 +65,11 @@ export function useReports() {
   const [generatedReport, setGeneratedReport] = useState(null);
   const [feedback, setFeedback] = useState('');
 
-  useExpiredFormDraft('report:configuration', { selectedScopeId, selectedPeriod, sections, format }, draft => {
-    setSelectedScopeId(draft.selectedScopeId); setSelectedPeriod(draft.selectedPeriod); setSections(draft.sections); setFormat(draft.format);
+  useExpiredFormDraft('report:configuration', { selectedScopeId, periodStart, periodEnd, sections, format }, draft => {
+    setSelectedScopeId(draft.selectedScopeId);
+    if (draft.periodStart) setPeriodStart(draft.periodStart);
+    if (draft.periodEnd) setPeriodEnd(draft.periodEnd);
+    setSections(draft.sections); setFormat(draft.format);
   });
 
   const currentScope = availableScopes.find((s) => s.id === selectedScopeId) || availableScopes[0];
@@ -105,6 +105,11 @@ export function useReports() {
     e.preventDefault();
     setFeedback('');
 
+    if (!periodStart || !periodEnd || periodStart > periodEnd) {
+      setFeedback('Error: selecciona un intervalo de fechas válido.');
+      return;
+    }
+
     if (!isAllowedByPrivacy) {
       setFeedback(
         'No se puede generar el reporte: el corte seleccionado no cumple las reglas de k-anonimato (N < 5).'
@@ -131,7 +136,7 @@ export function useReports() {
       campanaId: env.useMockStorage ? (isCamp ? selectedScopeId : null) : currentScope.campanaId,
       equipoId: env.useMockStorage ? (isTeam ? selectedScopeId : null) : currentScope.equipoId,
       fechaCorte: new Date().toISOString().slice(0, 10),
-      ...PERIODS[selectedPeriod], dimensions:activeSections,
+      desde:periodStart, hasta:periodEnd, dimensions:activeSections,
       parametrosFiltro: { scope: selectedScopeId, format, sections, scope_label:currentScope.label, requester_name:currentUser.name },
       rutaArchivo: null,
       ...(env.useMockStorage ? {id:`rep-${Date.now()}`} : {}),
@@ -257,7 +262,7 @@ export function useReports() {
     selectedScopeId,
     setSelectedScopeId,
     selectedPeriod,
-    setSelectedPeriod,
+    periodStart, setPeriodStart, periodEnd, setPeriodEnd,
     sections,
     setSections,
     format,

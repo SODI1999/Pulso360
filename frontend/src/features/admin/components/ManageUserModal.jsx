@@ -2,7 +2,8 @@ import { useExpiredFormDraft } from '../../../core/auth/useExpiredFormDraft';
 // src/features/admin/components/ManageUserModal.jsx
 // Modal para gestión y actualización atómica de usuario (RF-15)
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { useModalA11y } from '../../../core/hooks/useModalA11y';
 import { Icon } from '../../../core/components/Icon';
 
 const CANONICAL_ROLES = [
@@ -14,6 +15,8 @@ const CANONICAL_ROLES = [
 ];
 
 export function ManageUserModal({ isOpen, onClose, onSave, user, orgScopes = [], currentUserId }) {
+  const modalRef = useRef(null);
+  useModalA11y({ isOpen:isOpen && !!user, onClose, modalRef });
   const [role, setRole] = useState('agente');
   const [orgScopeId, setOrgScopeId] = useState('');
   const [status, setStatus] = useState('Activo');
@@ -84,11 +87,11 @@ export function ManageUserModal({ isOpen, onClose, onSave, user, orgScopes = [],
   };
 
   return (
-    <div className="modal-overlay active" onClick={onClose} role="dialog" aria-modal="true">
+    <div className="modal-overlay active" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="manage-user-title" ref={modalRef}>
       <div className="modal-card" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <div>
-            <h2 className="modal-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <h2 id="manage-user-title" className="modal-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <Icon name="manage_accounts" size={20} />
               <span>Gestionar usuario</span>
             </h2>

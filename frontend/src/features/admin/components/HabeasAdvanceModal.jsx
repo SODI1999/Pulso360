@@ -42,11 +42,11 @@ export function HabeasAdvanceModal({ isOpen, onClose, onConfirm, request, nextSt
   };
 
   return (
-    <div className="modal-overlay active" onClick={onClose} role="dialog" aria-modal="true">
+    <div className="modal-overlay active" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="habeas-modal-title">
       <div className="modal-card" ref={modalRef} onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <div>
-            <h2 className="modal-title">Avanzar Estado de Solicitud</h2>
+            <h2 id="habeas-modal-title" className="modal-title">Avanzar Estado de Solicitud</h2>
             <div className="modal-subtitle">
               Radicado: <strong>{request.id}</strong> ({request.type})
             </div>
@@ -75,7 +75,6 @@ export function HabeasAdvanceModal({ isOpen, onClose, onConfirm, request, nextSt
                 placeholder="Registra el detalle de la respuesta o la gestión realizada..."
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
-                autoFocus
               />
               <span className="form-hint">
                 Esta observación quedará registrada en el radicado y en el registro de auditoría.

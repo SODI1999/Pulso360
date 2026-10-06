@@ -53,11 +53,11 @@ export function CampaignModal({ isOpen, onClose, onSave, campaign = null }) {
   };
 
   return (
-    <div className="modal-overlay active" onClick={onClose} role="dialog" aria-modal="true">
+    <div className="modal-overlay active" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="campaign-modal-title">
       <div className="modal-card" ref={modalRef} onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <div>
-            <h2 className="modal-title">{campaign ? 'Editar Campaña' : 'Crear Nueva Campaña'}</h2>
+            <h2 id="campaign-modal-title" className="modal-title">{campaign ? 'Editar Campaña' : 'Crear Nueva Campaña'}</h2>
             <div className="modal-subtitle">
               {campaign
                 ? `Modificando: ${campaign.name}`
@@ -89,7 +89,6 @@ export function CampaignModal({ isOpen, onClose, onSave, campaign = null }) {
                 placeholder="Ej. Campaña Soporte Alpha"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                autoFocus
               />
             </div>
 

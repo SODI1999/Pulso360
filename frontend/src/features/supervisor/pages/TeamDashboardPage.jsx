@@ -10,6 +10,7 @@ import { TeamFactorsTable } from '../components/TeamFactorsTable';
 import { PrivacyBlockedCard } from '../../../core/components/PrivacyBlockedCard';
 import { useSupervisorMetrics, toScore100 } from '../hooks/useSupervisorMetrics';
 import { getSupervisorData } from '../services/supervisorQueries';
+import { bogotaCalendarDate } from '../../../core/time/calendarDate';
 
 import '../../../styles/supervisor.css';
 import '../../../styles/umbral.css';
@@ -17,7 +18,9 @@ import '../../../styles/umbral.css';
 export function TeamDashboardPage() {
   const user = authService.getCurrentUser();
   const [scopeFilter, setScopeFilter] = useState(() => user?.scopes?.[0]?.id || (env.useMockStorage ? 'all' : ''));
-  const [periodFilter, setPeriodFilter] = useState('w34');
+  const [periodStart, setPeriodStart] = useState(() => bogotaCalendarDate().slice(0, 7) + '-01');
+  const [periodEnd, setPeriodEnd] = useState(() => bogotaCalendarDate());
+  const periodFilter = `${periodStart}|${periodEnd}`;
 
   const {
     loading,
@@ -113,17 +116,17 @@ export function TeamDashboardPage() {
 
           <div className="supervisor-filter-item">
             <label className="form-label" htmlFor="periodFilter">
-              Período temporal
+              Desde
             </label>
-            <select
+            <input type="date" max={periodEnd || undefined}
               className="form-select"
               id="periodFilter"
-              value={periodFilter}
-              onChange={(e) => setPeriodFilter(e.target.value)}
-            >
-              <option value="w34">Semana 34 · Ago 2026</option>
-              <option value="m08">Agosto 2026</option>
-            </select>
+              value={periodStart}
+              onChange={(e) => setPeriodStart(e.target.value)}
+            />
+            <label className="form-label" htmlFor="periodEnd">Hasta</label>
+            <input className="form-select" id="periodEnd" type="date" min={periodStart || undefined}
+              value={periodEnd} onChange={e => setPeriodEnd(e.target.value)} />
           </div>
 
           <div className="supervisor-filter-item disabled">

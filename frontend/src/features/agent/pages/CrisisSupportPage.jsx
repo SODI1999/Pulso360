@@ -162,10 +162,10 @@ export function CrisisSupportPage() {
         </div>
 
         <div className="crisis-sst-actions">
-          {!consent?.c5 ? (
+          {!consent?.c3 || consent?.active === false ? (
             <Link to="/consentimiento" className="btn-crisis-call btn-crisis-call--secondary">
               <Icon name="shieldCheck" size={16} />
-              <span>Gestionar finalidad C5 en consentimiento</span>
+              <span>Gestionar consentimiento para acompañamiento (C3)</span>
             </Link>
           ) : (
             <Link to="/agente/apoyo" className="btn-crisis-call btn-crisis-call--primary">

@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authService, roleLabels } from '../../../core/auth/authService';
 import { pulsoStore } from '../../../core/storage/pulsoStore';
+import { env } from '../../../core/config/env';
 
 import { GROUNDING_STEPS, STEP_INTRO_SPEECH, ANCHOR_FEEDBACK_SPEECH } from '../data/crisisSupportData';
 
@@ -13,7 +14,7 @@ export function useCrisisSupport() {
   const currentUserRole = currentUser?.role;
 
   const data = getAgentRecords(currentUser?.id);
-  const consent = data.consents?.[currentUserId];
+  const consent = env.useMockStorage ? data.consents?.[currentUserId] : currentUser?.consent;
 
   // Estado para modal de respiración guiada de emergencia
   const [isBpoResetOpen, setIsBpoResetOpen] = useState(false);
@@ -75,7 +76,7 @@ export function useCrisisSupport() {
 
   // Registro de auditoría al acceder a la ruta de apoyo prioritario
   useEffect(() => {
-    if (!currentUserId) return;
+    if (!currentUserId || !env.useMockStorage) return;
     pulsoStore.audit({
       actor: `${currentUserId} (${roleLabels[currentUserRole] || currentUserRole})`,
       action: 'RUTA_APOYO_MOSTRADA',

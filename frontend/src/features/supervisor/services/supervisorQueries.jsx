@@ -2,6 +2,7 @@ import { pulsoStore } from '../../../core/storage/pulsoStore';
 import { apiClient, getAuthToken } from '../../../core/api/apiClient';
 import { normalizeIntervention } from '../../../core/api/interventionContract';
 import { env } from '../../../core/config/env';
+import { bogotaCalendarDate } from '../../../core/time/calendarDate';
 
 export function getSupervisorData() {
   if (!env.useMockStorage) return { settings: { umbralMinimo:5 }, interventions:[] };
@@ -19,7 +20,7 @@ export function getSupervisorData() {
  * @param {string} campanaId
  * @returns {Promise<Object>}
  */
-export async function fetchSupervisorMetrics(campanaId = null, equipoId = null, scopeFilter = 'all', periodFilter = 'w34') {
+export async function fetchSupervisorMetrics(campanaId = null, equipoId = null, scopeFilter = 'all', periodFilter = `${bogotaCalendarDate().slice(0,7)}-01|${bogotaCalendarDate()}`) {
   let cId = campanaId;
   let eqId = equipoId;
   let sFilter = scopeFilter;
@@ -45,7 +46,11 @@ export async function fetchSupervisorMetrics(campanaId = null, equipoId = null, 
     if (!getAuthToken()) return { error: 'No autorizado' };
     try {
       if (!cId && !eqId) return { error: 'No tienes un ámbito operativo asignado.' };
-      const period = periodFilter === 'm08' ? {desde:'2026-08-01',hasta:'2026-08-31'} : {desde:'2026-08-18',hasta:'2026-08-24'};
+      const [desde, hasta] = periodFilter.split('|');
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(desde || '') || !/^\d{4}-\d{2}-\d{2}$/.test(hasta || '') || desde > hasta) {
+        return { error:'Selecciona un intervalo de fechas válido.' };
+      }
+      const period = { desde, hasta };
       const response = await apiClient.get('/sst/metrics', { params: { campana_id: cId, equipo_id: eqId, ...period } });
       const payload = response?.data !== undefined ? response.data : response;
       if (payload) {

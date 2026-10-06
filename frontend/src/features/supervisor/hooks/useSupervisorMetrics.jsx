@@ -32,7 +32,7 @@ export function useSupervisorMetrics({
   campanaId = null,
   equipoId = null,
   scopeFilter = 'all',
-  periodFilter = 'w34'
+  periodFilter
 } = {}) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);

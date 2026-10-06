@@ -9,8 +9,7 @@ export function ReportConfiguration({
   availableScopes,
   currentScope,
   minThreshold,
-  selectedPeriod,
-  setSelectedPeriod,
+  periodStart, setPeriodStart, periodEnd, setPeriodEnd,
   sections,
   setSections,
   format,
@@ -60,23 +59,12 @@ export function ReportConfiguration({
 
         {/* Selector de Periodo */}
         <div className="form-group" style={{ marginBottom: 'var(--space-3)' }}>
-          <label className="form-label" htmlFor="reportPeriodSelect">
-            Periodo temporal
-          </label>
-          <select
-            id="reportPeriodSelect"
-            className="form-select"
-            value={selectedPeriod}
-            onChange={(e) => {
-              setSelectedPeriod(e.target.value);
-              setGeneratedReport(null);
-            }}
-          >
-            <option value="Semana 34 (18–24 Ago 2026)">Semana 34 (18–24 Ago 2026)</option>
-            <option value="Semana 33 (11–17 Ago 2026)">Semana 33 (11–17 Ago 2026)</option>
-            <option value="Mes de Agosto 2026">Mes de Agosto 2026</option>
-            <option value="Trimestre Q3 2026">Trimestre Q3 2026</option>
-          </select>
+          <label className="form-label" htmlFor="reportPeriodStart">Desde</label>
+          <input id="reportPeriodStart" className="form-input" type="date" required max={periodEnd || undefined}
+            value={periodStart} onChange={e => { setPeriodStart(e.target.value); setGeneratedReport(null); }} />
+          <label className="form-label" htmlFor="reportPeriodEnd">Hasta</label>
+          <input id="reportPeriodEnd" className="form-input" type="date" required min={periodStart || undefined}
+            value={periodEnd} onChange={e => { setPeriodEnd(e.target.value); setGeneratedReport(null); }} />
         </div>
 
         {/* Checkboxes de Dimensiones */}

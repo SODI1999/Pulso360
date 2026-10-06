@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { ReportResult } from '../components/ReportResult';
 import { ReportConfiguration } from '../components/ReportConfiguration';
 import { useReports } from '../hooks/useReports';
+import { roleHomePaths } from '../../../core/auth/roleNavigation';
 
 // src/features/reports/pages/ReportsPage.jsx
 // Módulo de Generación y Exportación de Reportes Consolidados (RF-12, Workbench Sin Carditis)
@@ -23,7 +24,7 @@ export function ReportsPage() {
     selectedScopeId,
     setSelectedScopeId,
     selectedPeriod,
-    setSelectedPeriod,
+    periodStart, setPeriodStart, periodEnd, setPeriodEnd,
     sections,
     setSections,
     format,
@@ -45,9 +46,9 @@ export function ReportsPage() {
     <div className="reports-container">
       {/* Navegación secundaria */}
       <nav className="supervisor-subnav" aria-label="Navegación secundaria">
-        <Link to="/supervisor/panel" className="supervisor-back-btn">
+        <Link to={roleHomePaths[currentUser?.role] || '/panel'} className="supervisor-back-btn">
           <Icon name="arrow_back" size={16} />
-          <span>Volver al panel de equipo</span>
+          <span>Volver al inicio</span>
         </Link>
       </nav>
 
@@ -81,8 +82,8 @@ export function ReportsPage() {
           availableScopes={availableScopes}
           currentScope={currentScope}
           minThreshold={minThreshold}
-          selectedPeriod={selectedPeriod}
-          setSelectedPeriod={setSelectedPeriod}
+          periodStart={periodStart} setPeriodStart={setPeriodStart}
+          periodEnd={periodEnd} setPeriodEnd={setPeriodEnd}
           sections={sections}
           setSections={setSections}
           format={format}

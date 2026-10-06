@@ -86,7 +86,7 @@ export const authService = {
     return Math.max(0, Number(getGuard().blockedUntil || 0) - Date.now());
   },
 
-  // Proceso de inicio de sesión (Asíncrono con fallback a mock)
+  // Login API o demostración según configuración; un fallo API nunca activa mock.
   /**
    * @function login
    * @description Autentica al usuario contra el backend REST. Implementa una
@@ -298,8 +298,7 @@ export const authService = {
   },
 
   // =========================================================================
-  // Modulo de Recuperacion de Acceso (Desacoplado y preparado para backend)
-  // @todo Backend Integration: Reemplazar llamadas internas por fetch(API_URL)
+  // Recuperación mediante API; la entrega requiere SMTP configurado en el servidor.
   // =========================================================================
 
   requestPasswordReset: async (email) => {

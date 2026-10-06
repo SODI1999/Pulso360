@@ -29,21 +29,25 @@ export function AuditLogTable({
           type="search"
           className="form-input audit-filter-input"
           placeholder="Buscar por ID, actor, acción, objetivo o IP..."
+          aria-label="Buscar en los eventos cargados"
           value={searchTerm}
           onChange={(e) => onSearchChange(e.target.value)}
         />
         <select
           className="form-select audit-filter-select"
+          aria-label="Resultado de los eventos cargados"
           value={statusFilter}
           onChange={(e) => onStatusFilterChange(e.target.value)}
         >
           <option value="ALL">Todos los resultados</option>
           <option value="EXITO">Solo Éxito</option>
           <option value="DENEGADO">Solo Denegado</option>
+          <option value="NO_REGISTRADO">Resultado no registrado</option>
         </select>
       </div>
 
       {/* Tabla de Eventos */}
+      <p className="form-hint">Los filtros se aplican a los eventos cargados. “No registrado” indica que el evento no contiene un resultado; no se presume éxito.</p>
       <div className="table-responsive">
         <table className="data-table">
           <thead>
@@ -87,7 +91,7 @@ export function AuditLogTable({
                       <span className="audit-code-cell">{log.ip}</span>
                     </td>
                     <td>
-                      <span className={`badge ${isDeny ? 'badge-danger' : 'badge-ok'}`}>{log.status}</span>
+                      <span className={`badge ${isDeny ? 'badge-danger' : log.status === 'EXITO' ? 'badge-ok' : 'badge-info'}`}>{log.status === 'NO_REGISTRADO' ? 'No registrado' : log.status === 'EXITO' ? 'Éxito' : log.status === 'DENEGADO' ? 'Denegado' : log.status}</span>
                     </td>
                   </tr>
                 );

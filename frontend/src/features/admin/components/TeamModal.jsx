@@ -2,10 +2,13 @@ import { useExpiredFormDraft } from '../../../core/auth/useExpiredFormDraft';
 // src/features/admin/components/TeamModal.jsx
 // Modal para creación y edición de equipos operativos (RF-15)
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { useModalA11y } from '../../../core/hooks/useModalA11y';
 import { Icon } from '../../../core/components/Icon';
 
 export function TeamModal({ isOpen, onClose, onSave, campaign, team = null, supervisorsList = [] }) {
+  const modalRef = useRef(null);
+  useModalA11y({ isOpen, onClose, modalRef });
   const [name, setName] = useState('');
   const [n, setN] = useState(10);
   const [supervisor, setSupervisor] = useState('');
@@ -71,11 +74,11 @@ export function TeamModal({ isOpen, onClose, onSave, campaign, team = null, supe
   const isLowK = parseInt(n, 10) < 5;
 
   return (
-    <div className="modal-overlay active" onClick={onClose} role="dialog" aria-modal="true">
+    <div className="modal-overlay active" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="team-modal-title" ref={modalRef}>
       <div className="modal-card" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <div>
-            <h2 className="modal-title">{team ? 'Editar Equipo' : 'Crear Nuevo Equipo'}</h2>
+            <h2 id="team-modal-title" className="modal-title">{team ? 'Editar Equipo' : 'Crear Nuevo Equipo'}</h2>
             <div className="modal-subtitle">
               Campaña: <strong>{campaign?.name}</strong>
             </div>
@@ -105,7 +108,6 @@ export function TeamModal({ isOpen, onClose, onSave, campaign, team = null, supe
                 placeholder="Ej. Equipo Alpha 3"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                autoFocus
               />
             </div>
 
@@ -125,11 +127,11 @@ export function TeamModal({ isOpen, onClose, onSave, campaign, team = null, supe
               <span className="form-hint">
                 {isLowK ? (
                   <span style={{ color: 'var(--c-alerta)', fontWeight: 500 }}>
-                    Alerta de k-anonimato: con N &lt; 5, los tableros del supervisor no publicarán métricas
-                    para resguardar la identidad.
+                    Equipo pequeño: las métricas pueden quedar protegidas. El servidor comprueba
+                    al menos cinco participantes con consentimiento en el periodo consultado.
                   </span>
                 ) : (
-                  'Con N &ge; 5 las métricas agregadas son publicables sin riesgo de reidentificación.'
+                  'La cantidad de integrantes no habilita por sí sola la publicación. El servidor comprueba participantes con consentimiento por periodo y dimensión.'
                 )}
               </span>
             </div>

@@ -28,10 +28,9 @@ export function CsvImportPage() {
       {/* Cabecera */}
       <div className="page-header">
         <div>
-          <h1 className="page-title">Carga masiva de indicadores por CSV</h1>
+          <h1 className="page-title">Validar archivo de métricas operativas</h1>
           <p className="page-subtitle">
-            Importación de métricas operativas colectivas por campaña (volumen de llamadas, ausentismo,
-            tiempos) sin datos individuales de trabajadores (RF-15).
+            Comprueba la estructura de métricas operativas por campaña y semana. Esta simulación no guarda indicadores en el servidor.
           </p>
         </div>
         <DownloadLink
@@ -49,9 +48,7 @@ export function CsvImportPage() {
       <div className="alert-banner info" style={{ marginBottom: 'var(--space-5)' }}>
         <Icon name="info" size={18} />
         <div>
-          <strong>Principio de Agregación Estricta:</strong> El importador rechaza de manera categórica
-          cualquier archivo que contenga nombres, cédulas, correos o códigos de agente individual. Las
-          métricas deben cargarse únicamente totalizadas a nivel de campaña o semana.
+          <strong>Usa solo totales por campaña y semana.</strong> Se admiten únicamente las columnas de la plantilla y valores con el formato esperado. Esta comprobación de estructura no certifica anonimato ni verifica el origen de los datos.
         </div>
       </div>
 
@@ -76,7 +73,6 @@ export function CsvImportPage() {
         {/* Zona de Dropzone */}
         <div
           className={`csv-upload-container ${isDragOver ? 'dragover' : ''}`}
-          onClick={() => fileInputRef.current?.click()}
           onDragOver={(e) => {
             e.preventDefault();
             setIsDragOver(true);
@@ -94,8 +90,9 @@ export function CsvImportPage() {
             <Icon name="upload_file" size={48} />
           </div>
           <div className="csv-upload-title">
-            {selectedFile ? selectedFile.name : 'Haz clic o arrastra aquí tu archivo CSV'}
+            {selectedFile ? selectedFile.name : 'Arrastra aquí tu archivo CSV o selecciónalo'}
           </div>
+          <button type="button" className="btn btn-secondary" onClick={() => fileInputRef.current?.click()}>Seleccionar archivo CSV</button>
           <div className="csv-upload-subtitle">
             Columnas requeridas: <code className="audit-code-cell">campana_id, semana</code> · Opcionales:{' '}
             <code className="audit-code-cell">volumen_llamadas, tasa_ausentismo_pct, aht_segundos</code>
@@ -117,6 +114,7 @@ export function CsvImportPage() {
         {validationResult && (
           <div
             className={`alert-banner ${validationResult.valid ? 'ok' : 'danger'}`}
+            role={validationResult.valid ? 'status' : 'alert'}
             style={{ marginBottom: 'var(--space-4)' }}
           >
             <Icon name={validationResult.valid ? 'checkCircle' : 'alertTriangle'} size={18} />
@@ -139,8 +137,8 @@ export function CsvImportPage() {
               <Icon name="check" size={16} />
               <span>
                 {isProcessing
-                  ? 'Validando Sandbox...'
-                  : `Simular ingesta de ${parsedRows.length} registros`}
+                  ? 'Comprobando estructura…'
+                  : `Finalizar comprobación de ${parsedRows.length} filas`}
               </span>
             </button>
           </div>
@@ -152,7 +150,7 @@ export function CsvImportPage() {
         <div className="card csv-preview-card">
           <div className="card-header">
             <div>
-              <h2 className="card-title">Vista previa de métricas agregadas</h2>
+              <h2 className="card-title">Vista previa del archivo</h2>
               <div className="card-subtitle">Primeras filas extraídas del archivo analizado.</div>
             </div>
             <span className="badge badge-ok">{parsedRows.length} filas listas</span>
