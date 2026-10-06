@@ -63,7 +63,7 @@ jobs:
           psql -h 127.0.0.1 -U postgres -d pulso360_plan_test_20261005 -f database/schema.sql
           psql -h 127.0.0.1 -U postgres -d pulso360_plan_test_20261005 -f database/seed.sql
           node database/migrate.js --database pulso360_db
-          node database/migrate.js --database pulso360_plan_test_20261005
+          DB_NAME=pulso360_plan_test_20261005 node database/migrate.js --database pulso360_plan_test_20261005
 
       - name: Ejecutar Quality Gates 360° (Runner Oficial)
         env:
