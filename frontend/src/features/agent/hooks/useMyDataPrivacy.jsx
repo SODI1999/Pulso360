@@ -1,6 +1,6 @@
 import { useExpiredFormDraft } from '../../../core/auth/useExpiredFormDraft';
 import { env } from '../../../core/config/env';
-import { fetchAgentRecords } from '../services/agentQueries';
+import { fetchAgentRecords, getAgentRecords } from '../services/agentQueries';
 import { createHabeasRequest as registerHabeasRequest } from '../services/myDataPrivacyService';
 import { useState, useMemo, useEffect } from 'react';
 
@@ -46,17 +46,23 @@ export function useMyDataPrivacy() {
   // Calcular días hábiles
 
   // Resumen de datos propios
-  const [summary, setSummary] = useState({
-    checkins: [],
-    journals: [],
-    support: [],
-    consent: null,
-    requests: []
+  const [summary, setSummary] = useState(() => {
+    const initial = getAgentRecords(currentUser?.id);
+    return {
+      checkins: initial?.checkins || [],
+      journals: initial?.journals || [],
+      support: initial?.supportRequests || [],
+      consent: initial?.consents?.[currentUser?.id] || null,
+      requests: initial?.habeasRequests || []
+    };
   });
 
-
   const [loadError,setLoadError] = useState('');
-  const [loading,setLoading] = useState(true);
+  const [loading,setLoading] = useState(() => {
+    if (env.useMockStorage) return false;
+    const initial = getAgentRecords(currentUser?.id);
+    return !initial?.consents?.[currentUser?.id];
+  });
   useEffect(() => {
     let mounted = true;
     async function load() {

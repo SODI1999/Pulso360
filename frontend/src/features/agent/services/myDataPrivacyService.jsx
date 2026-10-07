@@ -2,6 +2,7 @@ import { roleLabels } from '../../../core/auth/authService';
 import { pulsoStore } from '../../../core/storage/pulsoStore';
 import { apiClient, getAuthToken } from '../../../core/api/apiClient';
 import { env } from '../../../core/config/env';
+import { clearAgentCache } from './agentQueries';
 
 export async function createHabeasRequest(requestType, currentUser, noteText) {
   if (!env.useMockStorage) {
@@ -10,6 +11,7 @@ export async function createHabeasRequest(requestType, currentUser, noteText) {
     }
     try {
       const res = await apiClient.post('/agent/habeas-data', { type: requestType, note: noteText });
+      clearAgentCache(currentUser?.id);
       return { ...res,generatedId: res.data.id };
     } catch (err) {
       return { success:false,data:null,error: err.response?.data?.error?.message || 'Error al crear solicitud Habeas Data en el servidor' };

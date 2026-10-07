@@ -1,6 +1,7 @@
 import { pulsoStore } from '../../../core/storage/pulsoStore';
 import { apiClient, getAuthToken } from '../../../core/api/apiClient';
 import { env } from '../../../core/config/env';
+import { clearSstCache } from './sstQueries';
 
 export async function advanceStatus(requestId, WORKFLOW_STATES, currentStatus) {
   if (!env.useMockStorage) {
@@ -9,6 +10,7 @@ export async function advanceStatus(requestId, WORKFLOW_STATES, currentStatus) {
     const nextStatus = WORKFLOW_STATES[Math.min(currentIndex + 1, WORKFLOW_STATES.length - 1)];
     try {
       const res = await apiClient.patch('/sst/support-requests/' + requestId + '/status', { status: nextStatus });
+      clearSstCache();
       return { ...res,req:res.data,nextStatus };
     } catch (err) {
       return { success:false,data:null,error: err.response?.data?.error?.message || 'Error al avanzar caso en el servidor' };

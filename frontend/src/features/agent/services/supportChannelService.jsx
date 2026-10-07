@@ -2,6 +2,7 @@ import { roleLabels } from '../../../core/auth/authService';
 import { pulsoStore } from '../../../core/storage/pulsoStore';
 import { apiClient, getAuthToken } from '../../../core/api/apiClient';
 import { env } from '../../../core/config/env';
+import { clearAgentCache } from './agentQueries';
 
 export async function createSupportRequest(
   isAnonymous,
@@ -26,6 +27,7 @@ export async function createSupportRequest(
         contact_preference: isAnonymous ? 'app' : (contactPreference || 'app'),
         time_window: isAnonymous ? 'No aplica' : (timeWindow || 'No aplica')
       });
+      clearAgentCache(currentUser?.id);
       return { ...res,code: res.data.code };
     } catch (err) {
       return { success:false,data:null,error: err.response?.data?.error?.message || 'Error al crear solicitud de apoyo en el servidor' };

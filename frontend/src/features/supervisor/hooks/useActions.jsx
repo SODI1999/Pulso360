@@ -9,11 +9,11 @@ export function useActions() {
   const [feedback, setFeedback] = useState('');
   const [version, setVersion] = useState(0);
   const [asyncInterventions, setAsyncInterventions] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(() => !getSupervisorData().interventions?.length);
   const [loadError, setLoadError] = useState('');
 
   useEffect(() => {
-    let mounted = true; setLoading(true); setLoadError('');
+    let mounted = true; if (!getSupervisorData().interventions?.length) setLoading(true); setLoadError('');
     async function load() {
       const result = await fetchSupervisorActions();
       if (mounted) {

@@ -101,7 +101,20 @@ export function TrendLineChart({
       aria-label="Gráfico de tendencia mostrando la evolución de los indicadores"
     >
       <canvas ref={canvasRef} style={{ display: 'block', width: '100%', height: `${height}px` }} aria-hidden="true" />
-      <table className="sr-only">
+      <table
+        className="sr-only"
+        style={{
+          position: 'absolute',
+          width: '1px',
+          height: '1px',
+          padding: 0,
+          margin: '-1px',
+          overflow: 'hidden',
+          clip: 'rect(0, 0, 0, 0)',
+          whiteSpace: 'nowrap',
+          border: 0
+        }}
+      >
         <caption>Datos del gráfico de tendencia</caption>
         <thead>
           <tr>

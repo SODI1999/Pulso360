@@ -26,7 +26,11 @@ export function MyAnalysisPage() {
   const [data, setData] = useState(() => getAgentRecords(currentUser?.id));
 
   const [loadError,setLoadError] = useState('');
-  const [loading,setLoading] = useState(!env.useMockStorage);
+  const [loading,setLoading] = useState(() => {
+    if (env.useMockStorage) return false;
+    const initial = getAgentRecords(currentUser?.id);
+    return !initial?.consents?.[currentUser?.id];
+  });
   useEffect(() => {
     let mounted = true;
     if (!env.useMockStorage && currentUser?.id) {

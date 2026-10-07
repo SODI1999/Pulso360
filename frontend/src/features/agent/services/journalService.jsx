@@ -2,6 +2,7 @@ import { roleLabels } from '../../../core/auth/authService';
 import { pulsoStore } from '../../../core/storage/pulsoStore';
 import { apiClient, getAuthToken } from '../../../core/api/apiClient';
 import { env } from '../../../core/config/env';
+import { clearAgentCache } from './agentQueries';
 
 const unavailableJournal = () => ({ success:false,error: 'La entrada no está disponible para este usuario.' });
 const missingConsent = () => ({ success:false,error: 'La finalidad requerida no está activa para este usuario.' });
@@ -23,10 +24,10 @@ export async function saveJournal(currentJournalId, currentUser, currentJournal,
     try {
       if (isNew) {
         const res = await apiClient.post('/agent/journal', { context: contextTag, content: trimmed });
-        return { ...res,journalPayload: res.data };
+        clearAgentCache(currentUser?.id); return { ...res,journalPayload: res.data };
       } else {
         const res = await apiClient.put('/agent/journal/' + currentJournalId, { content: trimmed,context:contextTag });
-        return { ...res,journalPayload: res.data };
+        clearAgentCache(currentUser?.id); return { ...res,journalPayload: res.data };
       }
     } catch (err) {
       return { success:false,data:null,error: err.response?.data?.error?.message || 'Error al guardar bitácora en el servidor' };
@@ -84,7 +85,9 @@ export async function deleteJournal(currentJournalId, currentUser) {
   if (!env.useMockStorage) {
     if (!getAuthToken()) return { success:false,data:null,error: 'Sesión no válida o expirada.' };
     try {
-      return await apiClient.delete('/agent/journal/' + currentJournalId);
+      const res = await apiClient.delete('/agent/journal/' + currentJournalId);
+      clearAgentCache(currentUser?.id);
+      return res;
     } catch (err) {
       return { success:false,data:null,error: err.response?.data?.error?.message || 'Error al eliminar bitácora en el servidor' };
     }

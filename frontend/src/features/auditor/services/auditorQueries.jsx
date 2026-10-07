@@ -1,9 +1,22 @@
 import { pulsoStore } from '../../../core/storage/pulsoStore';
 import { apiClient } from '../../../core/api/apiClient';
 import { env } from '../../../core/config/env';
+import { onLogout } from '../../../core/auth/authService';
+
+let auditLogsCache = null;
+
+export function getCachedAuditLogs() {
+  return auditLogsCache;
+}
+
+export function clearAuditorCache() {
+  auditLogsCache = null;
+}
+
+onLogout(clearAuditorCache);
 
 export function getAuditData() {
-  return env.useMockStorage ? { auditLogs:pulsoStore.get().auditLogs || [] } : { auditLogs:[] };
+  return env.useMockStorage ? { auditLogs:pulsoStore.get().auditLogs || [] } : { auditLogs: auditLogsCache ? auditLogsCache.logs : [] };
 }
 const normalizeLog = log => ({
   id:String(log.id),date:log.created_at || log.date || '',
@@ -18,7 +31,11 @@ export async function fetchAuditPage(filters={}) {
     return { logs:logs.slice(offset,offset+limit).map(normalizeLog),pagination:{ total:logs.length,hasMore:offset+limit<logs.length } };
   }
   const response = await apiClient.get('/auditor/logs',{ params:filters });
-  return { logs:response.data.map(normalizeLog),pagination:response.pagination };
+  const result = { logs:response.data.map(normalizeLog),pagination:response.pagination };
+  if (!filters.offset || filters.offset === 0) {
+    auditLogsCache = result;
+  }
+  return result;
 }
 export async function fetchAuditLogs(filters={}) { return (await fetchAuditPage(filters)).logs; }
 export async function verifyAudit() {

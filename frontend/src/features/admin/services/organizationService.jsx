@@ -1,6 +1,7 @@
 import { pulsoStore } from '../../../core/storage/pulsoStore';
 import { apiClient, getAuthToken } from '../../../core/api/apiClient';
 import { env } from '../../../core/config/env';
+import { clearAdminCache } from './adminQueries';
 
 export async function toggleCampaign(campId, currentActive, actorLabel) {
   const newActive = !currentActive;
@@ -11,6 +12,7 @@ export async function toggleCampaign(campId, currentActive, actorLabel) {
     }
     try {
       const response = await apiClient.patch('/admin/campaigns/' + campId, { activa: newActive });
+      clearAdminCache();
       return { ...response,camp:response.data,newStatus:response.data.activa ? 'Activa' : 'Inactiva' };
     } catch (error) {
       return { success:false,data:null,error: error.response?.data?.error?.message || 'Error en el servidor' };
@@ -42,6 +44,7 @@ export async function toggleTeam(campId, teamId, currentActive, actorLabel) {
     }
     try {
       const response = await apiClient.patch('/admin/teams/' + teamId, { activo: newActive });
+      clearAdminCache();
       return { ...response,team:response.data,newStatus:response.data.activo ? 'Activo' : 'Inactivo' };
     } catch (error) {
       return { success:false,data:null,error: error.response?.data?.error?.message || 'Error en el servidor' };
@@ -72,6 +75,7 @@ export async function saveSupervisorAssignment(campId, teamId, newSupervisor, ac
     }
     try {
       const response = await apiClient.patch('/admin/teams/' + teamId, { supervisorId: newSupervisor });
+      clearAdminCache();
       return { ...response,team:response.data };
     } catch (error) {
       return { success:false,data:null,error: error.response?.data?.error?.message || 'Error en el servidor' };
@@ -102,10 +106,12 @@ export async function saveCampaign(id, name, active, actorLabel) {
     try {
       if (id) {
         const response = await apiClient.patch('/admin/campaigns/' + id, { nombre: name, activa: active });
+        clearAdminCache();
         return { ...response,message:`Campaña "${name}" actualizada con éxito.` };
       } else {
         const codigo = name.toUpperCase().replace(/\s+/g, '-').slice(0, 20);
         const response = await apiClient.post('/admin/campaigns', { codigo, nombre: name, descripcion: 'Campaña ' + name, activa: active });
+        clearAdminCache();
         return { ...response,message:`Campaña "${name}" creada exitosamente.` };
       }
     } catch (error) {
@@ -163,10 +169,12 @@ export async function saveTeam(campId, teamId, name, n, supervisor, active, acto
     try {
       if (teamId) {
         const response = await apiClient.patch('/admin/teams/' + teamId, { nombre: name, nMiembros: n, supervisorId: supervisor, activo: active });
+        clearAdminCache();
         return { ...response,message:`Equipo "${name}" modificado con éxito.` };
       } else {
         const codigo = name.toUpperCase().replace(/\s+/g, '-').slice(0, 20);
         const response = await apiClient.post('/admin/teams', { campanaId: campId, codigo, nombre: name, descripcion: 'Equipo ' + name, supervisorId: supervisor, nMiembros: n, activo: active });
+        clearAdminCache();
         return { ...response,message:`Equipo "${name}" creado exitosamente.` };
       }
     } catch (error) {

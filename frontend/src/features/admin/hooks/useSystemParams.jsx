@@ -8,7 +8,11 @@ import { authService } from '../../../core/auth/authService';
 export function useSystemParams() {
   const currentUser = authService.getCurrentUser();
   const [version, setVersion] = useState(0);
-  const [loading, setLoading] = useState(!env.useMockStorage);
+  const [loading, setLoading] = useState(() => {
+    if (env.useMockStorage) return false;
+    const initial = getSystemParameters();
+    return !initial?.settings?.umbralMinimo;
+  });
   const [loadError, setLoadError] = useState('');
 
   // Almacén
@@ -17,7 +21,9 @@ export function useSystemParams() {
   useEffect(() => {
     let active = true;
     const loadData = async () => {
-      setLoading(true); setLoadError('');
+      const initial = getSystemParameters();
+      if (!initial?.settings?.umbralMinimo) setLoading(true);
+      setLoadError('');
       if (!env.useMockStorage) {
         try {
           const paramsData = await fetchAdminParams();

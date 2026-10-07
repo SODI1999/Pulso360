@@ -1,15 +1,16 @@
-import { fetchAuditPage, verifyAudit, exportAudit } from '../services/auditorQueries';
+import { fetchAuditPage, verifyAudit, exportAudit, getCachedAuditLogs } from '../services/auditorQueries';
 import { useState, useMemo, useEffect } from 'react';
 
 export function useAuditLog() {
+  const cached = getCachedAuditLogs();
   const [searchTerm,setSearchTerm] = useState('');
   const [statusFilter,setStatusFilter] = useState('ALL');
   const [integrityStatus,setIntegrityStatus] = useState({ checked:false,valid:null,message:'Integridad sin comprobar' });
   const [feedback,setFeedback] = useState('');
   const [error,setError] = useState('');
-  const [logs,setLogs] = useState([]);
-  const [pagination,setPagination] = useState({ hasMore:false,total:0 });
-  const [loading,setLoading] = useState(true);
+  const [logs,setLogs] = useState(() => cached?.logs || []);
+  const [pagination,setPagination] = useState(() => cached?.pagination || { hasMore:false,total:0 });
+  const [loading,setLoading] = useState(() => !cached);
   const [busy,setBusy] = useState(false);
   const [exportContent,setExportContent] = useState('');
   useEffect(() => {

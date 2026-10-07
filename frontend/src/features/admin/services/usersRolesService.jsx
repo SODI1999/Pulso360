@@ -3,6 +3,7 @@ import { ROLE_LABELS } from '../data/usersRolesData';
 import { pulsoStore } from '../../../core/storage/pulsoStore';
 import { apiClient, getAuthToken } from '../../../core/api/apiClient';
 import { env } from '../../../core/config/env';
+import { clearAdminCache } from './adminQueries';
 
 export async function saveCreateUser(email, orgScopes, orgScopeId, name, role, status, password) {
   if (!env.useMockStorage) {
@@ -24,6 +25,7 @@ export async function saveCreateUser(email, orgScopes, orgScopeId, name, role, s
         rolCodigo: role.toUpperCase(),
         equipoId: targetScope?.teamId, status, contrasena: password
       });
+      clearAdminCache();
       return { ...res, newUser: res.data };
     } catch (error) {
       return { success:false,data:null,error: error.response?.data?.error?.message || 'Error al registrar usuario en el servidor.' };
@@ -85,6 +87,7 @@ export async function manageUser(userId, newRole, newOrgScopeId, newStatus, orgS
       const scope = orgScopes.find(s => s.id === newOrgScopeId);
       if (!scope) return { success:false,data:null,error: 'La asignación seleccionada no es válida.' };
       const res = await apiClient.patch('/admin/users/' + userId, { status: newStatus, rolCodigo: newRole.toUpperCase(), equipoId: scope.teamId });
+      clearAdminCache();
       return { ...res,user: { ...res.data, name: [res.data.nombres, res.data.apellidos].join(' ') } };
     } catch (error) {
       return { success:false,data:null,error: error.response?.data?.error?.message || 'Error al actualizar estado en el servidor.' };

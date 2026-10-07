@@ -10,7 +10,12 @@ import { ROLE_LABELS } from '../data/usersRolesData';
 export function useUsersRoles() {
   const currentUser = authService.getCurrentUser();
   const [version, setVersion] = useState(0);
-  const [loading, setLoading] = useState(!env.useMockStorage);
+  const [storeData, setStoreData] = useState(() => getUserManagementData());
+  const [loading, setLoading] = useState(() => {
+    if (env.useMockStorage) return false;
+    const initial = getUserManagementData();
+    return !initial?.users?.length;
+  });
   const [loadError, setLoadError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [roleFilter, setRoleFilter] = useState('ALL');
@@ -20,12 +25,12 @@ export function useUsersRoles() {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
 
-  const [storeData, setStoreData] = useState(() => getUserManagementData());
-
   useEffect(() => {
     let active = true;
     const loadData = async () => {
-      setLoading(true); setLoadError('');
+      const initial = getUserManagementData();
+      if (!initial?.users?.length) setLoading(true);
+      setLoadError('');
       if (!env.useMockStorage) {
         try {
           const [usersData, orgData] = await Promise.all([

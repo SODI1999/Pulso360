@@ -1,6 +1,7 @@
 import { pulsoStore } from '../../../core/storage/pulsoStore';
 import { apiClient, getAuthToken } from '../../../core/api/apiClient';
 import { env } from '../../../core/config/env';
+import { clearAdminCache } from './adminQueries';
 
 export async function confirmAdvance(requestId, nextStatus, note, actorLabel) {
   if (!env.useMockStorage) {
@@ -9,6 +10,7 @@ export async function confirmAdvance(requestId, nextStatus, note, actorLabel) {
     }
     try {
       const res = await apiClient.patch('/admin/habeas-data/' + requestId, { status: nextStatus, note });
+      clearAdminCache();
       return { ...res, req: res.data };
     } catch (error) {
       return { success:false,data:null,error: error.response?.data?.error?.message || 'Error en el servidor' };

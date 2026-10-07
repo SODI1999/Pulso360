@@ -9,7 +9,11 @@ import { STATUS_WORKFLOW } from '../data/habeasDataData';
 export function useHabeasData() {
   const currentUser = authService.getCurrentUser();
   const [version, setVersion] = useState(0);
-  const [loading, setLoading] = useState(!env.useMockStorage);
+  const [loading, setLoading] = useState(() => {
+    if (env.useMockStorage) return false;
+    const initial = getHabeasData();
+    return !initial?.habeasRequests;
+  });
   const [loadError, setLoadError] = useState('');
   const [feedback, setFeedback] = useState('');
   const [advanceModalState, setAdvanceModalState] = useState({
@@ -23,7 +27,9 @@ export function useHabeasData() {
   useEffect(() => {
     let active = true;
     const loadData = async () => {
-      setLoading(true); setLoadError('');
+      const initial = getHabeasData();
+      if (!initial?.habeasRequests?.length) setLoading(true);
+      setLoadError('');
       if (!env.useMockStorage) {
         try {
           const [reqs, usersData] = await Promise.all([

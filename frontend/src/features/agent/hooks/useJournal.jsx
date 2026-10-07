@@ -13,13 +13,20 @@ import { nlpEngine } from '../../../core/nlp/nlpEngine';
 export function useJournal() {
   const currentUser = authService.getCurrentUser();
   const [storeState, setStoreState] = useState(() => getAgentRecords(currentUser?.id));
-  const [loading,setLoading] = useState(true);
+  const [loading,setLoading] = useState(() => {
+    if (env.useMockStorage) return false;
+    const initial = getAgentRecords(currentUser?.id);
+    return !initial?.consents?.[currentUser?.id];
+  });
   const [loadError,setLoadError] = useState('');
   const savingRef = useRef(false);
   const consent = storeState.consents?.[currentUser?.id] || {};
 
   // Estados del editor
-  const [journals, setJournals] = useState([]);
+  const [journals, setJournals] = useState(() => {
+    const initial = getAgentRecords(currentUser?.id);
+    return (initial?.journals || []).filter((j) => j.userId === currentUser?.id);
+  });
   const [currentJournalId, setCurrentJournalId] = useState(null);
   const [journalText, setJournalText] = useState('');
   const [contextTag, setContextTag] = useState('');

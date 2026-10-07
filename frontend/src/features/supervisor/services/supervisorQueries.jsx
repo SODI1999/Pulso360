@@ -2,10 +2,36 @@ import { pulsoStore } from '../../../core/storage/pulsoStore';
 import { apiClient, getAuthToken } from '../../../core/api/apiClient';
 import { normalizeIntervention } from '../../../core/api/interventionContract';
 import { env } from '../../../core/config/env';
+import { onLogout } from '../../../core/auth/authService';
 import { bogotaCalendarDate } from '../../../core/time/calendarDate';
 
+let supervisorActionsCache = null;
+let supervisorMetricsCache = new Map();
+
+export function clearSupervisorCache() {
+  supervisorActionsCache = null;
+  supervisorMetricsCache.clear();
+}
+
+onLogout(clearSupervisorCache);
+
+export function getCachedSupervisorMetrics(campanaId = null, equipoId = null, scopeFilter = 'all', periodFilter = '') {
+  let cId = campanaId;
+  let eqId = equipoId;
+  let sFilter = scopeFilter;
+  let pFilter = periodFilter;
+  if (typeof campanaId === 'object' && campanaId !== null) {
+    cId = campanaId.campanaId || null;
+    eqId = campanaId.equipoId || null;
+    sFilter = campanaId.scopeFilter || 'all';
+    pFilter = campanaId.periodFilter || '';
+  }
+  const key = `${cId}_${eqId}_${sFilter}_${pFilter}`;
+  return supervisorMetricsCache.get(key) || null;
+}
+
 export function getSupervisorData() {
-  if (!env.useMockStorage) return { settings: { umbralMinimo:5 }, interventions:[] };
+  if (!env.useMockStorage) return { settings: { umbralMinimo:5 }, interventions: supervisorActionsCache || [] };
   const { settings, interventions } = pulsoStore.get();
   return { settings, interventions };
 }
@@ -54,6 +80,8 @@ export async function fetchSupervisorMetrics(campanaId = null, equipoId = null, 
       const response = await apiClient.get('/sst/metrics', { params: { campana_id: cId, equipo_id: eqId, ...period } });
       const payload = response?.data !== undefined ? response.data : response;
       if (payload) {
+        const key = `${cId}_${eqId}_${sFilter}_${periodFilter}`;
+        supervisorMetricsCache.set(key, payload);
         return payload;
       }
     } catch (err) {
@@ -76,7 +104,9 @@ export async function fetchSupervisorActions() {
       const res = await apiClient.get('/supervisor/actions');
       const payload = res.data?.data !== undefined ? res.data.data : res.data;
       const arrayPayload = Array.isArray(payload) ? payload : [];
-      return arrayPayload.map(normalizeIntervention);
+      const mapped = arrayPayload.map(normalizeIntervention);
+      supervisorActionsCache = mapped;
+      return mapped;
     } catch (err) {
       throw new Error(err.response?.data?.error?.message || 'No se pudieron cargar las acciones.');
     }

@@ -12,7 +12,11 @@ export function useCheckinWizard() {
   const [data, setData] = useState(() => getAgentRecords(user?.id));
 
   const [loadError,setLoadError] = useState('');
-  const [loading,setLoading] = useState(!env.useMockStorage);
+  const [loading,setLoading] = useState(() => {
+    if (env.useMockStorage) return false;
+    const initial = getAgentRecords(user?.id);
+    return !initial?.consents?.[user?.id];
+  });
   useEffect(() => {
     let mounted = true;
     if (!env.useMockStorage && user?.id) {

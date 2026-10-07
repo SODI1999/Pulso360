@@ -3,7 +3,7 @@ import { roleLabels } from '../../../core/auth/authService';
 import { pulsoStore } from '../../../core/storage/pulsoStore';
 import { apiClient, getAuthToken } from '../../../core/api/apiClient';
 import { env } from '../../../core/config/env';
-import { normalizeCheckin } from './agentQueries';
+import { normalizeCheckin, clearAgentCache } from './agentQueries';
 
 export async function saveCheckin(existingCheckin, user, journeyKey, draft) {
   if (!env.useMockStorage) {
@@ -21,6 +21,7 @@ export async function saveCheckin(existingCheckin, user, journeyKey, draft) {
       };
 
       const res = await apiClient.post('/agent/checkin', payloadBody);
+      clearAgentCache(user.id);
       return { ...res,payload:normalizeCheckin(res.data,user.id) };
     } catch (err) {
       return { success:false,data:null,error: err.response?.data?.error?.message || 'Error al registrar check-in' };

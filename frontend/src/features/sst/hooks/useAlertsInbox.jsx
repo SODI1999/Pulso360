@@ -1,4 +1,4 @@
-import { fetchSstAlerts } from '../services/sstQueries';
+import { fetchSstAlerts, getSstData } from '../services/sstQueries';
 import { updateStatus, confirmDismiss, createIntervention } from '../services/alertsInboxService';
 import { useState, useEffect } from 'react';
 
@@ -9,12 +9,12 @@ export function useAlertsInbox() {
   const [version, setVersion] = useState(0);
   const [dismissingAlert, setDismissingAlert] = useState(null);
   const [feedback, setFeedback] = useState('');
-  const [alerts, setAlerts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [alerts, setAlerts] = useState(() => getSstData().alerts);
+  const [loading, setLoading] = useState(() => !getSstData().alerts.length);
   const [loadError, setLoadError] = useState('');
 
   useEffect(() => {
-    let active = true; setLoading(true); setLoadError('');
+    let active = true; if (!getSstData().alerts.length) setLoading(true); setLoadError('');
     fetchSstAlerts().then(rows => { if (active) setAlerts(rows); })
       .catch(error => { if (active) setLoadError(error.message); })
       .finally(() => { if (active) setLoading(false); });

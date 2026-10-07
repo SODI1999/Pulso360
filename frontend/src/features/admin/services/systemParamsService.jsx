@@ -1,6 +1,7 @@
 import { pulsoStore } from '../../../core/storage/pulsoStore';
 import { apiClient, getAuthToken } from '../../../core/api/apiClient';
 import { env } from '../../../core/config/env';
+import { clearAdminCache } from './adminQueries';
 
 export async function saveParams(
   parsedN,
@@ -52,6 +53,7 @@ export async function publishPolicy(v, actorLabel, title, policyText, noticeText
         textoPolitica: policyText,
         textoAviso: noticeText
       });
+      clearAdminCache();
       return response;
     } catch (error) {
       return { success:false,data:null,error: error.response?.data?.error?.message || error.message || 'Error en el servidor' };
@@ -99,7 +101,7 @@ export async function publishPolicy(v, actorLabel, title, policyText, noticeText
 
 export async function activateNlp(v, actorLabel) {
   if (!env.useMockStorage) {
-    try { const response = await apiClient.post(`/admin/nlp/versions/${encodeURIComponent(v)}/activate`); return { ...response,...response.data }; }
+    try { const response = await apiClient.post(`/admin/nlp/versions/${encodeURIComponent(v)}/activate`); clearAdminCache(); return { ...response,...response.data }; }
     catch(error) { return { success:false,error:error.response?.data?.error?.message || error.message }; }
   }
   const data = pulsoStore.get();
@@ -123,7 +125,7 @@ export async function activateNlp(v, actorLabel) {
 
 export async function approveRule(ruleId, actorLabel) {
   if (!env.useMockStorage) {
-    try { const response = await apiClient.patch(`/admin/rules/${encodeURIComponent(ruleId)}/approval`,{}); return { success:true,data:response.data }; }
+    try { const response = await apiClient.patch(`/admin/rules/${encodeURIComponent(ruleId)}/approval`,{}); clearAdminCache(); return { success:true,data:response.data }; }
     catch(error) { return { success:false,error:error.response?.data?.error?.message || error.message }; }
   }
   const data = pulsoStore.get();
@@ -143,7 +145,7 @@ export async function approveRule(ruleId, actorLabel) {
 }
 export async function revertNlp(actorLabel) {
   if (!env.useMockStorage) {
-    try { const response = await apiClient.post('/admin/nlp/revert'); return { ...response,...response.data }; }
+    try { const response = await apiClient.post('/admin/nlp/revert'); clearAdminCache(); return { ...response,...response.data }; }
     catch(error) { return { success:false,error:error.response?.data?.error?.message || error.message }; }
   }
   const data = pulsoStore.get();

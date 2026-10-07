@@ -1,6 +1,6 @@
 // src/features/supervisor/hooks/useSupervisorMetrics.jsx
 import { useState, useEffect, useMemo } from 'react';
-import { fetchSupervisorMetrics } from '../services/supervisorQueries';
+import { fetchSupervisorMetrics, getCachedSupervisorMetrics } from '../services/supervisorQueries';
 
 /**
  * Convierte un valor de escala (1-5 o 0-100) al formato estándar de 0-100 con 1 decimal.
@@ -34,13 +34,15 @@ export function useSupervisorMetrics({
   scopeFilter = 'all',
   periodFilter
 } = {}) {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState(() => getCachedSupervisorMetrics(campanaId, equipoId, scopeFilter, periodFilter));
+  const [loading, setLoading] = useState(() => !getCachedSupervisorMetrics(campanaId, equipoId, scopeFilter, periodFilter));
   const [error, setError] = useState(null);
 
   useEffect(() => {
     let active = true;
-    setLoading(true); setData(null); setError(null);
+    const cached = getCachedSupervisorMetrics(campanaId, equipoId, scopeFilter, periodFilter);
+    if (!cached) setLoading(true);
+    setError(null);
 
     fetchSupervisorMetrics(campanaId, equipoId, scopeFilter,periodFilter)
       .then((res) => {

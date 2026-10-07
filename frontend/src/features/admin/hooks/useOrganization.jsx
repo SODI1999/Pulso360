@@ -7,7 +7,12 @@ import { authService } from '../../../core/auth/authService';
 export function useOrganization() {
   const currentUser = authService.getCurrentUser();
   const [version, setVersion] = useState(0);
-  const [loading, setLoading] = useState(!env.useMockStorage);
+  const [storeData, setStoreData] = useState(() => getOrganizationData());
+  const [loading, setLoading] = useState(() => {
+    if (env.useMockStorage) return false;
+    const initial = getOrganizationData();
+    return !initial?.organization?.campaigns?.length;
+  });
   const [loadError, setLoadError] = useState('');
   const [feedback, setFeedback] = useState('');
 
@@ -16,12 +21,14 @@ export function useOrganization() {
   const [teamModalState, setTeamModalState] = useState({ isOpen: false, campaign: null, team: null });
   const [assignModalState, setAssignModalState] = useState({ isOpen: false, campaign: null, team: null });
 
-  const [storeData, setStoreData] = useState(() => getOrganizationData());
+
 
   useEffect(() => {
     let active = true;
     const loadData = async () => {
-      setLoading(true); setLoadError('');
+      const initial = getOrganizationData();
+      if (!initial?.organization?.campaigns?.length) setLoading(true);
+      setLoadError('');
       if (!env.useMockStorage) {
         try {
           const [org, usersData, paramsData] = await Promise.all([

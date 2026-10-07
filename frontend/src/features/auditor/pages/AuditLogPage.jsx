@@ -75,7 +75,7 @@ export function AuditLogPage() {
       )}
 
       {error && <p className="alert-banner danger" role="alert">{error}</p>}
-      {loading && <p role="status">Cargando registros…</p>}
+      {loading && filteredLogs.length === 0 && <p role="status">Cargando registros…</p>}
       {/* Tabla Modular de Registros */}
       <AuditLogTable
         logs={filteredLogs}

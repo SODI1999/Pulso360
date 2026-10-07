@@ -18,12 +18,12 @@ export function InterventionsPage() {
   const [version, setVersion] = useState(0);
   const [feedback, setFeedback] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  const [interventions, setInterventions] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [interventions, setInterventions] = useState(() => getSstData().interventions);
+  const [loading, setLoading] = useState(() => !getSstData().interventions.length);
   const [loadError, setLoadError] = useState('');
 
   useEffect(() => {
-    let active = true; setLoading(true); setLoadError('');
+    let active = true; if (!getSstData().interventions.length) setLoading(true); setLoadError('');
     fetchSstInterventions().then(rows => { if (active) setInterventions(rows); })
       .catch(error => { if (active) setLoadError(error.message); })
       .finally(() => { if (active) setLoading(false); });

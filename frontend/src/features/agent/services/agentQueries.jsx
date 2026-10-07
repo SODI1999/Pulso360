@@ -1,6 +1,7 @@
 import { pulsoStore } from '../../../core/storage/pulsoStore';
 import { apiClient, getAuthToken } from '../../../core/api/apiClient';
 import { env } from '../../../core/config/env';
+import { onLogout } from '../../../core/auth/authService';
 
 import { normalizeConsent } from '../../../core/auth/consentContract';
 export const normalizeCheckin = (row,userId) => ({ ...row,userId,
@@ -8,8 +9,25 @@ export const normalizeCheckin = (row,userId) => ({ ...row,userId,
   cargaEmocional:row.carga_emocional ?? row.cargaEmocional,
   submittedAt:row.submitted_at || row.submittedAt });
 
+const agentRecordsCache = new Map();
+
+export function clearAgentCache(userId) {
+  if (userId) {
+    agentRecordsCache.delete(userId);
+  } else {
+    agentRecordsCache.clear();
+  }
+}
+
+onLogout(() => clearAgentCache());
+
 export function getAgentRecords(userId) {
-  if (!env.useMockStorage) return { settings: {}, consents: {}, checkins: [], journals: [], supportRequests: [], habeasRequests: [] };
+  if (!env.useMockStorage) {
+    if (userId && agentRecordsCache.has(userId)) {
+      return agentRecordsCache.get(userId);
+    }
+    return { settings: {}, consents: {}, checkins: [], journals: [], supportRequests: [], habeasRequests: [] };
+  }
   const data = pulsoStore.get();
   return {
     settings: data.settings,
@@ -45,7 +63,7 @@ export async function fetchAgentRecords(userId) {
 
       const normalizedConsent = normalizeConsent(extractSingle(consentRes));
 
-      return {
+      const records = {
         settings: {
           policyVersion: normalizedConsent?.policy?.version || null,
           policyEffectiveDate: normalizedConsent?.policy?.vigente_desde || null,
@@ -107,6 +125,11 @@ export async function fetchAgentRecords(userId) {
            details: h.note || h.details, note: h.note, deadline: h.deadline
         }))
       };
+
+      if (userId) {
+        agentRecordsCache.set(userId, records);
+      }
+      return records;
     } catch (err) {
       throw new Error(err.response?.data?.error?.message || 'No se pudieron cargar tus registros.');
     }

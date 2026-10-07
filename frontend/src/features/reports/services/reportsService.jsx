@@ -1,6 +1,7 @@
 import { pulsoStore } from '../../../core/storage/pulsoStore';
 import { apiClient, getAuthToken } from '../../../core/api/apiClient';
 import { env } from '../../../core/config/env';
+import { clearReportsCache } from './reportsQueries';
 
 export async function generateReport(newReportRecord) {
   if (!env.useMockStorage) {
@@ -9,6 +10,7 @@ export async function generateReport(newReportRecord) {
     }
     try {
       const res = await apiClient.post('/reports', newReportRecord);
+      clearReportsCache();
       return { ...res, reportPayload: res.data };
     } catch (err) {
       return { success:false,data:null,error: err.response?.data?.error?.message || 'Error en el servidor' };

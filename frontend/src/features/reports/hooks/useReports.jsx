@@ -1,5 +1,5 @@
 import { useExpiredFormDraft } from '../../../core/auth/useExpiredFormDraft';
-import { getReportData, fetchReports } from '../services/reportsQueries';
+import { getReportData, fetchReports, getCachedReports } from '../services/reportsQueries';
 import { generateReport } from '../services/reportsService';
 import { useState, useMemo, useEffect } from 'react';
 import { authService } from '../../../core/auth/authService';
@@ -13,8 +13,8 @@ import { bogotaCalendarDate } from '../../../core/time/calendarDate';
 export function useReports() {
   const currentUser = authService.getCurrentUser();
   const [version, setVersion] = useState(0);
-  const [apiHistory, setApiHistory] = useState([]);
-  const [historyLoading, setHistoryLoading] = useState(true);
+
+
   const [historyError, setHistoryError] = useState('');
 
   const storeData = useMemo(() => {
@@ -40,9 +40,15 @@ export function useReports() {
   const historyScope = availableScopes.find(scope => scope.id === selectedScopeId);
   const historyCampaignId = historyScope?.campanaId;
   const historyTeamId = historyScope?.equipoId;
+  const cachedHistory = getCachedReports(historyCampaignId, historyTeamId);
+  const [apiHistory, setApiHistory] = useState(() => cachedHistory || []);
+  const [historyLoading, setHistoryLoading] = useState(() => !cachedHistory);
 
   useEffect(() => {
-    let active = true; setHistoryLoading(true); setHistoryError('');
+    let active = true;
+    const currentCached = getCachedReports(historyCampaignId, historyTeamId);
+    if (!currentCached) setHistoryLoading(true);
+    setHistoryError('');
     fetchReports(historyCampaignId, historyTeamId).then(data => {
       if (active && data) {
         setApiHistory(data);

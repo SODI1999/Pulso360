@@ -36,13 +36,26 @@ const getGuard = () => {
 
 const saveGuard = (guardData) => localData.setItem(GUARD_KEY, JSON.stringify(guardData));
 
+const logoutCallbacks = new Set();
+export function onLogout(callback) {
+  logoutCallbacks.add(callback);
+  return () => logoutCallbacks.delete(callback);
+}
+
+function notifyLogout() {
+  logoutCallbacks.forEach(cb => {
+    try { cb(); } catch { /* ignore callback error */ }
+  });
+  globalThis.window?.dispatchEvent?.(new Event('pulso360-logout'));
+}
+
 export const authService = {
   touchSession: (user) => {
     preferences.retainExpiredFormsFor(user.id);
     sessionData.setItem(SESSION_KEY, JSON.stringify({ ...user, lastActivity: Date.now() }));
     globalThis.window?.dispatchEvent?.(new Event('pulso360-session-changed'));
   },
-  clearSession: () => { refreshSequence++; sessionData.removeItem(SESSION_KEY); },
+  clearSession: () => { refreshSequence++; sessionData.removeItem(SESSION_KEY); notifyLogout(); },
   getRememberedEmail: () => localData.getItem('pulso360_remembered_email'),
   rememberEmail: (email) => localData.setItem('pulso360_remembered_email', email),
   forgetEmail: () => localData.removeItem('pulso360_remembered_email'),
@@ -268,6 +281,7 @@ export const authService = {
     }
     sessionData.removeItem(SESSION_KEY);
     removeAuthToken(); // Destruimos el token JWT de la API
+    notifyLogout();
   },
 
   // Revisa si un agente debe aceptar la póliza de privacidad antes de entrar
