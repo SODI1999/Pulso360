@@ -49,6 +49,20 @@ export function initSocketServer(httpServer) {
     }
   });
 
+  // Almacén en memoria de conversaciones activas de soporte (efímero, confidencial, $0 costo)
+  const activeChats = new Map();
+
+  function getSerializedChats() {
+    return Array.from(activeChats.values()).map((chat) => ({
+      agentId: chat.agentId,
+      agentName: chat.agentName,
+      isAnonymous: chat.isAnonymous,
+      updatedAt: chat.updatedAt,
+      unreadCount: chat.unreadCount,
+      lastMessage: chat.messages[chat.messages.length - 1]?.text || ''
+    }));
+  }
+
   io.on('connection', (socket) => {
     const { id, role, rol_codigo } = socket.user || {};
     const userRole = role || rol_codigo;
@@ -63,32 +77,91 @@ export function initSocketServer(httpServer) {
       socket.join(`user:${id}`);
     }
 
+    // Si un especialista SST se conecta o solicita la lista de chats activos
+    socket.on('support:chats:get', () => {
+      if (userRole === 'SST') {
+        socket.emit('support:chats:list', getSerializedChats());
+      }
+    });
+
+    // Si SST marca un chat como leído
+    socket.on('support:chat:read', (payload) => {
+      if (userRole === 'SST' && payload?.agentId && activeChats.has(payload.agentId)) {
+        const chat = activeChats.get(payload.agentId);
+        chat.unreadCount = 0;
+        io.to('role:SST').emit('support:chats:updated', getSerializedChats());
+      }
+    });
+
     // Canal bidireccional de chat de apoyo psicológico / desahogo confidencial (Consentimiento C3)
     socket.on('support:message:send', (payload) => {
       if (!payload || !payload.text || typeof payload.text !== 'string' || !payload.text.trim()) {
         return;
       }
 
+      const isAgent = userRole === 'AGENTE';
+      const agentId = isAgent ? id : payload.receiverId;
+
+      if (!agentId) return;
+
+      let chat = activeChats.get(agentId);
+      if (!chat) {
+        chat = {
+          agentId,
+          agentName: payload.isAnonymous
+            ? `Agente Confidencial (${agentId.slice(-4)})`
+            : (payload.senderName || 'Agente de Contact Center'),
+          isAnonymous: Boolean(payload.isAnonymous),
+          unreadCount: 0,
+          updatedAt: new Date().toISOString(),
+          messages: []
+        };
+        activeChats.set(agentId, chat);
+      }
+
       const message = {
         id: `msg-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
         senderId: id,
         senderRole: userRole,
-        receiverId: payload.receiverId || null,
+        senderName: isAgent
+          ? (chat.isAnonymous ? chat.agentName : (payload.senderName || 'Agente de Contact Center'))
+          : 'Especialista SST (Salud Ocupacional)',
+        receiverId: isAgent ? null : agentId,
+        agentId,
         text: payload.text.trim(),
         timestamp: new Date().toISOString()
       };
 
-      // Si el emisor es un AGENTE: se emite a su propia sala y exclusivamente a los especialistas SST
-      // (Los supervisores de operaciones NO tienen acceso a estas salas)
-      if (userRole === 'AGENTE') {
-        io.to(`user:${id}`).emit('support:message:received', message);
+      // Conservar los últimos 50 mensajes en la conversación activa
+      chat.messages.push(message);
+      if (chat.messages.length > 50) {
+        chat.messages.shift();
+      }
+      chat.updatedAt = message.timestamp;
+
+      if (isAgent) {
+        chat.unreadCount += 1;
+        // Emitir al agente y a los especialistas de SST
+        io.to(`user:${agentId}`).emit('support:message:received', message);
         io.to('role:SST').emit('support:message:received', message);
+        io.to('role:SST').emit('support:chats:updated', getSerializedChats());
       } else if (userRole === 'SST') {
-        // Si el emisor es SST: se emite a la sala del agente destinatario y a la sala general de SST
-        if (payload.receiverId) {
-          io.to(`user:${payload.receiverId}`).emit('support:message:received', message);
-        }
+        // Emitir al agente destinatario y a la sala general de SST
+        io.to(`user:${agentId}`).emit('support:message:received', message);
         io.to('role:SST').emit('support:message:received', message);
+        io.to('role:SST').emit('support:chats:updated', getSerializedChats());
+      }
+    });
+
+    // Cerrar sesión de chat activa
+    socket.on('support:chat:close', (payload) => {
+      const targetAgentId = userRole === 'SST' ? payload?.agentId : id;
+      if (targetAgentId && activeChats.has(targetAgentId)) {
+        activeChats.delete(targetAgentId);
+        io.to(`user:${targetAgentId}`).emit('support:chat:ended', {
+          message: 'La sesión de orientación en vivo ha finalizado.'
+        });
+        io.to('role:SST').emit('support:chats:updated', getSerializedChats());
       }
     });
   });

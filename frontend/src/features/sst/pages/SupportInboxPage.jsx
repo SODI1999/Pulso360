@@ -1,8 +1,6 @@
+import { useState } from 'react';
 import { useSupportInbox } from '../hooks/useSupportInbox';
-
-// src/features/sst/pages/SupportInboxPage.jsx
-// Buzón confidencial de atención y acompañamiento para SST (RF-10)
-
+import { SstLiveChatConsole } from '../components/SstLiveChatConsole';
 import { Icon } from '../../../core/components/Icon';
 
 import '../../../styles/sst.css';
@@ -10,6 +8,7 @@ import '../../../styles/sst.css';
 export function SupportInboxPage() {
   const {
     loading, loadError, feedback, storeData, requests, handleAdvanceStatus } = useSupportInbox();
+  const [activeTab, setActiveTab] = useState('live-chat');
 
   if (loading) return <p role="status">Cargando datos del servidor…</p>;
   if (loadError) return <p className="alert-banner danger" role="alert">No se pudieron cargar los datos: {loadError}</p>;
@@ -19,20 +18,18 @@ export function SupportInboxPage() {
       {/* Cabecera */}
       <div className="page-header">
         <div>
-          <h1 className="page-title">Buzón de acompañamiento y orientación</h1>
+          <h1 className="page-title">Buzón y Orientación de Acompañamiento</h1>
           <p className="page-subtitle">
-            Canal reservado para SST en la gestión de solicitudes individuales voluntarias (RF-10).
+            Canal confidencial para SST: orientación inmediata en vivo (WebSockets) y gestión de casos formalmente radicados (RF-10).
           </p>
         </div>
       </div>
 
       {/* Banner de Confidencialidad */}
-      <div className="alert-banner info" style={{ marginBottom: 'var(--space-6)' }}>
+      <div className="alert-banner info" style={{ marginBottom: 'var(--space-5)' }}>
         <Icon name="shield" size={20} />
         <div>
-          <strong>Privacidad y reserva:</strong> En la modalidad anónima, el flujo no solicita datos de
-          contacto y muestra un código de seguimiento. En la modalidad identificada, el detalle de contacto se
-          presenta al equipo SST autorizado.
+          <strong>Privacidad y secreto profesional (Ley 1581 / Res. 2646):</strong> Los supervisores de operaciones NO tienen acceso a este buzón ni a las conversaciones de chat. En la modalidad anónima se reserva la identidad y en la modalidad identificada se atienden solicitudes con consentimiento expreso.
         </div>
       </div>
 
@@ -44,7 +41,48 @@ export function SupportInboxPage() {
         </div>
       )}
 
-      {/* Tabla de Casos */}
+      {/* Selector de Pestañas */}
+      <div
+        role="tablist"
+        aria-label="Vistas del canal de acompañamiento"
+        style={{
+          display: 'flex',
+          gap: 'var(--space-2)',
+          marginBottom: 'var(--space-5)',
+          borderBottom: '1px solid var(--c-borde-suave)',
+          paddingBottom: 'var(--space-2)'
+        }}
+      >
+        <button
+          type="button"
+          role="tab"
+          aria-selected={activeTab === 'live-chat'}
+          onClick={() => setActiveTab('live-chat')}
+          className={`btn ${activeTab === 'live-chat' ? 'btn-primary' : 'btn-secondary'}`}
+          style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+        >
+          <Icon name="Headphones" size={16} />
+          <span>Atención en Vivo (Chat en Tiempo Real)</span>
+        </button>
+
+        <button
+          type="button"
+          role="tab"
+          aria-selected={activeTab === 'tickets'}
+          onClick={() => setActiveTab('tickets')}
+          className={`btn ${activeTab === 'tickets' ? 'btn-primary' : 'btn-secondary'}`}
+          style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+        >
+          <Icon name="FileText" size={16} />
+          <span>Casos Radicados Formales ({requests.length})</span>
+        </button>
+      </div>
+
+      {/* Vista 1: Consola de Chat en Vivo */}
+      {activeTab === 'live-chat' && <SstLiveChatConsole />}
+
+      {/* Vista 2: Tabla de Casos Radicados */}
+      {activeTab === 'tickets' && (
       <div className="card">
         <div className="card-header">
           <div>
@@ -158,6 +196,7 @@ export function SupportInboxPage() {
           </table>
         </div>
       </div>
+      )}
     </div>
   );
 }

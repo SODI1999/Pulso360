@@ -34,15 +34,24 @@ export function SstDashboardPage() {
 
   const { socket } = useSocket();
   const [realtimeAlert, setRealtimeAlert] = useState(null);
+  const [liveChatMessage, setLiveChatMessage] = useState(null);
 
   useEffect(() => {
     function handleIncomingAlert(data) {
       setRealtimeAlert(data || { title: 'Nueva condición de riesgo psicosocial detectada.' });
     }
 
+    function handleIncomingSupport(msg) {
+      if (msg?.senderRole === 'AGENTE') {
+        setLiveChatMessage(msg);
+      }
+    }
+
     socket.on('alert:new', handleIncomingAlert);
+    socket.on('support:message:received', handleIncomingSupport);
     return () => {
       socket.off('alert:new', handleIncomingAlert);
+      socket.off('support:message:received', handleIncomingSupport);
     };
   }, [socket]);
 
@@ -70,6 +79,38 @@ export function SstDashboardPage() {
 
   return (
     <div>
+      {liveChatMessage && (
+        <div
+          role="status"
+          aria-live="polite"
+          className="alert-banner info"
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '1.25rem',
+            padding: '0.85rem 1.25rem',
+            borderRadius: 'var(--radio-md)',
+            borderLeft: '4px solid var(--c-primario)'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <Icon name="Headphones" size={20} />
+            <div>
+              <strong style={{ display: 'block', fontSize: '0.9rem' }}>
+                Consulta de Orientación en Vivo de Agente
+              </strong>
+              <span style={{ fontSize: '0.82rem', color: 'var(--c-texto-suave)' }}>
+                {liveChatMessage.senderName}: &quot;{liveChatMessage.text.slice(0, 65)}{liveChatMessage.text.length > 65 ? '…' : ''}&quot;
+              </span>
+            </div>
+          </div>
+          <Link to="/sst/support-inbox" className="btn btn-primary btn-sm" style={{ whiteSpace: 'nowrap' }}>
+            Responder en el chat
+          </Link>
+        </div>
+      )}
+
       {realtimeAlert && (
         <div
           role="status"
