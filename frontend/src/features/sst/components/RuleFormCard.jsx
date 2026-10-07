@@ -65,113 +65,161 @@ export function RuleFormCard({ onSaveRule }) {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit}>
-        <div className="form-group" style={{ marginBottom: '14px' }}>
-          <label className="form-label" htmlFor="ruleMetric">
-            Métrica o dimensión observada
-          </label>
-          <select
-            id="ruleMetric"
-            className="form-select"
-            value={metric}
-            onChange={(e) => setMetric(e.target.value)}
-          >
-            <option value="Recuperación agregada">Recuperación agregada</option>
-            <option value="Carga emocional agregada">Carga emocional agregada</option>
-            <option value="Percepción de ineficacia">Percepción de ineficacia</option>
-            <option value="Distanciamiento laboral">Distanciamiento laboral</option>
-            <option value="Sobrecarga percibida">Sobrecarga percibida</option>
-          </select>
-          {metric === 'Sobrecarga percibida' && <p role="note">Esta métrica aún no tiene una fuente definida y no se evaluará automáticamente.</p>}
-        </div>
-
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', marginBottom: '14px' }}>
-          <div className="form-group">
-            <label className="form-label" htmlFor="ruleOperator">
-              Condición
+      <form onSubmit={handleSubmit} className="rule-builder-form">
+        {/* Paso 1: Dimensión Psicosocial */}
+        <div className="rule-step-container">
+          <div className="rule-step-header">
+            <span className="rule-step-number">1</span>
+            <div>
+              <strong className="rule-step-title">Dimensión psicosocial</strong>
+              <span className="rule-step-hint">Variable o factor ocupacional monitoreado</span>
+            </div>
+          </div>
+          <div className="form-group" style={{ marginBottom: 0 }}>
+            <label className="form-label" htmlFor="ruleMetric">
+              Métrica o dimensión observada
             </label>
             <select
-              id="ruleOperator"
+              id="ruleMetric"
               className="form-select"
-              value={operator}
-              onChange={(e) => setOperator(e.target.value)}
+              value={metric}
+              onChange={(e) => setMetric(e.target.value)}
             >
-              <option value="baje más de">Descienda más de</option>
-              <option value="supere el">Supere el umbral de</option>
+              <option value="Recuperación agregada">Recuperación agregada</option>
+              <option value="Carga emocional agregada">Carga emocional agregada</option>
+              <option value="Percepción de ineficacia">Percepción de ineficacia</option>
+              <option value="Distanciamiento laboral">Distanciamiento laboral</option>
+              <option value="Sobrecarga percibida">Sobrecarga percibida</option>
             </select>
-          </div>
-          <div className="form-group">
-            <label className="form-label" htmlFor="ruleValue">
-              Valor umbral
-            </label>
-            <input
-              id="ruleValue"
-              type="number"
-              className="form-input"
-              value={value}
-              min="5"
-              max="90"
-              onChange={(e) => setValue(e.target.value)}
-              required
-              aria-describedby="ruleThresholdHelp"
-            />
-            <p id="ruleThresholdHelp">{operator === 'baje más de'
-              ? 'Porcentaje de caída respecto a la semana anterior, en cada semana consecutiva.'
-              : 'Umbral sobre la escala de 100 que usan los paneles colectivos.'}</p>
+            {metric === 'Sobrecarga percibida' && (
+              <p role="note" className="rule-metric-warning">
+                Esta métrica aún no tiene una fuente definida y no se evaluará automáticamente.
+              </p>
+            )}
           </div>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', marginBottom: '14px' }}>
-          <div className="form-group">
-            <label className="form-label" htmlFor="rulePersistence">
-              Persistencia temporal
-            </label>
-            <select
-              id="rulePersistence"
-              className="form-select"
-              value={persistence}
-              onChange={(e) => setPersistence(Number(e.target.value))}
-            >
-              <option value={2}>Durante 2 semanas</option>
-              <option value={3}>Durante 3 semanas</option>
-              <option value={4}>Durante 4 semanas</option>
-            </select>
+        {/* Paso 2: Condición Estadística */}
+        <div className="rule-step-container">
+          <div className="rule-step-header">
+            <span className="rule-step-number">2</span>
+            <div>
+              <strong className="rule-step-title">Condición y persistencia estadística</strong>
+              <span className="rule-step-hint">Criterio temporal para activar la alerta</span>
+            </div>
           </div>
-          <div className="form-group">
-            <label className="form-label" htmlFor="ruleSeverity">
-              Severidad resultante
-            </label>
-            <select
-              id="ruleSeverity"
-              className="form-select"
-              value={severity}
-              onChange={(e) => setSeverity(e.target.value)}
-            >
-              <option value="Baja">Baja</option>
-              <option value="Media">Media</option>
-              <option value="Alta">Alta</option>
-            </select>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', marginBottom: '14px' }}>
+            <div className="form-group">
+              <label className="form-label" htmlFor="ruleOperator">
+                Condición
+              </label>
+              <select
+                id="ruleOperator"
+                className="form-select"
+                value={operator}
+                onChange={(e) => setOperator(e.target.value)}
+              >
+                <option value="baje más de">Descienda más de</option>
+                <option value="supere el">Supere el umbral de</option>
+              </select>
+            </div>
+            <div className="form-group">
+              <label className="form-label" htmlFor="ruleValue">
+                Valor umbral
+              </label>
+              <input
+                id="ruleValue"
+                type="number"
+                className="form-input"
+                value={value}
+                min="5"
+                max="90"
+                onChange={(e) => setValue(e.target.value)}
+                required
+                aria-describedby="ruleThresholdHelp"
+              />
+              <p id="ruleThresholdHelp" className="rule-input-hint">
+                {operator === 'baje más de'
+                  ? 'Porcentaje de caída respecto a la semana anterior.'
+                  : 'Umbral sobre la escala de 100 de paneles colectivos.'}
+              </p>
+            </div>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+            <div className="form-group">
+              <label className="form-label" htmlFor="rulePersistence">
+                Persistencia temporal
+              </label>
+              <select
+                id="rulePersistence"
+                className="form-select"
+                value={persistence}
+                onChange={(e) => setPersistence(Number(e.target.value))}
+              >
+                <option value={2}>Durante 2 semanas</option>
+                <option value={3}>Durante 3 semanas</option>
+                <option value={4}>Durante 4 semanas</option>
+              </select>
+            </div>
+            <div className="form-group">
+              <label className="form-label" htmlFor="ruleSeverity">
+                Severidad resultante
+              </label>
+              <select
+                id="ruleSeverity"
+                className="form-select"
+                value={severity}
+                onChange={(e) => setSeverity(e.target.value)}
+              >
+                <option value="Baja">Baja</option>
+                <option value="Media">Media</option>
+                <option value="Alta">Alta</option>
+              </select>
+            </div>
           </div>
         </div>
 
-        <div className="form-group" style={{ marginBottom: '16px' }}>
-          <label className="form-label" htmlFor="ruleScope">
-            Alcance de la regla
-          </label>
-          <select
-            id="ruleScope"
-            className="form-select"
-            value={scope}
-            onChange={(e) => setScope(e.target.value)}
-          >
-            <option value="cualquier equipo">Cualquier equipo con N ≥ 5</option>
-            {env.useMockStorage ? <><option value="Campaña Soporte Alpha">Campaña Soporte Alpha</option><option value="Campaña Retención Beta">Campaña Retención Beta</option></> : <>
-              <optgroup label="Campañas">{[...new Map((authService.getCurrentUser()?.scopes || []).map(t => [t.campana_id,t.campana_nombre])).entries()]
-                .map(([id,name]) => <option key={id} value={id}>{name}</option>)}</optgroup>
-              <optgroup label="Equipos">{(authService.getCurrentUser()?.scopes || []).map(team =>
-                <option key={team.id} value={team.id}>{team.campana_nombre} · {team.nombre}</option>)}</optgroup>
-            </>}
-          </select>
+        {/* Paso 3: Ámbito Organizacional */}
+        <div className="rule-step-container">
+          <div className="rule-step-header">
+            <span className="rule-step-number">3</span>
+            <div>
+              <strong className="rule-step-title">Ámbito organizacional</strong>
+              <span className="rule-step-hint">Sujeto a la regla de confidencialidad N ≥ 5</span>
+            </div>
+          </div>
+          <div className="form-group" style={{ marginBottom: 0 }}>
+            <label className="form-label" htmlFor="ruleScope">
+              Alcance de la regla
+            </label>
+            <select
+              id="ruleScope"
+              className="form-select"
+              value={scope}
+              onChange={(e) => setScope(e.target.value)}
+            >
+              <option value="cualquier equipo">Cualquier equipo con N ≥ 5</option>
+              {env.useMockStorage ? (
+                <>
+                  <option value="Campaña Soporte Alpha">Campaña Soporte Alpha</option>
+                  <option value="Campaña Retención Beta">Campaña Retención Beta</option>
+                </>
+              ) : (
+                <>
+                  <optgroup label="Campañas">
+                    {[...new Map((authService.getCurrentUser()?.scopes || []).map(t => [t.campana_id,t.campana_nombre])).entries()]
+                      .map(([id,name]) => <option key={id} value={id}>{name}</option>)}
+                  </optgroup>
+                  <optgroup label="Equipos">
+                    {(authService.getCurrentUser()?.scopes || []).map(team =>
+                      <option key={team.id} value={team.id}>{team.campana_nombre} · {team.nombre}</option>)}
+                  </optgroup>
+                </>
+              )}
+            </select>
+          </div>
         </div>
 
         {/* Vista previa en lenguaje natural */}

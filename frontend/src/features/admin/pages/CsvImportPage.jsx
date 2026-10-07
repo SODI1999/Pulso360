@@ -70,44 +70,83 @@ export function CsvImportPage() {
           <span className="badge badge-info">Estructura Agregada</span>
         </div>
 
-        {/* Zona de Dropzone */}
-        <div
-          className={`csv-upload-container ${isDragOver ? 'dragover' : ''}`}
-          onDragOver={(e) => {
-            e.preventDefault();
-            setIsDragOver(true);
-          }}
-          onDragLeave={() => setIsDragOver(false)}
-          onDrop={(e) => {
-            e.preventDefault();
-            setIsDragOver(false);
-            if (e.dataTransfer.files?.[0]) {
-              handleFileSelected(e.dataTransfer.files[0]);
-            }
-          }}
-        >
-          <div className="csv-upload-icon">
-            <Icon name="upload_file" size={48} />
-          </div>
-          <div className="csv-upload-title">
-            {selectedFile ? selectedFile.name : 'Arrastra aquí tu archivo CSV o selecciónalo'}
-          </div>
-          <button type="button" className="btn btn-secondary" onClick={() => fileInputRef.current?.click()}>Seleccionar archivo CSV</button>
-          <div className="csv-upload-subtitle">
-            Columnas requeridas: <code className="audit-code-cell">campana_id, semana</code> · Opcionales:{' '}
-            <code className="audit-code-cell">volumen_llamadas, tasa_ausentismo_pct, aht_segundos</code>
-          </div>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept=".csv"
-            className="csv-file-input"
-            onChange={(e) => {
-              if (e.target.files?.[0]) {
-                handleFileSelected(e.target.files[0]);
+        <div className="csv-upload-grid">
+          {/* Zona de Dropzone */}
+          <div
+            className={`csv-upload-container ${isDragOver ? 'dragover' : ''}`}
+            onDragOver={(e) => {
+              e.preventDefault();
+              setIsDragOver(true);
+            }}
+            onDragLeave={() => setIsDragOver(false)}
+            onDrop={(e) => {
+              e.preventDefault();
+              setIsDragOver(false);
+              if (e.dataTransfer.files?.[0]) {
+                handleFileSelected(e.dataTransfer.files[0]);
               }
             }}
-          />
+          >
+            <div className="csv-upload-icon">
+              <Icon name="upload_file" size={48} />
+            </div>
+            <div className="csv-upload-title">
+              {selectedFile ? selectedFile.name : 'Arrastra aquí tu archivo CSV o selecciónalo'}
+            </div>
+            <p className="csv-upload-hint" style={{ fontSize: '12px', color: 'var(--c-texto-suave)', margin: '4px 0 12px' }}>
+              {selectedFile ? `${(selectedFile.size / 1024).toFixed(1)} KB seleccionados` : 'Archivos delimitados por comas (.csv)'}
+            </p>
+            <button type="button" className="btn btn-secondary" onClick={() => fileInputRef.current?.click()}>
+              <Icon name="folder" size={15} />
+              <span>Seleccionar archivo CSV</span>
+            </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".csv"
+              className="csv-file-input"
+              onChange={(e) => {
+                if (e.target.files?.[0]) {
+                  handleFileSelected(e.target.files[0]);
+                }
+              }}
+            />
+          </div>
+
+          {/* Guía de Especificación de Esquema */}
+          <div className="csv-schema-guide">
+            <h3 className="csv-schema-guide-title">
+              <Icon name="info" size={15} />
+              <span>Especificación del esquema</span>
+            </h3>
+            <p className="csv-schema-guide-desc">
+              El archivo CSV debe contener registros agregados por campaña y semana:
+            </p>
+
+            <div className="csv-schema-fields">
+              <div className="csv-schema-field-item required">
+                <span className="csv-field-badge">Obligatorio</span>
+                <div>
+                  <code>campana_id</code>
+                  <p>Identificador de campaña (ej: <code>camp-1</code>)</p>
+                </div>
+              </div>
+              <div className="csv-schema-field-item required">
+                <span className="csv-field-badge">Obligatorio</span>
+                <div>
+                  <code>semana</code>
+                  <p>Semana calendario ISO (ej: <code>2026-W34</code>)</p>
+                </div>
+              </div>
+              <div className="csv-schema-field-item optional">
+                <span className="csv-field-badge optional">Opcional</span>
+                <div>
+                  <code>volumen_llamadas, tasa_ausentismo_pct, aht_segundos</code>
+                  <p>Métricas operativas colectivas para análisis preventivo.</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Resultado de Validación */}

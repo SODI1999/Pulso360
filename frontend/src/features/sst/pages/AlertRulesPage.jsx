@@ -101,11 +101,18 @@ export function AlertRulesPage() {
                       Persistencia: {rule.persistence} {rule.unit || 'semanas'} · Ámbito: {ruleScopeLabel(rule.scope, user?.scopes)} ·
                       Severidad: {rule.severity}
                     </div>
-                    {!env.useMockStorage && <p>{rule.evaluation_supported === false
-                      ? 'Sin evaluación automática: falta una fuente o condición compatible.'
-                      : rule.evaluation_enabled
-                        ? 'Evaluación semanal habilitada; requiere aprobación y datos suficientes.'
-                        : 'Evaluación semanal deshabilitada en este servidor.'}</p>}
+                    {!env.useMockStorage && (
+                      <div className="rule-eval-status-pill">
+                        <Icon name="info" size={12} />
+                        <span>
+                          {rule.evaluation_supported === false
+                            ? 'Sin evaluación automática: condición no estándar.'
+                            : rule.evaluation_enabled
+                              ? 'Evaluación semanal habilitada (quórum N ≥ 5).'
+                              : 'Evaluación periódica administrada por servidor.'}
+                        </span>
+                      </div>
+                    )}
                   </div>
                   <span className={`badge ${rule.active ? 'badge-ok' : 'badge-warn'}`}>
                     {rule.pendingApproval ? 'Pendiente de aprobación' : 'Aprobada'}

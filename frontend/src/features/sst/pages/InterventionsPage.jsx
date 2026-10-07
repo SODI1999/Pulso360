@@ -135,55 +135,70 @@ export function InterventionsPage() {
                 </tr>
               ) : (
                 interventions.map((item) => (
-                  <tr key={item.id}>
-                    <td>
-                      <strong>{item.title}</strong>
-                      {item.target && <div className="card-subtitle">{item.target}</div>}
-                      {item.startDate && <div className="card-subtitle">{item.startDate} — {item.endDate || "Sin fecha de cierre"}</div>}
-                      {item.lastFollowup && <div className="card-subtitle">Último seguimiento ({item.lastFollowup.date}): {item.lastFollowup.actionType && `${item.lastFollowup.actionType} · `}{item.lastFollowup.note} · {item.lastFollowup.progress}%</div>}
+                  <tr key={item.id} className="intervention-table-row">
+                    <td className="intervention-cell-main">
+                      <div className="intervention-item-title">{item.title}</div>
+                      {item.target && <div className="intervention-item-target">{item.target}</div>}
+                      {item.startDate && (
+                        <div className="intervention-item-dates">
+                          <Icon name="calendar" size={13} />
+                          <span>{item.startDate} — {item.endDate || "Sin fecha de cierre"}</span>
+                        </div>
+                      )}
+                      {item.lastFollowup && (
+                        <div className="action-followup-preview">
+                          <span className="followup-preview-label">Último seguimiento ({item.lastFollowup.date}):</span>
+                          <span className="followup-preview-text">
+                            {item.lastFollowup.actionType && <strong>{item.lastFollowup.actionType} · </strong>}
+                            {item.lastFollowup.note}
+                          </span>
+                        </div>
+                      )}
                       {item.externalAction && (
-                        <div style={{ fontSize: '11.5px', color: 'var(--c-texto-mutado)', marginTop: '2px' }}>
-                          Requiere acción externa manual
+                        <div className="action-execution-hint">
+                          <Icon name="info" size={12} />
+                          <span>Requiere acción externa manual</span>
                         </div>
                       )}
                     </td>
                     <td>
-                      <div>{item.campaign}</div>
+                      <div><strong>{item.campaign}</strong></div>
                       {item.team && (
                         <div style={{ fontSize: '12px', color: 'var(--c-texto-suave)' }}>{item.team}</div>
                       )}
                     </td>
                     <td>{item.assignedName || 'Sin responsable asignado'}</td>
-                    <td>{item.indicator || 'Recuperación agregada'}</td>
-                    <td>{item.baseline != null ? `${item.baseline} / 100` : 'No publicable'}</td>
+                    <td>
+                      <div className="intervention-indicator-name">{item.indicator || 'Recuperación agregada'}</div>
+                    </td>
+                    <td>
+                      <span className="intervention-baseline-score">
+                        {item.baseline != null ? `${item.baseline} / 100` : 'No publicable'}
+                      </span>
+                    </td>
                     <td>
                       {item.after != null ? (
-                        <strong style={{ color: 'var(--c-ok)' }}>{item.after} / 100</strong>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                          <strong style={{ color: 'var(--c-ok)', fontSize: '13px' }}>{item.after} / 100</strong>
+                          {item.baseline != null && (
+                            <span className={`badge ${item.after >= item.baseline ? 'badge-ok' : 'badge-warn'}`} style={{ fontSize: '11px', padding: '1px 6px', alignSelf: 'flex-start' }}>
+                              {item.after >= item.baseline ? `+${item.after - item.baseline} pts` : `${item.after - item.baseline} pts`}
+                            </span>
+                          )}
+                        </div>
                       ) : (
-                        <span style={{ color: 'var(--c-texto-mutado)' }}>En curso</span>
+                        <span className="badge badge-muted" style={{ fontSize: '11.5px' }}>En curso</span>
                       )}
                     </td>
                     <td>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: '100px' }}>
-                        <div
-                          style={{
-                            flex: 1,
-                            height: '6px',
-                            background: 'var(--c-fondo)',
-                            borderRadius: '10px',
-                            overflow: 'hidden',
-                            border: '1px solid var(--c-borde-suave)'
-                          }}
-                        >
+                      <div className="intervention-progress-wrapper" style={{ minWidth: '110px' }}>
+                        <div className="intervention-progress-track" title={`Avance actual: ${item.progress || 0}%`}>
                           <div
-                            style={{
-                              width: `${item.progress || 0}%`,
-                              height: '100%',
-                              background: 'var(--c-primario)'
-                            }}
+                            className="intervention-progress-fill"
+                            style={{ width: `${item.progress || 0}%` }}
                           />
                         </div>
-                        <span style={{ fontSize: '12px', fontWeight: '600' }}>{item.progress || 0}%</span>
+                        <span className="intervention-progress-text">{item.progress || 0}%</span>
                       </div>
                     </td>
                     <td>

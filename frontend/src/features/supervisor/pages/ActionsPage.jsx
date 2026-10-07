@@ -83,24 +83,48 @@ export function ActionsPage() {
                 </tr>
               ) : (
                 interventions.map((item) => (
-                  <tr key={item.id}>
-                    <td>
-                      <strong>{item.title}</strong>
-                      {item.target && <div className="card-subtitle">{item.target}</div>}
-                      {item.startDate && <div className="card-subtitle">{item.startDate} — {item.endDate || "Sin fecha de cierre"}</div>}
-                      {item.lastFollowup && <div className="card-subtitle">Último seguimiento ({item.lastFollowup.date}): {item.lastFollowup.actionType && `${item.lastFollowup.actionType} · `}{item.lastFollowup.note} · {item.lastFollowup.progress}%</div>}
+                  <tr key={item.id} className="intervention-table-row">
+                    <td className="intervention-cell-main">
+                      <div className="intervention-item-title">{item.title}</div>
+                      {item.target && (
+                        <div className="intervention-item-target">{item.target}</div>
+                      )}
+                      {item.startDate && (
+                        <div className="intervention-item-dates">
+                          <Icon name="calendar" size={13} />
+                          <span>{item.startDate} — {item.endDate || "Sin fecha de cierre"}</span>
+                        </div>
+                      )}
+                      {item.lastFollowup && (
+                        <div className="action-followup-preview">
+                          <span className="followup-preview-label">Último seguimiento ({item.lastFollowup.date}):</span>
+                          <span className="followup-preview-text">
+                            {item.lastFollowup.actionType && <strong>{item.lastFollowup.actionType} · </strong>}
+                            {item.lastFollowup.note}
+                          </span>
+                        </div>
+                      )}
                       {item.externalAction && (
-                        <div style={{ fontSize: '11.5px', color: 'var(--c-texto-mutado)', marginTop: '2px' }}>
-                          Ejecución manual recomendada
+                        <div className="action-execution-hint">
+                          <Icon name="info" size={12} />
+                          <span>Ejecución operativa presencial recomendada</span>
                         </div>
                       )}
                     </td>
-                    <td>{item.type}</td>
-                    <td>{item.indicator}</td>
-                    <td>{item.baseline == null ? "No publicable" : `${item.baseline} / 100`}</td>
+                    <td>
+                      <span className="badge badge-info">{item.type}</span>
+                    </td>
+                    <td>
+                      <div className="intervention-indicator-name">{item.indicator}</div>
+                    </td>
+                    <td>
+                      <span className="intervention-baseline-score">
+                        {item.baseline == null ? "No publicable" : `${item.baseline} / 100`}
+                      </span>
+                    </td>
                     <td>
                       <div className="intervention-progress-wrapper">
-                        <div className="intervention-progress-track">
+                        <div className="intervention-progress-track" title={`Avance actual: ${item.progress || 0}%`}>
                           <div
                             className="intervention-progress-fill"
                             style={{ width: `${item.progress || 0}%` }}

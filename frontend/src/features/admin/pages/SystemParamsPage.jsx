@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { PendingAlertRules } from '../components/PendingAlertRules';
 import { PolicyAndNlpSettings } from '../components/PolicyAndNlpSettings';
 import { SupportParameters } from '../components/SupportParameters';
@@ -13,6 +14,8 @@ import { Icon } from '../../../core/components/Icon';
 import '../../../styles/admin.css';
 
 export function SystemParamsPage() {
+  const [activeTab, setActiveTab] = useState('privacy'); // 'privacy' | 'slas' | 'governance'
+
   const {
     loading, loadError,
     settings,
@@ -56,7 +59,7 @@ export function SystemParamsPage() {
   if (loadError) return <p className="alert-banner danger" role="alert">No se pudieron cargar los datos: {loadError}</p>;
 
   return (
-    <div>
+    <div className="admin-params-container">
       {/* Cabecera */}
       <div className="page-header">
         <div>
@@ -68,49 +71,144 @@ export function SystemParamsPage() {
         </div>
       </div>
 
-      {/* Formulario Principal de Parámetros y SLAs */}
-      <form onSubmit={handleSaveParams} className="params-section">
-        {!env.useMockStorage && <p role="note">Solo lectura. Esta versión usa k=5 y dos horas de edición. Los SLAs y la granularidad son referencias; la retención no ejecuta borrado automático.</p>}
-        <fieldset disabled={!env.useMockStorage} style={{ border: 0, padding: 0, margin: 0 }}>
-        <div className="card" style={{ marginBottom: 'var(--space-6)' }}>
-          <div className="card-header">
-            <div>
-              <h2 className="card-title">1. Parámetros de Privacidad y K-Anonimato</h2>
-              <div className="card-subtitle">
-                Variables que regulan la agregación y confidencialidad en los módulos de reportería.
+      {/* Navegación por pestañas ejecutivas */}
+      <div className="admin-tabs-nav" role="tablist" aria-label="Secciones de configuración de parámetros">
+        <button
+          type="button"
+          role="tab"
+          aria-selected={activeTab === 'privacy'}
+          className={`admin-tab-btn ${activeTab === 'privacy' ? 'active' : ''}`}
+          onClick={() => setActiveTab('privacy')}
+        >
+          <Icon name="shield" size={16} />
+          <span>1. Privacidad y K-Anonimato</span>
+        </button>
+
+        <button
+          type="button"
+          role="tab"
+          aria-selected={activeTab === 'slas'}
+          className={`admin-tab-btn ${activeTab === 'slas' ? 'active' : ''}`}
+          onClick={() => setActiveTab('slas')}
+        >
+          <Icon name="clock" size={16} />
+          <span>2. Acuerdos de Nivel de Servicio (SLAs)</span>
+        </button>
+
+        <button
+          type="button"
+          role="tab"
+          aria-selected={activeTab === 'governance'}
+          className={`admin-tab-btn ${activeTab === 'governance' ? 'active' : ''}`}
+          onClick={() => setActiveTab('governance')}
+        >
+          <Icon name="fileText" size={16} />
+          <span>3. Gobernanza NLP y Políticas</span>
+          {rules?.filter(r => r.status === 'Propuesta').length > 0 && (
+            <span className="badge badge-warn" style={{ fontSize: '11px', padding: '1px 6px' }}>
+              {rules.filter(r => r.status === 'Propuesta').length} pendientes
+            </span>
+          )}
+        </button>
+      </div>
+
+      {/* Contenido Pestaña 1: Privacidad */}
+      {activeTab === 'privacy' && (
+        <form onSubmit={handleSaveParams} className="params-section" role="tabpanel" aria-label="Parámetros de Privacidad">
+          {!env.useMockStorage && (
+            <p role="note" className="alert-banner info" style={{ marginBottom: 'var(--space-4)' }}>
+              <Icon name="info" size={16} />
+              <span>Solo lectura. Esta versión usa k=5 y dos horas de edición. La retención no ejecuta borrado automático.</span>
+            </p>
+          )}
+
+          <fieldset disabled={!env.useMockStorage} style={{ border: 0, padding: 0, margin: 0 }}>
+            <div className="card">
+              <div className="card-header">
+                <div>
+                  <h2 className="card-title">Parámetros de Privacidad y K-Anonimato</h2>
+                  <div className="card-subtitle">
+                    Variables que regulan la agregación y confidencialidad en los módulos de reportería.
+                  </div>
+                </div>
+              </div>
+
+              <PrivacyParameters
+                umbralN={umbralN}
+                setUmbralN={setUmbralN}
+                checkinEditHours={checkinEditHours}
+                setCheckinEditHours={setCheckinEditHours}
+                minGranularity={minGranularity}
+                setMinGranularity={setMinGranularity}
+                auditRetentionYears={auditRetentionYears}
+                setAuditRetentionYears={setAuditRetentionYears}
+              />
+
+              {isRisky && (
+                <div className="params-warning-banner">
+                  <Icon name="alertTriangle" size={20} />
+                  <div style={{ flex: 1 }}>
+                    <strong>Atención de Gobernanza:</strong> La configuración propuesta debilita una o más protecciones institucionales:
+                    <ul style={{ margin: '6px 0 0 16px', padding: 0 }}>
+                      {riskReasons.map((r, i) => (
+                        <li key={i}>{r}</li>
+                      ))}
+                    </ul>
+                    <div style={{ marginTop: 'var(--space-3)' }}>
+                      <label className="form-label" htmlFor="paramJustification">
+                        Justificación formal requerida (mínimo 10 caracteres){' '}
+                        <span style={{ color: 'var(--c-critico)' }}>*</span>
+                      </label>
+                      <textarea
+                        id="paramJustification"
+                        className="form-textarea"
+                        rows={2}
+                        placeholder="Describe el motivo técnico u operativo por el cual se modifican los parámetros base..."
+                        value={justification}
+                        onChange={(e) => setJustification(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {paramError && (
+                <div className="alert-banner danger" style={{ marginTop: 'var(--space-3)' }}>
+                  <Icon name="alertTriangle" size={16} />
+                  <span>{paramError}</span>
+                </div>
+              )}
+
+              {paramFeedback && (
+                <div className="alert-banner ok" role="status" style={{ marginTop: 'var(--space-3)' }}>
+                  <Icon name="checkCircle" size={16} />
+                  <span>{paramFeedback}</span>
+                </div>
+              )}
+
+              <div style={{ marginTop: 'var(--space-5)', display: 'flex', justifyContent: 'flex-end' }}>
+                <button type="submit" className="btn btn-primary">
+                  <Icon name="save" size={16} />
+                  <span>Guardar Parámetros de Privacidad</span>
+                </button>
               </div>
             </div>
-          </div>
+          </fieldset>
+        </form>
+      )}
 
-          <PrivacyParameters
-            umbralN={umbralN}
-            setUmbralN={setUmbralN}
-            checkinEditHours={checkinEditHours}
-            setCheckinEditHours={setCheckinEditHours}
-            minGranularity={minGranularity}
-            setMinGranularity={setMinGranularity}
-            auditRetentionYears={auditRetentionYears}
-            setAuditRetentionYears={setAuditRetentionYears}
-          />
-
-          {/* Sección SLAs */}
-          <div
-            style={{
-              marginTop: 'var(--space-5)',
-              paddingTop: 'var(--space-4)',
-              borderTop: '1px solid var(--c-borde-suave)'
-            }}
-          >
-            <h3
-              style={{
-                fontSize: '15px',
-                fontWeight: 600,
-                color: 'var(--c-texto)',
-                marginBottom: 'var(--space-3)'
-              }}
-            >
-              2. Acuerdos de Nivel de Servicio (SLAs de Atención)
-            </h3>
+      {/* Contenido Pestaña 2: SLAs */}
+      {activeTab === 'slas' && (
+        <form onSubmit={handleSaveParams} className="params-section" role="tabpanel" aria-label="Acuerdos de Nivel de Servicio">
+          <div className="card">
+            <div className="card-header">
+              <div>
+                <h2 className="card-title">Acuerdos de Nivel de Servicio (SLAs de Atención)</h2>
+                <div className="card-subtitle">
+                  Tiempos máximos de respuesta para solicitudes de apoyo emocional, alertas y Habeas Data.
+                </div>
+              </div>
+            </div>
 
             <SupportParameters
               slaAlta={slaAlta}
@@ -122,78 +220,50 @@ export function SystemParamsPage() {
               slaSolicitudes={slaSolicitudes}
               setSlaSolicitudes={setSlaSolicitudes}
             />
-          </div>
 
-          {/* Banner de Riesgo y Justificación Obligatoria */}
-          {isRisky && (
-            <div className="params-warning-banner">
-              <Icon name="alertTriangle" size={20} />
-              <div style={{ flex: 1 }}>
-                <strong>Atención de Gobernanza:</strong> La configuración propuesta debilita una o más
-                protecciones institucionales:
-                <ul style={{ margin: '6px 0 0 16px', padding: 0 }}>
-                  {riskReasons.map((r, i) => (
-                    <li key={i}>{r}</li>
-                  ))}
-                </ul>
-                <div style={{ marginTop: 'var(--space-3)' }}>
-                  <label className="form-label" htmlFor="paramJustification">
-                    Justificación formal requerida (mínimo 10 caracteres){' '}
-                    <span style={{ color: 'var(--c-critico)' }}>*</span>
-                  </label>
-                  <textarea
-                    id="paramJustification"
-                    className="form-textarea"
-                    rows={2}
-                    placeholder="Describe el motivo técnico u operativo por el cual se modifican los parámetros base..."
-                    value={justification}
-                    onChange={(e) => setJustification(e.target.value)}
-                  />
-                </div>
+            {paramError && (
+              <div className="alert-banner danger" style={{ marginTop: 'var(--space-3)' }}>
+                <Icon name="alertTriangle" size={16} />
+                <span>{paramError}</span>
               </div>
-            </div>
-          )}
+            )}
 
-          {paramError && (
-            <div className="alert-banner danger" style={{ marginTop: 'var(--space-3)' }}>
-              <Icon name="alertTriangle" size={16} />
-              <span>{paramError}</span>
-            </div>
-          )}
+            {paramFeedback && (
+              <div className="alert-banner ok" role="status" style={{ marginTop: 'var(--space-3)' }}>
+                <Icon name="checkCircle" size={16} />
+                <span>{paramFeedback}</span>
+              </div>
+            )}
 
-          {paramFeedback && (
-            <div className="alert-banner ok" role="status" style={{ marginTop: 'var(--space-3)' }}>
-              <Icon name="checkCircle" size={16} />
-              <span>{paramFeedback}</span>
+            <div style={{ marginTop: 'var(--space-5)', display: 'flex', justifyContent: 'flex-end' }}>
+              <button type="submit" className="btn btn-primary">
+                <Icon name="save" size={16} />
+                <span>Guardar SLAs de Atención</span>
+              </button>
             </div>
-          )}
-
-          <div style={{ marginTop: 'var(--space-5)', display: 'flex', justifyContent: 'flex-end' }}>
-            <button type="submit" className="btn btn-primary">
-              <Icon name="save" size={16} />
-              <span>Guardar Parámetros y SLAs</span>
-            </button>
           </div>
+        </form>
+      )}
+
+      {/* Contenido Pestaña 3: Gobernanza NLP y Políticas */}
+      {activeTab === 'governance' && (
+        <div role="tabpanel" aria-label="Gobernanza NLP y Políticas">
+          <PolicyAndNlpSettings
+            settings={settings}
+            handlePublishPolicy={handlePublishPolicy}
+            newPolicyVersion={newPolicyVersion}
+            setNewPolicyVersion={setNewPolicyVersion}
+            policyFeedback={policyFeedback}
+            handleActivateNlp={handleActivateNlp}
+            newNlpVersion={newNlpVersion}
+            setNewNlpVersion={setNewNlpVersion}
+            handleRevertNlp={handleRevertNlp}
+            nlpFeedback={nlpFeedback}
+          />
+
+          <PendingAlertRules rules={rules} handleApproveRule={handleApproveRule} />
         </div>
-      </fieldset>
-      </form>
-
-      {/* Grid de Versionado de Políticas y Modelos NLP */}
-      <PolicyAndNlpSettings
-        settings={settings}
-        handlePublishPolicy={handlePublishPolicy}
-        newPolicyVersion={newPolicyVersion}
-        setNewPolicyVersion={setNewPolicyVersion}
-        policyFeedback={policyFeedback}
-        handleActivateNlp={handleActivateNlp}
-        newNlpVersion={newNlpVersion}
-        setNewNlpVersion={setNewNlpVersion}
-        handleRevertNlp={handleRevertNlp}
-        nlpFeedback={nlpFeedback}
-      />
-
-      {/* Reglas de Alertas Propuestas por SST */}
-      <PendingAlertRules rules={rules} handleApproveRule={handleApproveRule} />
+      )}
     </div>
   );
 }

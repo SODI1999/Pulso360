@@ -85,8 +85,14 @@ export function AuditLogPage() {
         statusFilter={statusFilter}
         onStatusFilterChange={setStatusFilter}
       />
-      <p>{filteredLogs.length} registros visibles de {pagination.total} consultados.</p>
-      {pagination.hasMore && <button type="button" className="btn btn-secondary" disabled={busy} onClick={loadMore}>Cargar siguientes 50</button>}
+      <div className="audit-footer-bar">
+        <span>{filteredLogs.length} registros visibles de {pagination.total} consultados.</span>
+        {pagination.hasMore && (
+          <button type="button" className="btn btn-secondary btn-sm" disabled={busy} onClick={loadMore}>
+            Cargar siguientes 50
+          </button>
+        )}
+      </div>
     </div>
   );
 }

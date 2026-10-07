@@ -88,7 +88,7 @@ export function ManageUserModal({ isOpen, onClose, onSave, user, orgScopes = [],
 
   return (
     <div className="modal-overlay active" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="manage-user-title" ref={modalRef}>
-      <div className="modal-card" onClick={(e) => e.stopPropagation()}>
+      <div className="modal-card modal-card-lg" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <div>
             <h2 id="manage-user-title" className="modal-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -96,7 +96,7 @@ export function ManageUserModal({ isOpen, onClose, onSave, user, orgScopes = [],
               <span>Gestionar usuario</span>
             </h2>
             <div className="modal-subtitle">
-              <strong>{user.name}</strong> · <code>{user.email}</code>
+              Gobernanza de identidad, roles canónicos y reasignación de área (RF-15)
             </div>
           </div>
           <button type="button" className="btn btn-ghost btn-sm" onClick={onClose} aria-label="Cerrar modal">
@@ -123,29 +123,71 @@ export function ManageUserModal({ isOpen, onClose, onSave, user, orgScopes = [],
               </div>
             )}
 
-            <div className="form-group">
-              <label className="form-label" htmlFor="manageUserRole">
-                Rol institucional en el sistema <span style={{ color: 'var(--c-critico)' }}>*</span>
-              </label>
-              <select
-                id="manageUserRole"
-                className="form-select"
-                value={role}
-                onChange={(e) => setRole(e.target.value)}
-                disabled={isSelf}
-              >
-                {CANONICAL_ROLES.map((r) => (
-                  <option key={r.value} value={r.value}>
-                    {r.label}
-                  </option>
-                ))}
-              </select>
-              {isSelf && (
-                <span className="form-hint">Tu rol de administrador está bloqueado durante esta sesión.</span>
-              )}
+            {/* Tarjeta de resumen de identidad */}
+            <div className="user-profile-preview-card">
+              <div className="user-profile-avatar" aria-hidden="true">
+                {user.name?.charAt(0)?.toUpperCase() || 'U'}
+              </div>
+              <div className="user-profile-details">
+                <div className="user-profile-name">{user.name}</div>
+                <div className="user-profile-meta">
+                  <span className="audit-code-cell">{user.email}</span>
+                  <span className={`user-role-badge role-${user.role}`}>
+                    {CANONICAL_ROLES.find((r) => r.value === user.role)?.label || user.role}
+                  </span>
+                  <span className={`badge ${user.status === 'Suspendido' ? 'badge-danger' : 'badge-ok'}`}>
+                    {user.status || 'Activo'}
+                  </span>
+                </div>
+              </div>
             </div>
 
-            <div className="form-group">
+            <div className="modal-form-grid-2">
+              <div className="form-group">
+                <label className="form-label" htmlFor="manageUserRole">
+                  Rol institucional en el sistema <span style={{ color: 'var(--c-critico)' }}>*</span>
+                </label>
+                <select
+                  id="manageUserRole"
+                  className="form-select"
+                  value={role}
+                  onChange={(e) => setRole(e.target.value)}
+                  disabled={isSelf}
+                >
+                  {CANONICAL_ROLES.map((r) => (
+                    <option key={r.value} value={r.value}>
+                      {r.label}
+                    </option>
+                  ))}
+                </select>
+                {isSelf && (
+                  <span className="form-hint">Tu rol de administrador está bloqueado durante esta sesión.</span>
+                )}
+              </div>
+
+              <div className="form-group">
+                <label className="form-label" htmlFor="manageUserStatus">
+                  Estado de la cuenta
+                </label>
+                <select
+                  id="manageUserStatus"
+                  className="form-select"
+                  value={status}
+                  onChange={(e) => setStatus(e.target.value)}
+                  disabled={isSelf}
+                >
+                  <option value="Activo">Activo</option>
+                  <option value="Suspendido">Suspendido</option>
+                </select>
+                {isSelf && (
+                  <span className="form-hint">
+                    No puedes suspender la cuenta activa con la que has iniciado sesión.
+                  </span>
+                )}
+              </div>
+            </div>
+
+            <div className="form-group" style={{ marginTop: 'var(--space-3)' }}>
               <label className="form-label" htmlFor="manageUserOrgScope">
                 Ámbito organizacional / Traslado <span style={{ color: 'var(--c-critico)' }}>*</span>
               </label>
@@ -161,27 +203,6 @@ export function ManageUserModal({ isOpen, onClose, onSave, user, orgScopes = [],
                   </option>
                 ))}
               </select>
-            </div>
-
-            <div className="form-group">
-              <label className="form-label" htmlFor="manageUserStatus">
-                Estado de la cuenta
-              </label>
-              <select
-                id="manageUserStatus"
-                className="form-select"
-                value={status}
-                onChange={(e) => setStatus(e.target.value)}
-                disabled={isSelf}
-              >
-                <option value="Activo">Activo</option>
-                <option value="Suspendido">Suspendido</option>
-              </select>
-              {isSelf && (
-                <span className="form-hint">
-                  No puedes suspender la cuenta activa con la que has iniciado sesión.
-                </span>
-              )}
             </div>
           </div>
 

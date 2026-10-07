@@ -245,33 +245,115 @@
   color: var(--c-texto-suave);
 }
 
-/* Barras de Progreso en Intervenciones */
+/* Barras y Celdas de Intervenciones */
+.intervention-table-row {
+  transition: background-color var(--transition-fast);
+}
+
+.intervention-table-row:hover {
+  background-color: var(--c-fondo-subtle, rgba(0, 0, 0, 0.02));
+}
+
+.intervention-cell-main {
+  max-width: 380px;
+}
+
+.intervention-item-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--c-texto);
+  margin-bottom: 2px;
+}
+
+.intervention-item-target {
+  font-size: 12px;
+  color: var(--c-texto-suave);
+  margin-bottom: 4px;
+}
+
+.intervention-item-dates {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11.5px;
+  color: var(--c-texto-mutado);
+  margin-bottom: 6px;
+}
+
+.action-followup-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px 10px;
+  background-color: var(--c-fondo);
+  border: 1px solid var(--c-borde-suave);
+  border-radius: var(--radius-sm);
+  margin-top: 4px;
+}
+
+.followup-preview-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--c-primario);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.followup-preview-text {
+  font-size: 12px;
+  color: var(--c-texto-suave);
+  line-height: 1.35;
+}
+
+.action-execution-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--c-texto-mutado);
+  margin-top: 4px;
+}
+
+.intervention-indicator-name {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--c-texto);
+}
+
+.intervention-baseline-score {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--c-texto-suave);
+}
+
 .intervention-progress-wrapper {
   display: flex;
   align-items: center;
   gap: var(--space-2);
+  min-width: 140px;
 }
 
 .intervention-progress-track {
   flex: 1;
-  height: 8px;
+  min-width: 90px;
+  height: 9px;
   background-color: var(--c-fondo);
-  border-radius: var(--radius-xs);
+  border-radius: var(--radius-full);
   overflow: hidden;
   border: 1px solid var(--c-borde-suave);
 }
 
 .intervention-progress-fill {
   height: 100%;
-  background-color: var(--c-primario);
-  border-radius: var(--radius-xs);
+  background: linear-gradient(90deg, var(--c-primario) 0%, #14b8a6 100%);
+  border-radius: var(--radius-full);
   transition: width var(--transition-normal);
 }
 
 .intervention-progress-text {
   font-size: 12px;
-  font-weight: 600;
-  color: var(--c-texto-suave);
+  font-weight: 700;
+  color: var(--c-primario);
   min-width: 36px;
   text-align: right;
 }

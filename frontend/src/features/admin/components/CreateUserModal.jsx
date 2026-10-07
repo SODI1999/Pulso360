@@ -81,7 +81,7 @@ export function CreateUserModal({ isOpen, onClose, onSave, orgScopes = [] }) {
 
   return (
     <div className="modal-overlay active" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="create-user-title" ref={modalRef}>
-      <div className="modal-card" onClick={(e) => e.stopPropagation()}>
+      <div className="modal-card modal-card-lg" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <div>
             <h2 id="create-user-title" className="modal-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -104,89 +104,105 @@ export function CreateUserModal({ isOpen, onClose, onSave, orgScopes = [] }) {
               </div>
             )}
 
-            <div className="form-group">
-              <label className="form-label" htmlFor="createUserName">
-                Nombre y Apellidos completos <span style={{ color: 'var(--c-critico)' }}>*</span>
-              </label>
-              <input
-                id="createUserName"
-                type="text"
-                className="form-input"
-                placeholder="Ej. Andrés Restrepo"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-            </div>
+            <div className="modal-form-grid-2">
+              <div className="form-group">
+                <label className="form-label" htmlFor="createUserName">
+                  Nombre y Apellidos completos <span style={{ color: 'var(--c-critico)' }}>*</span>
+                </label>
+                <input
+                  id="createUserName"
+                  type="text"
+                  className="form-input"
+                  placeholder="Ej. Andrés Restrepo"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </div>
 
-            <div className="form-group">
-              <label className="form-label" htmlFor="createUserEmail">
-                Correo institucional <span style={{ color: 'var(--c-critico)' }}>*</span>
-              </label>
-              <input
-                id="createUserEmail"
-                type="email"
-                className="form-input"
-                placeholder="colaborador@pulso360.co o usuario@empresa.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
+              <div className="form-group">
+                <label className="form-label" htmlFor="createUserEmail">
+                  Correo institucional <span style={{ color: 'var(--c-critico)' }}>*</span>
+                </label>
+                <input
+                  id="createUserEmail"
+                  type="email"
+                  className="form-input"
+                  placeholder="colaborador@pulso360.co o usuario@empresa.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
 
-            {!env.useMockStorage && <div className="form-group">
-              <label className="form-label" htmlFor="createUserPassword">Contraseña inicial</label>
-              <input id="createUserPassword" type="password" className="form-input" autoComplete="new-password"
-                required minLength={8} maxLength={72} value={password} onChange={e => setPassword(e.target.value)} />
-            </div>}
-            <div className="form-group">
-              <label className="form-label" htmlFor="createUserRole">
-                Rol canónico asignado <span style={{ color: 'var(--c-critico)' }}>*</span>
-              </label>
-              <select
-                id="createUserRole"
-                className="form-select"
-                value={role}
-                onChange={(e) => setRole(e.target.value)}
-              >
-                {CANONICAL_ROLES.map((r) => (
-                  <option key={r.value} value={r.value}>
-                    {r.label}
-                  </option>
-                ))}
-              </select>
-            </div>
+              {!env.useMockStorage && (
+                <div className="form-group">
+                  <label className="form-label" htmlFor="createUserPassword">
+                    Contraseña inicial <span style={{ color: 'var(--c-critico)' }}>*</span>
+                  </label>
+                  <input
+                    id="createUserPassword"
+                    type="password"
+                    className="form-input"
+                    autoComplete="new-password"
+                    required
+                    minLength={8}
+                    maxLength={72}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                </div>
+              )}
 
-            <div className="form-group">
-              <label className="form-label" htmlFor="createUserOrgScope">
-                Ámbito organizacional / Área <span style={{ color: 'var(--c-critico)' }}>*</span>
-              </label>
-              <select
-                id="createUserOrgScope"
-                className="form-select"
-                value={orgScopeId}
-                onChange={(e) => setOrgScopeId(e.target.value)}
-              >
-                <option value="">Selecciona una asignación organizacional...</option>
-                {orgScopes.map((scope) => (
-                  <option key={scope.id} value={scope.id}>
-                    {scope.label}
-                  </option>
-                ))}
-              </select>
-            </div>
+              <div className="form-group">
+                <label className="form-label" htmlFor="createUserRole">
+                  Rol canónico asignado <span style={{ color: 'var(--c-critico)' }}>*</span>
+                </label>
+                <select
+                  id="createUserRole"
+                  className="form-select"
+                  value={role}
+                  onChange={(e) => setRole(e.target.value)}
+                >
+                  {CANONICAL_ROLES.map((r) => (
+                    <option key={r.value} value={r.value}>
+                      {r.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-            <div className="form-group">
-              <label className="form-label" htmlFor="createUserStatus">
-                Estado inicial de la cuenta
-              </label>
-              <select
-                id="createUserStatus"
-                className="form-select"
-                value={status}
-                onChange={(e) => setStatus(e.target.value)}
-              >
-                <option value="Activo">Activo</option>
-                <option value="Suspendido">Suspendido</option>
-              </select>
+              <div className="form-group">
+                <label className="form-label" htmlFor="createUserOrgScope">
+                  Ámbito organizacional / Área <span style={{ color: 'var(--c-critico)' }}>*</span>
+                </label>
+                <select
+                  id="createUserOrgScope"
+                  className="form-select"
+                  value={orgScopeId}
+                  onChange={(e) => setOrgScopeId(e.target.value)}
+                >
+                  <option value="">Selecciona una asignación organizacional...</option>
+                  {orgScopes.map((scope) => (
+                    <option key={scope.id} value={scope.id}>
+                      {scope.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label className="form-label" htmlFor="createUserStatus">
+                  Estado inicial de la cuenta
+                </label>
+                <select
+                  id="createUserStatus"
+                  className="form-select"
+                  value={status}
+                  onChange={(e) => setStatus(e.target.value)}
+                >
+                  <option value="Activo">Activo</option>
+                  <option value="Suspendido">Suspendido</option>
+                </select>
+              </div>
             </div>
           </div>
 

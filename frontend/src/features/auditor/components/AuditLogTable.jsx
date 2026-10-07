@@ -1,5 +1,8 @@
+import { useState } from 'react';
+import { Icon } from '../../../core/components/Icon';
+
 // src/features/auditor/components/AuditLogTable.jsx
-// Tabla modular de eventos auditables con filtros reactivos (RF-13)
+// Tabla modular de eventos auditables con filtros reactivos y trazabilidad criptográfica (RF-13)
 
 export function AuditLogTable({
   logs = [],
@@ -9,6 +12,15 @@ export function AuditLogTable({
   statusFilter = 'ALL',
   onStatusFilterChange = () => {}
 }) {
+  const [copiedId, setCopiedId] = useState(null);
+
+  const handleCopyId = (id) => {
+    if (!id) return;
+    navigator.clipboard?.writeText(id);
+    setCopiedId(id);
+    setTimeout(() => setCopiedId(null), 2000);
+  };
+
   return (
     <div className="card">
       <div className="card-header">
@@ -47,7 +59,10 @@ export function AuditLogTable({
       </div>
 
       {/* Tabla de Eventos */}
-      <p className="form-hint">Los filtros se aplican a los eventos cargados. “No registrado” indica que el evento no contiene un resultado; no se presume éxito.</p>
+      <p className="form-hint" style={{ margin: 'var(--space-2) 0 var(--space-3)' }}>
+        Los filtros se aplican a los eventos cargados. “No registrado” indica que el evento no contiene un resultado; no se presume éxito.
+      </p>
+
       <div className="table-responsive">
         <table className="data-table">
           <thead>
@@ -74,24 +89,48 @@ export function AuditLogTable({
             ) : (
               logs.map((log) => {
                 const isDeny = log.status === 'DENEGADO';
+                const isOk = log.status === 'EXITO';
+                const isCopied = copiedId === log.id;
+                const isLongId = String(log.id).length > 12;
+
                 return (
-                  <tr key={log.id}>
+                  <tr key={log.id} className="audit-table-row">
                     <td>
-                      <span className="audit-code-cell">{log.id}</span>
+                      <div className="audit-id-cell">
+                        <span className="audit-code-cell" title={log.id}>
+                          {isLongId ? `${String(log.id).slice(0, 8)}…` : log.id}
+                        </span>
+                        <button
+                          type="button"
+                          className="audit-copy-btn"
+                          onClick={() => handleCopyId(log.id)}
+                          title={isCopied ? '¡Copiado!' : 'Copiar ID completo'}
+                          aria-label={`Copiar ID ${log.id}`}
+                        >
+                          <Icon name={isCopied ? 'check' : 'copy'} size={12} />
+                        </button>
+                      </div>
                     </td>
-                    <td>{log.date}</td>
                     <td>
-                      <strong>{log.actor}</strong>
+                      <span className="audit-date-cell">{log.date}</span>
                     </td>
                     <td>
-                      <span className="badge badge-info">{log.action}</span>
+                      <strong className="audit-actor-name">{log.actor}</strong>
                     </td>
-                    <td>{log.target}</td>
+                    <td>
+                      <span className="badge badge-info audit-action-badge">{log.action}</span>
+                    </td>
+                    <td>
+                      <span className="audit-target-text">{log.target}</span>
+                    </td>
                     <td>
                       <span className="audit-code-cell">{log.ip}</span>
                     </td>
                     <td>
-                      <span className={`badge ${isDeny ? 'badge-danger' : log.status === 'EXITO' ? 'badge-ok' : 'badge-info'}`}>{log.status === 'NO_REGISTRADO' ? 'No registrado' : log.status === 'EXITO' ? 'Éxito' : log.status === 'DENEGADO' ? 'Denegado' : log.status}</span>
+                      <span className={`badge ${isDeny ? 'badge-danger' : isOk ? 'badge-ok' : 'badge-muted'}`}>
+                        <Icon name={isOk ? 'checkCircle' : isDeny ? 'alertTriangle' : 'info'} size={12} />
+                        <span>{log.status === 'NO_REGISTRADO' ? 'No registrado' : isOk ? 'Éxito' : isDeny ? 'Denegado' : log.status}</span>
+                      </span>
                     </td>
                   </tr>
                 );

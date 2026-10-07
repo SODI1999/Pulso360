@@ -62,41 +62,57 @@ export function CampaignCard({
             return (
               <div key={t.id} className="org-team-item">
                 <div className="org-team-info">
-                  <div className="org-team-name">{t.name}</div>
+                  <div className="org-team-title-row">
+                    <span className="org-team-name">{t.name}</span>
+                    <span className={`badge ${isTeamActive ? 'badge-ok' : 'badge-danger'}`} style={{ fontSize: '11px', padding: '1px 7px' }}>
+                      {isTeamActive ? 'Activo' : 'Inactivo'}
+                    </span>
+                  </div>
                   <div className="org-team-meta">
-                    Supervisor: <strong>{t.supervisor || 'Sin asignar'}</strong> · Integrantes: {t.n}
+                    <span className="org-team-supervisor-chip">
+                      <Icon name="user" size={13} />
+                      <span>Supervisor: <strong>{t.supervisor || 'Sin asignar'}</strong></span>
+                    </span>
                   </div>
                 </div>
 
                 <div className="org-team-actions">
-                  <span className={`badge ${isPublicable ? 'badge-ok' : 'badge-warn'}`}>
-                    {isPublicable ? `N=${t.n} (Publicable)` : `N=${t.n} (Bajo umbral confidencial)`}
-                  </span>
-                  <span className={`badge ${isTeamActive ? 'badge-ok' : 'badge-danger'}`}>
-                    {isTeamActive ? 'Activo' : 'Inactivo'}
+                  <span
+                    className={`badge ${isPublicable ? 'badge-ok' : 'badge-warn'}`}
+                    title={isPublicable ? `Cumple umbral de k-anonimato (N=${t.n} ≥ ${minThreshold})` : `Bajo umbral confidencial (N=${t.n} < ${minThreshold})`}
+                  >
+                    <Icon name={isPublicable ? 'checkCircle' : 'shield'} size={12} />
+                    <span>{isPublicable ? `N=${t.n} · Publicable` : `N=${t.n} · Protegido`}</span>
                   </span>
 
-                  <button
-                    type="button"
-                    className="btn btn-secondary btn-sm"
-                    onClick={() => setAssignModalState({ isOpen: true, campaign: c, team: t })}
-                  >
-                    Asignar supervisor
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-secondary btn-sm"
-                    onClick={() => setTeamModalState({ isOpen: true, campaign: c, team: t })}
-                  >
-                    Editar
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-ghost btn-sm"
-                    onClick={() => handleToggleTeam(c.id, t.id)}
-                  >
-                    {isTeamActive ? 'Desactivar' : 'Activar'}
-                  </button>
+                  <div className="org-team-btn-group">
+                    <button
+                      type="button"
+                      className="btn btn-secondary btn-sm"
+                      onClick={() => setAssignModalState({ isOpen: true, campaign: c, team: t })}
+                      title="Asignar o cambiar supervisor de equipo"
+                    >
+                      <Icon name="user" size={13} />
+                      <span>Supervisor</span>
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-secondary btn-sm"
+                      onClick={() => setTeamModalState({ isOpen: true, campaign: c, team: t })}
+                      title="Editar nombre y dotación del equipo"
+                    >
+                      <Icon name="edit" size={13} />
+                      <span>Editar</span>
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-ghost btn-sm"
+                      onClick={() => handleToggleTeam(c.id, t.id)}
+                      title={isTeamActive ? 'Desactivar equipo' : 'Activar equipo'}
+                    >
+                      {isTeamActive ? 'Desactivar' : 'Activar'}
+                    </button>
+                  </div>
                 </div>
               </div>
             );
