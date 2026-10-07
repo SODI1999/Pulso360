@@ -429,3 +429,32 @@ CREATE TABLE configuracion_sistema (
     descripcion TEXT,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Tabla 25: Sesiones de Chat de Acompañamiento Ocupacional SST (RF-10)
+CREATE TABLE sesiones_chat_soporte (
+    id VARCHAR(50) PRIMARY KEY,
+    agente_id VARCHAR(50) NOT NULL REFERENCES usuarios(id),
+    es_anonimo BOOLEAN NOT NULL DEFAULT FALSE,
+    sst_atendio_id VARCHAR(50) REFERENCES usuarios(id),
+    estado VARCHAR(20) NOT NULL DEFAULT 'activa' CHECK (estado IN ('activa', 'cerrada')),
+    motivo_cierre VARCHAR(60),
+    notas_cierre TEXT,
+    creado_en TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    actualizado_en TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    cerrado_en TIMESTAMPTZ
+);
+
+-- Tabla 26: Mensajes Inmutables del Chat de Acompañamiento SST
+CREATE TABLE mensajes_chat_soporte (
+    id VARCHAR(50) PRIMARY KEY,
+    sesion_id VARCHAR(50) NOT NULL REFERENCES sesiones_chat_soporte(id) ON DELETE CASCADE,
+    remitente_id VARCHAR(50) NOT NULL REFERENCES usuarios(id),
+    remitente_rol VARCHAR(20) NOT NULL,
+    remitente_nombre VARCHAR(120) NOT NULL,
+    texto TEXT NOT NULL,
+    creado_en TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_chat_sesiones_agente_estado ON sesiones_chat_soporte(agente_id, estado);
+CREATE INDEX idx_chat_mensajes_sesion_orden ON mensajes_chat_soporte(sesion_id, creado_en ASC);
+

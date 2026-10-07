@@ -1,17 +1,20 @@
-import { useSupportChannel } from '../hooks/useSupportChannel';
-
 // src/features/agent/pages/SupportChannelPage.jsx
 // Canal voluntario de solicitudes de orientación psicosocial y acompañamiento con SST (RF-10)
 
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-
+import { useSupportChannel } from '../hooks/useSupportChannel';
 import { Icon } from '../../../core/components/Icon';
 import { SupportRequestForm } from '../components/SupportRequestForm';
 import { SupportChatCard } from '../components/SupportChatCard';
 import '../../../styles/apoyo.css';
 
 export function SupportChannelPage() {
-  const { loading,loadError,
+  const [activeTab, setActiveTab] = useState('chat');
+
+  const {
+    loading,
+    loadError,
     navigate,
     consent,
     setSupportMode,
@@ -30,9 +33,9 @@ export function SupportChannelPage() {
     isAnonymous,
     handleSubmit
   } = useSupportChannel();
+
   if (loading) return <p className="agent-page" role="status">Cargando tus registros…</p>;
   if (loadError) return <p className="agent-page alert-banner danger" role="alert">{loadError}</p>;
-
 
   if (!consent?.c3) {
     return (
@@ -95,75 +98,102 @@ export function SupportChannelPage() {
         </p>
       </header>
 
-      {/* Chat interactivo de orientación psicosocial en tiempo real */}
-      <SupportChatCard />
+      {/* Pestañas Segmentadas para Selección Clara de Tarea */}
+      <div className="support-tabs-nav" role="tablist" aria-label="Modalidad de orientación SST">
+        <button
+          type="button"
+          role="tab"
+          aria-selected={activeTab === 'chat'}
+          onClick={() => setActiveTab('chat')}
+          className={`support-tab-btn ${activeTab === 'chat' ? 'is-active' : ''}`}
+        >
+          <Icon name="Headphones" size={16} />
+          <span>Orientación en vivo (Chat SST)</span>
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={activeTab === 'requests'}
+          onClick={() => setActiveTab('requests')}
+          className={`support-tab-btn ${activeTab === 'requests' ? 'is-active' : ''}`}
+        >
+          <Icon name="FileText" size={16} />
+          <span>Solicitud formal y radicados ({userRequests.length})</span>
+        </button>
+      </div>
 
-      {/* Formulario continuo estructurado */}
-      <SupportRequestForm
-        isAnonymous={isAnonymous}
-        onSetSupportMode={setSupportMode}
-        reason={reason}
-        onChangeReason={setReason}
-        details={details}
-        onChangeDetails={setDetails}
-        urgency={urgency}
-        onChangeUrgency={setUrgency}
-        contactPreference={contactPreference}
-        onChangeContactPreference={setContactPreference}
-        timeWindow={timeWindow}
-        onChangeTimeWindow={setTimeWindow}
-        onSubmit={handleSubmit}
-        feedback={feedback}
-      />
+      {/* Vista 1: Chat Interactivo en Tiempo Real con SST */}
+      {activeTab === 'chat' && <SupportChatCard />}
 
-      {/* Historial editorial de solicitudes */}
-      <section className="support-history-section" aria-labelledby="history-heading">
-        <div className="support-history-header">
-          <h2 id="history-heading" className="support-history-title">
-            Mis solicitudes de acompañamiento
-          </h2>
-          <p className="support-history-subtitle">
-            Seguimiento de radicados, tiempos estimados y respuestas de los profesionales de SST.
-          </p>
-        </div>
+      {/* Vista 2: Formulario Estructurado e Historial de Radicados */}
+      {activeTab === 'requests' && (
+        <>
+          <SupportRequestForm
+            isAnonymous={isAnonymous}
+            onSetSupportMode={setSupportMode}
+            reason={reason}
+            onChangeReason={setReason}
+            details={details}
+            onChangeDetails={setDetails}
+            urgency={urgency}
+            onChangeUrgency={setUrgency}
+            contactPreference={contactPreference}
+            onChangeContactPreference={setContactPreference}
+            timeWindow={timeWindow}
+            onChangeTimeWindow={setTimeWindow}
+            onSubmit={handleSubmit}
+            feedback={feedback}
+          />
 
-        {userRequests.length === 0 ? (
-          <div className="support-empty-state">
-            <Icon name="support" size={32} className="support-empty-icon" />
-            <strong className="support-empty-title">No tienes solicitudes registradas en este momento</strong>
-            <p className="support-empty-desc">
-              Cuando envíes una consulta o solicitud a SST, aquí podrás hacer seguimiento seguro a su radicado
-              y respuesta.
-            </p>
-          </div>
-        ) : (
-          <div className="support-requests-flow" role="list">
-            {userRequests.map((req) => (
-              <article key={req.id} className="support-request-item" role="listitem">
-                <div className="support-request-header">
-                  <strong className="support-request-code">{req.code}</strong>
-                  <span className={`support-request-badge ${req.mode === 'anonimo' ? 'is-anon' : ''}`}>
-                    <Icon name={req.mode === 'anonimo' ? 'eyeOff' : 'shieldCheck'} size={13} />
-                    <span>{req.mode === 'anonimo' ? 'Modalidad Anónima' : 'Modalidad Confidencial'}</span>
-                  </span>
-                </div>
-                <div className="support-request-meta-grid">
-                  <div>
-                    <span className="support-meta-label">Motivo:</span> {req.reason}
-                  </div>
-                  <div>
-                    <span className="support-meta-label">Estado:</span>
-                    <span className="support-meta-status">{req.status}</span>
-                  </div>
-                  <div>
-                    <span className="support-meta-label">Atención estimada:</span> {req.sla}
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
-        )}
-      </section>
+          <section className="support-history-section" aria-labelledby="history-heading">
+            <div className="support-history-header">
+              <h2 id="history-heading" className="support-history-title">
+                Mis solicitudes de acompañamiento
+              </h2>
+              <p className="support-history-subtitle">
+                Seguimiento de radicados, tiempos estimados y respuestas de los profesionales de SST.
+              </p>
+            </div>
+
+            {userRequests.length === 0 ? (
+              <div className="support-empty-state">
+                <Icon name="support" size={32} className="support-empty-icon" />
+                <strong className="support-empty-title">No tienes solicitudes registradas en este momento</strong>
+                <p className="support-empty-desc">
+                  Cuando envíes una consulta o solicitud a SST, aquí podrás hacer seguimiento seguro a su radicado
+                  y respuesta.
+                </p>
+              </div>
+            ) : (
+              <div className="support-requests-flow" role="list">
+                {userRequests.map((req) => (
+                  <article key={req.id} className="support-request-item" role="listitem">
+                    <div className="support-request-header">
+                      <strong className="support-request-code">{req.code}</strong>
+                      <span className={`support-request-badge ${req.mode === 'anonimo' ? 'is-anon' : ''}`}>
+                        <Icon name={req.mode === 'anonimo' ? 'eyeOff' : 'shieldCheck'} size={13} />
+                        <span>{req.mode === 'anonimo' ? 'Modalidad Anónima' : 'Modalidad Confidencial'}</span>
+                      </span>
+                    </div>
+                    <div className="support-request-meta-grid">
+                      <div>
+                        <span className="support-meta-label">Motivo:</span> {req.reason}
+                      </div>
+                      <div>
+                        <span className="support-meta-label">Estado:</span>
+                        <span className="support-meta-status">{req.status}</span>
+                      </div>
+                      <div>
+                        <span className="support-meta-label">Atención estimada:</span> {req.sla}
+                      </div>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            )}
+          </section>
+        </>
+      )}
     </div>
   );
 }

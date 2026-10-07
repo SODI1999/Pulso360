@@ -11,6 +11,7 @@ import supervisorRoutes from './interfaces/routes/supervisorRoutes.js';
 import reportsRoutes from './interfaces/routes/reportsRoutes.js';
 import notificationsRoutes from './interfaces/routes/notificationsRoutes.js';
 import nlpRoutes from './interfaces/routes/nlpRoutes.js';
+import chatRoutes from './interfaces/routes/chatRoutes.js';
 import { notFoundHandler, errorHandler } from './middlewares/errorMiddleware.js';
 
 import pool from './infrastructure/db.js';
@@ -92,6 +93,8 @@ app.use('/api/v1/supervisor', supervisorRoutes);
 app.use('/api/v1/reports', reportsRoutes);
 app.use('/api/v1/notifications', notificationsRoutes);
 app.use('/api/v1/nlp', nlpRoutes);
+app.use('/api/v1/chat', chatRoutes);
+app.use('/api/v1/support/chat', chatRoutes);
 
 
 // Manejador para rutas no implementadas (Formato de error SDD unificado)

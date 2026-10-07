@@ -1,12 +1,16 @@
+// frontend/src/features/sst/components/SstLiveChatConsole.jsx
+/**
+ * @file SstLiveChatConsole.jsx
+ * @description Consola de Atención Psicosocial en Tiempo Real para Especialistas SST (RF-10).
+ * Integra WebSockets (Socket.io) y persistencia en PostgreSQL vía REST (chatService).
+ * Garantiza confidencialidad bajo Ley 1581 de 2012 y Res. 2646 de 2008.
+ */
+
 import { useState, useEffect, useRef } from 'react';
 import { useSocket } from '../../../core/socket/socketClient';
+import { chatService } from '../../../core/api/chatService';
 import { Icon } from '../../../core/components/Icon';
 
-/**
- * Consola de Chat en Vivo y Acompañamiento en Tiempo Real para SST (Socket.io).
- * Permite a los especialistas de Seguridad y Salud en el Trabajo atender consultas
- * inmediatas de agentes de Contact Center con estricto secreto profesional y confidencialidad.
- */
 export function SstLiveChatConsole() {
   const { socket, isConnected } = useSocket();
   const [activeChats, setActiveChats] = useState([]);
@@ -14,22 +18,46 @@ export function SstLiveChatConsole() {
   const [conversations, setConversations] = useState({});
   const [inputText, setInputText] = useState('');
   const [searchFilter, setSearchFilter] = useState('');
-  const messagesEndRef = useRef(null);
+  const [isLoadingMessages, setIsLoadingMessages] = useState(false);
 
-  // Cargar lista inicial de chats activos
+  const messagesContainerRef = useRef(null);
+
+  // 1. Cargar lista de sesiones activas desde el backend vía REST y Socket.io
   useEffect(() => {
+    let isMounted = true;
+
+    async function loadActiveSessions() {
+      try {
+        const data = await chatService.getActiveChat();
+        if (isMounted && Array.isArray(data)) {
+          setActiveChats(data);
+          if (data.length > 0) {
+            setSelectedAgentId((prev) => prev || data[0].agentId);
+          }
+        }
+      } catch {
+        // En fallo de red se espera sincronización del socket
+      }
+    }
+
+    loadActiveSessions();
+
     if (isConnected) {
       socket.emit('support:chats:get');
     }
+
+    return () => {
+      isMounted = false;
+    };
   }, [isConnected, socket]);
 
-  // Manejar eventos de lista y actualización de chats
+  // 2. Suscripción a eventos de lista y mensajes entrantes por WebSockets
   useEffect(() => {
     function handleChatsList(list) {
       if (Array.isArray(list)) {
         setActiveChats(list);
-        if (list.length > 0 && !selectedAgentId) {
-          setSelectedAgentId(list[0].agentId);
+        if (list.length > 0) {
+          setSelectedAgentId((prev) => prev || list[0].agentId);
         }
       }
     }
@@ -37,8 +65,8 @@ export function SstLiveChatConsole() {
     function handleChatsUpdated(list) {
       if (Array.isArray(list)) {
         setActiveChats(list);
-        if (list.length > 0 && !selectedAgentId) {
-          setSelectedAgentId(list[0].agentId);
+        if (list.length > 0) {
+          setSelectedAgentId((prev) => prev || list[0].agentId);
         }
       }
     }
@@ -49,7 +77,6 @@ export function SstLiveChatConsole() {
 
       setConversations((prev) => {
         const currentList = prev[agentId] || [];
-        // Evitar duplicados por id
         if (currentList.some((m) => m.id === msg.id)) return prev;
         return {
           ...prev,
@@ -69,20 +96,59 @@ export function SstLiveChatConsole() {
     };
   }, [socket, selectedAgentId]);
 
-  // Notificar lectura cuando cambia el agente seleccionado
+  // 3. Notificar lectura por socket cuando cambia el agente
   useEffect(() => {
     if (selectedAgentId && isConnected) {
       socket.emit('support:chat:read', { agentId: selectedAgentId });
     }
   }, [selectedAgentId, isConnected, socket]);
 
-  // Scroll automático al último mensaje
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [conversations, selectedAgentId]);
-
   const activeChat = activeChats.find((c) => c.agentId === selectedAgentId);
-  const currentMessages = selectedAgentId ? (conversations[selectedAgentId] || []) : [];
+  const currentSessionId = activeChat?.sessionId || activeChat?.id;
+  const currentMessages = selectedAgentId ? conversations[selectedAgentId] || [] : [];
+
+  // 4. Cargar mensajes persistentes al cambiar de sesión activa
+  useEffect(() => {
+    if (!currentSessionId || !selectedAgentId) {
+      setIsLoadingMessages(false);
+      return;
+    }
+
+    const targetAgentId = selectedAgentId;
+    setIsLoadingMessages(true);
+
+    chatService
+      .getSessionMessages(currentSessionId)
+      .then((res) => {
+        const msgList = Array.isArray(res) ? res : (res?.messages || []);
+        const mapped = msgList.map((m) => ({
+          id: m.id,
+          senderId: m.senderId || m.sender_id,
+          senderRole: m.senderRole || m.sender_role,
+          senderName: m.senderName || m.sender_name,
+          text: m.text || m.message_text,
+          timestamp: m.timestamp || m.created_at,
+          agentId: targetAgentId
+        }));
+        setConversations((prev) => ({
+          ...prev,
+          [targetAgentId]: mapped
+        }));
+      })
+      .catch((err) => {
+        console.error('Error al cargar historial SST:', err);
+      })
+      .finally(() => {
+        setIsLoadingMessages(false);
+      });
+  }, [currentSessionId, selectedAgentId]);
+
+  // 4. Scroll contenido únicamente dentro de la caja de mensajes (sin alterar el documento)
+  useEffect(() => {
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+    }
+  }, [conversations, selectedAgentId]);
 
   const handleSendMessage = (e) => {
     e?.preventDefault();
@@ -90,7 +156,8 @@ export function SstLiveChatConsole() {
 
     socket.emit('support:message:send', {
       text: inputText.trim(),
-      receiverId: selectedAgentId
+      receiverId: selectedAgentId,
+      sessionId: currentSessionId
     });
     setInputText('');
   };
@@ -99,91 +166,83 @@ export function SstLiveChatConsole() {
     if (!selectedAgentId) return;
     socket.emit('support:message:send', {
       text,
-      receiverId: selectedAgentId
+      receiverId: selectedAgentId,
+      sessionId: currentSessionId
     });
   };
 
-  const handleCloseChat = () => {
+  const handleCloseChat = async () => {
     if (!selectedAgentId) return;
-    if (window.confirm('¿Deseas dar por concluida esta sesión de orientación en vivo? El agente recibirá la notificación correspondiente.')) {
-      socket.emit('support:chat:close', { agentId: selectedAgentId });
-      setSelectedAgentId(null);
+    const confirmClose = window.confirm(
+      '¿Deseas dar por concluida esta sesión de orientación en vivo? El agente recibirá la notificación correspondiente.'
+    );
+    if (!confirmClose) return;
+
+    socket.emit('support:chat:close', { agentId: selectedAgentId, sessionId: currentSessionId });
+
+    if (currentSessionId) {
+      try {
+        await chatService.closeSession(currentSessionId, {
+          reason: 'Concluido por el profesional de SST',
+          notes: 'Sesión de orientación y contención psicosocial finalizada satisfactoriamente.'
+        });
+      } catch {
+        // En caso de cierre previo por socket
+      }
     }
+
+    setActiveChats((prev) => prev.filter((c) => c.agentId !== selectedAgentId));
+    setSelectedAgentId(null);
   };
 
-  const filteredChats = activeChats.filter((c) =>
-    (c.agentName || '').toLowerCase().includes(searchFilter.toLowerCase()) ||
-    (c.agentId || '').toLowerCase().includes(searchFilter.toLowerCase())
+  const filteredChats = activeChats.filter(
+    (c) =>
+      (c.agentName || '').toLowerCase().includes(searchFilter.toLowerCase()) ||
+      (c.agentId || '').toLowerCase().includes(searchFilter.toLowerCase())
   );
 
   return (
-    <div className="card" style={{ padding: 0, overflow: 'hidden', border: '1px solid var(--c-borde-suave)' }}>
+    <div className="sst-chat-console-card">
       {/* Barra superior de estado */}
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          padding: 'var(--space-4) var(--space-5)',
-          backgroundColor: 'var(--c-fondo)',
-          borderBottom: '1px solid var(--c-borde-suave)'
-        }}
-      >
+      <header className="sst-console-header">
         <div>
-          <h2 style={{ fontSize: '1.05rem', fontWeight: 700, margin: 0, color: 'var(--c-texto)' }}>
-            Consola de Acompañamiento Psicosocial en Tiempo Real
+          <h2 className="sst-console-header-title">
+            <Icon name="Headphones" size={18} />
+            <span>Consola de Acompañamiento Psicosocial en Tiempo Real</span>
           </h2>
-          <p style={{ margin: '0.2rem 0 0', fontSize: '0.8rem', color: 'var(--c-texto-suave)' }}>
+          <p className="sst-console-header-sub">
             Canal confidencial reservado para Seguridad y Salud en el Trabajo (Ley 1581 / Res. 2646)
           </p>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8rem', fontWeight: 600 }}>
-          <span
-            style={{
-              width: '8px',
-              height: '8px',
-              borderRadius: '50%',
-              backgroundColor: isConnected ? '#10b981' : '#f59e0b',
-              display: 'inline-block'
-            }}
-          />
-          <span style={{ color: isConnected ? '#065f46' : '#92400e' }}>
-            {isConnected ? 'Servidor de sockets activo' : 'Conectando al servidor...'}
-          </span>
+        <div className={`support-chat-status ${isConnected ? 'is-online' : 'is-offline'}`}>
+          <span className={`status-dot ${isConnected ? 'online' : 'offline'}`} />
+          <span>{isConnected ? 'Servidor en línea' : 'Conectando...'}</span>
         </div>
-      </div>
+      </header>
 
       {/* Disposición split de 2 columnas */}
-      <div style={{ display: 'grid', gridTemplateColumns: '300px 1fr', minHeight: '480px' }}>
+      <div className="sst-console-grid">
         {/* Panel lateral: Lista de Agentes en Vivo */}
-        <aside
-          style={{
-            borderRight: '1px solid var(--c-borde-suave)',
-            backgroundColor: 'var(--c-superficie)',
-            display: 'flex',
-            flexDirection: 'column'
-          }}
-          aria-label="Agentes con chat activo"
-        >
-          <div style={{ padding: 'var(--space-3)', borderBottom: '1px solid var(--c-borde-suave)' }}>
+        <aside className="sst-console-sidebar" aria-label="Operadores con chat activo">
+          <div className="sst-console-search-box">
             <input
               type="text"
-              placeholder="Buscar agente o ID..."
+              placeholder="Buscar operador o ID..."
               value={searchFilter}
               onChange={(e) => setSearchFilter(e.target.value)}
               className="form-input"
-              style={{ fontSize: '0.85rem', padding: '0.45rem 0.65rem' }}
+              style={{ fontSize: '13px', padding: '6px 10px' }}
               aria-label="Filtrar conversaciones activas"
             />
           </div>
 
-          <div style={{ flex: 1, overflowY: 'auto' }}>
+          <div className="sst-console-agents-list">
             {filteredChats.length === 0 ? (
-              <div style={{ padding: 'var(--space-5)', textAlign: 'center', color: 'var(--c-texto-mutado)', fontSize: '0.85rem' }}>
-                <Icon name="messageSquare" size={24} style={{ opacity: 0.5, marginBottom: '0.5rem' }} />
-                <p style={{ margin: 0 }}>No hay chats activos de agentes en este momento.</p>
-                <p style={{ margin: '0.25rem 0 0', fontSize: '0.75rem' }}>
-                  Cuando un operador envíe un mensaje desde su panel, aparecerá aquí.
+              <div style={{ padding: 'var(--space-6)', textAlign: 'center', color: 'var(--c-texto-mutado)', fontSize: '13px' }}>
+                <Icon name="Headphones" size={24} style={{ opacity: 0.4, marginBottom: '0.5rem' }} />
+                <p style={{ margin: 0, fontWeight: 600 }}>No hay chats activos en este momento.</p>
+                <p style={{ margin: '4px 0 0', fontSize: '12px' }}>
+                  Cuando un operador envíe un mensaje desde su panel, se listará automáticamente aquí.
                 </p>
               </div>
             ) : (
@@ -194,44 +253,22 @@ export function SstLiveChatConsole() {
                     key={chat.agentId}
                     type="button"
                     onClick={() => setSelectedAgentId(chat.agentId)}
-                    style={{
-                      width: '100%',
-                      textAlign: 'left',
-                      padding: 'var(--space-3) var(--space-4)',
-                      border: 'none',
-                      borderBottom: '1px solid var(--c-borde-suave)',
-                      backgroundColor: isSelected ? 'var(--c-primario-suave)' : 'transparent',
-                      cursor: 'pointer',
-                      transition: 'background-color 0.15s ease',
-                      borderLeft: isSelected ? '3px solid var(--c-primario)' : '3px solid transparent'
-                    }}
+                    className={`sst-agent-item-btn ${isSelected ? 'is-active' : ''}`}
                   >
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.25rem' }}>
-                      <span style={{ fontWeight: 600, fontSize: '0.85rem', color: 'var(--c-texto)' }}>
-                        {chat.agentName}
-                      </span>
+                    <div className="sst-agent-item-header">
+                      <span className="sst-agent-item-name">{chat.agentName}</span>
                       {chat.unreadCount > 0 && (
-                        <span
-                          className="badge badge-danger"
-                          style={{ fontSize: '0.7rem', padding: '1px 6px', borderRadius: '10px' }}
-                        >
+                        <span className="badge badge-danger" style={{ fontSize: '11px', padding: '1px 6px' }}>
                           {chat.unreadCount} nuevo{chat.unreadCount > 1 ? 's' : ''}
                         </span>
                       )}
                     </div>
-                    <div
-                      style={{
-                        fontSize: '0.78rem',
-                        color: 'var(--c-texto-suave)',
-                        whiteSpace: 'nowrap',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis'
-                      }}
-                    >
+                    <div className="sst-agent-item-last">
                       {chat.lastMessage || 'Conversación iniciada'}
                     </div>
-                    <div style={{ fontSize: '0.7rem', color: 'var(--c-texto-mutado)', marginTop: '0.2rem' }}>
-                      {chat.isAnonymous ? '● Modalidad confidencial' : '● Identificado'}
+                    <div className="sst-agent-item-meta">
+                      <Icon name={chat.isAnonymous ? 'EyeOff' : 'ShieldCheck'} size={12} />
+                      <span>{chat.isAnonymous ? 'Modalidad confidencial' : 'Identificado'}</span>
                     </div>
                   </button>
                 );
@@ -241,85 +278,66 @@ export function SstLiveChatConsole() {
         </aside>
 
         {/* Panel principal: Conversación activa */}
-        <section style={{ display: 'flex', flexDirection: 'column', backgroundColor: 'var(--c-fondo)' }}>
+        <section className="sst-console-main-chat">
           {!selectedAgentId ? (
-            <div
-              style={{
-                flex: 1,
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'center',
-                padding: 'var(--space-6)',
-                color: 'var(--c-texto-suave)',
-                textAlign: 'center'
-              }}
-            >
-              <Icon name="shield" size={40} style={{ color: 'var(--c-primario)', marginBottom: '1rem', opacity: 0.8 }} />
-              <h3 style={{ margin: '0 0 0.5rem', color: 'var(--c-texto)' }}>
+            <div className="sst-chat-empty-panel">
+              <Icon name="Shield" size={40} style={{ color: 'var(--c-rol-sst, #7c3aed)', marginBottom: '1rem', opacity: 0.8 }} />
+              <h3 style={{ margin: '0 0 0.5rem', color: 'var(--c-texto)', fontSize: '16px' }}>
                 Canal Listo para Atención Ocupacional
               </h3>
-              <p style={{ maxWidth: '420px', margin: 0, fontSize: '0.88rem', lineHeight: 1.5 }}>
-                Selecciona un agente de la lista lateral para iniciar la orientación en vivo. Si aún no hay mensajes, el canal se actualizará tan pronto como un operador solicite acompañamiento.
+              <p style={{ maxWidth: '420px', margin: 0, fontSize: '13.5px', lineHeight: 1.5 }}>
+                Selecciona un operador de la lista lateral para iniciar la orientación en vivo. La conversación se preserva de manera segura e inalterable.
               </p>
             </div>
           ) : (
             <>
               {/* Cabecera del chat seleccionado */}
-              <div
-                style={{
-                  padding: 'var(--space-3) var(--space-5)',
-                  backgroundColor: 'var(--c-superficie)',
-                  borderBottom: '1px solid var(--c-borde-suave)',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center'
-                }}
-              >
-                <div>
-                  <h3 style={{ margin: 0, fontSize: '0.95rem', fontWeight: 700, color: 'var(--c-texto)' }}>
-                    {activeChat?.agentName || `Agente (${selectedAgentId})`}
+              <div className="sst-chat-header-bar">
+                <div className="sst-chat-agent-info">
+                  <h3 className="sst-chat-agent-title">
+                    {activeChat?.agentName || `Operador (${selectedAgentId})`}
                   </h3>
-                  <div style={{ display: 'flex', gap: '0.5rem', fontSize: '0.75rem', color: 'var(--c-texto-suave)', marginTop: '0.15rem' }}>
+                  <div className="sst-chat-agent-tags">
                     <span>ID: {selectedAgentId}</span>
                     <span>·</span>
-                    <span style={{ color: 'var(--c-primario)', fontWeight: 600 }}>
-                      {activeChat?.isAnonymous ? 'Reserva de identidad' : 'Datos visibles para SST'}
+                    <span style={{ color: 'var(--c-rol-sst, #7c3aed)', fontWeight: 600 }}>
+                      {activeChat?.isAnonymous ? 'Reserva de identidad (Confidencial)' : 'Datos visibles para SST'}
                     </span>
                   </div>
                 </div>
 
-                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                <div>
                   <button
                     type="button"
                     onClick={handleCloseChat}
                     className="btn btn-secondary btn-sm"
-                    style={{ fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}
-                    title="Cerrar sesión activa de chat"
+                    style={{ fontSize: '12.5px', display: 'flex', alignItems: 'center', gap: '5px' }}
+                    title="Concluir sesión activa de orientación"
                   >
-                    <Icon name="xCircle" size={14} />
+                    <Icon name="X" size={14} />
                     <span>Concluir sesión</span>
                   </button>
                 </div>
               </div>
 
-              {/* Registro de mensajes */}
+              {/* Registro de mensajes con scroll aislado */}
               <div
+                ref={messagesContainerRef}
+                className="sst-chat-messages-container"
                 role="log"
                 aria-live="polite"
-                style={{
-                  flex: 1,
-                  overflowY: 'auto',
-                  padding: 'var(--space-4)',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '0.75rem',
-                  maxHeight: '380px'
-                }}
               >
-                {currentMessages.length === 0 ? (
-                  <div style={{ textAlign: 'center', color: 'var(--c-texto-mutado)', margin: 'auto', fontSize: '0.85rem' }}>
-                    <p style={{ margin: 0 }}>Esperando primer mensaje o envía una orientación inicial al agente.</p>
+                {isLoadingMessages && (
+                  <div className="support-chat-msg is-system">
+                    <div className="support-msg-bubble">
+                      Cargando historial seguro desde el servidor…
+                    </div>
+                  </div>
+                )}
+
+                {currentMessages.length === 0 && !isLoadingMessages ? (
+                  <div style={{ textAlign: 'center', color: 'var(--c-texto-mutado)', margin: 'auto', fontSize: '13px' }}>
+                    <p style={{ margin: 0 }}>Esperando primer mensaje o envía una orientación inicial al operador.</p>
                   </div>
                 ) : (
                   currentMessages.map((msg) => {
@@ -327,107 +345,92 @@ export function SstLiveChatConsole() {
                     return (
                       <div
                         key={msg.id}
-                        style={{
-                          alignSelf: isSst ? 'flex-end' : 'flex-start',
-                          maxWidth: '75%',
-                          padding: '0.65rem 0.9rem',
-                          borderRadius: 'var(--radius-md)',
-                          backgroundColor: isSst ? 'var(--c-primario)' : 'var(--c-superficie)',
-                          color: isSst ? '#ffffff' : 'var(--c-texto)',
-                          boxShadow: isSst ? 'none' : '0 1px 2px rgba(0,0,0,0.06)',
-                          border: isSst ? 'none' : '1px solid var(--c-borde-suave)'
-                        }}
+                        className={`support-chat-msg ${isSst ? 'is-agent' : 'is-sst'}`}
                       >
-                        <div
-                          style={{
-                            fontSize: '0.72rem',
-                            fontWeight: 700,
-                            marginBottom: '0.2rem',
-                            color: isSst ? '#ccfbf1' : 'var(--c-primario)'
-                          }}
-                        >
-                          {isSst ? 'Tú (Especialista SST)' : (msg.senderName || 'Agente')}
-                        </div>
-                        <div style={{ fontSize: '0.88rem', lineHeight: 1.45 }}>{msg.text}</div>
-                        <div style={{ fontSize: '0.68rem', textAlign: 'right', marginTop: '0.25rem', opacity: 0.8 }}>
-                          {msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
+                        <div className="support-msg-bubble">
+                          <div className="support-msg-header">
+                            <span className="support-msg-sender">
+                              {isSst ? (
+                                <>
+                                  <Icon name="ShieldCheck" size={12} />
+                                  <span>Tú (Especialista SST)</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Icon name="User" size={12} />
+                                  <span>{msg.senderName || 'Operador'}</span>
+                                </>
+                              )}
+                            </span>
+                          </div>
+                          <div className="support-msg-text">{msg.text}</div>
+                          {msg.timestamp && (
+                            <div className="support-msg-time">
+                              {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                            </div>
+                          )}
                         </div>
                       </div>
                     );
                   })
                 )}
-                <div ref={messagesEndRef} />
               </div>
 
-              {/* Respuestas rápidas ocupacionales */}
-              <div
-                style={{
-                  padding: '0.4rem var(--space-4)',
-                  backgroundColor: 'var(--c-superficie)',
-                  borderTop: '1px solid var(--c-borde-suave)',
-                  display: 'flex',
-                  gap: '0.4rem',
-                  overflowX: 'auto',
-                  alignItems: 'center'
-                }}
-              >
-                <span style={{ fontSize: '0.72rem', color: 'var(--c-texto-mutado)', whiteSpace: 'nowrap' }}>
-                  Atajos SST:
-                </span>
+              {/* Respuestas rápidas ocupacionales para SST */}
+              <div className="sst-console-quick-actions" aria-label="Atajos de orientación ocupacional">
+                <span className="support-chips-label">Atajos SST:</span>
                 <button
                   type="button"
-                  onClick={() => handleQuickReply('Hola, te escucho con total reserva y atención. ¿Cómo te sientes en este momento?')}
-                  className="btn btn-secondary btn-sm"
-                  style={{ fontSize: '0.72rem', padding: '2px 8px', whiteSpace: 'nowrap' }}
+                  onClick={() =>
+                    handleQuickReply(
+                      'Hola, te escucho con total reserva y atención. ¿Cómo te sientes en este momento?'
+                    )
+                  }
+                  className="support-chip-btn"
                 >
                   Saludo empático
                 </button>
                 <button
                   type="button"
-                  onClick={() => handleQuickReply('Si experimentas sobrecarga por llamadas continuas, tómate 2 minutos para respirar y relajar hombros.')}
-                  className="btn btn-secondary btn-sm"
-                  style={{ fontSize: '0.72rem', padding: '2px 8px', whiteSpace: 'nowrap' }}
+                  onClick={() =>
+                    handleQuickReply(
+                      'Si experimentas sobrecarga por llamadas continuas, tómate 2 minutos para respirar y relajar hombros.'
+                    )
+                  }
+                  className="support-chip-btn"
                 >
                   Pausa de respiración
                 </button>
                 <button
                   type="button"
-                  onClick={() => handleQuickReply('¿Deseas que coordinemos una pausa activa o valoración con el equipo de salud ocupacional?')}
-                  className="btn btn-secondary btn-sm"
-                  style={{ fontSize: '0.72rem', padding: '2px 8px', whiteSpace: 'nowrap' }}
+                  onClick={() =>
+                    handleQuickReply(
+                      '¿Deseas que coordinemos una pausa activa asistida o valoración preventiva con el equipo de salud ocupacional?'
+                    )
+                  }
+                  className="support-chip-btn"
                 >
                   Proponer valoración
                 </button>
               </div>
 
               {/* Formulario de envío de respuesta */}
-              <form
-                onSubmit={handleSendMessage}
-                style={{
-                  padding: 'var(--space-3) var(--space-4)',
-                  backgroundColor: 'var(--c-superficie)',
-                  borderTop: '1px solid var(--c-borde-suave)',
-                  display: 'flex',
-                  gap: '0.5rem'
-                }}
-              >
+              <form onSubmit={handleSendMessage} className="sst-console-composer">
                 <input
                   type="text"
                   value={inputText}
                   onChange={(e) => setInputText(e.target.value)}
-                  placeholder="Redacta tu orientación o mensaje confidencial para el agente..."
-                  className="form-input"
-                  style={{ flex: 1 }}
+                  placeholder="Redacta tu orientación o mensaje confidencial para el operador..."
+                  className="support-chat-input"
                   disabled={!isConnected}
-                  aria-label="Mensaje para el agente"
+                  aria-label="Mensaje para el operador"
                 />
                 <button
                   type="submit"
-                  className="btn btn-primary"
+                  className="support-chat-send-btn"
                   disabled={!isConnected || !inputText.trim()}
-                  style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', whiteSpace: 'nowrap' }}
                 >
-                  <Icon name="send" size={16} />
+                  <Icon name="Send" size={15} />
                   <span>Responder</span>
                 </button>
               </form>

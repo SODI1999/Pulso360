@@ -262,4 +262,202 @@
   margin-top: 6px;
 }
 
+/* 4. Consola de Chat en Vivo y Acompañamiento Psicosocial SST (RF-10) */
+.sst-chat-console-card {
+  background-color: var(--c-superficie);
+  border: 1px solid var(--c-borde-suave);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+}
+
+.sst-console-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-4) var(--space-5);
+  background-color: var(--c-fondo);
+  border-bottom: 1px solid var(--c-borde-suave);
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.sst-console-header-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--c-texto);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.sst-console-header-sub {
+  font-size: 13px;
+  color: var(--c-texto-suave);
+  margin: 2px 0 0;
+}
+
+.sst-console-grid {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  min-height: 520px;
+}
+
+.sst-console-sidebar {
+  border-right: 1px solid var(--c-borde-suave);
+  background-color: var(--c-superficie);
+  display: flex;
+  flex-direction: column;
+}
+
+.sst-console-search-box {
+  padding: var(--space-3);
+  border-bottom: 1px solid var(--c-borde-suave);
+}
+
+.sst-console-agents-list {
+  flex: 1;
+  overflow-y: auto;
+  max-height: 480px;
+}
+
+.sst-agent-item-btn {
+  width: 100%;
+  text-align: left;
+  padding: var(--space-3) var(--space-4);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--c-borde-suave);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+  border-left: 3px solid transparent;
+}
+
+.sst-agent-item-btn:hover {
+  background-color: var(--c-fondo-subtle);
+}
+
+.sst-agent-item-btn.is-active {
+  background-color: var(--c-rol-sst-bg, #f5f3ff);
+  border-left-color: var(--c-rol-sst, #7c3aed);
+}
+
+.sst-agent-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 3px;
+}
+
+.sst-agent-item-name {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--c-texto);
+}
+
+.sst-agent-item-last {
+  font-size: 12.5px;
+  color: var(--c-texto-suave);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sst-agent-item-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  color: var(--c-texto-mutado);
+  margin-top: 4px;
+}
+
+.sst-console-main-chat {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--c-fondo);
+}
+
+.sst-chat-header-bar {
+  padding: var(--space-3) var(--space-5);
+  background-color: var(--c-superficie);
+  border-bottom: 1px solid var(--c-borde-suave);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.sst-chat-agent-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sst-chat-agent-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--c-texto);
+  margin: 0;
+}
+
+.sst-chat-agent-tags {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--c-texto-suave);
+}
+
+.sst-chat-messages-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  max-height: 420px;
+  min-height: 300px;
+}
+
+.sst-chat-empty-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-8);
+  text-align: center;
+  color: var(--c-texto-suave);
+}
+
+.sst-console-quick-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  background-color: var(--c-superficie);
+  border-top: 1px solid var(--c-borde-suave);
+  overflow-x: auto;
+}
+
+.sst-console-composer {
+  display: flex;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  background-color: var(--c-superficie);
+  border-top: 1px solid var(--c-borde-suave);
+}
+
+@media (max-width: 860px) {
+  .sst-console-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
 

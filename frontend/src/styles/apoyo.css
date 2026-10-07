@@ -605,3 +605,369 @@
     justify-content: center;
   }
 }
+
+/* 12. Segmented Tabs de Apoyo y Acompañamiento */
+.support-tabs-nav {
+  display: flex;
+  gap: var(--space-2);
+  margin-bottom: var(--space-6);
+  border-bottom: 1px solid var(--c-borde-suave);
+  padding-bottom: var(--space-2);
+}
+
+.support-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 8px 16px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--c-texto-suave);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm, 4px);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.support-tab-btn:hover {
+  color: var(--c-texto);
+  background-color: var(--c-fondo-subtle);
+}
+
+.support-tab-btn.is-active {
+  color: var(--c-primario);
+  background-color: var(--c-primario-suave);
+  border-color: var(--c-primario-border);
+}
+
+/* 13. Tarjeta y Contenedor del Chat en Vivo (Anti-Slop, Ergonómico) */
+.support-chat-container {
+  background-color: var(--c-superficie);
+  border: 1px solid var(--c-borde-suave);
+  border-radius: var(--radius-md, 6px);
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  display: flex;
+  flex-direction: column;
+}
+
+.support-chat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-4) var(--space-5);
+  background-color: var(--c-superficie);
+  border-bottom: 1px solid var(--c-borde-suave);
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.support-chat-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.support-chat-heading {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--c-texto);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.support-chat-subtitle {
+  font-size: 13px;
+  color: var(--c-texto-suave);
+  margin: 0;
+}
+
+.support-chat-header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.support-chat-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: var(--radius-sm, 4px);
+}
+
+.support-chat-status.is-online {
+  background-color: var(--c-exito-bg);
+  color: var(--c-exito);
+  border: 1px solid var(--c-exito-border);
+}
+
+.support-chat-status.is-offline {
+  background-color: var(--c-alerta-bg);
+  color: var(--c-alerta);
+  border: 1px solid var(--c-alerta-border);
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.status-dot.online {
+  background-color: var(--c-exito);
+}
+
+.status-dot.offline {
+  background-color: var(--c-alerta);
+}
+
+.support-chat-privacy-toggle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-2) var(--space-5);
+  background-color: var(--c-fondo);
+  border-bottom: 1px solid var(--c-borde-suave);
+  font-size: 12.5px;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.support-privacy-checkbox-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  color: var(--c-texto);
+  font-weight: 500;
+  margin: 0;
+}
+
+.support-privacy-badge-text {
+  color: var(--c-texto-suave);
+  font-weight: 600;
+}
+
+/* Área de Mensajes */
+.support-chat-messages {
+  max-height: 380px;
+  min-height: 260px;
+  overflow-y: auto;
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  background-color: var(--c-fondo);
+}
+
+.support-chat-msg {
+  display: flex;
+  flex-direction: column;
+  max-width: 78%;
+  animation: fadeInMsg 0.15s ease-out;
+}
+
+@keyframes fadeInMsg {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.support-chat-msg.is-agent {
+  align-self: flex-end;
+}
+
+.support-chat-msg.is-sst {
+  align-self: flex-start;
+}
+
+.support-chat-msg.is-system {
+  align-self: center;
+  max-width: 90%;
+  text-align: center;
+}
+
+.support-msg-bubble {
+  padding: 10px 14px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  border-radius: var(--radius-md, 6px);
+  position: relative;
+  word-break: break-word;
+}
+
+.support-chat-msg.is-agent .support-msg-bubble {
+  background-color: var(--c-primario);
+  color: #ffffff;
+  border-bottom-right-radius: 2px;
+}
+
+.support-chat-msg.is-sst .support-msg-bubble {
+  background-color: var(--c-superficie);
+  color: var(--c-texto);
+  border: 1px solid var(--c-borde-suave);
+  border-left: 3px solid var(--c-rol-sst, #7c3aed);
+  border-bottom-left-radius: 2px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.support-chat-msg.is-system .support-msg-bubble {
+  background-color: var(--c-fondo-subtle);
+  color: var(--c-texto-suave);
+  border: 1px solid var(--c-borde-suave);
+  font-size: 12.5px;
+  border-radius: var(--radius-sm, 4px);
+  padding: 6px 12px;
+}
+
+.support-msg-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-bottom: 4px;
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
+.support-chat-msg.is-agent .support-msg-header {
+  color: #ccfbf1;
+}
+
+.support-chat-msg.is-sst .support-msg-header {
+  color: var(--c-rol-sst, #7c3aed);
+}
+
+.support-msg-sender {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.support-msg-time {
+  font-size: 11px;
+  font-weight: 400;
+  opacity: 0.8;
+  margin-top: 4px;
+  text-align: right;
+}
+
+.support-chat-msg.is-agent .support-msg-time {
+  color: #e6f7f5;
+}
+
+.support-chat-msg.is-sst .support-msg-time {
+  color: var(--c-texto-mutado);
+}
+
+/* Chips de Consulta Rápida BPO */
+.support-chat-chips-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  background-color: var(--c-superficie);
+  border-top: 1px solid var(--c-borde-suave);
+  overflow-x: auto;
+}
+
+.support-chips-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--c-texto-mutado);
+  white-space: nowrap;
+}
+
+.support-chip-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--c-texto-suave);
+  background-color: var(--c-fondo-subtle);
+  border: 1px solid var(--c-borde-suave);
+  border-radius: var(--radius-sm, 4px);
+  cursor: pointer;
+  white-space: nowrap;
+  min-height: 28px;
+  transition: all var(--transition-fast);
+}
+
+.support-chip-btn:hover:not(:disabled) {
+  background-color: var(--c-primario-suave);
+  color: var(--c-primario);
+  border-color: var(--c-primario-border);
+}
+
+.support-chip-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Compositor / Formulario de Envío */
+.support-chat-composer {
+  display: flex;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  background-color: var(--c-superficie);
+  border-top: 1px solid var(--c-borde-suave);
+  align-items: center;
+}
+
+.support-chat-input {
+  flex: 1;
+  min-height: 38px;
+  padding: 8px 12px;
+  font-family: inherit;
+  font-size: 13.5px;
+  color: var(--c-texto);
+  background-color: var(--c-fondo);
+  border: 1px solid var(--c-borde-suave);
+  border-radius: var(--radius-sm, 4px);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.support-chat-input:focus {
+  outline: none;
+  border-color: var(--c-primario);
+  box-shadow: 0 0 0 2px var(--c-calma-ring);
+  background-color: var(--c-superficie);
+}
+
+.support-chat-send-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 16px;
+  min-height: 38px;
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #ffffff;
+  background-color: var(--c-primario);
+  border: 1px solid var(--c-primario);
+  border-radius: var(--radius-sm, 4px);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color var(--transition-fast);
+}
+
+.support-chat-send-btn:hover:not(:disabled) {
+  background-color: var(--c-primario-hover);
+}
+
+.support-chat-send-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

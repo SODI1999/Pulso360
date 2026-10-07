@@ -1,6 +1,7 @@
 import { Server } from 'socket.io';
 import jwt from 'jsonwebtoken';
 import { getJwtSecret } from './jwtConfig.js';
+import { chatPersistenceService } from '../application/services/chatPersistenceService.js';
 
 let ioInstance = null;
 
@@ -78,9 +79,14 @@ export function initSocketServer(httpServer) {
     }
 
     // Si un especialista SST se conecta o solicita la lista de chats activos
-    socket.on('support:chats:get', () => {
+    socket.on('support:chats:get', async () => {
       if (userRole === 'SST') {
-        socket.emit('support:chats:list', getSerializedChats());
+        try {
+          const sessions = await chatPersistenceService.getActiveSessionsForSst();
+          socket.emit('support:chats:list', sessions);
+        } catch (err) {
+          socket.emit('support:chats:list', getSerializedChats());
+        }
       }
     });
 
@@ -94,7 +100,7 @@ export function initSocketServer(httpServer) {
     });
 
     // Canal bidireccional de chat de apoyo psicológico / desahogo confidencial (Consentimiento C3)
-    socket.on('support:message:send', (payload) => {
+    socket.on('support:message:send', async (payload) => {
       if (!payload || !payload.text || typeof payload.text !== 'string' || !payload.text.trim()) {
         return;
       }
@@ -119,20 +125,41 @@ export function initSocketServer(httpServer) {
         activeChats.set(agentId, chat);
       }
 
-      const message = {
+      const cleanText = payload.text.trim();
+      const senderDisplayName = isAgent
+        ? (chat.isAnonymous ? chat.agentName : (payload.senderName || 'Agente de Contact Center'))
+        : 'Especialista SST (Salud Ocupacional)';
+
+      let savedMsg = null;
+      try {
+        const sessionData = await chatPersistenceService.getOrCreateActiveSession({
+          agentId,
+          isAnonymous: Boolean(payload.isAnonymous),
+          agentName: payload.senderName
+        });
+        savedMsg = await chatPersistenceService.saveMessage({
+          sessionId: sessionData.session.id,
+          senderId: id,
+          senderRole: userRole,
+          senderName: senderDisplayName,
+          text: cleanText
+        });
+      } catch (err) {
+        // Fallback defensivo si PostgreSQL tiene latencia
+      }
+
+      const message = savedMsg || {
         id: `msg-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
         senderId: id,
         senderRole: userRole,
-        senderName: isAgent
-          ? (chat.isAnonymous ? chat.agentName : (payload.senderName || 'Agente de Contact Center'))
-          : 'Especialista SST (Salud Ocupacional)',
+        senderName: senderDisplayName,
         receiverId: isAgent ? null : agentId,
         agentId,
-        text: payload.text.trim(),
+        text: cleanText,
         timestamp: new Date().toISOString()
       };
 
-      // Conservar los últimos 50 mensajes en la conversación activa
+      // Conservar en memoria rápida
       chat.messages.push(message);
       if (chat.messages.length > 50) {
         chat.messages.shift();
@@ -141,27 +168,50 @@ export function initSocketServer(httpServer) {
 
       if (isAgent) {
         chat.unreadCount += 1;
-        // Emitir al agente y a los especialistas de SST
-        io.to(`user:${agentId}`).emit('support:message:received', message);
-        io.to('role:SST').emit('support:message:received', message);
-        io.to('role:SST').emit('support:chats:updated', getSerializedChats());
-      } else if (userRole === 'SST') {
-        // Emitir al agente destinatario y a la sala general de SST
-        io.to(`user:${agentId}`).emit('support:message:received', message);
-        io.to('role:SST').emit('support:message:received', message);
+      }
+
+      // Emitir mensaje en tiempo real al agente y a los especialistas SST
+      io.to(`user:${agentId}`).emit('support:message:received', message);
+      io.to('role:SST').emit('support:message:received', message);
+
+      try {
+        const sstSessions = await chatPersistenceService.getActiveSessionsForSst();
+        io.to('role:SST').emit('support:chats:updated', sstSessions);
+      } catch {
         io.to('role:SST').emit('support:chats:updated', getSerializedChats());
       }
     });
 
     // Cerrar sesión de chat activa
-    socket.on('support:chat:close', (payload) => {
+    socket.on('support:chat:close', async (payload) => {
       const targetAgentId = userRole === 'SST' ? payload?.agentId : id;
-      if (targetAgentId && activeChats.has(targetAgentId)) {
+      if (targetAgentId) {
         activeChats.delete(targetAgentId);
+        try {
+          const sessionData = await chatPersistenceService.getOrCreateActiveSession({ agentId: targetAgentId });
+          if (sessionData?.session?.id) {
+            await chatPersistenceService.closeSession({
+              sessionId: sessionData.session.id,
+              closedByUserId: id,
+              closedByRole: userRole,
+              reason: payload?.reason || 'CONCLUIDO_POR_USUARIO',
+              notes: payload?.notes || ''
+            });
+          }
+        } catch {
+          // Ignorar error de persistencia en cierre
+        }
+
         io.to(`user:${targetAgentId}`).emit('support:chat:ended', {
           message: 'La sesión de orientación en vivo ha finalizado.'
         });
-        io.to('role:SST').emit('support:chats:updated', getSerializedChats());
+
+        try {
+          const sstSessions = await chatPersistenceService.getActiveSessionsForSst();
+          io.to('role:SST').emit('support:chats:updated', sstSessions);
+        } catch {
+          io.to('role:SST').emit('support:chats:updated', getSerializedChats());
+        }
       }
     });
   });

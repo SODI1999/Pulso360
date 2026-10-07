@@ -58,12 +58,25 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "required": ["status", "database", "error", "code"],
+                  "required": [
+                    "status",
+                    "database",
+                    "error",
+                    "code"
+                  ],
                   "properties": {
-                    "status": { "const": "degraded" },
-                    "database": { "const": "disconnected" },
-                    "error": { "type": "string" },
-                    "code": { "const": "DATABASE_UNAVAILABLE" }
+                    "status": {
+                      "const": "degraded"
+                    },
+                    "database": {
+                      "const": "disconnected"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "const": "DATABASE_UNAVAILABLE"
+                    }
                   }
                 }
               }
@@ -166,8 +179,8 @@
               }
             }
           },
-          "401": {
-            "description": "Token JWT ausente o inválido",
+          "400": {
+            "description": "Error estructurado: la operación no se confirmó",
             "content": {
               "application/json": {
                 "schema": {
@@ -176,8 +189,8 @@
               }
             }
           },
-          "400": {
-            "description": "Error estructurado: la operación no se confirmó",
+          "401": {
+            "description": "Token JWT ausente o inválido",
             "content": {
               "application/json": {
                 "schema": {
@@ -252,8 +265,8 @@
               }
             }
           },
-          "401": {
-            "description": "No autenticado",
+          "400": {
+            "description": "Error estructurado: la operación no se confirmó",
             "content": {
               "application/json": {
                 "schema": {
@@ -262,8 +275,8 @@
               }
             }
           },
-          "400": {
-            "description": "Error estructurado: la operación no se confirmó",
+          "401": {
+            "description": "No autenticado",
             "content": {
               "application/json": {
                 "schema": {
@@ -431,8 +444,8 @@
               }
             }
           },
-          "401": {
-            "description": "No autorizado",
+          "400": {
+            "description": "Error estructurado: la operación no se confirmó",
             "content": {
               "application/json": {
                 "schema": {
@@ -441,8 +454,8 @@
               }
             }
           },
-          "400": {
-            "description": "Error estructurado: la operación no se confirmó",
+          "401": {
+            "description": "No autorizado",
             "content": {
               "application/json": {
                 "schema": {
@@ -537,26 +550,6 @@
               }
             }
           },
-          "403": {
-            "description": "Falta de consentimiento informado C1 para check-in",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Ya existe un check-in registrado para la fecha actual",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "401": {
             "description": "Error estructurado: la operación no se confirmó",
             "content": {
@@ -567,8 +560,28 @@
               }
             }
           },
+          "403": {
+            "description": "Falta de consentimiento informado C1 para check-in",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "404": {
             "description": "Error estructurado: la operación no se confirmó",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Ya existe un check-in registrado para la fecha actual",
             "content": {
               "application/json": {
                 "schema": {
@@ -710,8 +723,8 @@
               }
             }
           },
-          "401": {
-            "description": "No autenticado",
+          "400": {
+            "description": "Error estructurado: la operación no se confirmó",
             "content": {
               "application/json": {
                 "schema": {
@@ -720,8 +733,8 @@
               }
             }
           },
-          "400": {
-            "description": "Error estructurado: la operación no se confirmó",
+          "401": {
+            "description": "No autenticado",
             "content": {
               "application/json": {
                 "schema": {
@@ -813,8 +826,8 @@
               }
             }
           },
-          "403": {
-            "description": "Falta de consentimiento informado C2 para bitácora",
+          "401": {
+            "description": "Error estructurado: la operación no se confirmó",
             "content": {
               "application/json": {
                 "schema": {
@@ -823,8 +836,8 @@
               }
             }
           },
-          "401": {
-            "description": "Error estructurado: la operación no se confirmó",
+          "403": {
+            "description": "Falta de consentimiento informado C2 para bitácora",
             "content": {
               "application/json": {
                 "schema": {
@@ -922,16 +935,6 @@
               }
             }
           },
-          "403": {
-            "description": "Rol no autorizado (requiere SST o SUPERVISOR)",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "400": {
             "description": "Error estructurado: la operación no se confirmó",
             "content": {
@@ -944,6 +947,16 @@
           },
           "401": {
             "description": "Error estructurado: la operación no se confirmó",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Rol no autorizado (requiere SST o SUPERVISOR)",
             "content": {
               "application/json": {
                 "schema": {
@@ -4460,6 +4473,16 @@
               }
             }
           },
+          "201": {
+            "description": "Operación confirmada por el servidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JournalSuccessResponse"
+                }
+              }
+            }
+          },
           "400": {
             "description": "Error estructurado: la operación no se confirmó",
             "content": {
@@ -4516,16 +4539,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "201": {
-            "description": "Operación confirmada por el servidor",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/JournalSuccessResponse"
                 }
               }
             }
@@ -5096,6 +5109,28 @@
               }
             }
           },
+          "201": {
+            "description": "Operación confirmada por el servidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "const": true
+                    },
+                    "data": {
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
           "400": {
             "description": "Error estructurado: la operación no se confirmó",
             "content": {
@@ -5152,28 +5187,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "201": {
-            "description": "Operación confirmada por el servidor",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "const": true
-                    },
-                    "data": {
-                      "type": "object"
-                    }
-                  },
-                  "required": [
-                    "success",
-                    "data"
-                  ]
                 }
               }
             }
@@ -5445,6 +5458,211 @@
           }
         },
         "description": "Mayúsculas, minúsculas y números. Token de un uso, caduca 30 minutos. Transacción invalida tokens restantes e incrementa auth_version para revocar sesiones anteriores. No retorna contraseña ni token."
+      }
+    },
+    "/chat/active": {
+      "get": {
+        "tags": [
+          "Chat"
+        ],
+        "summary": "Obtener o recuperar sesión de chat activa",
+        "description": "Retorna la sesión activa para el agente o lista de sesiones activas para SST.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sesión activa obtenida exitosamente"
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso restringido por rol",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error interno del servidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/chat/sessions/{sessionId}/messages": {
+      "get": {
+        "tags": [
+          "Chat"
+        ],
+        "summary": "Historial de mensajes de una sesión de chat",
+        "description": "Retorna la lista de mensajes cronológicos de una sesión de chat.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Mensajes obtenidos exitosamente"
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso restringido por rol",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sesión no encontrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error interno del servidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/chat/sessions/{sessionId}/close": {
+      "post": {
+        "tags": [
+          "Chat"
+        ],
+        "summary": "Cerrar sesión de chat de soporte",
+        "description": "Cierra formalmente una sesión de chat SST.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "reason": {
+                    "type": "string"
+                  },
+                  "notes": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Sesión cerrada correctamente"
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso restringido por rol",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sesión no encontrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error interno del servidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
       }
     }
   },
