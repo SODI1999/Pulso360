@@ -85,30 +85,9 @@ export function useLoginCredentials(navigate) {
     }
   };
 
-  const handleSsoLogin = async (provider) => {
-    if (loading || lockedRemainingMs > 0) return;
-    setLoading(true);
-    setFeedback({
-      type: 'success',
-      message: `Iniciando simulación de acceso con ${provider === 'microsoft' ? 'Microsoft 365' : 'Google Workspace'}...`
-    });
+  // Desconectado temporalmente según requerimiento: los botones se mantienen en la interfaz sin acción asociada
+  const handleSsoLogin = () => {};
 
-    try {
-      // Simulación de SSO corporativo federado con cuenta activa
-      setTimeout(async () => {
-        const result = await authService.login('agente@pulso360.co', 'Pulso360#2026');
-        setLoading(false);
-        if (result.success) {
-          navigate('/agente/panel');
-        } else {
-          setFeedback({ type: 'error', message: result.message });
-        }
-      }, 500);
-    } catch {
-      setLoading(false);
-      setFeedback({ type: 'error', message: 'Error de comunicación con el proveedor de identidad.' });
-    }
-  };
   return {
     email,
     setEmail,
