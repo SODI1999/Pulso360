@@ -95,7 +95,7 @@ export function SstDashboardPage() {
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <Icon name="Headphones" size={20} />
+            <Icon name="MessagesSquare" size={20} />
             <div>
               <strong style={{ display: 'block', fontSize: '0.9rem' }}>
                 Consulta de Orientación en Vivo de Agente
@@ -128,7 +128,7 @@ export function SstDashboardPage() {
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
-            <Icon name="bell" size={20} />
+            <Icon name="alertTriangle" size={20} />
             <div>
               <strong style={{ color: '#92400e' }}>¡Alerta en Tiempo Real Detectada!</strong>
               <div style={{ fontSize: '0.88rem', color: '#78350f' }}>
@@ -159,7 +159,7 @@ export function SstDashboardPage() {
         </div>
 
         <Link to="/sst/alertas" className="btn btn-primary">
-          <Icon name="notifications_active" size={18} />
+          <Icon name="alertTriangle" size={18} />
           <span>Bandeja de Alertas ({pendingAlerts.length} Pendientes)</span>
         </Link>
       </div>
@@ -216,7 +216,7 @@ export function SstDashboardPage() {
                 <span style={{ fontSize: '14px', fontWeight: '500', color: 'var(--c-texto-mutado)' }}>/ 100</span>
               </div>
               <div className={`kpi-delta ${wellbeingScore >= 70 ? 'ok' : 'warn'}`}>
-                <Icon name={wellbeingScore >= 70 ? 'checkCircle' : 'alertTriangle'} size={16} />
+                <Icon name={wellbeingScore == null ? 'info' : wellbeingScore >= 70 ? 'checkCircle' : 'alertTriangle'} size={16} />
                 <span>
                   {wellbeingScore == null ? 'Índice no disponible en el contrato actual' : wellbeingScore >= 70
                     ? 'Nivel agregado en rango favorable'
@@ -244,7 +244,7 @@ export function SstDashboardPage() {
             </span>
           </div>
           <div className="kpi-delta ok">
-            <Icon name="checkCircle" size={16} />
+            <Icon name="clock" size={16} />
             <span>Seguimiento según SLA establecido</span>
           </div>
         </div>

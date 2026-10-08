@@ -1,40 +1,56 @@
 // frontend/src/core/api/chatService.jsx
 /**
  * @file chatService.jsx
- * @description Servicio cliente REST para persistencia y consulta de sesiones de chat
- * de acompañamiento psicosocial con SST (RF-10, Ley 1581 / Res. 2646).
+ * @description Servicio cliente REST para sesiones de chat preventivo vinculadas a Radicados de Apoyo SST (RF-10).
+ * Modelo preventivo de SG-SST (Ley 1581 / Res. 2646). No es servicio clínico ni diagnóstico.
  */
 
 import { apiClient } from './apiClient';
 
 export const chatService = {
   /**
-   * Obtiene la sesión activa para el usuario en sesión.
-   * - AGENTE: Obtiene o crea la sesión activa y retorna { session, messages }.
-   * - SST: Obtiene el listado de todas las sesiones activas en el centro.
-   * @param {{ isAnonymous?: boolean }} params
+   * Activa el canal de chat interactivo para un radicado formal de apoyo (SST).
+   * @param {string} requestId - Identificador del radicado (ej. 'sup-uuid')
    */
-  getActiveChat: async (params = {}) => {
-    const res = await apiClient.get('/chat/active', { params });
+  activateChatForRequest: async (requestId) => {
+    const res = await apiClient.post(`/chat/requests/${requestId}/activate`);
     return res.data;
   },
 
   /**
-   * Obtiene los mensajes históricos de una sesión dada.
-   * @param {string} sessionId
+   * Obtiene la sesión de chat (activa o cerrada) y mensajes vinculados a un radicado formal.
+   * Accesible tanto para el Agente propietario como para especialistas SST.
+   * @param {string} requestId - Identificador del radicado
    */
-  getSessionMessages: async (sessionId) => {
-    const res = await apiClient.get(`/chat/sessions/${sessionId}/messages`);
+  getChatByRequest: async (requestId) => {
+    const res = await apiClient.get(`/chat/requests/${requestId}`);
     return res.data;
   },
 
   /**
-   * Concluye formalmente la sesión de chat con motivo y notas opcionales.
+   * Obtiene el mapa de radicados con chat activo o histórico para el agente autenticado.
+   */
+  getAgentActiveChatsMap: async () => {
+    const res = await apiClient.get('/chat/agent-active-map');
+    return res.data;
+  },
+
+  /**
+   * Concluye formalmente la sesión de chat con notas preventivas y la pasa a solo lectura.
    * @param {string} sessionId
    * @param {{ reason?: string, notes?: string }} payload
    */
   closeSession: async (sessionId, payload = {}) => {
     const res = await apiClient.post(`/chat/sessions/${sessionId}/close`, payload);
+    return res.data;
+  },
+
+  /**
+   * Obtiene el historial inmutable de mensajes de una sesión dada.
+   * @param {string} sessionId
+   */
+  getSessionMessages: async (sessionId) => {
+    const res = await apiClient.get(`/chat/sessions/${sessionId}/messages`);
     return res.data;
   }
 };

@@ -111,7 +111,7 @@ export function JournalEditor({
 
         <div className="journal-editor-actions">
           <button type="submit" className="btn btn-primary" id="saveJournalBtn" disabled={isAnalyzing}>
-            <Icon name={isAnalyzing ? 'sync' : 'task_alt'} size={18} />
+            <Icon name={isAnalyzing ? 'sync' : 'save'} size={18} />
             <span>{isAnalyzing ? 'Analizando…' : consent?.c3 ? 'Guardar y analizar' : 'Guardar'}</span>
           </button>
 

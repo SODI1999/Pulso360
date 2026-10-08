@@ -175,7 +175,7 @@ export const TRANSFER_CARDS = [
     pulsoSolution:
       'La Ley 2191 de 2022 se presenta como marco de referencia para la desconexión laboral. La versión actual documenta el principio, pero no demuestra una sincronización con turnos pactados ni un bloqueo integral fuera de jornada.',
     featureBadge: 'Marco de referencia (Ley 2191)',
-    icon: 'zap'
+    icon: 'Unplug'
   }
 ];
 
@@ -254,6 +254,6 @@ export const ANTI_SURVEILLANCE_PILLARS = [
     title: 'Separación de bienestar y desempeño',
     description:
       'Principio de diseño: los registros de bienestar no deben convertirse en rankings ni métricas punitivas de desempeño; la gobernanza institucional debe sostener este límite.',
-    icon: 'zap'
+    icon: 'fileShield'
   }
 ];

@@ -71,7 +71,8 @@ export async function fetchSstSupportRequests() {
       const res = await apiClient.get('/sst/support-requests');
       const payload = res.data?.data !== undefined ? res.data.data : res.data;
       const mapped = Array.isArray(payload) ? payload.map(r => ({ ...r, date: r.request_date?.slice(0,10),
-        userName: r.mode === 'anonimo' ? null : r.solicitante, contactPreference:r.contact_preference, timeWindow:r.time_window })) : [];
+        userName: r.mode === 'anonimo' ? null : r.solicitante, contactPreference:r.contact_preference, timeWindow:r.time_window,
+        chatStatus: r.chat_status || r.chatStatus || null, chatSessionId: r.chat_session_id || r.chatSessionId || null })) : [];
       sstSupportCache = mapped;
       return mapped;
     } catch (error) {

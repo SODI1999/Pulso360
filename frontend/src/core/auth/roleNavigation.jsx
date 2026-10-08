@@ -25,8 +25,8 @@ export const roleMenus = {
     { label: 'Mi panel', icon: 'LayoutDashboard', href: '/agente/panel', group: 'Tu jornada' },
     { label: 'Check-in diario', icon: 'HeartPulse', href: '/agente/checkin', group: 'Tu jornada' },
     { label: 'Bitácora', icon: 'BookOpen', href: '/agente/bitacora', group: 'Tu jornada' },
-    { label: 'Mi análisis', icon: 'TrendingUp', href: '/agente/mi-analisis', group: 'Tu bienestar' },
-    { label: 'Mi bienestar', icon: 'Headphones', href: '/agente/mi-bienestar', group: 'Tu bienestar' },
+    { label: 'Mi análisis', icon: 'Compass', href: '/agente/mi-analisis', group: 'Tu bienestar' },
+    { label: 'Mi bienestar', icon: 'LineChart', href: '/agente/mi-bienestar', group: 'Tu bienestar' },
     { label: 'Acompañamiento', icon: 'HeartHandshake', href: '/agente/apoyo', group: 'Tu bienestar' },
     /* En escritorio "Mis datos" vive en el menú de cuenta (pie del sidebar).
        Se conserva en la lista con `mobileOnly` para navegación táctil (auditoría 015). */
@@ -34,21 +34,21 @@ export const roleMenus = {
   ],
   supervisor: [
     { label: 'Panel de equipo', icon: 'Users', href: '/supervisor/panel', group: 'Tu equipo' },
-    { label: 'Intervenciones', icon: 'Activity', href: '/supervisor/acciones', group: 'Tu equipo' },
-    { label: 'Reporte de equipo', icon: 'BarChart3', href: '/reportes', group: 'Reportes' }
+    { label: 'Intervenciones', icon: 'ClipboardList', href: '/supervisor/acciones', group: 'Tu equipo' },
+    { label: 'Reporte de equipo', icon: 'FileSpreadsheet', href: '/reportes', group: 'Reportes' }
   ],
   sst: [
-    { label: 'Panel agregado', icon: 'Activity', href: '/sst/panel', group: 'Monitoreo' },
-    { label: 'Bandeja de alertas', icon: 'BellDot', href: '/sst/alertas', group: 'Monitoreo' },
+    { label: 'Panel agregado', icon: 'BarChart3', href: '/sst/panel', group: 'Monitoreo' },
+    { label: 'Bandeja de alertas', icon: 'AlertTriangle', href: '/sst/alertas', group: 'Monitoreo' },
     { label: 'Reglas de alertas', icon: 'Sliders', href: '/sst/reglas-alertas', group: 'Monitoreo' },
-    { label: 'Intervenciones', icon: 'HeartHandshake', href: '/sst/intervenciones', group: 'Acompañamiento' },
+    { label: 'Intervenciones', icon: 'ClipboardList', href: '/sst/intervenciones', group: 'Acompañamiento' },
     {
       label: 'Buzón de acompañamiento',
       icon: 'Inbox',
       href: '/sst/buzon',
       group: 'Acompañamiento'
     },
-    { label: 'Reportes agregados', icon: 'BarChart3', href: '/reportes', group: 'Reportes' }
+    { label: 'Reportes agregados', icon: 'FileSpreadsheet', href: '/reportes', group: 'Reportes' }
   ],
   auditor: [
     // Un solo destino: sin grupo para no dibujar encabezados innecesarios
@@ -60,6 +60,6 @@ export const roleMenus = {
     { label: 'Parámetros', icon: 'Sliders', href: '/admin/parametros', group: 'Configuración y datos' },
     { label: 'Importar CSV', icon: 'Upload', href: '/admin/importar', group: 'Configuración y datos' },
     { label: 'Habeas Data', icon: 'ShieldCheck', href: '/admin/solicitudes', group: 'Configuración y datos' },
-    { label: 'Reportes', icon: 'BarChart3', href: '/reportes', group: 'Reportes' }
+    { label: 'Reportes', icon: 'FileSpreadsheet', href: '/reportes', group: 'Reportes' }
   ]
 };

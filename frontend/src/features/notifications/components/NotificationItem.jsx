@@ -13,12 +13,12 @@ export function NotificationItem({ notification = {}, onClick = () => {}, format
 
     if (href.includes('apoyo') || titleLower.includes('solicitud') || titleLower.includes('acompañamiento')) {
       return {
-        icon: 'support',
+        icon: 'support_agent',
         category: 'Acompañamiento SST',
         colorClass: 'notif-type--support'
       };
     }
-    if (notification.role === 'sst' || titleLower.includes('alerta') || titleLower.includes('caída')) {
+    if (href.includes('/sst/alertas') || titleLower.includes('alerta') || titleLower.includes('caída')) {
       return {
         icon: 'alertTriangle',
         category: 'Alerta Operativa',

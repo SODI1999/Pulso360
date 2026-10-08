@@ -14,7 +14,7 @@ export const DEMO_ROLES = [
     badge: 'Línea de Frente',
     email: 'agente@pulso360.co',
     password: 'Pulso360#2026',
-    icon: 'support_agent',
+    icon: 'Headphones',
     description:
       'Check-in de 60s al cierre de turno, bitácora personal y registro de fatiga sin métricas de AHT.'
   },

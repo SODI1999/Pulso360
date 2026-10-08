@@ -147,7 +147,7 @@ export function ActionsPage() {
                         onClick={() => setSelectedIntervention(item)}
                         style={{ whiteSpace: 'nowrap' }}
                       >
-                        <Icon name="edit" size={14} />
+                        <Icon name={item.status === 'Cerrada' ? 'eye' : 'edit'} size={14} />
                         <span>{item.status === 'Cerrada' ? 'Ver avance' : 'Registrar avance'}</span>
                       </button>
                     </td>

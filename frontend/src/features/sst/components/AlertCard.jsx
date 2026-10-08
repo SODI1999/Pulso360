@@ -83,7 +83,7 @@ export function AlertCard({ alertItem, onUpdateStatus, onDismissRequest, onCreat
             className="btn btn-secondary btn-sm"
             onClick={() => onUpdateStatus(alertItem.id, 'EN_REVISION')}
           >
-            <Icon name="edit" size={14} />
+            <Icon name="Search" size={14} />
             <span>Tomar en revisión</span>
           </button>
         )}
@@ -95,7 +95,7 @@ export function AlertCard({ alertItem, onUpdateStatus, onDismissRequest, onCreat
               className="btn btn-primary btn-sm"
               onClick={() => onCreateIntervention(alertItem)}
             >
-              <Icon name="healing" size={14} />
+              <Icon name="ClipboardList" size={14} />
               <span>Crear plan de intervención</span>
             </button>
             <button

@@ -50,7 +50,7 @@ export function SstDemoPanel() {
         {/* Callout de Trazabilidad Auditable */}
         <div className="sst-traceability-callout">
           <div className="callout-icon-wrap">
-            <Icon name="trendingUp" size={20} />
+            <Icon name="ClipboardList" size={20} />
           </div>
           <div>
             <strong>Cero consecuencias punitivas · Trazabilidad auditable para SST</strong>

@@ -215,7 +215,7 @@ export function TeamDashboardPage() {
                 to="/supervisor/acciones"
                 className="btn btn-secondary supervisor-rec-action"
               >
-                <Icon name="task_alt" size={16} />
+                <Icon name="ClipboardList" size={16} />
                 <span>Ver intervención asignada</span>
               </Link>
             </aside>

@@ -3,10 +3,8 @@
 /* Iconografia SVG */
 .ui-svg-icon {
   display: inline-block;
-  width: 1.25em;
-  height: 1.25em;
+  /* El SVG define sus dimensiones con size; no sobrescribirlas según la fuente. */
   vertical-align: -0.22em;
-  stroke-width: 1.8;
   fill: none;
   stroke: currentColor;
   flex-shrink: 0;

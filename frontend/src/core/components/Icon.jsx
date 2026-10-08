@@ -1,5 +1,5 @@
 // src/core/components/Icon.jsx
-// Componente centralizado de iconografía con Lucide React y compatibilidad total con el dominio Pulso360
+// Catálogo compartido de Lucide y símbolos propios de Pulso360.
 
 import {
   LayoutDashboard,
@@ -70,8 +70,28 @@ import {
   Feather,
   Compass,
   BatteryLow,
-  Send
+  Send,
+  Heart,
+  UserPlus,
+  FileLock,
+  FolderOpen,
+  Calendar,
+  MessageSquare,
+  Bookmark,
+  Circle,
+  CircleHelp,
+  Hand,
+  MessagesSquare,
+  CircleDot,
+  ClipboardList,
+  Pencil,
+  UserRoundCog,
+  Printer,
+  CircleMinus,
+  Unplug,
+  Scale
 } from 'lucide-react';
+import { env } from '../config/env';
 
 // Diccionario de iconos de Lucide (soporta nombres PascalCase canónicos y alias clásicos en camelCase/snake_case)
 const lucideComponents = {
@@ -145,9 +165,41 @@ const lucideComponents = {
   Compass,
   BatteryLow,
   Send,
+  Heart,
+  UserPlus,
+  FileLock,
+  FolderOpen,
+  Calendar,
+  MessageSquare,
+  Bookmark,
+  Circle,
+  CircleHelp,
+  Hand,
+  MessagesSquare,
+  CircleDot,
+  ClipboardList,
+  Pencil,
+  UserRoundCog,
+  Printer,
+  CircleMinus,
+  Unplug,
+  Scale,
 
   // Alias clásicos del sistema Pulso360 mapeados a componentes profesionales de Lucide
   send: Send,
+  heart: Heart,
+  user: User,
+  headphones: Headphones,
+  folder: FolderOpen,
+  calendar: Calendar,
+  messageSquare: MessageSquare,
+  bookmark: Bookmark,
+  circle: Circle,
+  warning: AlertTriangle,
+  trendingUp: TrendingUp,
+  summarize: FileText,
+  touchApp: Hand,
+  touch_app: Hand,
   feather: Feather,
   compass: Compass,
   battery_low: BatteryLow,
@@ -161,10 +213,10 @@ const lucideComponents = {
   breathe: Wind,
   dashboard: LayoutDashboard,
   favorite: HeartPulse,
-  edit_note: BookOpen,
-  edit: NotebookPen,
+  edit_note: NotebookPen,
+  edit: Pencil,
   insights: TrendingUp,
-  monitoring: Headphones,
+  monitoring: LineChart,
   support_agent: HeartHandshake,
   group: Users,
   task_alt: CheckCircle2,
@@ -196,8 +248,8 @@ const lucideComponents = {
   domain: Building2,
   apartment: Building2,
   building: Building2,
-  manage_accounts: Users,
-  userPlus: Users,
+  manage_accounts: UserRoundCog,
+  userPlus: UserPlus,
   upload_file: Upload,
   upload: Upload,
   logout: LogOut,
@@ -206,7 +258,7 @@ const lucideComponents = {
   refresh: RefreshCw,
   download: Download,
   fileText: FileText,
-  fileShield: ShieldCheck,
+  fileShield: FileLock,
   clock: Clock,
   zap: Zap,
   trash: Trash2,
@@ -274,22 +326,6 @@ const customPulsoSvgs = {
       <polyline points="8.5 7.5 12 11 15.5 7.5" />
       <path d="M5 16c1.5 2 4 3 7 3s5.5-1 7-3" />
       <circle cx="12" cy="12" r="10" opacity="0.35" />
-    </>
-  ),
-  touchApp: (
-    <>
-      <path d="M12 11h1a2 2 0 0 1 2 2v1a2 2 0 0 1 2 2v1a2 2 0 0 1 2 2v2a5 5 0 0 1-5 5h-2a5 5 0 0 1-5-5v-7a2 2 0 0 1 4 0v-4a2 2 0 0 1 4 0v1" />
-      <path d="M12 7V4" />
-      <path d="M8.5 5.5l-2.1-2.1" />
-      <path d="M15.5 5.5l2.1-2.1" />
-    </>
-  ),
-  touch_app: (
-    <>
-      <path d="M12 11h1a2 2 0 0 1 2 2v1a2 2 0 0 1 2 2v1a2 2 0 0 1 2 2v2a5 5 0 0 1-5 5h-2a5 5 0 0 1-5-5v-7a2 2 0 0 1 4 0v-4a2 2 0 0 1 4 0v1" />
-      <path d="M12 7V4" />
-      <path d="M8.5 5.5l-2.1-2.1" />
-      <path d="M15.5 5.5l2.1-2.1" />
     </>
   ),
   headsetBpo: (
@@ -390,6 +426,8 @@ const customPulsoSvgs = {
   )
 };
 
+const warnedNames = new Set();
+
 export function Icon({ name, className = '', size = 20, strokeWidth = 1.8, ...props }) {
   // 0. Si se suministra un componente o función directamente
   if (typeof name === 'function') {
@@ -421,22 +459,40 @@ export function Icon({ name, className = '', size = 20, strokeWidth = 1.8, ...pr
 
   // 2. Si existe un SVG especializado de Pulso360 (ejercicios somáticos, k-anonimato)
   const customSvg = customPulsoSvgs[name];
-  const style = size ? { width: `${size}px`, height: `${size}px` } : undefined;
+
+  // Un nombre desconocido debe ser reconocible y detectable, no parecer un punto de estado.
+  if (!customSvg) {
+    if (env.isDev && !warnedNames.has(name)) {
+      warnedNames.add(name);
+      console.warn(`[Pulso360] Icono no registrado: ${name}`);
+    }
+    return (
+      <CircleHelp
+        size={size}
+        strokeWidth={strokeWidth}
+        className={`ui-svg-icon ${className}`.trim()}
+        aria-hidden="true"
+        data-icon-missing="true"
+        {...props}
+      />
+    );
+  }
 
   return (
     <svg
       viewBox="0 0 24 24"
+      width={size}
+      height={size}
       fill="none"
       stroke="currentColor"
       strokeWidth={strokeWidth}
       strokeLinecap="round"
       strokeLinejoin="round"
       className={`ui-svg-icon ${className}`.trim()}
-      style={style}
       aria-hidden="true"
       {...props}
     >
-      {customSvg || <circle cx="12" cy="12" r="3" />}
+      {customSvg}
     </svg>
   );
 }

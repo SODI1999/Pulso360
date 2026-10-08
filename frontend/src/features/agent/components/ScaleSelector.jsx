@@ -93,7 +93,7 @@ export function ScaleSelector({ question, currentValue, onSelectValue, onSkip })
           onClick={onSkip}
           aria-pressed={isSkipped}
         >
-          <Icon name="eyeOff" size={15} />
+          <Icon name="CircleMinus" size={15} />
           <span>Prefiero omitir esta pregunta hoy</span>
         </button>
       </div>

@@ -21,7 +21,7 @@ export function AcademicBackingSection() {
 
           <div className="academic-normative-strip" aria-label="Marco normativo de referencia">
             <div className="normative-item">
-              <Icon name="fileShield" size={15} />
+              <Icon name="Scale" size={15} />
               <span>Resolución 2764 de 2022 (SG-SST)</span>
             </div>
             <div className="normative-item">

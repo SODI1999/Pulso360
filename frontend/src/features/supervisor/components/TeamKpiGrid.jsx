@@ -19,7 +19,7 @@ export function TeamKpiGrid({
           <span className="supervisor-kpi-unit">/ 100</span>
         </div>
         <div className="kpi-delta ok">
-          <Icon name="trendingUp" size={15} />
+          <Icon name="info" size={15} />
           <span>{energyDelta}</span>
         </div>
       </div>
@@ -32,7 +32,7 @@ export function TeamKpiGrid({
           <span className="supervisor-kpi-unit">/ 100</span>
         </div>
         <div className="kpi-delta warn">
-          <Icon name="alertTriangle" size={15} />
+          <Icon name="info" size={15} />
           <span>Valor agregado del periodo</span>
         </div>
       </div>
@@ -42,7 +42,7 @@ export function TeamKpiGrid({
         <span className="supervisor-metric-label">Participación voluntaria</span>
         <div className="supervisor-kpi-highlight">{participationRate}</div>
         <div className="kpi-delta ok">
-          <Icon name="checkCircle" size={15} />
+          <Icon name="shield" size={15} />
           <span>Muestra protegida por k-anonimato (RF-07)</span>
         </div>
       </div>

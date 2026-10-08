@@ -139,7 +139,7 @@ export function AgentDemoPanel({
           <div className="nlp-guidance-area">
             <div className="nlp-guidance-top">
               <div className="nlp-meta-lead">
-                <Icon name="healing" size={13} className="nlp-meta-icon" />
+                <Icon name="compass" size={13} className="nlp-meta-icon" />
                 <span className="nlp-meta-label">Motor Léxico Preventivo · Orientación no médica</span>
               </div>
               <button

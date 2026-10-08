@@ -94,7 +94,7 @@ export function GroundingExercise({
               className="btn-crisis-secondary-action"
               onClick={() => setIsBpoResetOpen(true)}
             >
-              <Icon name="healing" size={15} />
+              <Icon name="respiro" size={15} />
               <span>Hacer respiración guiada Box 4×4</span>
             </button>
             <button type="button" className="btn-crisis-secondary-action" onClick={resetGrounding}>

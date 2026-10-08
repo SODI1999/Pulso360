@@ -104,6 +104,8 @@ export function useSupportChannel() {
     feedback,
     userRequests,
     isAnonymous,
-    handleSubmit
+    handleSubmit,
+    loadData,
+    reload: loadData
   };
 }

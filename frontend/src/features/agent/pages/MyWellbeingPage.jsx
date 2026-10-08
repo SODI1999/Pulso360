@@ -68,7 +68,7 @@ export function MyWellbeingPage() {
         <div className="wellbeing-section-header">
           <div className="wellbeing-section-title-wrap">
             <h2 id="somatic-matrix-heading" className="wellbeing-section-title">
-              <Icon name="activity" size={18} aria-hidden="true" />
+              <Icon name="ClipboardList" size={18} aria-hidden="true" />
               <span>Detalle somático por jornada</span>
             </h2>
             <p className="wellbeing-section-desc">
@@ -80,14 +80,14 @@ export function MyWellbeingPage() {
 
         {checkinRecords.length === 0 ? (
           <div className="wellbeing-empty-state">
-            <Icon name="activity" size={40} className="wellbeing-empty-icon" aria-hidden="true" />
+            <Icon name="ClipboardList" size={40} className="wellbeing-empty-icon" aria-hidden="true" />
             <h3 className="wellbeing-empty-title">Aún no tienes registros de bienestar</h3>
             <p className="wellbeing-empty-desc">
               Cada check-in diario te ayuda a monitorear tu batería y nivel de tensión entre llamadas en total
               privacidad. Al completar tu primer registro podrás inspeccionar aquí tus dimensiones somáticas.
             </p>
             <Link to="/agente/checkin" className="wellbeing-action-btn wellbeing-action-btn--primary">
-              <Icon name="edit_note" size={18} />
+              <Icon name="heartPulse" size={18} />
               <span>Completar mi primer check-in</span>
             </Link>
           </div>
@@ -129,7 +129,7 @@ export function MyWellbeingPage() {
             <div id="somatic-panel" role="tabpanel" aria-labelledby={`tab-${activeShift.id}`}>
               <div className="wellbeing-shift-active-meta">
                 <div className="wellbeing-shift-active-info">
-                  <Icon name="clock" size={16} aria-hidden="true" />
+                  <Icon name="calendar" size={16} aria-hidden="true" />
                   <span>
                     Jornada del {activeShift.date} · {activeShift.shiftType || 'Turno operativo'}
                   </span>

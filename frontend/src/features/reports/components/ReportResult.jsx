@@ -51,7 +51,7 @@ export function ReportResult({
         )}
         {generatedReport.format === 'PDF' && (
           <button type="button" className="btn btn-primary btn-sm" onClick={handlePrintPdf}>
-            <Icon name="fileText" size={14} />
+            <Icon name="Printer" size={14} />
             <span>Imprimir / Guardar en PDF</span>
           </button>
         )}

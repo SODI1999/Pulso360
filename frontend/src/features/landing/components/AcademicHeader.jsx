@@ -19,7 +19,7 @@ export function AcademicHeader({ handlePrint }) {
           title="Imprimir o guardar ficha en PDF"
           aria-label="Imprimir ficha metodológica"
         >
-          <Icon name="fileText" size={14} />
+          <Icon name="Printer" size={14} />
           <span>Guardar / Imprimir Ficha</span>
         </button>
       </div>
@@ -40,11 +40,11 @@ export function AcademicHeader({ handlePrint }) {
             <span>Equipo</span>
           </a>
           <a href="#evidencia-empirica" className="toc-pill-link">
-            <Icon name="insights" size={13} />
+            <Icon name="Search" size={13} />
             <span>1. Evidencia</span>
           </a>
           <a href="#transferencia" className="toc-pill-link">
-            <Icon name="fileShield" size={13} />
+            <Icon name="FileText" size={13} />
             <span>2. Transferencia</span>
           </a>
           <a href="#antivigilancia" className="toc-pill-link">
@@ -56,7 +56,7 @@ export function AcademicHeader({ handlePrint }) {
             <span>4. Citación</span>
           </a>
           <a href="#marco-legal" className="toc-pill-link">
-            <Icon name="lock" size={13} />
+            <Icon name="Scale" size={13} />
             <span>5. Marco Legal</span>
           </a>
         </div>

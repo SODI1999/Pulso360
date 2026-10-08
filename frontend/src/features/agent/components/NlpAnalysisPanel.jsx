@@ -3,16 +3,7 @@
 
 import { Icon } from '../../../core/components/Icon';
 
-const CATEGORY_ICONS = {
-  'Sobrecarga percibida': 'phone',
-  'Recuperación insuficiente': 'battery_low',
-  'Exigencia emocional': 'shieldAlert',
-  'Conflicto de rol': 'sliders',
-  'Bajo apoyo organizacional': 'users',
-  'Distanciamiento laboral': 'eyeOff',
-  'Frustración por métricas operativas': 'lineChart',
-  'Percepción de ineficacia': 'alertTriangle'
-};
+import { FACTOR_METADATA } from '../data/nlpFactorMetadata';
 
 export function NlpAnalysisPanel({ journal, onOpenCorrection, onOpenHistory }) {
   if (!journal?.analysis) return journal?.analysisHistory?.length ? <button type="button" className="btn btn-secondary" onClick={onOpenHistory}>Ver análisis de versiones anteriores del texto</button> : null;
@@ -45,7 +36,7 @@ export function NlpAnalysisPanel({ journal, onOpenCorrection, onOpenHistory }) {
               className={`analysis-factor-badge ${isCorrected ? 'factor-chip-adjusted' : ''}`}
             >
               <Icon
-                name={isCorrected ? 'check_circle' : (CATEGORY_ICONS[catName] || 'psychology')}
+                name={FACTOR_METADATA[catName]?.icon || 'compass'}
                 size={14}
               />
               <span>{catName}</span>

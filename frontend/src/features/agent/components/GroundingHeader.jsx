@@ -74,7 +74,7 @@ export function GroundingHeader({
 
         {/* Botón de respiración 4x4 */}
         <button type="button" className="btn-crisis-bpo-reset" onClick={() => setIsBpoResetOpen(true)}>
-          <Icon name="healing" size={16} />
+          <Icon name="respiro" size={16} />
           <span>Pausa Box Breathing (4×4)</span>
         </button>
       </div>

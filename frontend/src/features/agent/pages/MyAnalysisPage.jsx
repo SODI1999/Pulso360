@@ -9,16 +9,7 @@ import { authService } from '../../../core/auth/authService';
 import { Icon } from '../../../core/components/Icon';
 import '../../../styles/analisis.css';
 
-const CATEGORY_ICONS = {
-  'Sobrecarga percibida': 'phone',
-  'Recuperación insuficiente': 'battery_low',
-  'Exigencia emocional': 'shieldAlert',
-  'Conflicto de rol': 'sliders',
-  'Bajo apoyo organizacional': 'users',
-  'Distanciamiento laboral': 'eyeOff',
-  'Frustración por métricas operativas': 'lineChart',
-  'Percepción de ineficacia': 'alertTriangle'
-};
+import { FACTOR_METADATA } from '../data/nlpFactorMetadata';
 
 export function MyAnalysisPage() {
   const navigate = useNavigate();
@@ -116,7 +107,7 @@ export function MyAnalysisPage() {
             {factorSummary.map(({ name, count }) => (
               <div key={name} className="analysis-summary-card">
                 <div className="analysis-summary-card-icon">
-                  <Icon name={CATEGORY_ICONS[name] || 'sliders'} size={15} />
+                  <Icon name={FACTOR_METADATA[name]?.icon || 'compass'} size={15} />
                 </div>
                 <div className="analysis-summary-card-body">
                   <span className="analysis-summary-card-name">{name}</span>
@@ -201,7 +192,7 @@ export function MyAnalysisPage() {
                         {validCategories.length > 0 ? (
                           validCategories.map((cat) => (
                             <span key={cat} className="analysis-factor-badge">
-                              <Icon name={CATEGORY_ICONS[cat] || 'sliders'} size={13} />
+                              <Icon name={FACTOR_METADATA[cat]?.icon || 'compass'} size={13} />
                               <span>{cat}</span>
                             </span>
                           ))

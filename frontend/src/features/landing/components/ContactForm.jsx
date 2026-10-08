@@ -235,7 +235,7 @@ export function ContactForm() {
           </div>
 
           <button className="form-submit" type="submit">
-            <Icon name="check" size={18} />
+            <Icon name="Eye" size={18} />
             <span>Ver resumen</span>
           </button>
         </form>

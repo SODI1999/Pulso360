@@ -224,7 +224,7 @@ export function SupportRequestForm({
 
         {/* Aviso Institucional Único y Sobrio (Erradicación de las 3 cajas apiladas) */}
         <div className="agent-notice agent-notice--flat support-unified-notice">
-          <Icon name="shieldCheck" size={17} className="agent-notice-icon" />
+          <Icon name="info" size={17} className="agent-notice-icon" />
           <div className="agent-notice-text">
             <strong>Tiempos y alcance de gestión:</strong> Tu solicitud será gestionada por el equipo de SST durante la jornada hábil habitual (prioritaria si marcas alta urgencia). Si la situación corresponde a presunto acoso laboral o discrepancias graves, la instancia legal y bipartita es el <strong>Comité de Convivencia Laboral (CCL - Ley 1010 de 2006)</strong>.
           </div>

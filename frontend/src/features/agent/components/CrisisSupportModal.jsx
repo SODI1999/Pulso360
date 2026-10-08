@@ -77,7 +77,7 @@ export function CrisisSupportModal({
                   <span>Llamar a Línea 106 (Gratis 24/7)</span>
                 </a>
                 <button type="button" className="btn btn-primary" onClick={() => onSetPriorityStep(true)}>
-                  <Icon name="shield" size={16} />
+                  <Icon name="support_agent" size={16} />
                   <span>Solicitar contacto SST</span>
                 </button>
               </div>
@@ -85,7 +85,7 @@ export function CrisisSupportModal({
 
             <div className="modal-footer modal-footer--split">
               <Link to="/apoyo-crisis" className="btn btn-secondary" onClick={onClose}>
-                <Icon name="self_improvement" size={16} />
+                <Icon name="support" size={16} />
                 <span>Ver primeros auxilios psicológicos y rutas</span>
               </Link>
               <button type="button" className="btn btn-ghost" onClick={onContinue}>

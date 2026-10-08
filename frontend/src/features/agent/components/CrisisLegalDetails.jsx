@@ -5,7 +5,7 @@ export function CrisisLegalDetails() {
     <details className="crisis-legal-details">
       <summary className="crisis-legal-summary">
         <div className="crisis-legal-summary-left">
-          <Icon name="shieldCheck" size={18} />
+          <Icon name="Scale" size={18} />
           <span>Rutas institucionales y marco legal (Ley 1010 y Resolución 3461)</span>
         </div>
         <span className="crisis-legal-summary-hint">

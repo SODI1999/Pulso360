@@ -49,5 +49,6 @@ export function useSupportInbox() {
     setVersion((v) => v + 1);
   };
 
-  return { loading, loadError, feedback, storeData, requests, handleAdvanceStatus };
+  const reload = () => setVersion((v) => v + 1);
+  return { loading, loadError, feedback, storeData, requests, handleAdvanceStatus, reload };
 }

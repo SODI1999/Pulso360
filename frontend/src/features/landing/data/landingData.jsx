@@ -174,7 +174,7 @@ export const UNIFIED_SHOWCASE_TABS = [
   {
     id: 'agente',
     label: '1. Espacio Íntimo del Agente',
-    icon: 'support_agent',
+    icon: 'Headphones',
     subtitle: 'Check-in diario de 60s, bitácora personal y orientación sin consecuencias laborales.'
   },
   {
@@ -258,7 +258,7 @@ export const ROLES_PERMISSIONS_MATRIX = [
     name: 'Agente de Operación',
     roleTag: 'Espacio Íntimo y Confidencial',
     badgeClass: 'badge-agent',
-    icon: 'support_agent',
+    icon: 'Headphones',
     mission: 'Espacio personal y seguro para registrar el cansancio del turno sin consecuencias laborales.',
     permissions: [
       { text: 'Registrar su check-in voluntario de 60 segundos al cierre de turno.', allowed: true },

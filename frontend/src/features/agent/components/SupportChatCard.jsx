@@ -1,313 +1,296 @@
 // frontend/src/features/agent/components/SupportChatCard.jsx
 /**
  * @file SupportChatCard.jsx
- * @description Tarjeta de Chat de Orientación Psicosocial en Tiempo Real (Socket.io + PostgreSQL).
- * Canal confidencial entre el agente y el especialista de Seguridad y Salud en el Trabajo (SST),
- * excluyendo terminantemente a supervisores operativos (RF-10, Ley 1581 / Res. 2646).
+ * @description Componente de chat interactivo preventivo subordinado a un Radicado Formal de SST (RF-10).
+ * Integra persistencia inmutable en PostgreSQL y WebSockets (Socket.io).
+ * Modalidad preventiva de SG-SST (Ley 1581 / Res. 2646): ergonomía, pausas y mitigación de fatiga de turno.
  */
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import PropTypes from 'prop-types';
 import { useSocket } from '../../../core/socket/socketClient';
 import { authService } from '../../../core/auth/authService';
 import { chatService } from '../../../core/api/chatService';
 import { Icon } from '../../../core/components/Icon';
 
-const INITIAL_GREETING = {
-  id: 'welcome-initial',
-  senderRole: 'SST',
-  senderName: 'Especialista SST (Salud Ocupacional)',
-  text: 'Hola. Este es tu canal directo y confidencial con el equipo de Salud Ocupacional (SST). ¿En qué podemos orientarte hoy?',
-  timestamp: new Date().toISOString()
-};
-
-export function SupportChatCard() {
-  const { socket, isConnected } = useSocket();
+export function SupportChatCard({ requestId, requestCode, isAnonymous, onChatClosed }) {
+  const { socket } = useSocket();
   const currentUser = authService.getCurrentUser();
 
-  const [activeSession, setActiveSession] = useState(null);
-  const [isAnonymous, setIsAnonymous] = useState(false);
-  const [messages, setMessages] = useState([INITIAL_GREETING]);
+  const [session, setSession] = useState(null);
+  const [messages, setMessages] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [inputText, setInputText] = useState('');
-  const [isLoadingHistory, setIsLoadingHistory] = useState(true);
+  const [isSending, setIsSending] = useState(false);
+  const [errorBanner, setErrorBanner] = useState(null);
 
   const messagesContainerRef = useRef(null);
+  const inputRef = useRef(null);
 
-  // 1. Carga inicial del historial persistente desde PostgreSQL vía REST
+  // 1. Cargar la sesión y mensajes del radicado desde el backend
+  const loadChatData = useCallback(async () => {
+    if (!requestId) return;
+    try {
+      setIsLoading(true);
+      setErrorBanner(null);
+      const res = await chatService.getChatByRequest(requestId);
+      const chatSession = res?.session || res?.data?.session;
+      const chatMessages = res?.messages || res?.data?.messages || [];
+      if (chatSession) {
+        setSession(chatSession);
+        setMessages(chatMessages);
+      } else {
+        setSession(null);
+        setMessages([]);
+      }
+    } catch (err) {
+      setErrorBanner(err?.response?.data?.error?.message || 'No fue posible cargar el canal de este radicado.');
+    } finally {
+      setIsLoading(false);
+    }
+  }, [requestId]);
+
   useEffect(() => {
-    let isMounted = true;
+    loadChatData();
+  }, [loadChatData]);
 
-    async function loadActiveChatHistory() {
-      try {
-        setIsLoadingHistory(true);
-        const res = await chatService.getActiveChat();
-        if (!isMounted) return;
-
-        if (res?.session) {
-          setActiveSession(res.session);
-          const anonVal = res.session.isAnonymous ?? res.session.is_anonymous;
-          if (anonVal !== undefined) {
-            setIsAnonymous(Boolean(anonVal));
+  // 2. Suscripción a WebSockets para mensajes y eventos del radicado
+  useEffect(() => {
+    function handleIncomingMessage(msg) {
+      if (session?.id && msg.sessionId === session.id) {
+        setMessages((prev) => {
+          const matchIdx = prev.findIndex((m) =>
+            m.id === msg.id || (msg.clientMsgId && (m.clientMsgId === msg.clientMsgId || m.id === msg.clientMsgId))
+          );
+          if (matchIdx !== -1) {
+            const next = [...prev];
+            next[matchIdx] = msg;
+            return next;
           }
-        }
-
-        if (Array.isArray(res?.messages) && res.messages.length > 0) {
-          const mapped = res.messages.map((m) => ({
-            id: m.id,
-            senderId: m.senderId || m.sender_id,
-            senderRole: m.senderRole || m.sender_role,
-            senderName: m.senderName || m.sender_name,
-            text: m.text || m.message_text,
-            timestamp: m.timestamp || m.created_at
-          }));
-          setMessages(mapped);
-        } else {
-          setMessages([INITIAL_GREETING]);
-        }
-      } catch {
-        // En caso de modo offline o error de red, se mantiene el mensaje de bienvenida local
-      } finally {
-        if (isMounted) setIsLoadingHistory(false);
+          return [...prev, msg];
+        });
       }
     }
 
-    loadActiveChatHistory();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
-
-  // 2. Suscripción reactiva a eventos de WebSockets (Socket.io)
-  useEffect(() => {
-    function handleIncomingMessage(msg) {
-      setMessages((prev) => {
-        if (prev.some((m) => m.id === msg.id)) return prev;
-        return [...prev, msg];
-      });
+    function handleChatActivated(payload) {
+      if (payload?.session?.requestId === requestId) {
+        setSession(payload.session);
+        setMessages(payload.messages || []);
+      }
     }
 
     function handleChatEnded(payload) {
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: `ended-${Date.now()}`,
-          senderRole: 'SISTEMA',
-          senderName: 'Sistema de Acompañamiento',
-          text: payload?.message || 'La sesión de orientación en vivo ha finalizado. Puedes volver a escribir cuando lo requieras.',
-          timestamp: new Date().toISOString()
-        }
-      ]);
-      setActiveSession(null);
+      const matchSession = session?.id && payload?.sessionId === session.id;
+      const matchRequest = requestId && payload?.requestId === requestId;
+      if (matchSession || matchRequest) {
+        setSession((prev) => (prev ? { ...prev, status: 'cerrada' } : prev));
+        if (onChatClosed) onChatClosed();
+      }
     }
 
     socket.on('support:message:received', handleIncomingMessage);
+    socket.on('support:chat:activated', handleChatActivated);
     socket.on('support:chat:ended', handleChatEnded);
 
     return () => {
       socket.off('support:message:received', handleIncomingMessage);
+      socket.off('support:chat:activated', handleChatActivated);
       socket.off('support:chat:ended', handleChatEnded);
     };
-  }, [socket]);
+  }, [socket, session?.id, requestId, onChatClosed]);
 
-  // 3. Scroll contenido únicamente dentro del contenedor de mensajes (sin saltos en la ventana)
+  // 3. Scroll automático al recibir mensajes
   useEffect(() => {
     if (messagesContainerRef.current) {
       messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
     }
   }, [messages]);
 
-  // 4. Envío de mensaje en vivo
-  const handleSendMessage = (e, customText = null) => {
-    e?.preventDefault();
-    const textToSend = (customText || inputText).trim();
-    if (!textToSend || !isConnected) return;
+  // 4. Enviar mensaje del agente con reconciliación por clientMsgId
+  const handleSendMessage = (textToSend) => {
+    const text = (textToSend || inputText).trim();
+    if (!text || !session?.id || session.status !== 'activa' || isSending) return;
+
+    setIsSending(true);
+    const clientMsgId = `cmsg-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+    const optimisticMessage = {
+      id: clientMsgId,
+      clientMsgId,
+      sessionId: session.id,
+      senderId: currentUser?.id,
+      senderRole: 'AGENTE',
+      senderName: isAnonymous ? 'Agente Confidencial' : (currentUser?.name || 'Agente de Contact Center'),
+      text,
+      timestamp: new Date().toISOString()
+    };
+
+    setMessages((prev) => [...prev, optimisticMessage]);
+    setInputText('');
 
     socket.emit('support:message:send', {
-      sessionId: activeSession?.id,
-      text: textToSend,
-      isAnonymous,
-      senderName: isAnonymous
-        ? 'Agente Confidencial'
-        : (currentUser?.name || currentUser?.nombres || 'Agente de Contact Center')
+      sessionId: session.id,
+      clientMsgId,
+      receiverId: session.sstAtendioId || null,
+      isAnonymous: Boolean(session.isAnonymous || isAnonymous),
+      senderName: isAnonymous ? 'Agente Confidencial' : (currentUser?.name || 'Agente de Contact Center'),
+      text
     });
 
-    if (!customText) {
-      setInputText('');
+    setIsSending(false);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
     }
   };
 
-  // 5. Conclusión voluntaria de la sesión de orientación
-  const handleEndChat = async () => {
-    if (window.confirm('¿Deseas concluir la conversación actual con el especialista de SST?')) {
-      socket.emit('support:chat:close');
-      if (activeSession?.id) {
-        try {
-          await chatService.closeSession(activeSession.id, {
-            reason: 'Concluido voluntariamente por el agente'
-          });
-        } catch {
-          // Si el socket ya lo cerró, se ignora el error
-        }
-      }
-    }
-  };
+  if (isLoading) {
+    return (
+      <div className="support-embedded-chat-loading" role="status">
+        <Icon name="clock" size={16} />
+        <span>Cargando canal de conversación del radicado…</span>
+      </div>
+    );
+  }
 
-  return (
-    <section className="support-chat-container" aria-labelledby="chat-heading">
-      {/* Encabezado del Chat */}
-      <header className="support-chat-header">
-        <div className="support-chat-title-group">
-          <h2 id="chat-heading" className="support-chat-heading">
-            <Icon name="Headphones" size={18} />
-            <span>Orientación Psicosocial en Tiempo Real</span>
-          </h2>
-          <p className="support-chat-subtitle">
-            Canal confidencial directo con el especialista de SST · Supervisores excluidos (Ley 1581 / Res. 2646)
+  if (errorBanner) {
+    return (
+      <div className="support-embedded-chat-error alert-banner danger" role="alert">
+        <Icon name="alertTriangle" size={16} />
+        <span>{errorBanner}</span>
+      </div>
+    );
+  }
+
+  if (!session) {
+    return (
+      <div className="support-embedded-chat-empty">
+        <Icon name="clock" size={20} />
+        <div>
+          <strong>Canal en espera de revisión por SST</strong>
+          <p>
+            El equipo de Salud Ocupacional evaluará el radicado <strong>{requestCode}</strong>. Cuando un especialista
+            inicie la orientación en vivo, este canal se activará automáticamente.
           </p>
         </div>
+      </div>
+    );
+  }
 
-        <div className="support-chat-header-actions">
-          <div className={`support-chat-status ${isConnected ? 'is-online' : 'is-offline'}`}>
-            <span className={`status-dot ${isConnected ? 'online' : 'offline'}`} />
-            <span>{isConnected ? 'SST en línea' : 'Conectando...'}</span>
+  const isClosed = session.status === 'cerrada';
+
+  return (
+    <div className={`support-embedded-chat-box ${isClosed ? 'is-closed' : 'is-active'}`}>
+      {/* Cabecera compacta y profesional del Chat */}
+      <div className="embedded-chat-header">
+        <div className="embedded-chat-user-info">
+          <div className="embedded-chat-avatar" aria-hidden="true">
+            <Icon name="MessagesSquare" size={16} />
+            {!isClosed && <span className="embedded-avatar-online-dot" title="En vivo" />}
           </div>
-
-          <button
-            type="button"
-            onClick={handleEndChat}
-            className="btn btn-secondary btn-sm"
-            title="Concluir conversación en vivo con SST"
-          >
-            Concluir orientación
-          </button>
+          <div className="embedded-chat-titles">
+            <div className="embedded-chat-name-row">
+              <strong className="embedded-chat-title">Especialista SST (Salud Ocupacional)</strong>
+              <span className={`chat-status-pill ${isClosed ? 'closed' : 'live'}`}>
+                <span className={`chat-status-dot ${isClosed ? 'closed' : 'live'}`} />
+                <span>{isClosed ? 'Concluido' : 'En vivo'}</span>
+              </span>
+            </div>
+            <span className="embedded-chat-subtitle">
+              {isAnonymous ? 'Identidad protegida · Orientación preventiva' : 'Confidencial SG-SST · Orientación preventiva'}
+            </span>
+          </div>
         </div>
-      </header>
-
-      {/* Selector de Confidencialidad y Reserva de Identidad */}
-      <div className="support-chat-privacy-toggle">
-        <label className="support-privacy-checkbox-label">
-          <input
-            type="checkbox"
-            checked={isAnonymous}
-            onChange={(e) => setIsAnonymous(e.target.checked)}
-          />
-          <span>Modo confidencial (Ocultar mi nombre real al especialista de SST)</span>
-        </label>
-        <span className="support-privacy-badge-text">
-          {isAnonymous ? 'Mostrando: Agente Confidencial' : `Mostrando: ${currentUser?.name || currentUser?.nombres || 'Agente'}`}
-        </span>
       </div>
 
-      {/* Historial de Mensajes con Scroll Aislado */}
+      {/* Lista de Mensajes */}
       <div
         ref={messagesContainerRef}
-        className="support-chat-messages"
+        className="embedded-chat-messages-area"
         role="log"
         aria-live="polite"
-        aria-label="Historial de mensajes de orientación psicosocial"
+        aria-label={`Mensajes del radicado ${requestCode}`}
       >
-        {isLoadingHistory && (
-          <div className="support-chat-msg is-system">
-            <div className="support-msg-bubble">
-              Cargando historial seguro de la conversación…
-            </div>
-          </div>
-        )}
+        {messages.map((msg) => {
+          const isMe = msg.senderRole === 'AGENTE' || msg.senderId === currentUser?.id;
+          const isSystem = msg.senderRole === 'SISTEMA';
 
-        {messages.map((m) => {
-          const isAgent = m.senderRole === 'AGENTE' || m.senderId === currentUser?.id;
-          const isSystem = m.senderRole === 'SISTEMA';
-          const msgClass = isSystem ? 'is-system' : (isAgent ? 'is-agent' : 'is-sst');
+          if (isSystem) {
+            return (
+              <div key={msg.id} className="embedded-chat-msg system-msg">
+                <Icon name="info" size={14} />
+                <span>{msg.text}</span>
+              </div>
+            );
+          }
 
           return (
-            <div key={m.id} className={`support-chat-msg ${msgClass}`}>
-              <div className="support-msg-bubble">
-                {!isSystem && (
-                  <div className="support-msg-header">
-                    <span className="support-msg-sender">
-                      {isAgent ? (
-                        <>
-                          <Icon name="User" size={12} />
-                          <span>Tú (Agente)</span>
-                        </>
-                      ) : (
-                        <>
-                          <Icon name="ShieldCheck" size={12} />
-                          <span>{m.senderName || 'Especialista SST'}</span>
-                        </>
-                      )}
-                    </span>
-                  </div>
-                )}
-                <div className="support-msg-text">{m.text}</div>
-                {m.timestamp && !isSystem && (
-                  <div className="support-msg-time">
-                    {new Date(m.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                  </div>
-                )}
+            <div
+              key={msg.id}
+              className={`embedded-chat-bubble-wrap ${isMe ? 'msg-outgoing' : 'msg-incoming'}`}
+            >
+              <div className="embedded-chat-bubble">
+                <div className="embedded-msg-meta">
+                  <strong className="embedded-msg-sender">
+                    {isMe ? 'Tú' : (msg.senderName || 'Especialista SST')}
+                  </strong>
+                  <span className="embedded-msg-time">
+                    {msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
+                  </span>
+                </div>
+                <p className="embedded-msg-text">{msg.text}</p>
               </div>
             </div>
           );
         })}
       </div>
 
-      {/* Atajos de consulta rápida contextualizados en operaciones BPO */}
-      <div className="support-chat-chips-bar" aria-label="Consultas frecuentes de piso BPO">
-        <span className="support-chips-label">Atajos BPO:</span>
-        <button
-          type="button"
-          onClick={() => handleSendMessage(null, 'Siento sobrecarga y fatiga por llamadas continuas en la cola.')}
-          className="support-chip-btn"
-          disabled={!isConnected}
+      {/* Compositor de Mensaje o Banner de Cierre */}
+      {isClosed ? (
+        <div className="embedded-chat-closed-footer">
+          <Icon name="checkCircle" size={16} />
+          <span>Este chat ha sido cerrado por SST y permanece como registro histórico para auditoría.</span>
+        </div>
+      ) : (
+        <form
+          className="embedded-chat-composer"
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSendMessage();
+          }}
         >
-          Sobrecarga de llamadas
-        </button>
-        <button
-          type="button"
-          onClick={() => handleSendMessage(null, 'Tengo tensión muscular en el cuello y fatiga visual por la pantalla.')}
-          className="support-chip-btn"
-          disabled={!isConnected}
-        >
-          Tensión física / cervical
-        </button>
-        <button
-          type="button"
-          onClick={() => handleSendMessage(null, '¿Podemos realizar un ejercicio breve de respiración consciente o pausa guiada?')}
-          className="support-chip-btn"
-          disabled={!isConnected}
-        >
-          Pausa activa guiada
-        </button>
-        <button
-          type="button"
-          onClick={() => handleSendMessage(null, 'Necesito orientación sobre manejo de estrés ante usuarios difíciles.')}
-          className="support-chip-btn"
-          disabled={!isConnected}
-        >
-          Manejo de estrés operativo
-        </button>
-      </div>
-
-      {/* Compositor / Formulario de Entrada */}
-      <form onSubmit={(e) => handleSendMessage(e)} className="support-chat-composer">
-        <input
-          type="text"
-          value={inputText}
-          onChange={(e) => setInputText(e.target.value)}
-          placeholder="Escribe tu mensaje confidencial para el especialista SST..."
-          className="support-chat-input"
-          disabled={!isConnected}
-          aria-label="Mensaje para el especialista SST"
-        />
-        <button
-          type="submit"
-          className="support-chat-send-btn"
-          disabled={!isConnected || !inputText.trim()}
-        >
-          <Icon name="Send" size={15} />
-          <span>Enviar</span>
-        </button>
-      </form>
-    </section>
+          <input
+            ref={inputRef}
+            type="text"
+            className="embedded-composer-input"
+            placeholder="Escribe tu mensaje sobre este caso a SST… (Enter para enviar)"
+            value={inputText}
+            onChange={(e) => setInputText(e.target.value)}
+            onKeyDown={handleKeyDown}
+            maxLength={600}
+            disabled={isSending}
+            aria-label="Mensaje para el especialista SST"
+          />
+          <button
+            type="submit"
+            className="btn btn-primary btn-sm embedded-composer-submit"
+            disabled={!inputText.trim() || isSending}
+            aria-label="Enviar mensaje"
+          >
+            <Icon name="send" size={16} />
+            <span>Enviar</span>
+          </button>
+        </form>
+      )}
+    </div>
   );
 }
+
+SupportChatCard.propTypes = {
+  requestId: PropTypes.string.isRequired,
+  requestCode: PropTypes.string,
+  isAnonymous: PropTypes.bool,
+  onChatClosed: PropTypes.func
+};
