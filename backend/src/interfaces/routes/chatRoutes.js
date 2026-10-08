@@ -1,5 +1,5 @@
 // backend/src/interfaces/routes/chatRoutes.js
-// Rutas REST para gestión y persistencia de chat de acompañamiento SST (RF-10)
+// Rutas REST para chat preventivo vinculado a Radicados de Apoyo SST (RF-10)
 
 import { Router } from 'express';
 import { chatController } from '../controllers/chatController.js';
@@ -12,8 +12,13 @@ const router = Router();
 router.use(authenticate);
 router.use(requireRole(['AGENTE', 'SST']));
 
-router.get('/active', chatController.getActiveChat);
-router.get('/sessions/:sessionId/messages', chatController.getSessionHistory);
+// Chat vinculado a radicado formal
+router.post('/requests/:requestId/activate', requireRole(['SST']), chatController.activateChat);
+router.get('/requests/:requestId', chatController.getChatByRequest);
+router.get('/agent-active-map', requireRole(['AGENTE']), chatController.getAgentActiveMap);
+
+// Ciclo de vida y mensajes de sesión
 router.post('/sessions/:sessionId/close', chatController.closeSession);
+router.get('/sessions/:sessionId/messages', chatController.getSessionHistory);
 
 export default router;

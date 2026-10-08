@@ -166,7 +166,9 @@ export const sstRepository = {
         CASE 
           WHEN s.mode = 'anonimo' THEN NULL 
           ELSE CONCAT(u.nombres, ' ', u.apellidos) 
-        END AS solicitante
+        END AS solicitante,
+        (SELECT sc.estado FROM sesiones_chat_soporte sc WHERE sc.solicitud_id = s.id ORDER BY sc.creado_en DESC LIMIT 1) AS chat_status,
+        (SELECT sc.id FROM sesiones_chat_soporte sc WHERE sc.solicitud_id = s.id ORDER BY sc.creado_en DESC LIMIT 1) AS chat_session_id
       FROM solicitudes_apoyo s
       LEFT JOIN usuarios u ON s.owner_user_id = u.id
       ORDER BY s.request_date DESC
@@ -229,18 +231,64 @@ export const sstRepository = {
 
   async updateSupportRequestStatus(requestId, status, actorId) {
     return transaction(async client => {
-    const query = `
-      UPDATE solicitudes_apoyo 
-      SET status = $2
-      WHERE id = $1 
-      RETURNING 
-        id, code, mode, reason, description, urgency, contact_preference,
-        time_window, status, request_date, created_at,
-        CASE WHEN mode = 'anonimo' THEN NULL ELSE owner_user_id END AS owner_user_id;
-    `;
-    const { rows } = await client.query(query, [requestId, status]);
-    if (rows[0]) await createLog({usuarioId:actorId,rol:'SST',action:'ACTUALIZACION_APOYO',resource:'solicitudes_apoyo',resourceId:requestId,details:{status:rows[0].status}},client);
-    return rows[0];
+      const prevRes = await client.query('SELECT id, owner_user_id, status FROM solicitudes_apoyo WHERE id = $1 FOR UPDATE', [requestId]);
+      if (!prevRes.rowCount) return null;
+      const prevReq = prevRes.rows[0];
+
+      let closedChat = null;
+      if (['Cerrada', 'Atendida'].includes(status)) {
+        const chatRes = await client.query(
+          `UPDATE sesiones_chat_soporte
+           SET estado = 'cerrada',
+               motivo_cierre = 'RADICADO_CONCLUIDO',
+               notas_cierre = 'Radicado concluido por gestión de SST.',
+               sst_atendio_id = COALESCE(sst_atendio_id, $2),
+               cerrado_en = NOW(),
+               actualizado_en = NOW()
+           WHERE solicitud_id = $1 AND estado = 'activa'
+           RETURNING id, agente_id`,
+          [requestId, actorId]
+        );
+        if (chatRes.rowCount > 0) {
+          closedChat = {
+            sessionId: chatRes.rows[0].id,
+            agentId: chatRes.rows[0].agente_id
+          };
+          const sysMsgId = `msg-${Date.now()}-auto-close`;
+          await client.query(
+            `INSERT INTO mensajes_chat_soporte (id, sesion_id, remitente_id, remitente_rol, remitente_nombre, texto, creado_en)
+             VALUES ($1, $2, $3, 'SST', 'Sistema de Acompañamiento', 'El radicado ha sido concluido por SST. El canal pasa a modo solo lectura.', NOW())`,
+            [sysMsgId, closedChat.sessionId, actorId]
+          );
+        }
+      }
+
+      const query = `
+        UPDATE solicitudes_apoyo 
+        SET status = $2
+        WHERE id = $1 
+        RETURNING 
+          id, code, mode, reason, description, urgency, contact_preference,
+          time_window, status, request_date, created_at,
+          CASE WHEN mode = 'anonimo' THEN NULL ELSE owner_user_id END AS owner_user_id;
+      `;
+      const { rows } = await client.query(query, [requestId, status]);
+      if (rows[0]) {
+        await createLog({
+          usuarioId: actorId,
+          rol: 'SST',
+          action: 'ACTUALIZACION_APOYO',
+          resource: 'solicitudes_apoyo',
+          resourceId: requestId,
+          details: { status: rows[0].status }
+        }, client);
+      }
+
+      return {
+        ...rows[0],
+        _internalOwnerId: prevReq.owner_user_id,
+        _closedChat: closedChat
+      };
     });
   }
 };

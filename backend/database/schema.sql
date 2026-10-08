@@ -433,10 +433,15 @@ CREATE TABLE configuracion_sistema (
 -- Tabla 25: Sesiones de Chat de Acompañamiento Ocupacional SST (RF-10)
 CREATE TABLE sesiones_chat_soporte (
     id VARCHAR(50) PRIMARY KEY,
+    solicitud_id VARCHAR(50) REFERENCES solicitudes_apoyo(id) ON DELETE CASCADE,
     agente_id VARCHAR(50) NOT NULL REFERENCES usuarios(id),
     es_anonimo BOOLEAN NOT NULL DEFAULT FALSE,
     sst_atendio_id VARCHAR(50) REFERENCES usuarios(id),
-    estado VARCHAR(20) NOT NULL DEFAULT 'activa' CHECK (estado IN ('activa', 'cerrada')),
+    estado VARCHAR(20) NOT NULL DEFAULT 'pendiente' CHECK (estado IN ('pendiente', 'activa', 'cerrada', 'rechazada', 'cancelada')),
+    motivo_solicitud VARCHAR(100),
+    descripcion_solicitud TEXT,
+    aprobado_en TIMESTAMPTZ,
+    respuesta_triage TEXT,
     motivo_cierre VARCHAR(60),
     notas_cierre TEXT,
     creado_en TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -456,5 +461,7 @@ CREATE TABLE mensajes_chat_soporte (
 );
 
 CREATE INDEX idx_chat_sesiones_agente_estado ON sesiones_chat_soporte(agente_id, estado);
+CREATE INDEX idx_chat_sesiones_triage_estado ON sesiones_chat_soporte(estado, creado_en DESC);
+CREATE INDEX idx_chat_sesiones_solicitud ON sesiones_chat_soporte(solicitud_id);
 CREATE INDEX idx_chat_mensajes_sesion_orden ON mensajes_chat_soporte(sesion_id, creado_en ASC);
 

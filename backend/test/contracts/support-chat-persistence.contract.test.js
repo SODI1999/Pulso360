@@ -35,48 +35,107 @@ before(async () => {
     if (role === 'SST') sstId = id;
     if (role === 'SUPERVISOR') supervisorId = id;
   }
+
+  // Activar consentimiento C3 de apoyo para el agente de prueba
+  await call('put', '/agent/consent', {
+    acepta_politica: true,
+    acepta_aviso_privacidad: true,
+    c1_checkin: true,
+    c2_bitacora: true,
+    c3_apoyo: true,
+    c4_analitica: true,
+    c5_contacto: true
+  }, 'AGENTE').expect(200);
 });
 
 after(async () => {
   await pool.query('DELETE FROM mensajes_chat_soporte WHERE remitente_id = ANY($1::varchar[])', [users]);
   await pool.query('DELETE FROM sesiones_chat_soporte WHERE agente_id = ANY($1::varchar[])', [users]);
+  await pool.query('DELETE FROM solicitudes_apoyo WHERE owner_user_id = ANY($1::varchar[])', [users]);
+  await pool.query('DELETE FROM consentimientos WHERE usuario_id = ANY($1::varchar[])', [users]);
   await pool.query('DELETE FROM usuarios WHERE id = ANY($1::varchar[])', [users]);
   await pool.end();
 });
 
-test('Persistencia Chat SST: AGENTE obtiene o crea sesión activa', async () => {
-  const res = await call('get', '/support/chat/active', undefined, 'AGENTE').expect(200);
-  assert.equal(res.body.success, true);
-  assert.ok(res.body.data.session);
-  assert.equal(res.body.data.session.agentId, agentId);
-  assert.equal(res.body.data.session.status, 'activa');
-  assert.ok(Array.isArray(res.body.data.messages));
-});
-
 test('Privacidad RBAC: SUPERVISOR es bloqueado con 403 Forbidden al intentar acceder al chat de apoyo', async () => {
-  const res = await call('get', '/support/chat/active', undefined, 'SUPERVISOR').expect(403);
-  assert.equal(res.body.success, false);
-  assert.equal(res.body.error.code, 'AUTH_FORBIDDEN_ROLE');
+  const res1 = await call('get', '/chat/requests/req-fake', undefined, 'SUPERVISOR').expect(403);
+  assert.equal(res1.body.success, false);
+  assert.equal(res1.body.error.code, 'AUTH_FORBIDDEN_ROLE');
+
+  const res2 = await call('post', '/chat/requests/req-fake/activate', undefined, 'SUPERVISOR').expect(403);
+  assert.equal(res2.body.success, false);
+  assert.equal(res2.body.error.code, 'AUTH_FORBIDDEN_ROLE');
+
+  const res3 = await call('get', '/chat/agent-active-map', undefined, 'SUPERVISOR').expect(403);
+  assert.equal(res3.body.success, false);
+  assert.equal(res3.body.error.code, 'AUTH_FORBIDDEN_ROLE');
 });
 
-test('Consola SST: Especialista SST obtiene lista de sesiones activas en el centro', async () => {
-  const res = await call('get', '/support/chat/active', undefined, 'SST').expect(200);
-  assert.equal(res.body.success, true);
-  assert.ok(Array.isArray(res.body.data));
-  const myAgentSession = res.body.data.find(s => s.agentId === agentId);
-  assert.ok(myAgentSession, 'Debe incluir la sesión del agente creado');
-});
+test('Journey Radicado a Chat: Radicación formal, activación por SST y comunicación en vivo', async () => {
+  // 1. Agente radica solicitud formal de acompañamiento (SG-SST)
+  const reqRes = await call('post', '/sst/support-requests', {
+    reason: 'Sobrecarga de llamadas y fatiga de turno',
+    description: 'Alta tensión en colas de llamadas de soporte',
+    urgency: 'alta',
+    mode: 'anonimo'
+  }, 'AGENTE').expect(201);
 
-test('Ciclo de vida Chat: Especialista SST puede cerrar sesión de orientación formalmente', async () => {
-  const activeRes = await call('get', '/support/chat/active', undefined, 'AGENTE').expect(200);
-  const sessionId = activeRes.body.data.session.id;
+  assert.equal(reqRes.body.success, true);
+  const solicitud = reqRes.body.data;
+  assert.ok(solicitud.id, 'Debe retornar el ID del radicado');
+  const requestId = solicitud.id;
 
-  const closeRes = await call('post', `/support/chat/sessions/${sessionId}/close`, {
+  // 2. Antes de la activación, no existe sesión de chat iniciada
+  const emptyChatRes = await call('get', `/chat/requests/${requestId}`, undefined, 'AGENTE').expect(200);
+  assert.equal(emptyChatRes.body.success, true);
+  assert.equal(emptyChatRes.body.data.session, null, 'No debe haber sesión de chat previa a la activación');
+  assert.deepEqual(emptyChatRes.body.data.messages, []);
+
+  // 3. Agente no puede activar el chat por sí mismo (solo SST tiene autorización)
+  const agentActivateRes = await call('post', `/chat/requests/${requestId}/activate`, undefined, 'AGENTE').expect(403);
+  assert.equal(agentActivateRes.body.success, false);
+  assert.equal(agentActivateRes.body.error.code, 'AUTH_FORBIDDEN_ROLE');
+
+  // 4. Especialista SST evalúa el radicado y activa el canal de chat preventivo
+  const sstActivateRes = await call('post', `/chat/requests/${requestId}/activate`, undefined, 'SST').expect(200);
+  assert.equal(sstActivateRes.body.success, true);
+  const chatData = sstActivateRes.body.data;
+  assert.ok(chatData.session, 'Debe crear la sesión');
+  assert.equal(chatData.session.requestId, requestId);
+  assert.equal(chatData.session.status, 'activa');
+  assert.equal(chatData.session.isAnonymous, true);
+  assert.ok(chatData.messages.length >= 1, 'Debe incluir mensaje inicial institucional');
+  const sessionId = chatData.session.id;
+
+  // 5. Agente consulta el chat de su radicado y recibe la sesión activa y los mensajes
+  const agentChatRes = await call('get', `/chat/requests/${requestId}`, undefined, 'AGENTE').expect(200);
+  assert.equal(agentChatRes.body.success, true);
+  assert.equal(agentChatRes.body.data.session.id, sessionId);
+  assert.equal(agentChatRes.body.data.session.status, 'activa');
+
+  // 6. Agente consulta su mapa de radicados con chat activo
+  const mapRes = await call('get', '/chat/agent-active-map', undefined, 'AGENTE').expect(200);
+  assert.equal(mapRes.body.success, true);
+  assert.ok(Array.isArray(mapRes.body.data));
+  const activeEntry = mapRes.body.data.find(e => e.requestId === requestId);
+  assert.ok(activeEntry, 'El radicado debe figurar en el mapa de chats activos');
+  assert.equal(activeEntry.status, 'activa');
+
+  // 7. SST concluye la sesión con notas de salud ocupacional
+  const closeRes = await call('post', `/chat/sessions/${sessionId}/close`, {
     reason: 'ATENCION_CONCLUIDA',
-    notes: 'Agente orientado en técnica 4-7-8 de respiración y pausa activa'
+    notes: 'Agente orientado en técnica de respiración diafragmática y micropausa'
   }, 'SST').expect(200);
-
   assert.equal(closeRes.body.success, true);
   assert.equal(closeRes.body.data.estado, 'cerrada');
-  assert.equal(closeRes.body.data.motivo_cierre, 'ATENCION_CONCLUIDA');
+
+  // 8. Historial de mensajes inmutables en solo lectura
+  const messagesRes = await call('get', `/chat/sessions/${sessionId}/messages`, undefined, 'AGENTE').expect(200);
+  assert.equal(messagesRes.body.success, true);
+  assert.ok(messagesRes.body.data.messages.length >= 2, 'Debe contener mensaje inicial y mensaje de cierre');
+
+  // 9. Consulta del radicado tras el cierre: se conserva congelado para consulta histórica
+  const finalChatRes = await call('get', `/chat/requests/${requestId}`, undefined, 'AGENTE').expect(200);
+  assert.equal(finalChatRes.body.data.session.status, 'cerrada');
+  assert.equal(finalChatRes.body.data.session.closingReason, 'ATENCION_CONCLUIDA');
 });

@@ -94,7 +94,6 @@ app.use('/api/v1/reports', reportsRoutes);
 app.use('/api/v1/notifications', notificationsRoutes);
 app.use('/api/v1/nlp', nlpRoutes);
 app.use('/api/v1/chat', chatRoutes);
-app.use('/api/v1/support/chat', chatRoutes);
 
 
 // Manejador para rutas no implementadas (Formato de error SDD unificado)

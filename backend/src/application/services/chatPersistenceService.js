@@ -1,53 +1,100 @@
 // backend/src/application/services/chatPersistenceService.js
-// Servicio de persistencia y trazabilidad de sesiones de chat de acompañamiento SST (PostgreSQL)
+// Servicio de persistencia y trazabilidad de sesiones de chat vinculadas a Radicados de Apoyo SST (PostgreSQL)
+// Modelo preventivo de SG-SST (RF-10, Ley 1581 de 2012 / Res. 2646 de 2008)
 
 import { pool } from '../../infrastructure/db.js';
 import { AppError } from '../errors/AppError.js';
 
 export const chatPersistenceService = {
   /**
-   * Obtiene o crea la sesión activa de chat para un agente.
-   * Si ya existe una sesión en estado 'activa', la recupera junto con sus mensajes.
+   * Activa e inicia una sala de chat preventivo vinculada a un radicado formal (Rol: SST).
    */
-  getOrCreateActiveSession: async ({ agentId, isAnonymous = false, agentName = null }) => {
-    if (!agentId) throw new AppError('El ID del agente es requerido', 'CHAT_AGENT_ID_REQUIRED', 400);
+  activateChatForRequest: async ({ requestId, sstUserId }) => {
+    if (!requestId) throw new AppError('El ID del radicado es requerido', 'SUPPORT_REQUEST_ID_REQUIRED', 400);
+    if (!sstUserId) throw new AppError('El ID del especialista SST es requerido', 'CHAT_SST_ID_REQUIRED', 400);
 
-    const existingRes = await pool.query(
+    // 1. Obtener la solicitud formal
+    const reqRes = await pool.query(
       `SELECT s.*, 
               CASE 
-                WHEN s.es_anonimo THEN 'Agente Confidencial (' || RIGHT(s.agente_id, 4) || ')'
+                WHEN s.mode = 'anonimo' THEN 'Agente Confidencial (' || RIGHT(s.owner_user_id, 4) || ')'
                 ELSE u.nombres || ' ' || u.apellidos
               END AS agente_nombre_visible
-       FROM sesiones_chat_soporte s
-       JOIN usuarios u ON u.id = s.agente_id
-       WHERE s.agente_id = $1 AND s.estado = 'activa'
-       ORDER BY s.creado_en DESC
+       FROM solicitudes_apoyo s
+       JOIN usuarios u ON u.id = s.owner_user_id
+       WHERE s.id = $1`,
+      [requestId]
+    );
+
+    const solicitud = reqRes.rows[0];
+    if (!solicitud) {
+      throw new AppError('El radicado de apoyo no existe', 'SUPPORT_REQUEST_NOT_FOUND', 404);
+    }
+
+    if (solicitud.status === 'Cerrada' || solicitud.status === 'Atendida') {
+      throw new AppError('No se puede iniciar un chat preventivo para un radicado que ya ha sido concluido formalmente', 'REQUEST_ALREADY_CLOSED', 400);
+    }
+
+    // 2. Verificar si ya existe una sesión activa para este radicado
+    const existingRes = await pool.query(
+      `SELECT * FROM sesiones_chat_soporte 
+       WHERE solicitud_id = $1 AND estado = 'activa'
+       ORDER BY creado_en DESC
        LIMIT 1`,
-      [agentId]
+      [requestId]
     );
 
     let session = existingRes.rows[0];
+    let isNewSession = false;
 
     if (!session) {
+      isNewSession = true;
       const sessionId = `chs-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+      const isAnon = solicitud.mode === 'anonimo';
+
       const createRes = await pool.query(
-        `INSERT INTO sesiones_chat_soporte (id, agente_id, es_anonimo, estado, creado_en, actualizado_en)
-         VALUES ($1, $2, $3, 'activa', NOW(), NOW())
+        `INSERT INTO sesiones_chat_soporte (
+           id, solicitud_id, agente_id, es_anonimo, sst_atendio_id, estado,
+           motivo_solicitud, descripcion_solicitud, aprobado_en, creado_en, actualizado_en
+         )
+         VALUES ($1, $2, $3, $4, $5, 'activa', $6, $7, NOW(), NOW(), NOW())
          RETURNING *`,
-        [sessionId, agentId, Boolean(isAnonymous)]
+        [
+          sessionId,
+          solicitud.id,
+          solicitud.owner_user_id,
+          isAnon,
+          sstUserId,
+          solicitud.reason,
+          solicitud.description
+        ]
       );
       session = createRes.rows[0];
-    } else if (isAnonymous !== undefined && session.es_anonimo !== Boolean(isAnonymous)) {
-      const updateRes = await pool.query(
-        `UPDATE sesiones_chat_soporte SET es_anonimo = $1, actualizado_en = NOW() WHERE id = $2 RETURNING *`,
-        [Boolean(isAnonymous), session.id]
+
+      // Actualizar el estado del radicado a 'En gestion' si estaba en 'Recibida'
+      await pool.query(
+        `UPDATE solicitudes_apoyo
+         SET status = CASE WHEN status = 'Recibida' THEN 'En gestion' ELSE status END,
+             assigned_to = COALESCE(assigned_to, $1)
+         WHERE id = $2`,
+        [sstUserId, requestId]
       );
-      session = updateRes.rows[0];
+
+      // Mensaje de bienvenida institucional ligado al radicado
+      const msgId = `msg-${Date.now()}-welcome`;
+      const greetingText = `Hola. Hemos habilitado este canal preventivo para coordinar el radicado ${solicitud.code || solicitud.id}. ¿En qué podemos apoyarte respecto a este requerimiento?`;
+
+      await pool.query(
+        `INSERT INTO mensajes_chat_soporte (id, sesion_id, remitente_id, remitente_rol, remitente_nombre, texto, creado_en)
+         VALUES ($1, $2, $3, 'SST', 'Especialista SST (Salud Ocupacional)', $4, NOW())`,
+        [msgId, session.id, sstUserId, greetingText]
+      );
     }
 
+    // 3. Obtener mensajes cronológicos
     const messagesRes = await pool.query(
-      `SELECT id, sesion_id AS "sessionId", remitente_id AS "senderId", 
-              remitente_rol AS "senderRole", remitente_nombre AS "senderName", 
+      `SELECT id, sesion_id AS "sessionId", remitente_id AS "senderId",
+              remitente_rol AS "senderRole", remitente_nombre AS "senderName",
               texto AS "text", creado_en AS "timestamp"
        FROM mensajes_chat_soporte
        WHERE sesion_id = $1
@@ -59,9 +106,92 @@ export const chatPersistenceService = {
     return {
       session: {
         id: session.id,
+        requestId: session.solicitud_id,
+        requestCode: solicitud.code,
         agentId: session.agente_id,
+        agentName: solicitud.agente_nombre_visible,
         isAnonymous: session.es_anonimo,
         status: session.estado,
+        reason: session.motivo_solicitud,
+        details: session.descripcion_solicitud,
+        approvedAt: session.aprobado_en,
+        createdAt: session.creado_en,
+        updatedAt: session.actualizado_en,
+        isNewSession
+      },
+      messages: messagesRes.rows
+    };
+  },
+
+  /**
+   * Obtiene la sesión de chat (activa o cerrada) asociada a un radicado formal.
+   */
+  getChatByRequestId: async ({ requestId, userId, userRole }) => {
+    if (!requestId) throw new AppError('El ID del radicado es requerido', 'SUPPORT_REQUEST_ID_REQUIRED', 400);
+
+    const reqRes = await pool.query(
+      `SELECT s.*,
+              CASE 
+                WHEN s.mode = 'anonimo' THEN 'Agente Confidencial (' || RIGHT(s.owner_user_id, 4) || ')'
+                ELSE u.nombres || ' ' || u.apellidos
+              END AS agente_nombre_visible
+       FROM solicitudes_apoyo s
+       JOIN usuarios u ON u.id = s.owner_user_id
+       WHERE s.id = $1`,
+      [requestId]
+    );
+
+    const solicitud = reqRes.rows[0];
+    if (!solicitud) {
+      throw new AppError('El radicado de apoyo no existe', 'SUPPORT_REQUEST_NOT_FOUND', 404);
+    }
+
+    if (userRole !== 'SST' && solicitud.owner_user_id !== userId) {
+      throw new AppError('No tienes autorización para consultar el chat de este radicado', 'AUTH_FORBIDDEN_RESOURCE', 403);
+    }
+
+    const sessionRes = await pool.query(
+      `SELECT * FROM sesiones_chat_soporte
+       WHERE solicitud_id = $1
+       ORDER BY creado_en DESC
+       LIMIT 1`,
+      [requestId]
+    );
+
+    const session = sessionRes.rows[0];
+    if (!session) {
+      return {
+        session: null,
+        messages: []
+      };
+    }
+
+    const messagesRes = await pool.query(
+      `SELECT id, sesion_id AS "sessionId", remitente_id AS "senderId",
+              remitente_rol AS "senderRole", remitente_nombre AS "senderName",
+              texto AS "text", creado_en AS "timestamp"
+       FROM mensajes_chat_soporte
+       WHERE sesion_id = $1
+       ORDER BY creado_en ASC
+       LIMIT 100`,
+      [session.id]
+    );
+
+    return {
+      session: {
+        id: session.id,
+        requestId: session.solicitud_id,
+        requestCode: solicitud.code,
+        agentId: session.agente_id,
+        agentName: solicitud.agente_nombre_visible,
+        isAnonymous: session.es_anonimo,
+        status: session.estado,
+        reason: session.motivo_solicitud,
+        details: session.descripcion_solicitud,
+        closingReason: session.motivo_cierre,
+        closingNotes: session.notas_cierre,
+        approvedAt: session.aprobado_en,
+        closedAt: session.cerrado_en,
         createdAt: session.creado_en,
         updatedAt: session.actualizado_en
       },
@@ -70,11 +200,40 @@ export const chatPersistenceService = {
   },
 
   /**
-   * Guarda un nuevo mensaje en la sesión de chat activa.
+   * Obtiene el mapa de estados de chat para todos los radicados de un agente.
+   */
+  getAgentActiveChatsMap: async ({ agentId }) => {
+    if (!agentId) throw new AppError('El ID del agente es requerido', 'CHAT_AGENT_ID_REQUIRED', 400);
+
+    const res = await pool.query(
+      `SELECT s.id AS "sessionId",
+              s.solicitud_id AS "requestId",
+              s.estado AS "status",
+              s.creado_en AS "createdAt",
+              s.actualizado_en AS "updatedAt",
+              (SELECT COUNT(*)::int FROM mensajes_chat_soporte m WHERE m.sesion_id = s.id) AS "messageCount"
+       FROM sesiones_chat_soporte s
+       WHERE s.agente_id = $1 AND s.solicitud_id IS NOT NULL
+       ORDER BY s.actualizado_en DESC`,
+      [agentId]
+    );
+
+    return res.rows;
+  },
+
+  /**
+   * Guarda un nuevo mensaje inmutable en una sesión de chat activa.
    */
   saveMessage: async ({ sessionId, senderId, senderRole, senderName, text }) => {
     if (!sessionId || !senderId || !text || !text.trim()) {
       throw new AppError('Datos de mensaje incompletos', 'CHAT_MESSAGE_INVALID', 400);
+    }
+
+    const sessionRes = await pool.query(`SELECT * FROM sesiones_chat_soporte WHERE id = $1`, [sessionId]);
+    const session = sessionRes.rows[0];
+
+    if (!session || session.estado !== 'activa') {
+      throw new AppError('La sesión de chat no está activa para enviar mensajes', 'CHAT_SESSION_NOT_ACTIVE', 400);
     }
 
     const msgId = `msg-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
@@ -94,86 +253,16 @@ export const chatPersistenceService = {
       [sessionId]
     );
 
-    return insertRes.rows[0];
-  },
-
-  /**
-   * Obtiene la lista de todas las sesiones de chat activas para la consola de SST.
-   */
-  getActiveSessionsForSst: async () => {
-    const res = await pool.query(
-      `SELECT s.id AS "sessionId",
-              s.agente_id AS "agentId",
-              CASE 
-                WHEN s.es_anonimo THEN 'Agente Confidencial (' || RIGHT(s.agente_id, 4) || ')'
-                ELSE u.nombres || ' ' || u.apellidos
-              END AS "agentName",
-              s.es_anonimo AS "isAnonymous",
-              s.actualizado_en AS "updatedAt",
-              COALESCE(
-                (SELECT m.texto FROM mensajes_chat_soporte m WHERE m.sesion_id = s.id ORDER BY m.creado_en DESC LIMIT 1),
-                'Conversación iniciada'
-              ) AS "lastMessage",
-              (
-                SELECT COUNT(*)::int 
-                FROM mensajes_chat_soporte m 
-                WHERE m.sesion_id = s.id AND m.remitente_rol = 'AGENTE'
-              ) AS "messageCount"
-       FROM sesiones_chat_soporte s
-       JOIN usuarios u ON u.id = s.agente_id
-       WHERE s.estado = 'activa'
-       ORDER BY s.actualizado_en DESC`
-    );
-
-    return res.rows;
-  },
-
-  /**
-   * Recupera el historial completo de mensajes de una sesión específica validando autorización.
-   */
-  getSessionMessages: async (sessionId, userId, userRole) => {
-    const sessionRes = await pool.query(
-      `SELECT * FROM sesiones_chat_soporte WHERE id = $1`,
-      [sessionId]
-    );
-
-    const session = sessionRes.rows[0];
-    if (!session) {
-      throw new AppError('La sesión de chat no existe', 'CHAT_SESSION_NOT_FOUND', 404);
-    }
-
-    if (userRole !== 'SST' && session.agente_id !== userId) {
-      throw new AppError('No tienes autorización para consultar esta conversación', 'AUTH_FORBIDDEN_RESOURCE', 403);
-    }
-
-    const messagesRes = await pool.query(
-      `SELECT id, sesion_id AS "sessionId", remitente_id AS "senderId",
-              remitente_rol AS "senderRole", remitente_nombre AS "senderName",
-              texto AS "text", creado_en AS "timestamp"
-       FROM mensajes_chat_soporte
-       WHERE sesion_id = $1
-       ORDER BY creado_en ASC
-       LIMIT 100`,
-      [sessionId]
-    );
-
     return {
-      session: {
-        id: session.id,
-        agentId: session.agente_id,
-        isAnonymous: session.es_anonimo,
-        status: session.estado,
-        createdAt: session.creado_en,
-        updatedAt: session.actualizado_en
-      },
-      messages: messagesRes.rows
+      ...insertRes.rows[0],
+      requestId: session.solicitud_id
     };
   },
 
   /**
-   * Concluye una sesión de chat activa.
+   * Concluye una sesión de chat y la pasa a modo solo lectura.
    */
-  closeSession: async ({ sessionId, closedByUserId, closedByRole, reason = 'ATENCION_CONCLUIDA', notes = '' }) => {
+  closeSession: async ({ sessionId, closedByUserId, closedByRole, reason = 'ATENCION_CONCLUIDA', notes = '', targetRequestStatus = 'Cerrada' }) => {
     const sessionRes = await pool.query(`SELECT * FROM sesiones_chat_soporte WHERE id = $1`, [sessionId]);
     const session = sessionRes.rows[0];
 
@@ -198,14 +287,61 @@ export const chatPersistenceService = {
       [reason, notes, closedByRole, closedByUserId, sessionId]
     );
 
+    // Actualizar estado del radicado formal según la decisión de SST
+    let finalRequestStatus = null;
+    if (session.solicitud_id) {
+      finalRequestStatus = targetRequestStatus === 'En gestion' ? 'En gestion' : 'Cerrada';
+      await pool.query(
+        `UPDATE solicitudes_apoyo
+         SET status = $1
+         WHERE id = $2`,
+        [finalRequestStatus, session.solicitud_id]
+      );
+    }
+
     // Mensaje de cierre del sistema
     const sysMsgId = `msg-${Date.now()}-ended`;
     await pool.query(
       `INSERT INTO mensajes_chat_soporte (id, sesion_id, remitente_id, remitente_rol, remitente_nombre, texto, creado_en)
-       VALUES ($1, $2, $3, 'SST', 'Sistema de Acompañamiento', 'La sesión de orientación en vivo ha finalizado. Puedes volver a escribir cuando lo requieras.', NOW())`,
+       VALUES ($1, $2, $3, 'SST', 'Sistema de Acompañamiento', 'La conversación de este radicado ha sido concluida. Se conserva el registro para consulta en solo lectura.', NOW())`,
       [sysMsgId, sessionId, closedByUserId]
     );
 
-    return updateRes.rows[0];
+    return {
+      ...updateRes.rows[0],
+      finalRequestStatus
+    };
+  },
+
+  /**
+   * Recupera el historial completo de mensajes de una sesión.
+   */
+  getSessionMessages: async (sessionId, userId, userRole) => {
+    const sessionRes = await pool.query(`SELECT * FROM sesiones_chat_soporte WHERE id = $1`, [sessionId]);
+    const session = sessionRes.rows[0];
+
+    if (!session) {
+      throw new AppError('La sesión de chat no existe', 'CHAT_SESSION_NOT_FOUND', 404);
+    }
+
+    if (userRole !== 'SST' && session.agente_id !== userId) {
+      throw new AppError('No tienes autorización para consultar esta conversación', 'AUTH_FORBIDDEN_RESOURCE', 403);
+    }
+
+    const messagesRes = await pool.query(
+      `SELECT id, sesion_id AS "sessionId", remitente_id AS "senderId",
+              remitente_rol AS "senderRole", remitente_nombre AS "senderName",
+              texto AS "text", creado_en AS "timestamp"
+       FROM mensajes_chat_soporte
+       WHERE sesion_id = $1
+       ORDER BY creado_en ASC
+       LIMIT 100`,
+      [sessionId]
+    );
+
+    return {
+      session,
+      messages: messagesRes.rows
+    };
   }
 };

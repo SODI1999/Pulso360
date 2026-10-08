@@ -5460,62 +5460,13 @@
         "description": "Mayúsculas, minúsculas y números. Token de un uso, caduca 30 minutos. Transacción invalida tokens restantes e incrementa auth_version para revocar sesiones anteriores. No retorna contraseña ni token."
       }
     },
-    "/chat/active": {
-      "get": {
+    "/chat/requests/{requestId}/activate": {
+      "post": {
         "tags": [
           "Chat"
         ],
-        "summary": "Obtener o recuperar sesión de chat activa",
-        "description": "Retorna la sesión activa para el agente o lista de sesiones activas para SST.",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Sesión activa obtenida exitosamente"
-          },
-          "401": {
-            "description": "No autenticado",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Acceso restringido por rol",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Error interno del servidor",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/chat/sessions/{sessionId}/messages": {
-      "get": {
-        "tags": [
-          "Chat"
-        ],
-        "summary": "Historial de mensajes de una sesión de chat",
-        "description": "Retorna la lista de mensajes cronológicos de una sesión de chat.",
+        "summary": "Activar canal de chat para un radicado formal",
+        "description": "Habilita la sala de conversación preventiva para coordinar un radicado de acompañamiento.",
         "security": [
           {
             "bearerAuth": []
@@ -5523,7 +5474,7 @@
         ],
         "parameters": [
           {
-            "name": "sessionId",
+            "name": "requestId",
             "in": "path",
             "required": true,
             "schema": {
@@ -5533,7 +5484,17 @@
         ],
         "responses": {
           "200": {
-            "description": "Mensajes obtenidos exitosamente"
+            "description": "Canal de chat preventivo activado exitosamente"
+          },
+          "400": {
+            "description": "Datos invalidos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           },
           "401": {
             "description": "No autenticado",
@@ -5556,7 +5517,125 @@
             }
           },
           "404": {
-            "description": "Sesión no encontrada",
+            "description": "Radicado no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error interno del servidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/chat/requests/{requestId}": {
+      "get": {
+        "tags": [
+          "Chat"
+        ],
+        "summary": "Consultar chat de un radicado formal",
+        "description": "Retorna la sesion de chat y mensajes historicos vinculados al radicado.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "requestId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sesion de chat del radicado obtenida"
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso restringido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Radicado no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error interno del servidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/chat/agent-active-map": {
+      "get": {
+        "tags": [
+          "Chat"
+        ],
+        "summary": "Consultar mapa de chats activos de radicados del agente",
+        "description": "Retorna el listado de radicados que cuentan con sesion de chat activa o archivada.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Mapa de radicados con chat obtenido"
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso restringido por rol",
             "content": {
               "application/json": {
                 "schema": {
@@ -5583,8 +5662,8 @@
         "tags": [
           "Chat"
         ],
-        "summary": "Cerrar sesión de chat de soporte",
-        "description": "Cierra formalmente una sesión de chat SST.",
+        "summary": "Cerrar conversacion de chat del radicado",
+        "description": "Concluye formalmente la sesion de chat y la pasa a modo solo lectura.",
         "security": [
           {
             "bearerAuth": []
@@ -5612,6 +5691,10 @@
                   },
                   "notes": {
                     "type": "string"
+                  },
+                  "targetRequestStatus": {
+                    "type": "string",
+                    "enum": ["Cerrada", "En gestion"]
                   }
                 }
               }
@@ -5620,7 +5703,7 @@
         },
         "responses": {
           "200": {
-            "description": "Sesión cerrada correctamente"
+            "description": "Sesion de chat concluida"
           },
           "401": {
             "description": "No autenticado",
@@ -5633,7 +5716,7 @@
             }
           },
           "403": {
-            "description": "Acceso restringido por rol",
+            "description": "Acceso restringido",
             "content": {
               "application/json": {
                 "schema": {
@@ -5643,7 +5726,76 @@
             }
           },
           "404": {
-            "description": "Sesión no encontrada",
+            "description": "Sesion no encontrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error interno del servidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/chat/sessions/{sessionId}/messages": {
+      "get": {
+        "tags": [
+          "Chat"
+        ],
+        "summary": "Recuperar mensajes de una sesion de chat",
+        "description": "Retorna los mensajes inmutables registrados en PostgreSQL para la sesion.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Mensajes recuperados"
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso restringido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sesion no encontrada",
             "content": {
               "application/json": {
                 "schema": {

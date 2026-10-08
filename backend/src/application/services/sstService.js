@@ -6,6 +6,7 @@ import crypto from 'node:crypto';
 import { analyticsService } from './analyticsService.js';
 import { tieneConsentimientoActivo } from '../../domain/privacyRules.js';
 import { isCalendarDate } from '../../domain/calendarDate.js';
+import { emitToUser, emitToRole } from '../../infrastructure/socket.js';
 
 export const sstService = {
   /**
@@ -158,10 +159,37 @@ export const sstService = {
     if (!result) throw new AppError('Alerta no encontrada','ALERT_NOT_FOUND',404);
     return result.respondents < 5 ? {...result,description:null,evidence:null,protected:true} : result;
   },
-  async updateSupportRequestStatus(requestId,status,actorId) {
-    if (!['Recibida','En gestion','Atendida','Cerrada'].includes(status)) throw new AppError('Estado inválido','INVALID_STATUS',400);
-    const result = await sstRepository.updateSupportRequestStatus(requestId,status,actorId);
-    if (!result) throw new AppError('Caso no encontrado','SUPPORT_NOT_FOUND',404);
-    return result;
+  async updateSupportRequestStatus(requestId, status, actorId) {
+    if (!['Recibida', 'En gestion', 'Atendida', 'Cerrada'].includes(status)) throw new AppError('Estado inválido', 'INVALID_STATUS', 400);
+    const result = await sstRepository.updateSupportRequestStatus(requestId, status, actorId);
+    if (!result) throw new AppError('Caso no encontrado', 'SUPPORT_NOT_FOUND', 404);
+
+    // 1. Si se cerró una sesión de chat activa vinculada al radicado, emitir support:chat:ended en tiempo real
+    if (result._closedChat) {
+      emitToUser(result._closedChat.agentId, 'support:chat:ended', {
+        sessionId: result._closedChat.sessionId,
+        requestId,
+        status,
+        message: 'La conversación de este radicado ha sido concluida.'
+      });
+      emitToRole('SST', 'support:chat:ended', {
+        sessionId: result._closedChat.sessionId,
+        requestId,
+        status,
+        message: 'Conversación concluida por avance de estado del caso.'
+      });
+    }
+
+    // 2. Notificar cambio de estado del radicado al agente solicitante
+    if (result._internalOwnerId) {
+      emitToUser(result._internalOwnerId, 'support:request:statusChanged', {
+        requestId,
+        code: result.code,
+        status
+      });
+    }
+
+    const { _internalOwnerId, _closedChat, ...cleanData } = result;
+    return cleanData;
   }
 };
