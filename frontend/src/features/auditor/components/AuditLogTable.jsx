@@ -26,7 +26,7 @@ export function AuditLogTable({
       <div className="card-header">
         <div>
           <div className="card-title">Eventos del sistema registrados</div>
-          <div className="card-subtitle">Cadena encadenada de metadatos de operaciones críticas (RF-13).</div>
+          <div className="card-subtitle">Trazabilidad de metadatos de operaciones críticas.</div>
         </div>
         <span
           className={`badge ${integrityStatus.checked ? (integrityStatus.valid ? 'badge-ok' : 'badge-danger') : 'badge-info'}`}

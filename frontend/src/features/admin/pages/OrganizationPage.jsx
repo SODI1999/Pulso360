@@ -46,7 +46,7 @@ export function OrganizationPage() {
           <h1 className="page-title">Estructura organizacional y k-anonimato</h1>
           <p className="page-subtitle">
             Gestión jerárquica de campañas y equipos de operaciones con control estricto de umbrales
-            confidenciales (RF-15).
+            confidenciales.
           </p>
         </div>
         <div style={{ display: 'flex', gap: 'var(--space-2)', flexWrap: 'wrap' }}>
@@ -66,15 +66,6 @@ export function OrganizationPage() {
             <Icon name="refresh" size={16} />
             <span>Restablecer demo</span>
           </button>
-        </div>
-      </div>
-
-      {/* Banner de K-Anonimato y Confidencialidad */}
-      <div className="alert-banner info" style={{ marginBottom: 'var(--space-5)' }}>
-        <Icon name="info" size={18} />
-        <div>
-          <strong>Regla de K-Anonimato Activa:</strong> El umbral mínimo del sistema está configurado en{' '}
-          <strong>N = {minThreshold}</strong>. Aplica umbral de k-anonimato (k ≥ 5) para proteger la confidencialidad individual en métricas colectivas; los equipos con menos de {minThreshold} integrantes no publicarán tableros agregados a supervisores.
         </div>
       </div>
 

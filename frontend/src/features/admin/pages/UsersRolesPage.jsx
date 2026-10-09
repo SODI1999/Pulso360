@@ -41,23 +41,13 @@ export function UsersRolesPage() {
           <h1 className="page-title">Usuarios, roles y gobernanza de acceso</h1>
           <p className="page-subtitle">
             Administración centralizada de identidades institucionales, roles canónicos y asignaciones
-            organizacionales (RF-15).
+            organizacionales.
           </p>
         </div>
         <button type="button" className="btn btn-primary" onClick={() => setIsCreateOpen(true)}>
           <Icon name="userPlus" size={16} />
           <span>Crear usuario</span>
         </button>
-      </div>
-
-      {/* Banner Informativo */}
-      <div className="alert-banner info" style={{ marginBottom: 'var(--space-5)' }}>
-        <Icon name="info" size={18} />
-        <div>
-          <strong>Control de Acceso Basado en Roles (RBAC):</strong> Cada cuenta tiene asignado uno de los 5
-          roles canónicos estrictos. Cualquier cambio de perfil, traslado entre campañas o suspensión de
-          acceso registra una operación en la cadena de auditoría.
-        </div>
       </div>
 
       {/* Mensaje de feedback */}

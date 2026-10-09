@@ -34,7 +34,6 @@ export function CrisisSupportModal({
           <div>
             <div className="modal-header">
               <div>
-                <span className="agent-kicker">Cuidado Psicosocial Voluntario</span>
                 <h2 id="crisis-modal-title" className="modal-title">
                   Estás a tiempo de pedir ayuda y apoyo
                 </h2>
@@ -97,7 +96,6 @@ export function CrisisSupportModal({
           <div>
             <div className="modal-header">
               <div>
-                <span className="agent-kicker agent-kicker--primario">Canal Reservado con SST</span>
                 <h2 id="crisis-modal-title" className="modal-title">
                   Contacto prioritario con SST
                 </h2>

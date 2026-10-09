@@ -50,15 +50,6 @@ export function AuditLogPage() {
         </div>
       </div>
 
-      {/* Banner Informativo de Garantía Criptográfica */}
-      <div className="alert-banner info" style={{ marginBottom: 'var(--space-5)' }}>
-        <Icon name="info" size={18} />
-        <div>
-          <strong>Trazabilidad y Principio de Privacidad:</strong> Los eventos nuevos registran metadatos
-          de operaciones y gobernanza sin copiar respuestas individuales de check-ins, notas de acompañamiento ni texto de bitácoras. Los registros históricos se conservan.
-        </div>
-      </div>
-
       {/* Feedback Alert */}
       {feedback && (
         <div

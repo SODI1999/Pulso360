@@ -36,7 +36,6 @@ export function NlpCorrectionModal({
       <div ref={dialogRef} className="modal-box agent-modal agent-modal--correction">
         <div className="modal-header">
           <div>
-            <span className="agent-kicker">Corrección humana</span>
             <h2 id="nlp-correction-title" className="modal-title">
               Corregir clasificación orientativa
             </h2>

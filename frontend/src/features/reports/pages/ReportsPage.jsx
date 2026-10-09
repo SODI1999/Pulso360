@@ -58,7 +58,7 @@ export function ReportsPage() {
           <h1 className="page-title">Centro de reportes consolidados</h1>
           <p className="page-subtitle">
             Generación y exportación de tendencias colectivas de bienestar y métricas operativas protegidas
-            (RF-12). Muestra mínima confidencial N &ge; {minThreshold}.
+            Muestra mínima confidencial N &ge; {minThreshold}.
           </p>
         </div>
       </div>

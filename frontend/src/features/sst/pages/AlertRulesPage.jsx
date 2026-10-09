@@ -46,18 +46,8 @@ export function AlertRulesPage() {
           <h1 className="page-title">Configuración de reglas preventivas</h1>
           <p className="page-subtitle">
             SST propone umbrales y condiciones estadísticas; la activación oficial requiere autorización
-            administrativa (RF-08).
+            administrativa.
           </p>
-        </div>
-      </div>
-
-      {/* Banner Informativo */}
-      <div className="alert-banner info" style={{ marginBottom: 'var(--space-6)' }}>
-        <Icon name="info" size={20} />
-        <div>
-          <strong>Gobernanza de Reglas:</strong> La separación de funciones asegura que ninguna regla se
-          active unilateralmente. SST propone; el Administrador aprueba tras verificar la
-          pertinencia institucional.
         </div>
       </div>
 

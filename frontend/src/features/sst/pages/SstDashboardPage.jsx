@@ -88,17 +88,14 @@ export function SstDashboardPage() {
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            marginBottom: '1.25rem',
-            padding: '0.85rem 1.25rem',
-            borderRadius: 'var(--radio-md)',
-            borderLeft: '4px solid var(--c-primario)'
+            marginBottom: 'var(--space-4)'
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
             <Icon name="MessagesSquare" size={20} />
             <div>
               <strong style={{ display: 'block', fontSize: '0.9rem' }}>
-                Consulta de Orientación en Vivo de Agente
+                Consulta de orientación en vivo de agente
               </strong>
               <span style={{ fontSize: '0.82rem', color: 'var(--c-texto-suave)' }}>
                 {liveChatMessage.senderName}: &quot;{liveChatMessage.text.slice(0, 65)}{liveChatMessage.text.length > 65 ? '…' : ''}&quot;
@@ -115,23 +112,19 @@ export function SstDashboardPage() {
         <div
           role="status"
           aria-live="assertive"
-          className="alert-banner warning"
+          className="alert-banner warn"
           style={{
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            marginBottom: '1.25rem',
-            padding: '0.85rem 1.25rem',
-            borderRadius: 'var(--radio-md)',
-            borderLeft: '4px solid #f59e0b',
-            backgroundColor: '#fffbeb'
+            marginBottom: 'var(--space-4)'
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
             <Icon name="alertTriangle" size={20} />
             <div>
-              <strong style={{ color: '#92400e' }}>¡Alerta en Tiempo Real Detectada!</strong>
-              <div style={{ fontSize: '0.88rem', color: '#78350f' }}>
+              <strong>Variación operativa detectada</strong>
+              <div style={{ fontSize: '0.88rem' }}>
                 {realtimeAlert.campana_nombre ? `Campaña ${realtimeAlert.campana_nombre}: ` : ''}
                 {realtimeAlert.title || 'Se ha registrado una variación de carga o fatiga en la operación.'}
               </div>
@@ -141,7 +134,7 @@ export function SstDashboardPage() {
             type="button"
             className="btn btn-secondary btn-sm"
             onClick={() => setRealtimeAlert(null)}
-            aria-label="Cerrar notificación de alerta en tiempo real"
+            aria-label="Cerrar notificación de variación operativa"
           >
             Entendido
           </button>
@@ -192,7 +185,7 @@ export function SstDashboardPage() {
             </div>
           ) : isProtected || (cohortSize < minThreshold && cohortSize > 0) ? (
             <div>
-              <div className="kpi-value" style={{ fontSize: '18px', color: 'var(--c-alerta-texto)' }}>
+              <div className="kpi-value" style={{ fontSize: '18px', color: 'var(--c-alerta)' }}>
                 Protegido (k &lt; {minThreshold})
               </div>
               <div className="kpi-delta warn">
@@ -228,14 +221,6 @@ export function SstDashboardPage() {
         </div>
 
         <div className="kpi-card">
-          <div className="kpi-label">Campañas con datos publicables</div>
-          <div className="kpi-value">{loading ? '...' : 'N/D'}</div>
-          <div className="kpi-delta warn">
-            <span>El contrato actual no publica un conteo por campaña.</span>
-          </div>
-        </div>
-
-        <div className="kpi-card">
           <div className="kpi-label">Solicitudes de acompañamiento</div>
           <div className="kpi-value" style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
             {activeRequests.length}{' '}
@@ -250,7 +235,7 @@ export function SstDashboardPage() {
         </div>
       </div>
 
-      {/* Distribución Agregada de Factores NLP (RF-07) */}
+      {/* Distribución Agregada de Factores NLP */}
       <div className="card" style={{ marginBottom: 'var(--space-6)' }}>
         <div className="card-header">
           <div>

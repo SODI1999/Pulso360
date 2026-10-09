@@ -66,7 +66,7 @@ export function SystemParamsPage() {
           <h1 className="page-title">Parámetros institucionales, SLAs y gobernanza</h1>
           <p className="page-subtitle">
             Configuración global de umbrales confidenciales, tiempos máximos de respuesta, versionado de
-            políticas y modelos NLP (RF-15).
+            políticas y modelos NLP.
           </p>
         </div>
       </div>
@@ -81,7 +81,7 @@ export function SystemParamsPage() {
           onClick={() => setActiveTab('privacy')}
         >
           <Icon name="shield" size={16} />
-          <span>1. Privacidad y K-Anonimato</span>
+          <span>Privacidad y K-Anonimato</span>
         </button>
 
         <button
@@ -92,7 +92,7 @@ export function SystemParamsPage() {
           onClick={() => setActiveTab('slas')}
         >
           <Icon name="clock" size={16} />
-          <span>2. Acuerdos de Nivel de Servicio (SLAs)</span>
+          <span>Acuerdos de Nivel de Servicio (SLAs)</span>
         </button>
 
         <button
@@ -103,7 +103,7 @@ export function SystemParamsPage() {
           onClick={() => setActiveTab('governance')}
         >
           <Icon name="fileText" size={16} />
-          <span>3. Gobernanza NLP y Políticas</span>
+          <span>Gobernanza NLP y Políticas</span>
           {rules?.filter(r => r.status === 'Propuesta').length > 0 && (
             <span className="badge badge-warn" style={{ fontSize: '11px', padding: '1px 6px' }}>
               {rules.filter(r => r.status === 'Propuesta').length} pendientes

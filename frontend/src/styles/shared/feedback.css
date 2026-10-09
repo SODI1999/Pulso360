@@ -136,3 +136,16 @@
   margin-top: var(--space-6);
   flex-wrap: wrap;
 }
+
+.session-countdown-display {
+  font-size: var(--text-3xl, 2rem);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--c-critico);
+  text-align: center;
+  padding: var(--space-4);
+  background: var(--c-critico-bg);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--c-critico-border);
+  margin-bottom: var(--space-5);
+}

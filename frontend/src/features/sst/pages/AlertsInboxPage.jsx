@@ -1,7 +1,7 @@
 import { useAlertsInbox } from '../hooks/useAlertsInbox';
 
 // src/features/sst/pages/AlertsInboxPage.jsx
-// Bandeja de gestión del ciclo de vida de alertas tempranas (RF-08)
+// Bandeja de gestión del ciclo de vida de alertas tempranas
 
 import { Link } from 'react-router-dom';
 
@@ -41,16 +41,6 @@ export function AlertsInboxPage() {
           <Icon name="tune" size={18} />
           <span>Configurar reglas preventivas</span>
         </Link>
-      </div>
-
-      {/* Banner de Ciclo de Alertas */}
-      <div className="alert-banner info" style={{ marginBottom: 'var(--space-6)' }}>
-        <Icon name="info" size={20} />
-        <div>
-          <strong>Ciclo de alerta preventiva (RF-08):</strong> Las alertas identifican variaciones agregadas
-          para formular planes de mitigación de grupo. En esta vista no se muestran trabajadores
-          individualizados ni reportes punitivos.
-        </div>
       </div>
 
       {/* Feedback contextual */}

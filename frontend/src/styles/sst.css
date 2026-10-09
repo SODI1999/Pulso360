@@ -515,8 +515,8 @@
 }
 
 .sst-tab-badge.is-alert {
-  background-color: #ef4444;
-  color: #ffffff;
+  background-color: var(--c-critico);
+  color: var(--c-texto-invertido);
 }
 
 /* Panel de Cola de Triage */
@@ -622,9 +622,9 @@
 }
 
 .sst-triage-anon-badge.is-anon {
-  color: #7c3aed;
-  border-color: #ddd6fe;
-  background-color: #f5f3ff;
+  color: var(--c-rol-sst);
+  border-color: var(--c-rol-sst-border);
+  background-color: var(--c-rol-sst-bg);
 }
 
 .sst-triage-reason-box {

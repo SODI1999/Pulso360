@@ -128,20 +128,6 @@ export function TeamDashboardPage() {
             <input className="form-select" id="periodEnd" type="date" min={periodStart || undefined}
               value={periodEnd} onChange={e => setPeriodEnd(e.target.value)} />
           </div>
-
-          <div className="supervisor-filter-item disabled">
-            <label className="form-label" htmlFor="thirdFilter">
-              Tercer filtro
-            </label>
-            <select
-              className="form-select"
-              id="thirdFilter"
-              disabled
-              title="RF-07 limita a dos dimensiones simultáneas para evitar reidentificación por intersección"
-            >
-              <option>Bloqueado (RF-07)</option>
-            </select>
-          </div>
         </div>
       </div>
 

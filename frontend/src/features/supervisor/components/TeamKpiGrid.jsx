@@ -43,7 +43,7 @@ export function TeamKpiGrid({
         <div className="supervisor-kpi-highlight">{participationRate}</div>
         <div className="kpi-delta ok">
           <Icon name="shield" size={15} />
-          <span>Muestra protegida por k-anonimato (RF-07)</span>
+          <span>Muestra protegida por k-anonimato</span>
         </div>
       </div>
     </div>

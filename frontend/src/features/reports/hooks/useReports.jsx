@@ -216,7 +216,7 @@ export function useReports() {
     const csvRows = [
       ['METADATO', 'VALOR'],
       ['Sistema', 'Pulso360 - Plataforma de Bienestar Laboral'],
-      ['Tipo', 'Reporte Consolidado Agregado (RF-12)'],
+      ['Tipo', 'Reporte Consolidado Agregado'],
       ['Solicitante', meta.solicitante],
       ['Fecha Generacion', meta.fechaFormateada],
       ['Alcance / Corte', meta.alcance],
@@ -246,7 +246,7 @@ export function useReports() {
     const { meta, hash } = generatedReport;
     const exportObj = {
       sistema: 'Pulso360',
-      tipo: 'Reporte Consolidado Agregado (RF-12)',
+      tipo: 'Reporte Consolidado Agregado',
       metadatos: meta,
       hashCriptograficoDemo: hash
     };

@@ -88,7 +88,7 @@ export function CreateUserModal({ isOpen, onClose, onSave, orgScopes = [] }) {
               <Icon name="userPlus" size={20} />
               <span>Crear nuevo usuario</span>
             </h2>
-            <div className="modal-subtitle">Control de accesos y asignación de rol canónico (RF-15)</div>
+            <div className="modal-subtitle">Control de accesos y asignación de rol canónico</div>
           </div>
           <button type="button" className="btn btn-ghost btn-sm" onClick={onClose} aria-label="Cerrar modal">
             <Icon name="close" size={18} />

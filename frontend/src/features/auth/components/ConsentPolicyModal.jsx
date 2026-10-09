@@ -50,13 +50,13 @@ export function ConsentPolicyModal({
           </div> : <div className="consent-modal-text-flow">
             <section className="consent-modal-clause">
               <h3 className="consent-modal-clause-heading">
-                1. Aislamiento de la supervisión y k-anonimato (RF-07)
+                1. Aislamiento de la supervisión y k-anonimato
               </h3>
               <p className="consent-modal-clause-text">
                 Tus respuestas individuales, notas de bitácora y estados de fatiga nunca están disponibles
                 para supervisores, monitores de calidad ni coordinadores de cuenta. Las vistas de supervisión
                 únicamente presentan tendencias numéricas colectivas cuando el grupo operativo supera el
-                umbral estricto de k-anonimato (RF-07). Si una campaña o turno cuenta con menos agentes de los
+                umbral estricto de k-anonimato. Si una campaña o turno cuenta con menos agentes de los
                 requeridos por el umbral, los datos quedan bloqueados automáticamente para impedir deducciones
                 individuales.
               </p>

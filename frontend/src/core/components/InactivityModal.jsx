@@ -98,42 +98,22 @@ export function InactivityModal() {
       aria-labelledby="sessionWarningTitle"
     >
       <div className="modal-box">
-        <h2
-          id="sessionWarningTitle"
-          style={{ fontSize: '18px', fontWeight: '700', marginBottom: '8px', color: 'var(--c-texto)' }}
-        >
-          Tu sesión está por expirar
-        </h2>
-        <p
-          style={{
-            fontSize: '13.5px',
-            color: 'var(--c-texto-suave)',
-            lineHeight: '1.5',
-            marginBottom: '16px'
-          }}
-        >
-          Por seguridad y confidencialidad en la operación, el sistema cerrará tu sesión tras 30 minutos de
-          inactividad.
-        </p>
+        <div className="modal-header">
+          <div>
+            <h2 id="sessionWarningTitle" className="modal-title">
+              Tu sesión está por expirar
+            </h2>
+            <p className="modal-subtitle">
+              Por seguridad y confidencialidad en la operación, el sistema cerrará tu sesión tras 30 minutos de inactividad.
+            </p>
+          </div>
+        </div>
 
-        <div
-          style={{
-            fontSize: '32px',
-            fontWeight: '800',
-            fontVariantNumeric: 'tabular-nums',
-            color: 'var(--c-critico)',
-            textAlign: 'center',
-            padding: '16px',
-            background: 'var(--c-critico-bg)',
-            borderRadius: 'var(--radius-md)',
-            border: '1px solid var(--c-critico-border)',
-            marginBottom: '20px'
-          }}
-        >
+        <div className="session-countdown-display">
           00:{String(Math.max(0, secondsLeft)).padStart(2, '0')}
         </div>
 
-        <div className="modal-footer" style={{ marginTop: '0' }}>
+        <div className="modal-footer">
           <button className="btn btn-secondary" onClick={handleLogout}>
             Cerrar sesión
           </button>

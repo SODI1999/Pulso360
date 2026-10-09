@@ -31,18 +31,8 @@ export function SupportInboxPage() {
         <div>
           <h1 className="page-title">Buzón de Radicados de Acompañamiento SG-SST</h1>
           <p className="page-subtitle">
-            Gestión institucional de solicitudes formales de apoyo preventivo y canales interactivos de orientación en vivo (RF-10).
+            Gestión institucional de solicitudes formales de apoyo preventivo y canales interactivos de orientación en vivo.
           </p>
-        </div>
-      </div>
-
-      {/* Banner de Confidencialidad y Cumplimiento Normativo */}
-      <div className="alert-banner info" style={{ marginBottom: 'var(--space-5)' }}>
-        <Icon name="shield" size={20} />
-        <div>
-          <strong>Privacidad y secreto profesional (Ley 1581 de 2012 / Res. 2646 de 2008):</strong> Los supervisores de operaciones
-          NO tienen acceso a este buzón ni a los chats preventivos. En solicitudes anónimas se disocia rigurosamente la identidad,
-          y en modalidades identificadas se preserva el consentimiento expreso de acompañamiento ocupacional.
         </div>
       </div>
 
@@ -113,7 +103,7 @@ export function SupportInboxPage() {
                         <strong>{item.code || item.id}</strong>
                       </td>
                       <td>
-                        <span className={`badge ${isAnon ? 'badge-neutral' : 'badge-info'}`}>
+                        <span style={{ color: 'var(--c-texto-suave)', fontSize: '12.5px', fontWeight: '500' }}>
                           {isAnon ? 'Anónimo' : 'Identificado'}
                         </span>
                       </td>
@@ -127,30 +117,24 @@ export function SupportInboxPage() {
                       </td>
                       <td>
                         {isAnon ? (
-                          <span
-                            className="badge badge-neutral"
-                            style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}
-                          >
-                            <Icon name="lock" size={12} />
-                            <span>Solicitante anónimo (Identidad protegida)</span>
+                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', color: 'var(--c-texto-suave)', fontSize: '12px' }}>
+                            <Icon name="lock" size={13} />
+                            <span>Identidad protegida</span>
                           </span>
                         ) : (
                           <div>
                             <strong style={{ color: 'var(--c-texto)' }}>
                               {identityUser || item.userName || 'Identidad no disponible'}
                             </strong>
-                            <div>
+                            <div style={{ fontSize: '12px', color: 'var(--c-texto-suave)' }}>
                               {item.contactPreference || 'Sin preferencia'} · {item.timeWindow || 'Sin ventana indicada'}
-                            </div>
-                            <div style={{ fontSize: '11px', color: 'var(--c-primario)', marginTop: '2px' }}>
-                              Uso reservado SST
                             </div>
                           </div>
                         )}
                       </td>
                       <td>
-                        <span className={`badge badge-${item.urgency === 'alta' ? 'danger' : 'warn'}`}>
-                          {item.urgency?.toUpperCase() || 'MEDIA'}
+                        <span style={{ color: item.urgency === 'alta' ? 'var(--c-critico)' : 'var(--c-alerta)', fontWeight: '600', fontSize: '12px' }}>
+                          {item.urgency === 'alta' ? 'Alta' : 'Media'}
                         </span>
                       </td>
                       <td>{item.sla || '24 h hábiles'}</td>
@@ -170,7 +154,7 @@ export function SupportInboxPage() {
                         </span>
                       </td>
                       <td>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
                           {/* Botón de Chat Vinculado al Radicado */}
                           {isEnGestion && (
                             <button

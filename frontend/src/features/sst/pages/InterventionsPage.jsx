@@ -64,19 +64,8 @@ export function InterventionsPage() {
         <div>
           <h1 className="page-title">Planes de acción preventiva</h1>
           <p className="page-subtitle">
-            Formulación, seguimiento y evaluación de efectividad sobre indicadores de equipo (RF-09).
+            Formulación, seguimiento y evaluación de efectividad sobre indicadores de equipo.
           </p>
-        </div>
-      </div>
-
-      {/* Banner de Trazabilidad Metodológica */}
-      <div className="alert-banner info" style={{ marginBottom: 'var(--space-6)' }}>
-        <Icon name="info" size={20} />
-        <div>
-          <strong>Trazabilidad metodológica:</strong> Las intervenciones definen línea base, indicador
-          objetivo y ventana de evaluación. La variación observada en los datos refleja correlación de
-          bienestar colectivo, no causalidad clínica directa. Pulso360 no ejecuta cambios automáticos en
-          enrutadores ni turnos.
         </div>
       </div>
 

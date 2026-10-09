@@ -33,16 +33,8 @@ export function HabeasDataPage() {
           <h1 className="page-title">Bandeja de solicitudes de titulares</h1>
           <p className="page-subtitle">
             Atención de derechos de consulta, rectificación, portabilidad y supresión con trazabilidad
-            administrativa (RF-14 / Ley 1581).
+            administrativa bajo la Ley 1581 de 2012.
           </p>
-        </div>
-      </div>
-
-      {/* Banner de Plazos Normativos */}
-      <div className="alert-banner info" style={{ marginBottom: 'var(--space-5)' }}>
-        <Icon name="info" size={18} />
-        <div>
-          <strong>Fechas objetivo del trámite:</strong> El cálculo omite fines de semana; los festivos colombianos no están incluidos. Cada cambio de estado registra al administrador que lo realizó; el avance del trámite no modifica automáticamente los datos del titular.
         </div>
       </div>
 
@@ -63,7 +55,7 @@ export function HabeasDataPage() {
               Control de términos, estados de atención y constancias administrativas.
             </div>
           </div>
-          <span className="badge badge-info">Toda transición queda auditada</span>
+          <span className="badge badge-neutral">{requests.length} solicitudes</span>
         </div>
 
         <div className="table-responsive">

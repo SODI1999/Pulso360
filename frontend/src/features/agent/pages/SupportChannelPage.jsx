@@ -235,13 +235,13 @@ export function SupportChannelPage() {
                       {isChatActive && (
                         <span className="badge badge-ok">
                           <Icon name="CircleDot" size={12} />
-                          <span>Chat preventivo habilitado por SST</span>
+                          <span>Chat en vivo habilitado</span>
                         </span>
                       )}
                       {hasChatHistory && (
                         <span className="badge badge-neutral">
                           <Icon name="checkCircle" size={12} />
-                          <span>Orientación concluida (Historial)</span>
+                          <span>Orientación concluida</span>
                         </span>
                       )}
                     </div>

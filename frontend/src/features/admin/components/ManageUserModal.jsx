@@ -96,7 +96,7 @@ export function ManageUserModal({ isOpen, onClose, onSave, user, orgScopes = [],
               <span>Gestionar usuario</span>
             </h2>
             <div className="modal-subtitle">
-              Gobernanza de identidad, roles canónicos y reasignación de área (RF-15)
+              Gobernanza de identidad, roles canónicos y reasignación de área
             </div>
           </div>
           <button type="button" className="btn btn-ghost btn-sm" onClick={onClose} aria-label="Cerrar modal">
