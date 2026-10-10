@@ -189,3 +189,7 @@ export class AppError extends Error {
 }
 ```
 El manejador centralizado en `src/app.js` traduce estas instancias al formato `{ success: false, error: { message, code } }`, sanitizando mensajes de errores internos. Health conserva su respuesta propia documentada.
+
+## Contrato vigente de chat
+
+chatPersistenceService usa chatRepository; comprueba rol real, cuenta activa, titularidad, estado y C3 vigente al activar/enviar. La lectura histórica autorizada permanece tras revocar C3. Activación, envío y cierre comparten transacción con auditoría sin texto sensible. SST conserva el alcance institucional existente. El agente solo puede cerrar su caso; SST puede dejarlo En gestion. Los reintentos con clientMsgId son idempotentes para el mismo texto. Los DTO anónimos ocultan identidad de cuenta; recipientId es interno y los controladores/socket lo retiran. [Evidencia y límites](../infrastructure/repositories/chat-review.md).

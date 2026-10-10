@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Repositorio para gestión de prevención SST: alertas psicosociales, intervenciones y solicitudes de apoyo.
+ * Salvaguardas de privacidad: anonimización de solicitante si mode = 'anonimo' y protección k < 5 en evidencia de alertas.
+ * Capa: P10 · infrastructure/repositories
+ * @module infrastructure/repositories/sstRepository
+ */
 import pool, { transaction } from '../db.js';
 import { AppError } from '../../application/errors/AppError.js';
 import { createLog } from './auditorRepository.js';
@@ -97,6 +103,14 @@ export const sstRepository = {
     return rows[0];
   },
 
+  /**
+   * Crea un plan de intervención SST y transiciona atómicamente la alerta asociada a 'INTERVENIDA'.
+   * Valida campaña, equipo y ámbito del responsable con bloqueos FOR SHARE y FOR UPDATE.
+   *
+   * @param {Object} data - Datos de la intervención ({ id, alerta_id, title, type, campana_id, equipo_id, creator_id, assigned_to, start_date, end_date, indicator, baseline, progress, target_desc, external_action }).
+   * @returns {Promise<Object>} Registro de la intervención creada.
+   * @throws {AppError} Si la campaña, equipo, responsable o alerta no son válidos para el ámbito.
+   */
   async createInterventionWithAlertTransition(data) {
     const client = await pool.connect();
     try {
@@ -177,6 +191,12 @@ export const sstRepository = {
     return rows;
   },
 
+  /**
+   * Consulta el historial de solicitudes de apoyo creadas por el usuario autenticado.
+   *
+   * @param {string} userId - Identificador del usuario titular.
+   * @returns {Promise<Array<Object>>} Lista de solicitudes con código, modo y estado SLA.
+   */
   async findSupportRequestsByUser(userId) {
     const query = `
       SELECT 
@@ -214,6 +234,14 @@ export const sstRepository = {
     });
   },
 
+  /**
+   * Actualiza el estado de una alerta SST (ej. descartada con motivo o en revisión) emitiendo log auditado.
+   *
+   * @param {string} alertId - Identificador único de la alerta.
+   * @param {Object} data - Datos de actualización ({ status, dismissReason }).
+   * @param {string} actorId - Identificador del usuario especialista SST.
+   * @returns {Promise<Object>} Registro actualizado de la alerta.
+   */
   async updateAlertStatus(alertId, { status, dismissReason }, actorId) {
     return transaction(async client => {
     const query = `
@@ -229,6 +257,15 @@ export const sstRepository = {
     });
   },
 
+  /**
+   * Actualiza el estado de una solicitud de apoyo. Si el estado transiciona a 'Cerrada' o 'Atendida',
+   * cierra de forma atómica la sesión de chat activa vinculada, inserta un mensaje del sistema y registra auditoría.
+   *
+   * @param {string} requestId - Identificador de la solicitud de apoyo.
+   * @param {string} status - Nuevo estado ('Recibida', 'En gestion', 'Atendida', 'Cerrada').
+   * @param {string} actorId - Identificador del usuario especialista SST.
+   * @returns {Promise<Object|null>} Solicitud actualizada con metadatos de chat cerrado o null si no existe.
+   */
   async updateSupportRequestStatus(requestId, status, actorId) {
     return transaction(async client => {
       const prevRes = await client.query('SELECT id, owner_user_id, status FROM solicitudes_apoyo WHERE id = $1 FOR UPDATE', [requestId]);

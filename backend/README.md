@@ -137,6 +137,11 @@ Todos los usuarios de demostración tienen configurada la contraseña universal:
 
 ## 5. Directrices Inviolables para Agentes de Desarrollo
 
+Revisión de infraestructura (fase 1, 2026-10-09): inventario real, correcciones,
+validaciones y límites en [el informe de fase 1](src/infrastructure/repositories/phase1-review.md).
+El catálogo contiene 18 repositorios y un auxiliar, frente a las 31 tablas del
+esquema; la marca de 20 repositorios del plan externo no coincide con el código.
+
 1. **Principio SDD**: Antes de programar cualquier archivo en `src/`, consulta el archivo `README.md` del directorio correspondiente para conocer la firma y el contrato exigido.
 2. **Aislamiento de Bitácoras (Privacidad Absoluta)**: Jamás exponer la bitácora personal a roles distintos del autor (`WHERE user_id = $1`).
 3. **k-Anonimato**: Toda métrica de bienestar organizacional debe suprimirse si no alcanza una cohorte mínima de 5 participantes ($k \ge 5$).

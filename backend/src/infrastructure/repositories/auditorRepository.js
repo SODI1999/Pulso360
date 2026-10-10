@@ -1,10 +1,32 @@
+/**
+ * @fileoverview Repositorio para registro inmutable y verificación criptográfica de la cadena de auditoría (auditoria_logs).
+ * Integridad: Bloqueo advisory lock 360013 para encadenamiento secuencial SHA-256 (formato v2).
+ * Capa: P10 · infrastructure/repositories
+ * @module infrastructure/repositories/auditorRepository
+ */
 import { query, transaction } from '../db.js';
 
 /**
- * Retorna la lista de logs con filtros, de forma paginada y uniéndose a la tabla usuarios
+ * Retorna el identificador máximo actual registrado en la tabla de logs de auditoría.
+ *
+ * @returns {Promise<number>} ID máximo o 0 si la tabla está vacía.
  */
 export const getLatestId = async () => (await query('SELECT COALESCE(MAX(id),0) AS id FROM auditoria_logs')).rows[0].id;
 
+/**
+ * Consulta de registros de auditoría filtrada y paginada con unión a usuarios para trazabilidad institucional.
+ *
+ * @param {Object} filters - Filtros de auditoría.
+ * @param {number} [filters.limit=50] - Límite de registros.
+ * @param {number} [filters.offset=0] - Desplazamiento de paginación.
+ * @param {string} [filters.rol] - Filtrar por rol del actor.
+ * @param {string} [filters.action] - Filtrar por acción específica.
+ * @param {string} [filters.startDate] - Fecha inicial ISO.
+ * @param {string} [filters.endDate] - Fecha final ISO.
+ * @param {string} [filters.entidadAfectada] - Filtrar por recurso o entidad afectada.
+ * @param {number} [filters.maxId] - ID máximo para paginación estable.
+ * @returns {Promise<Array<Object>>} Lista de registros de auditoría.
+ */
 export const findLogs = async ({ limit = 50, offset = 0, rol, action, startDate, endDate, entidadAfectada, maxId }) => {
   let baseQuery = `
     SELECT 
@@ -64,7 +86,10 @@ export const findLogs = async ({ limit = 50, offset = 0, rol, action, startDate,
 };
 
 /**
- * Cuenta el total de logs según los filtros para paginación
+ * Cuenta el total de logs que cumplen con los criterios de filtro para cálculo de paginación.
+ *
+ * @param {Object} filters - Filtros de auditoría ({ rol, action, startDate, endDate, entidadAfectada, maxId }).
+ * @returns {Promise<number>} Conteo total de filas coincidentes.
  */
 export const countLogs = async ({ rol, action, startDate, endDate, entidadAfectada, maxId }) => {
   let baseQuery = `SELECT COUNT(*) as total FROM auditoria_logs al WHERE 1=1`;
@@ -112,6 +137,21 @@ export const countLogs = async ({ rol, action, startDate, endDate, entidadAfecta
 
 import { auditHash, GENESIS_HASH } from '../../domain/auditHash.js';
 
+/**
+ * Inserta un registro inmutable en auditoria_logs calculando el hash criptográfico SHA-256 encadenado a prev_hash.
+ * Adquiere un bloqueo advisory lock 360013 para asegurar atomicidad y secuencia estricta de la cadena.
+ *
+ * @param {Object} event - Evento de auditoría a registrar.
+ * @param {string} [event.usuarioId] - Identificador del usuario actor o null.
+ * @param {string} [event.rol] - Rol institucional del actor o null.
+ * @param {string} event.action - Código de la acción auditada (CREACION_USUARIO, REGISTRO_CHECKIN, etc.).
+ * @param {string} event.resource - Nombre de la tabla o entidad afectada.
+ * @param {string|number|null} [event.resourceId] - Identificador del recurso afectado.
+ * @param {Object|string} [event.details] - Metadatos estructurados de contexto del evento.
+ * @param {string|null} [event.ipAddress] - Dirección IP de origen o null.
+ * @param {import('pg').PoolClient} [client] - Cliente transaccional. Si se omite, crea una transacción propia.
+ * @returns {Promise<Object>} Fila del log insertado con id, prev_hash y hash calculado.
+ */
 export const createLog = async (event, client) => {
   if (!client) return transaction(tx => createLog(event, tx));
   // La misma exclusión protege el orden de commit y el enlace entre transacciones.
@@ -135,6 +175,12 @@ export const createLog = async (event, client) => {
   return result.rows[0];
 };
 
+/**
+ * Recorre la cadena completa de auditoría verificando enlaces criptográficos (prev_hash) y consistencia de contenido (hash).
+ * Retorna un reporte detallado de integridad, fallos detectados y cobertura de verificación (formato v2 vs legacy).
+ *
+ * @returns {Promise<{totalRecords: number, verifiedRecords: number, legacyUnverifiable: number, firstId: number|null, lastId: number|null, chainValid: boolean, contentValid: boolean, failures: Array<{id: string, kind: string}>, coverage: string}>} Reporte de integridad.
+ */
 export async function verifyIntegrity() {
   return transaction(async client => {
     // Una sola consulta obtiene una vista consistente de la cadena completa.

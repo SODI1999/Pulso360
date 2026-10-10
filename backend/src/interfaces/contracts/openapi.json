@@ -5466,7 +5466,7 @@
           "Chat"
         ],
         "summary": "Activar canal de chat para un radicado formal",
-        "description": "Habilita la sala de conversación preventiva para coordinar un radicado de acompañamiento.",
+        "description": "Solo SST activo. Requiere C3 vigente del titular y radicado abierto. Activación transaccional e idempotente si existe sesión activa. En modo anónimo agentId es null y el nombre del agente se oculta.",
         "security": [
           {
             "bearerAuth": []
@@ -5545,7 +5545,7 @@
           "Chat"
         ],
         "summary": "Consultar chat de un radicado formal",
-        "description": "Retorna la sesion de chat y mensajes historicos vinculados al radicado.",
+        "description": "Historial autorizado para SST o agente titular, incluso tras revocar C3. En modo anónimo se ocultan nombre e identificador de cuenta del agente; el sistema conserva el vínculo en BD.",
         "security": [
           {
             "bearerAuth": []
@@ -5663,7 +5663,7 @@
           "Chat"
         ],
         "summary": "Cerrar conversacion de chat del radicado",
-        "description": "Concluye formalmente la sesion de chat y la pasa a modo solo lectura.",
+        "description": "Cierre transaccional e idempotente para SST o agente titular. El agente solo puede dejar el radicado Cerrada; SST también puede dejarlo En gestion. La sesión pasa a solo lectura. En modo anónimo agente_id es null.",
         "security": [
           {
             "bearerAuth": []
@@ -5694,7 +5694,10 @@
                   },
                   "targetRequestStatus": {
                     "type": "string",
-                    "enum": ["Cerrada", "En gestion"]
+                    "enum": [
+                      "Cerrada",
+                      "En gestion"
+                    ]
                   }
                 }
               }

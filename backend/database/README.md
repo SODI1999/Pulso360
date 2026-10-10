@@ -1,19 +1,24 @@
-# P11 · Persistence — Especificación del Modelo de Datos Canónico (24 Tablas)
+# P11 · Persistence — Especificación del Modelo de Datos Canónico (31 Tablas)
 
 ## 1. Identificación del Componente
 * **Paquete Arquitectónico**: `P11 · persistence`
 * **Componente C4**: `C08 · PostgreSQL` (Contenedor `pulso360-database`)
 * **Motor**: PostgreSQL 18 (Relacional nativo con driver `pg`)
 * **Base de Datos**: `pulso360_db`
-* **Esquema vigente**: consultar `schema.sql` y las migraciones incrementales; el número de tablas depende del estado migrado del destino. Un conteo no acredita trazabilidad ni aprobación del esquema.
+* **Esquema canónico**: 26 tablas de dominio (Bloques A–G) + 5 tablas técnicas de infraestructura y jobs (Bloque H). Total: 31 tablas gestionadas en `schema.sql` y sincronizadas mediante `migrations/`.
 
-## 2. Inicialización y Migraciones (Bootstrap & Migrations)
+---
 
-**ADVERTENCIA**: El archivo `schema.sql` es un script de inicialización limpia (**bootstrap destructivo**).
-Al ejecutarse, realiza `DROP TABLE IF EXISTS ... CASCADE` sobre todas las tablas.
-- **Uso correcto**: Exclusivamente para entornos de desarrollo local, despliegues iniciales o bases de datos completamente vacías donde no importa la pérdida de datos.
-- **Producción**: En entornos productivos, NUNCA debe ejecutarse `schema.sql`.
-- **Mejores Prácticas para Producción**: Para aplicar cambios de estructura sin pérdida de datos, se debe utilizar una herramienta de migraciones incrementales (ej. Flyway, Liquibase, o scripts SQL secuenciales como `V1__Create_users.sql`, `V2__Add_index.sql`). Cada migración debe incluir operaciones no destructivas (ej. `ALTER TABLE`, `CREATE INDEX CONCURRENTLY`).
+## 2. Herramientas Operativas y Gestión de Esquema
+
+* **`schema.sql` (Bootstrap DDL)**:
+  Script de inicialización limpia destructiva (`DROP TABLE IF EXISTS ... CASCADE`). Recrea la totalidad de las 31 tablas, índices y restricciones de integridad. Utilizado exclusivamente para inicialización de entornos nuevos o reseteo de bases locales vacías.
+* **`seed.sql` (Semilla de Datos)**:
+  Carga inicial de catálogos obligatorios y datos demo para desarrollo (5 roles, campañas Alpha/Beta, equipos y usuarios preconfigurados con contraseña `Pulso360#2026`).
+* **`migrate.js` (`npm run db:migrate -- --database NOMBRE`)**:
+  Ejecutor transaccional de migraciones incrementales. Aplica secuencialmente los scripts bajo `migrations/`, calcula checksums SHA-256 e impide drift o alteraciones retroactivas mediante la tabla de control `pulso_migrations`.
+* **`provision-local-app.js` (`node database/provision-local-app.js --database NOMBRE`)**:
+  Script de seguridad para aprovisionamiento local. Crea el rol restringido `pulso360_app` con permisos DML exclusivos (`SELECT`, `INSERT`, `UPDATE`, `DELETE`), revoca privilegios DDL (`CREATE`, `DROP`), genera secretos criptográficos y configura los archivos de entorno (`.env`, `.env.maintenance`, `.env.test`).
 
 ---
 
@@ -46,6 +51,12 @@ erDiagram
     USUARIOS ||--o{ SOLICITUDES_APOYO : "radica"
     SOLICITUDES_APOYO ||--o{ SEGUIMIENTOS_APOYO : "gestiona"
     
+    SOLICITUDES_APOYO ||--o{ SESIONES_CHAT_SOPORTE : "vincula radicado"
+    USUARIOS ||--o{ SESIONES_CHAT_SOPORTE : "solicita (agente)"
+    USUARIOS ||--o{ SESIONES_CHAT_SOPORTE : "atiende (SST)"
+    SESIONES_CHAT_SOPORTE ||--o{ MENSAJES_CHAT_SOPORTE : "contiene"
+    USUARIOS ||--o{ MENSAJES_CHAT_SOPORTE : "remite"
+    
     USUARIOS ||--o{ SOLICITUDES_HABEAS_DATA : "ejerce ARCO"
     USUARIOS ||--o{ NOTIFICACIONES : "recibe"
     USUARIOS ||--o{ AUDITORIA_LOGS : "genera evento"
@@ -53,7 +64,7 @@ erDiagram
 
 ---
 
-## 3. Catálogo Canónico de las 24 Tablas
+## 4. Catálogo Canónico de las 26 Tablas
 
 ### Bloque A: Identidad, Control de Acceso y Estructura Organizacional
 1. **`roles`**: Catálogo canónico de los 5 roles (`AGENTE`, `SUPERVISOR`, `SST`, `AUDITOR`, `ADMIN`).
@@ -91,9 +102,20 @@ erDiagram
 23. **`auditoria_logs`**: Trazabilidad inmutable con encadenamiento criptográfico (`prev_hash`, `hash`).
 24. **`configuracion_sistema`**: Parámetros de gobernanza: umbral $k$-anonimato ($k=5$), SLAs, políticas.
 
+### Bloque G: Acompañamiento Ocupacional y Chat SST (RF-10)
+25. **`sesiones_chat_soporte`**: Sesiones interactivas de apoyo con SST vinculadas a solicitudes de apoyo, con soporte anónimo o identificado y ciclo de triage (`pendiente`, `activa`, `cerrada`, `rechazada`, `cancelada`).
+26. **`mensajes_chat_soporte`**: Registro cronológico e inmutable de mensajes intercambiados en las sesiones activas de chat entre el agente y el profesional SST.
+
+### Bloque H: Soporte Técnico, Recuperación y Trabajos en Segundo Plano
+27. **`password_reset_tokens`**: Tokens criptográficos UUID y hashes SHA-256 para recuperación segura de contraseña por correo.
+28. **`lexico_activaciones`**: Registro inmutable de trazabilidad de cambios y activaciones de versiones del diccionario léxico NLP.
+29. **`alert_job_state`**: Cursor y control de estado de ejecución del planificador periódico de alertas SST.
+30. **`alert_job_runs`**: Historial de corridas de evaluación del job semanal con estado (`COMPLETED`/`FAILED`) y resumen JSONB.
+31. **`alert_job_evaluations`**: Resultados y evaluaciones individuales emitidas por regla, campaña y equipo en cada corrida del job.
+
 ---
 
-## 4. Invariantes de Privacidad en Base de Datos
+## 5. Invariantes de Privacidad en Base de Datos
 
 1. **Aislamiento de la Bitácora**: Toda consulta a la tabla `bitacoras` desde endpoints del agente debe incluir obligatoriamente la cláusula `WHERE usuario_id = $1`.
 2. **k-Anonimato ($k \ge 5$)**: Las consultas analíticas sobre `daily_checkins` deben verificar `COUNT(DISTINCT usuario_id) >= 5` antes de emitir promedios grupales.

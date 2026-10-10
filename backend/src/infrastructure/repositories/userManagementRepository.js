@@ -1,8 +1,21 @@
+/**
+ * @fileoverview Repositorio de mutaciones atómicas para gestión de usuarios y asignaciones operativas.
+ * Capa: P10 · infrastructure/repositories
+ * @module infrastructure/repositories/userManagementRepository
+ */
 import crypto from 'node:crypto';
 import { transaction } from '../db.js';
 import { AppError } from '../../application/errors/AppError.js';
 import { createLog } from './auditorRepository.js';
 
+/**
+ * Gestiona la asignación de equipo para un usuario desactivando la previa e insertando la nueva.
+ *
+ * @param {import('pg').PoolClient} client - Cliente de transacción PostgreSQL.
+ * @param {Object} user - Objeto de usuario con id y rol_codigo.
+ * @param {string|null} equipoId - Identificador del equipo a asignar o null.
+ * @returns {Promise<void>}
+ */
 async function assign(client, user, equipoId) {
   if (equipoId) {
     const team = await client.query('SELECT id FROM equipos WHERE id=$1 AND activo=TRUE FOR SHARE', [equipoId]);
@@ -15,6 +28,13 @@ async function assign(client, user, equipoId) {
     [crypto.randomUUID(), user.id, equipoId, user.rol_codigo]);
 }
 
+/**
+ * Consulta el perfil completo del usuario con información de equipo y campaña.
+ *
+ * @param {import('pg').PoolClient} client - Cliente de transacción PostgreSQL.
+ * @param {string} id - Identificador del usuario.
+ * @returns {Promise<Object>} Fila del perfil del usuario.
+ */
 async function profile(client, id) {
   const { rows } = await client.query(`SELECT u.id, u.rol_codigo, u.correo_institucional AS correo,
     u.nombres, u.apellidos, u.estado, u.shift_start_hour, a.equipo_id, e.nombre AS equipo_nombre,
@@ -24,6 +44,22 @@ async function profile(client, id) {
   return rows[0];
 }
 
+/**
+ * Inserta un usuario, crea su asignación operativa e inserta un log de auditoría en una transacción atómica.
+ *
+ * @param {Object} data - Datos del usuario a crear.
+ * @param {string} data.id - Identificador UUID del usuario.
+ * @param {string} data.rolCodigo - Código de rol institucional.
+ * @param {string} data.correo - Correo institucional.
+ * @param {string} data.contrasenaHash - Hash seguro de la contraseña.
+ * @param {string} data.nombres - Nombres del usuario.
+ * @param {string} data.apellidos - Apellidos del usuario.
+ * @param {string} data.status - Estado inicial ('Activo', etc.).
+ * @param {number} [data.shiftStartHour] - Hora de inicio de turno.
+ * @param {string} [data.equipoId] - Identificador del equipo a asignar.
+ * @param {string} actorId - Identificador del administrador que realiza la creación.
+ * @returns {Promise<Object>} Perfil del usuario recién creado.
+ */
 export async function createUserAtomic(data, actorId) {
   return transaction(async client => {
     const { rows } = await client.query(`INSERT INTO usuarios
@@ -37,6 +73,14 @@ export async function createUserAtomic(data, actorId) {
   });
 }
 
+/**
+ * Actualiza rol, estado y/o asignación de equipo de un usuario con bloqueo FOR UPDATE y log de auditoría atómico.
+ *
+ * @param {string} id - Identificador del usuario a actualizar.
+ * @param {Object} data - Campos a modificar ({ rolCodigo, status, equipoId }).
+ * @param {string} actorId - Identificador del administrador que realiza la actualización.
+ * @returns {Promise<Object>} Perfil actualizado del usuario.
+ */
 export async function updateUserAtomic(id, data, actorId) {
   return transaction(async client => {
     const found = await client.query('SELECT id, rol_codigo, estado FROM usuarios WHERE id=$1 FOR UPDATE', [id]);

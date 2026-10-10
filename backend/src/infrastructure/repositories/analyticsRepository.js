@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Repositorio de analítica organizacional y cálculo de bienestar agregado con k-anonimato estricto.
+ * INVARIANTE INVIOLABLE DE PRIVACIDAD: Las agregaciones evalúan k >= 5 y consentimiento C4 sobre la política vigente.
+ * Capa: P10 · infrastructure/repositories
+ * @module infrastructure/repositories/analyticsRepository
+ */
 import pool from '../db.js';
 
 export const analyticsRepository = {
@@ -8,10 +14,11 @@ export const analyticsRepository = {
    * evitando que un supervisor deduzca datos de un solo empleado muy activo.
    *
    * @param {Object} params
-   * @param {number} [params.campanaId]
-   * @param {number} [params.equipoId]
+   * @param {string} [params.campanaId]
+   * @param {string} [params.equipoId]
    * @param {string} params.desde - Fecha inicial (YYYY-MM-DD)
    * @param {string} params.hasta - Fecha final (YYYY-MM-DD)
+   * @param {import('pg').PoolClient|import('pg').Pool} [client=pool] - Conexión de consulta.
    * @returns {Promise<number>} Número de participantes únicos
    */
   async countDistinctParticipants({ campanaId, equipoId, desde, hasta }, client = pool) {
@@ -57,20 +64,43 @@ export const analyticsRepository = {
   /**
    * Obtiene los promedios agregados para las 6 dimensiones de bienestar.
    * Solo debe ser invocado por el servicio tras confirmar que se cumple el k-anonimato (k >= 5).
-   * Los parámetros posicionales ($1..$4) se usan de forma estricta contra ataques de inyección SQL.
+   * Devuelve conteos internos y métricas suprimidas por dimensión; no es un DTO público.
    *
    * @param {Object} params
    * @param {string} [params.campanaId]
    * @param {string} [params.equipoId]
    * @param {string} [params.desde]
    * @param {string} [params.hasta]
+   * @param {number} [params.minK=5] - Umbral de publicación, nunca inferior a cinco.
+   * @param {boolean} [params.activeOnly=false] - Restringe a ámbitos activos.
+   * @param {import('pg').PoolClient|import('pg').Pool} [client=pool] - Conexión de consulta.
    * @returns {Promise<Object|null>} Promedios agregados redondeados a 2 decimales
    */
   async getSnapshot(params, client = pool) {
     return this.getAggregatedAverages({ ...params, includeCohort: true }, client);
   },
 
+  /**
+   * Calcula los promedios agregados de las 6 dimensiones de bienestar aplicando supresión granular
+   * por dimensión si el conteo de participantes es inferior al umbral minK (por defecto k >= 5).
+   * Solo incluye participantes que hayan otorgado consentimiento activo C4 para la política vigente.
+   *
+   * @param {Object} params - Criterios de agregación.
+   * @param {string} [params.campanaId] - Identificador de campaña.
+   * @param {string} [params.equipoId] - Identificador de equipo.
+   * @param {string} [params.desde] - Fecha inicial YYYY-MM-DD.
+   * @param {string} [params.hasta] - Fecha final YYYY-MM-DD.
+   * @param {number} [params.minK=5] - Umbral mínimo; debe ser un entero mayor o igual a cinco.
+   * @param {boolean} [params.includeCohort=false] - Incluye desglose de cohort_count y participant_counts.
+   * @param {boolean} [params.activeOnly=false] - Restringe únicamente a equipos y campañas activos.
+   * @param {import('pg').PoolClient|import('pg').Pool} [client=pool] - Cliente de base de datos.
+   * @returns {Promise<Object|null>} Promedios protegidos por k-anonimato o null si no se cumple el umbral.
+   * @throws {RangeError} Si se intenta reducir o invalidar el umbral de privacidad.
+   */
   async getAggregatedAverages({ campanaId, equipoId, desde, hasta, minK = 5, includeCohort = false, activeOnly = false }, client = pool) {
+    if (!Number.isInteger(minK) || minK < 5) {
+      throw new RangeError('El umbral de privacidad debe ser un entero mayor o igual a cinco.');
+    }
     let query = `
       SELECT 
         COUNT(DISTINCT d.usuario_id) AS cohort_count,

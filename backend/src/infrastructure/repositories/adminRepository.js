@@ -2,12 +2,15 @@ import pool from '../db.js';
 import crypto from 'crypto';
 
 /**
- * @fileoverview Repositorio de persistencia para el módulo de administración
- * @module adminRepository
+ * @fileoverview Repositorio de persistencia administrativa integral (usuarios, campañas, equipos, parámetros, políticas y Habeas Data).
+ * Capa: P10 · infrastructure/repositories
+ * @module infrastructure/repositories/adminRepository
  */
 
 /**
  * Encuentra todos los usuarios de la organización.
+ * Excluye credenciales y registros de bienestar de la vista administrativa.
+ * @returns {Promise<Array<Object>>} Perfiles y asignaciones operativas.
  */
 export const findAllUsers = async () => {
   const query = `
@@ -28,6 +31,8 @@ export const findAllUsers = async () => {
 
 /**
  * Busca un usuario por correo.
+ * @param {string} correo - Correo institucional; comparación sin distinguir mayúsculas.
+ * @returns {Promise<Object|undefined>} Identificador y correo sin credenciales, o undefined.
  */
 export const findByEmail = async (correo) => {
   const query = `
@@ -39,6 +44,12 @@ export const findByEmail = async (correo) => {
   return rows[0];
 };
 
+/**
+ * Busca un usuario por su nombre completo concatenado (nombres + apellidos).
+ *
+ * @param {string} fullName - Nombre completo del usuario.
+ * @returns {Promise<Object|undefined>} Fila de usuario ({ id, rol_codigo, estado }) o undefined.
+ */
 export const findUserByFullName = async (fullName) => {
   const query = `
     SELECT id, rol_codigo, estado 
@@ -52,6 +63,10 @@ export const findUserByFullName = async (fullName) => {
 
 /**
  * Crea un usuario nuevo.
+ * La creación auditada con asignación utiliza createUserAtomic.
+ * @param {Object} data - Datos validados: id, rolCodigo, correo, contrasenaHash,
+ * nombres, apellidos y shiftStartHour opcional. No acepta contraseñas planas.
+ * @returns {Promise<Object>} Usuario creado sin hash de contraseña.
  */
 export const createUser = async ({ id, rolCodigo, correo, contrasenaHash, nombres, apellidos, shiftStartHour }) => {
   const query = `
@@ -65,6 +80,9 @@ export const createUser = async ({ id, rolCodigo, correo, contrasenaHash, nombre
 
 /**
  * Asigna un usuario a un equipo desactivando la asignación previa.
+ * Usa una transacción propia; no registra auditoría. La gestión auditada usa userManagementRepository.
+ * @param {Object} data - id, usuarioId, equipoId, tipoAsignacion y fechaInicio (YYYY-MM-DD).
+ * @returns {Promise<Object>} Asignación creada.
  */
 export const assignUserToTeam = async ({ id, usuarioId, equipoId, tipoAsignacion, fechaInicio }) => {
   const client = await pool.connect();
@@ -97,6 +115,10 @@ export const assignUserToTeam = async ({ id, usuarioId, equipoId, tipoAsignacion
 
 /**
  * Actualiza el estado de un usuario.
+ * La gestión auditada utiliza updateUserAtomic.
+ * @param {string} id - Identificador de usuario.
+ * @param {string} estado - Estado previamente validado.
+ * @returns {Promise<Object|undefined>} Identificador y estado, o undefined.
  */
 export const updateUserStatus = async (id, estado) => {
   const query = `
@@ -111,6 +133,8 @@ export const updateUserStatus = async (id, estado) => {
 
 /**
  * Obtiene las campañas con sus equipos embebidos.
+ * Incluye asignaciones de supervisión, sin datos de bienestar individual.
+ * @returns {Promise<Array<Object>>} Campañas con equipos.
  */
 export const findAllCampaignsWithTeams = async () => {
   const query = `
@@ -139,6 +163,10 @@ export const findAllCampaignsWithTeams = async () => {
 
 /**
  * Crea una campaña.
+ * El servicio coordina auditoría y transacción cuando corresponda.
+ * @param {Object} data - id, codigo, nombre, descripcion y activa (predeterminado true).
+ * @param {import('pg').PoolClient|import('pg').Pool} [client=pool] - Conexión o transacción del llamador.
+ * @returns {Promise<Object>} Campaña creada.
  */
 export const createCampaign = async ({ id, codigo, nombre, descripcion, activa = true }, client = pool) => {
   const query = `
@@ -152,6 +180,10 @@ export const createCampaign = async ({ id, codigo, nombre, descripcion, activa =
 
 /**
  * Actualiza una campaña.
+ * @param {string} id - Identificador de campaña.
+ * @param {{nombre?: string, activa?: boolean}} changes - Campos validados; conserva los omitidos.
+ * @param {import('pg').PoolClient|import('pg').Pool} [client=pool] - Conexión o transacción del llamador.
+ * @returns {Promise<Object|undefined>} Campaña actualizada, o undefined.
  */
 export const updateCampaign = async (id, { nombre, activa }, client = pool) => {
   const query = `
@@ -164,6 +196,12 @@ export const updateCampaign = async (id, { nombre, activa }, client = pool) => {
   return rows[0];
 };
 
+/**
+ * Consulta un usuario por su identificador único retornando rol, estado y nombre completo.
+ *
+ * @param {string} id - Identificador único del usuario.
+ * @returns {Promise<Object|undefined>} Fila del usuario o undefined.
+ */
 export const findUserById = async (id) => {
   const query = `
     SELECT id, rol_codigo, estado, CONCAT(nombres, ' ', apellidos) AS nombre_completo
@@ -171,12 +209,15 @@ export const findUserById = async (id) => {
     WHERE id = $1
     LIMIT 1
   `;
-  const { rows } = await client.query(query, [id]);
+  const { rows } = await pool.query(query, [id]);
   return rows[0];
 };
 
 /**
  * Crea un equipo.
+ * La creación con asignación y auditoría utiliza createTeamAtomic.
+ * @param {Object} data - id, campanaId, codigo, nombre, descripcion, supervisorNombre y nMiembros.
+ * @returns {Promise<Object>} Equipo creado.
  */
 export const createTeam = async ({ id, campanaId, codigo, nombre, descripcion, supervisorNombre, nMiembros }) => {
   const query = `
@@ -190,6 +231,11 @@ export const createTeam = async ({ id, campanaId, codigo, nombre, descripcion, s
 
 /**
  * Actualiza un equipo.
+ * No reasigna al supervisor; el relevo utiliza updateTeamWithSupervisorHandover.
+ * @param {string} id - Identificador del equipo.
+ * @param {{nombre?: string, activo?: boolean, supervisorNombre?: string, nMiembros?: number}} changes - Campos validados.
+ * @param {import('pg').PoolClient|import('pg').Pool} [client=pool] - Conexión o transacción del llamador.
+ * @returns {Promise<Object|undefined>} Equipo actualizado, o undefined.
  */
 export const updateTeam = async (id, { nombre, activo, supervisorNombre, nMiembros }, client = pool) => {
   const query = `
@@ -213,6 +259,14 @@ export const updateTeam = async (id, { nombre, activo, supervisorNombre, nMiembr
 
 /**
  * Actualiza equipo y realiza el relevo de supervisor de manera atómica
+ * Con cliente externo, el servicio conserva commit, rollback y auditoría.
+ * @param {string} teamId - Identificador del equipo.
+ * @param {{nombre?: string, activo?: boolean, nMiembros?: number}} changes - Campos validados.
+ * @param {string} supervisorId - Supervisor previamente validado.
+ * @param {string} supervisorNombre - Nombre visible del supervisor.
+ * @param {string} nuevaAsignacionId - Identificador de asignación.
+ * @param {import('pg').PoolClient} [externalClient] - Transacción del llamador; si se omite, crea una propia.
+ * @returns {Promise<Object|null>} Equipo actualizado, o null si no existe.
  */
 export const updateTeamWithSupervisorHandover = async (teamId, { nombre, activo, nMiembros }, supervisorId, supervisorNombre, nuevaAsignacionId, externalClient) => {
   const client = externalClient || await pool.connect();
@@ -268,6 +322,7 @@ export const updateTeamWithSupervisorHandover = async (teamId, { nombre, activo,
 
 /**
  * Obtiene los parámetros del sistema.
+ * @returns {Promise<Array<Object>>} Claves, valores y descripciones persistidos.
  */
 export const findSystemParams = async () => {
   const query = `
@@ -280,6 +335,10 @@ export const findSystemParams = async () => {
 
 /**
  * Actualiza un parámetro del sistema.
+ * El llamador valida el valor y registra auditoría.
+ * @param {string} clave - Clave existente de configuración.
+ * @param {*} valorJson - Valor serializable compatible con la columna JSON.
+ * @returns {Promise<Object|undefined>} Parámetro actualizado, o undefined.
  */
 export const updateSystemParam = async (clave, valorJson) => {
   const query = `
@@ -294,6 +353,7 @@ export const updateSystemParam = async (clave, valorJson) => {
 
 /**
  * Obtiene las políticas de privacidad.
+ * @returns {Promise<Array<Object>>} Metadatos de políticas por vigencia descendente.
  */
 export const findPolicies = async () => {
   const query = `
@@ -307,6 +367,10 @@ export const findPolicies = async () => {
 
 /**
  * Crea una nueva política.
+ * Calcula su hash; el servicio coordina auditoría y notificación.
+ * @param {Object} data - id, version, titulo, textoPolitica, textoAviso opcional y creadoPorId.
+ * @param {import('pg').PoolClient|import('pg').Pool} [client=pool] - Conexión o transacción del llamador.
+ * @returns {Promise<Object>} Metadatos de la política publicada.
  */
 export const createPolicy = async ({ id, version, titulo, textoPolitica, textoAviso, creadoPorId }, client = pool) => {
   const hashContenido = crypto.createHash('sha256').update(textoPolitica + (textoAviso || '')).digest('hex');
@@ -321,6 +385,8 @@ export const createPolicy = async ({ id, version, titulo, textoPolitica, textoAv
 
 /**
  * Obtiene las solicitudes de habeas data.
+ * La identidad se recupera para gestión administrativa autorizada.
+ * @returns {Promise<Array<Object>>} Solicitudes con datos de su titular.
  */
 export const findHabeasDataRequests = async () => {
   const query = `
@@ -335,6 +401,12 @@ export const findHabeasDataRequests = async () => {
 
 /**
  * Actualiza el estado de una solicitud de habeas data.
+ * Fija resolución para Respondida o Rechazada; el servicio coordina auditoría.
+ * @param {string} id - Identificador de solicitud.
+ * @param {string} status - Estado previamente validado.
+ * @param {string|null} note - Nota; null conserva la existente.
+ * @param {import('pg').PoolClient|import('pg').Pool} [client=pool] - Conexión o transacción del llamador.
+ * @returns {Promise<Object|undefined>} Solicitud actualizada, o undefined.
  */
 export const updateHabeasDataStatus = async (id, status, note, client = pool) => {
   const query = `
@@ -348,12 +420,27 @@ export const updateHabeasDataStatus = async (id, status, note, client = pool) =>
   return rows[0];
 };
 
+/**
+ * Despacha una notificación in-app para todos los agentes ante la publicación de una nueva versión de política de privacidad.
+ *
+ * @param {string} id - Identificador UUID de la notificación.
+ * @param {string} version - Código de versión de la nueva política.
+ * @param {import('pg').PoolClient} client - Cliente transaccional.
+ * @returns {Promise<void>}
+ */
 export const createPolicyNotification = async (id, version, client) => {
   await client.query(`INSERT INTO notificaciones (id,rol_destinatario,title,context,href)
     VALUES ($1,'AGENTE',$2,'Revisa la política vigente y actualiza tus preferencias.','/consentimiento')`,
   [id, `Nueva política (${version})`]);
 };
 
+/**
+ * Bloquea una solicitud de Habeas Data para actualización mediante FOR UPDATE.
+ *
+ * @param {string} id - Identificador de la solicitud.
+ * @param {import('pg').PoolClient} client - Cliente transaccional.
+ * @returns {Promise<{status: string}|undefined>} Fila con el estado actual o undefined.
+ */
 export const findHabeasForUpdate = async (id, client) => {
   return (await client.query('SELECT status FROM solicitudes_habeas_data WHERE id=$1 FOR UPDATE', [id])).rows[0];
 };

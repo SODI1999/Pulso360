@@ -1,15 +1,34 @@
+/**
+ * @fileoverview Runner transaccional de migraciones incrementales para Pulso360.
+ *
+ * Aplica de forma secuencial y atómica los scripts DDL/DML bajo database/migrations/.
+ * Garantiza la inmutabilidad de la base de datos validando el checksum SHA-256 de
+ * cada migración frente a la tabla de control 'pulso_migrations'.
+ *
+ * Utiliza un candado transaccional consultivo (pg_advisory_xact_lock 360000) para
+ * prevenir ejecuciones concurrentes y asegurar atomicidad por corrida.
+ *
+ * Uso CLI:
+ *   node database/migrate.js --database <NOMBRE_BD>
+ *   npm run db:migrate -- --database <NOMBRE_BD>
+ *
+ * @module database/migrate
+ */
+
 import fs from 'node:fs/promises';
 import crypto from 'node:crypto';
 import dotenv from 'dotenv';
 import { canonicalJson } from '../src/domain/canonicalJson.js';
 
 dotenv.config();
+
 // El mantenimiento usa credenciales independientes de la API sin ampliar sus permisos.
 if (process.env.NODE_ENV !== 'test') {
-  dotenv.config({ path:'.env.maintenance' });
+  dotenv.config({ path: '.env.maintenance' });
   if (process.env.DB_MIGRATION_USER) process.env.DB_USER = process.env.DB_MIGRATION_USER;
   if (process.env.DB_MIGRATION_PASSWORD) process.env.DB_PASSWORD = process.env.DB_MIGRATION_PASSWORD;
 }
+
 const { default: pool, transaction } = await import('../src/infrastructure/db.js');
 
 const target = process.argv[process.argv.indexOf('--database') + 1];

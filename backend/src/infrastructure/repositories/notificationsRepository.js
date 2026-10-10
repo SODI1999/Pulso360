@@ -1,6 +1,18 @@
+/**
+ * @fileoverview Repositorio para consulta y marcado de lectura de notificaciones in-app del sistema.
+ * Capa: P10 · infrastructure/repositories
+ * @module infrastructure/repositories/notificationsRepository
+ */
 import pool from '../db.js';
 
 export const notificationsRepository = {
+  /**
+   * Consulta las 50 notificaciones más recientes dirigidas al usuario o a su rol institucional.
+   *
+   * @param {string} userId - Identificador del usuario autenticado.
+   * @param {string} rolCodigo - Código del rol del usuario (AGENTE, SUPERVISOR, SST, ADMIN).
+   * @returns {Promise<Array<Object>>} Lista de notificaciones con propiedad 'read'.
+   */
   async findByUserAndRole(userId, rolCodigo) {
     const query = `
       SELECT id, usuario_id, rol_destinatario, title, context, is_read, href, created_at
@@ -16,6 +28,14 @@ export const notificationsRepository = {
     }));
   },
 
+  /**
+   * Marca una notificación individual como leída garantizando pertenencia al usuario o su rol.
+   *
+   * @param {string} notificationId - Identificador de la notificación.
+   * @param {string} userId - Identificador del usuario.
+   * @param {string} rolCodigo - Rol del usuario.
+   * @returns {Promise<Object|null>} Notificación actualizada o null si no coincide el destinatario.
+   */
   async markRead(notificationId, userId, rolCodigo) {
     const query = `
       UPDATE notificaciones 
@@ -28,6 +48,13 @@ export const notificationsRepository = {
     return rows[0] || null;
   },
 
+  /**
+   * Marca como leídas todas las notificaciones pendientes dirigidas al usuario o a su rol.
+   *
+   * @param {string} userId - Identificador del usuario.
+   * @param {string} rolCodigo - Rol del usuario.
+   * @returns {Promise<Array<Object>>} Lista de notificaciones actualizadas.
+   */
   async markAllRead(userId, rolCodigo) {
     const query = `
       UPDATE notificaciones 

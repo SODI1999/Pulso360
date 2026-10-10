@@ -1,7 +1,20 @@
+/**
+ * @fileoverview Repositorio para gestión de intervenciones preventivas y seguimientos asignados a supervisores operativos.
+ * Capa: P10 · infrastructure/repositories
+ * @module infrastructure/repositories/supervisorRepository
+ */
 import { createLog } from './auditorRepository.js';
 import pool from '../db.js';
 
 export const supervisorRepository = {
+  /**
+   * Valida si una intervención específica pertenece al ámbito autorizado del supervisor
+   * (asignada directamente, a uno de sus equipos a cargo o a su campaña asignada).
+   *
+   * @param {string} intervencionId - Identificador de la intervención.
+   * @param {string} supervisorId - Identificador del usuario supervisor.
+   * @returns {Promise<{id: string, campana_id: string, equipo_id: string|null}|undefined>} Ámbito o undefined.
+   */
   async findAuthorizedIntervention(intervencionId, supervisorId) {
     return (await pool.query(`
       SELECT i.id, i.campana_id, i.equipo_id
@@ -21,6 +34,13 @@ export const supervisorRepository = {
         )
     `, [intervencionId, supervisorId])).rows[0];
   },
+  /**
+   * Consulta las intervenciones activas o históricas asignadas al supervisor o pertenecientes a sus equipos y campañas a cargo.
+   * Agrega el historial completo de seguimientos en un arreglo JSON embebido ordenado cronológicamente.
+   *
+   * @param {string} supervisorId - Identificador del supervisor.
+   * @returns {Promise<Array<Object>>} Lista de intervenciones con seguimientos embebidos.
+   */
   async findAssignedInterventions(supervisorId) {
     const query = `
       SELECT 
@@ -67,6 +87,21 @@ export const supervisorRepository = {
     return result.rows;
   },
 
+  /**
+   * Registra un seguimiento de avance sobre una intervención en una transacción atómica:
+   * inserta en seguimientos_intervencion, actualiza el progreso en sst_intervenciones (cerrándola si progreso >= 100)
+   * y genera el log de auditoría correspondiente.
+   *
+   * @param {Object} params - Datos del seguimiento.
+   * @param {string} params.id - Identificador UUID del seguimiento.
+   * @param {string} params.intervencionId - Identificador de la intervención.
+   * @param {string} params.autorId - Identificador del supervisor autor.
+   * @param {string} params.fecha - Fecha del seguimiento (YYYY-MM-DD).
+   * @param {number} params.progresoReportado - Porcentaje de avance (0 a 100).
+   * @param {string} params.notaAvance - Nota descriptiva del avance o acción ejecutada.
+   * @param {string} params.tipoAccion - Tipo de acción ('Reunion', 'Capacitacion', 'Ajuste operativo', etc.).
+   * @returns {Promise<Object>} Registro del seguimiento creado.
+   */
   async createFollowup({ id, intervencionId, autorId, fecha, progresoReportado, notaAvance, tipoAccion }) {
     const client = await pool.connect();
     try {

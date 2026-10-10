@@ -1,12 +1,35 @@
-// Operación explícita local: no se ejecuta al iniciar la API ni en una migración.
+/**
+ * @fileoverview Script de aprovisionamiento de seguridad y privilegios para entorno local de Pulso360.
+ *
+ * Crea en PostgreSQL el rol de aplicación de mínimos privilegios ('pulso360_app')
+ * con permisos DML exclusivos (SELECT, INSERT, UPDATE, DELETE) sobre tablas del
+ * esquema público y lectura en secuencias y en 'pulso_migrations'. Revoca privilegios
+ * DDL (CREATE, DROP).
+ *
+ * Genera contraseñas criptográficas seguras y un nuevo secreto JWT_SECRET (48 bytes hex),
+ * actualizando de forma atómica y consistente los archivos de configuración
+ * (.env, .env.maintenance, .env.test).
+ *
+ * Invocación CLI:
+ *   node database/provision-local-app.js --database <NOMBRE_BD_LOCAL>
+ *
+ * Restricciones de Seguridad:
+ * - Exclusivo para ejecución en localhost (127.0.0.1, localhost, ::1).
+ * - No se ejecuta automáticamente ni en migraciones ni al iniciar la API Express.
+ * - Falla de forma segura si el rol 'pulso360_app' ya existe para evitar sobreescrituras accidentales.
+ *
+ * @module database/provisionLocalApp
+ */
+
 import dotenv from 'dotenv';
 import pg from 'pg';
 import { randomBytes } from 'node:crypto';
 import { readFile, writeFile, rm } from 'node:fs/promises';
 
 dotenv.config();
-dotenv.config({ path:'.env.maintenance' });
-dotenv.config({ path:'.env.test' });
+dotenv.config({ path: '.env.maintenance' });
+dotenv.config({ path: '.env.test' });
+
 const target = process.argv[process.argv.indexOf('--database') + 1];
 if (!process.argv.includes('--database') || target !== process.env.DB_NAME ||
     !['127.0.0.1', 'localhost', '::1'].includes(process.env.DB_HOST)) {

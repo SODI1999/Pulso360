@@ -1,6 +1,12 @@
-// backend/src/infrastructure/db.js
-// Capa: P10 · infrastructure / Componente: C07 · Acceso a datos
-// Gestión del Pool de conexiones de PostgreSQL (pg nativo)
+/**
+ * @fileoverview Gestión del Pool de conexiones de PostgreSQL y utilidades de ejecución SQL.
+ * Capa: P10 · infrastructure / Componente: C07 · Acceso a datos y persistencia
+ *
+ * Administra el ciclo de vida del Pool de conexiones, aislamiento de base de datos
+ * para entornos de test y transacciones atómicas seguras con BEGIN/COMMIT/ROLLBACK.
+ *
+ * @module infrastructure/db
+ */
 
 import pg from 'pg';
 import dotenv from 'dotenv';
@@ -47,6 +53,16 @@ pool.on('error', (err) => {
  */
 export const query = (text, params) => pool.query(text, params);
 
+/**
+ * Ejecuta un conjunto de operaciones dentro de una transacción atómica segura.
+ * Adquiere un cliente dedicado del pool, inicia BEGIN, ejecuta el callback y
+ * finaliza con COMMIT si es exitoso o ROLLBACK ante cualquier excepción.
+ *
+ * @template T
+ * @param {function(import('pg').PoolClient): Promise<T>} operation - Callback que recibe el cliente de BD.
+ * @returns {Promise<T>} Resultado devuelto por la operación transaccional.
+ * @throws {Error} Propaga cualquier error ocurrido durante la transacción tras hacer ROLLBACK.
+ */
 export async function transaction(operation) {
   const client = await pool.connect();
   try {

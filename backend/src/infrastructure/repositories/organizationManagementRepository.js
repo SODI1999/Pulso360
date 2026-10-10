@@ -1,8 +1,26 @@
+/**
+ * @fileoverview Repositorio de operaciones atómicas para gestión de estructura organizacional y equipos.
+ * Capa: P10 · infrastructure/repositories
+ * @module infrastructure/repositories/organizationManagementRepository
+ */
 import crypto from 'node:crypto';
 import { transaction } from '../db.js';
 import { AppError } from '../../application/errors/AppError.js';
 import { createLog } from './auditorRepository.js';
 
+/**
+ * Crea un equipo en una campaña, valida y asigna al supervisor en una transacción atómica con auditoría.
+ *
+ * @param {Object} data - Datos del equipo.
+ * @param {string} data.campanaId - Identificador de la campaña padre.
+ * @param {string} data.supervisorId - Identificador del usuario supervisor activo.
+ * @param {string} data.codigo - Código único del equipo.
+ * @param {string} data.nombre - Nombre del equipo.
+ * @param {number} [data.nMiembros] - Cantidad inicial de miembros.
+ * @param {boolean} [data.activo] - Estado activo/inactivo.
+ * @param {string} actorId - Identificador del usuario administrador que ejecuta la acción.
+ * @returns {Promise<Object>} Registro del equipo creado con supervisor_id.
+ */
 export function createTeamAtomic(data, actorId) {
   return transaction(async client => {
     const campaign = await client.query('SELECT id FROM campanas WHERE id=$1 FOR SHARE', [data.campanaId]);

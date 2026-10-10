@@ -12,13 +12,13 @@ export const chatController = {
   activateChat: async (req, res, next) => {
     try {
       const { requestId } = req.params;
-      const data = await chatPersistenceService.activateChatForRequest({
+      const { recipientId, ...data } = await chatPersistenceService.activateChatForRequest({
         requestId,
         sstUserId: req.user.id
       });
 
       // Notificar al agente en tiempo real que se abrió el chat de su radicado
-      emitToUser(data.session.agentId, 'support:chat:activated', data);
+      emitToUser(recipientId, 'support:chat:activated', data);
       emitToRole('SST', 'support:chat:activated', data);
 
       return res.status(200).json({
@@ -91,7 +91,7 @@ export const chatController = {
       const { reason, notes, targetRequestStatus } = req.body || {};
       const userRole = req.user.role || req.user.rol_codigo;
 
-      const closedSession = await chatPersistenceService.closeSession({
+      const { recipientId, ...closedSession } = await chatPersistenceService.closeSession({
         sessionId,
         closedByUserId: req.user.id,
         closedByRole: userRole,
@@ -100,7 +100,7 @@ export const chatController = {
         targetRequestStatus
       });
 
-      emitToUser(closedSession.agente_id, 'support:chat:ended', {
+      emitToUser(recipientId, 'support:chat:ended', {
         sessionId,
         requestId: closedSession.solicitud_id,
         status: closedSession.finalRequestStatus || 'Cerrada',
