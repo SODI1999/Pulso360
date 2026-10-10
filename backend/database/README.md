@@ -12,7 +12,7 @@
 ## 2. Herramientas Operativas y Gestión de Esquema
 
 * **`schema.sql` (Bootstrap DDL)**:
-  Script de inicialización limpia destructiva (`DROP TABLE IF EXISTS ... CASCADE`). Recrea la totalidad de las 31 tablas, índices y restricciones de integridad. Utilizado exclusivamente para inicialización de entornos nuevos o reseteo de bases locales vacías.
+  Script de inicialización limpia destructiva (`DROP TABLE IF EXISTS ... CASCADE`). Recrea la totalidad de las 26 tablas base de dominio, índices y restricciones de integridad. Utilizado exclusivamente para inicialización de entornos nuevos o reseteo de bases locales vacías; la totalidad de las 31 tablas se alcanza aplicando las migraciones incrementales con `migrate.js`.
 * **`seed.sql` (Semilla de Datos)**:
   Carga inicial de catálogos obligatorios y datos demo para desarrollo (5 roles, campañas Alpha/Beta, equipos y usuarios preconfigurados con contraseña `Pulso360#2026`).
 * **`migrate.js` (`npm run db:migrate -- --database NOMBRE`)**:
