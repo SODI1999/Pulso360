@@ -49,7 +49,7 @@ export function SupportRequestForm({
                 value="anonimo"
                 checked={isAnonymous}
                 onChange={() => onSetSupportMode('anonimo')}
-                aria-label="Modalidad Anónima (sin asociar tu identidad)"
+                aria-label="Modalidad anónima: tu nombre no se muestra a SST"
               />
               <div className="support-mode-head">
                 <div className="support-mode-icon-wrap" aria-hidden="true">
@@ -63,7 +63,7 @@ export function SupportRequestForm({
                 )}
               </div>
               <p className="support-mode-desc">
-                SST no recibe tu nombre ni tu documento de identidad. El código generado sirve como número de radicado y seguimiento administrativo de tu solicitud ante el área de SST, y consultas las respuestas en esta plataforma.
+                Tu nombre y el identificador de tu cuenta no se muestran a SST. El sistema vincula el radicado a tu cuenta para que puedas consultar las respuestas. El texto que compartas puede revelar tu identidad.
               </p>
             </label>
 
@@ -79,7 +79,7 @@ export function SupportRequestForm({
                 value="confidencial"
                 checked={!isAnonymous}
                 onChange={() => onSetSupportMode('confidencial')}
-                aria-label="Modalidad Confidencial Identificada (con reserva profesional de SST)"
+                aria-label="Modalidad identificada: SST recibe tu nombre"
               />
               <div className="support-mode-head">
                 <div className="support-mode-icon-wrap" aria-hidden="true">
@@ -93,7 +93,7 @@ export function SupportRequestForm({
                 )}
               </div>
               <p className="support-mode-desc">
-                Tu identidad se asocia a la solicitud bajo reserva profesional para que SST pueda orientarte de manera personalizada por el canal escogido. Tu supervisor nunca recibe este caso individual.
+                SST recibe tu nombre para coordinar la orientación por el canal elegido. El acceso a estas solicitudes está limitado al agente titular y a SST.
               </p>
             </label>
           </div>

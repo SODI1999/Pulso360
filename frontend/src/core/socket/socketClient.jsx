@@ -12,6 +12,14 @@ import { getAuthToken } from '../api/apiClient';
 
 let socketInstance = null;
 
+/** Una identidad nueva requiere otro handshake; cambiar auth no cambia una conexión abierta. */
+export function synchronizeSocketAuthentication(socket, token) {
+  if (!token) { socket.disconnect(); socket.auth = { token: null }; return; }
+  if (socket.auth?.token !== token) socket.disconnect();
+  socket.auth = { token };
+  if (!socket.connected) socket.connect();
+}
+
 /**
  * Obtiene la URL base para la conexión de WebSockets eliminando el prefijo de la API REST.
  */
@@ -38,21 +46,19 @@ export function getSocket() {
     if (typeof window !== 'undefined') {
       window.addEventListener('pulso360-session-changed', () => {
         const nextToken = getAuthToken();
-        if (nextToken) {
-          socketInstance.auth = { token: nextToken };
-          if (!socketInstance.connected) socketInstance.connect();
-        } else {
-          socketInstance.disconnect();
-        }
+        synchronizeSocketAuthentication(socketInstance, nextToken);
+      });
+
+      window.addEventListener('pulso360-logout', () => {
+        synchronizeSocketAuthentication(socketInstance, null);
       });
 
       window.addEventListener('pulso360-session-expired', () => {
         socketInstance.disconnect();
       });
     }
-  } else if (token && !socketInstance.connected) {
-    socketInstance.auth = { token };
-    socketInstance.connect();
+  } else {
+    synchronizeSocketAuthentication(socketInstance, token);
   }
 
   return socketInstance;

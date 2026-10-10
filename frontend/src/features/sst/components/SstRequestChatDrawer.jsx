@@ -10,6 +10,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useSocket } from '../../../core/socket/socketClient';
+import { useChatDelivery } from '../../../core/socket/useChatDelivery';
+import { useModalA11y } from '../../../core/hooks/useModalA11y';
 import { chatService } from '../../../core/api/chatService';
 import { Icon } from '../../../core/components/Icon';
 
@@ -20,16 +22,21 @@ export function SstRequestChatDrawer({ ticket, onClose, onSessionChanged }) {
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [inputText, setInputText] = useState('');
-  const [isSending, setIsSending] = useState(false);
+  const { isSending, sendError, sendMessage } = useChatDelivery(socket, session?.id);
   const [isActivating, setIsActivating] = useState(false);
   const [showCloseModal, setShowCloseModal] = useState(false);
   const [closeNotes, setCloseNotes] = useState('');
   const [targetRequestStatus, setTargetRequestStatus] = useState('Cerrada');
   const [isClosing, setIsClosing] = useState(false);
   const [errorMsg, setErrorMsg] = useState(null);
+  const [closeError, setCloseError] = useState(null);
 
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
+  const drawerRef = useRef(null);
+  const closeModalRef = useRef(null);
+  useModalA11y({ isOpen: !showCloseModal, onClose, modalRef: drawerRef });
+  useModalA11y({ isOpen: showCloseModal, onClose: () => { if (!isClosing) setShowCloseModal(false); }, modalRef: closeModalRef });
 
   // 1. Cargar el estado del chat del radicado
   const fetchChat = useCallback(async () => {
@@ -48,7 +55,7 @@ export function SstRequestChatDrawer({ ticket, onClose, onSessionChanged }) {
         setMessages([]);
       }
     } catch (err) {
-      setErrorMsg(err?.response?.data?.error?.message || 'Error al cargar la conversación del radicado.');
+      setErrorMsg(err?.response?.data?.error?.message || err.message || 'Error al cargar la conversación del radicado.');
     } finally {
       setIsLoading(false);
     }
@@ -120,34 +127,14 @@ export function SstRequestChatDrawer({ ticket, onClose, onSessionChanged }) {
   };
 
   // 5. Enviar mensaje del especialista SST con reconciliación por clientMsgId
-  const handleSendMessage = (textToSend) => {
-    const text = (textToSend || inputText).trim();
+  const handleSendMessage = async () => {
+    const text = inputText.trim();
     if (!text || !session?.id || session.status !== 'activa' || isSending) return;
-
-    setIsSending(true);
-    const clientMsgId = `sst-cmsg-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
-    const optimisticMessage = {
-      id: clientMsgId,
-      clientMsgId,
-      sessionId: session.id,
-      senderRole: 'SST',
-      senderName: 'Especialista SST (Salud Ocupacional)',
-      text,
-      timestamp: new Date().toISOString()
-    };
-
-    setMessages((prev) => [...prev, optimisticMessage]);
-    setInputText('');
-
-    socket.emit('support:message:send', {
-      sessionId: session.id,
-      clientMsgId,
-      receiverId: session.agentId,
-      senderName: 'Especialista SST (Salud Ocupacional)',
-      text
-    });
-
-    setIsSending(false);
+    const confirmed = await sendMessage(text);
+    if (!confirmed) return;
+    setMessages(previous => previous.some(message => message.id === confirmed.id)
+      ? previous : [...previous, confirmed]);
+    setInputText(previous => previous.trim() === text ? '' : previous);
   };
 
   // 6. Concluir formalmente el chat preventivo
@@ -155,16 +142,17 @@ export function SstRequestChatDrawer({ ticket, onClose, onSessionChanged }) {
     if (!session?.id) return;
     try {
       setIsClosing(true);
+      setCloseError(null);
       await chatService.closeSession(session.id, {
         reason: 'ATENCION_CONCLUIDA',
-        notes: closeNotes.trim() || 'Orientación preventiva completada satisfactoriamente.',
+        notes: closeNotes.trim(),
         targetRequestStatus
       });
       setSession((prev) => (prev ? { ...prev, status: 'cerrada' } : prev));
       setShowCloseModal(false);
       if (onSessionChanged) onSessionChanged();
     } catch (err) {
-      alert(err?.response?.data?.error?.message || 'No fue posible cerrar la sesión.');
+      setCloseError(err?.response?.data?.error?.message || 'No fue posible cerrar la conversación. Puedes volver a intentarlo.');
     } finally {
       setIsClosing(false);
     }
@@ -176,7 +164,7 @@ export function SstRequestChatDrawer({ ticket, onClose, onSessionChanged }) {
 
   return (
     <aside className="sst-chat-drawer-overlay" role="dialog" aria-modal="true" aria-labelledby="drawer-title">
-      <div className="sst-chat-drawer-panel">
+      <div className="sst-chat-drawer-panel" ref={drawerRef} tabIndex={-1}>
         {/* Cabecera del Drawer */}
         {/* Cabecera compacta y profesional del Chat */}
         <header className="sst-drawer-header">
@@ -243,7 +231,7 @@ export function SstRequestChatDrawer({ ticket, onClose, onSessionChanged }) {
         {/* Modal canónico y accesible de confirmación de cierre */}
         {showCloseModal && (
           <div className="modal-overlay active" role="dialog" aria-modal="true" aria-labelledby="modalCloseTitle">
-            <div className="modal-box sst-close-modal-box">
+            <div className="modal-box sst-close-modal-box" ref={closeModalRef} tabIndex={-1}>
               <div className="modal-header">
                 <div>
                   <h2 id="modalCloseTitle" className="modal-title">
@@ -266,7 +254,7 @@ export function SstRequestChatDrawer({ ticket, onClose, onSessionChanged }) {
 
               <div>
                 <p className="sst-modal-disclaimer">
-                  El canal interactivo pasará a modo <strong>solo lectura</strong> y quedará registrado de forma inmutable en el historial del radicado bajo custodia de SG-SST (Ley 1581 / Res. 2646).
+                  El canal pasará a <strong>solo lectura</strong>. Sus mensajes y las notas de cierre permanecerán en el historial del radicado.
                 </p>
 
                 <div className="form-group" style={{ marginBottom: 'var(--space-4)' }}>
@@ -313,7 +301,7 @@ export function SstRequestChatDrawer({ ticket, onClose, onSessionChanged }) {
 
                 <div className="form-group">
                   <label className="form-label" htmlFor="sstCloseNotesInput">
-                    Notas de salud ocupacional y recomendaciones brindadas <span style={{ color: 'var(--c-critico)' }}>*</span>
+                    Notas de cierre y acuerdos de orientación <span style={{ color: 'var(--c-critico)' }}>*</span>
                   </label>
                   <textarea
                     id="sstCloseNotesInput"
@@ -328,11 +316,12 @@ export function SstRequestChatDrawer({ ticket, onClose, onSessionChanged }) {
                     disabled={isClosing}
                   />
                   <div className="sst-form-char-count">
-                    <span>Registro para auditoría interna SG-SST</span>
+                    <span>Notas de cierre del radicado</span>
                     <span>{closeNotes.length} / 500 caracteres</span>
                   </div>
                 </div>
 
+                {closeError && <p className="alert-banner danger" role="alert">{closeError}</p>}
                 <div className="modal-footer">
                   <button
                     type="button"
@@ -346,7 +335,7 @@ export function SstRequestChatDrawer({ ticket, onClose, onSessionChanged }) {
                     type="button"
                     className="btn btn-primary btn-sm"
                     onClick={handleConfirmClose}
-                    disabled={isClosing}
+                    disabled={isClosing || !closeNotes.trim()}
                   >
                     <Icon name="checkCircle" size={14} />
                     <span>{isClosing ? 'Cerrando sesión…' : 'Confirmar cierre formal'}</span>
@@ -364,10 +353,11 @@ export function SstRequestChatDrawer({ ticket, onClose, onSessionChanged }) {
               <Icon name="clock" size={20} />
               <span>Cargando conversación del radicado…</span>
             </div>
-          ) : errorMsg ? (
+          ) : errorMsg && !session ? (
             <div className="alert-banner danger" role="alert">
               <Icon name="alertTriangle" size={16} />
               <span>{errorMsg}</span>
+              <button type="button" className="btn btn-secondary btn-sm" onClick={fetchChat}>Reintentar carga</button>
             </div>
           ) : !session ? (
             (ticket.status === 'Cerrada' || ticket.status === 'Atendida') ? (
@@ -399,6 +389,9 @@ export function SstRequestChatDrawer({ ticket, onClose, onSessionChanged }) {
             )
           ) : (
             <div className="sst-drawer-chat-stream">
+              {isAnon && <p className="chat-privacy-note">El nombre y el identificador de cuenta del agente no se muestran. El contenido que comparta puede revelar su identidad.</p>}
+              {sendError && <p className="chat-delivery-feedback alert-banner danger" role="alert">{sendError}</p>}
+              {isSending && <p className="chat-delivery-feedback" role="status">Esperando confirmación del envío…</p>}
               {/* Contenedor de mensajes */}
               <div ref={messagesEndRef} className="sst-drawer-messages-list" role="log" aria-live="polite">
                 {messages.map((m) => {
@@ -477,7 +470,7 @@ export function SstRequestChatDrawer({ ticket, onClose, onSessionChanged }) {
                     aria-label="Enviar recomendación preventiva"
                   >
                     <Icon name="send" size={16} />
-                    <span>Enviar</span>
+                    <span>{isSending ? 'Enviando…' : 'Enviar'}</span>
                   </button>
                 </form>
               )}

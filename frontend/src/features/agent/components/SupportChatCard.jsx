@@ -2,13 +2,14 @@
 /**
  * @file SupportChatCard.jsx
  * @description Componente de chat interactivo preventivo subordinado a un Radicado Formal de SST (RF-10).
- * Integra persistencia inmutable en PostgreSQL y WebSockets (Socket.io).
- * Modalidad preventiva de SG-SST (Ley 1581 / Res. 2646): ergonomía, pausas y mitigación de fatiga de turno.
+ * Integra el historial de PostgreSQL y confirmación de envío por WebSockets.
+ * Mantiene el borrador ante fallos y explica el alcance de la identidad oculta.
  */
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useSocket } from '../../../core/socket/socketClient';
+import { useChatDelivery } from '../../../core/socket/useChatDelivery';
 import { authService } from '../../../core/auth/authService';
 import { chatService } from '../../../core/api/chatService';
 import { Icon } from '../../../core/components/Icon';
@@ -21,7 +22,7 @@ export function SupportChatCard({ requestId, requestCode, isAnonymous, onChatClo
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [inputText, setInputText] = useState('');
-  const [isSending, setIsSending] = useState(false);
+  const { isSending, sendError, sendMessage } = useChatDelivery(socket, session?.id);
   const [errorBanner, setErrorBanner] = useState(null);
 
   const messagesContainerRef = useRef(null);
@@ -44,7 +45,7 @@ export function SupportChatCard({ requestId, requestCode, isAnonymous, onChatClo
         setMessages([]);
       }
     } catch (err) {
-      setErrorBanner(err?.response?.data?.error?.message || 'No fue posible cargar el canal de este radicado.');
+      setErrorBanner(err?.response?.data?.error?.message || err.message || 'No fue posible cargar el canal de este radicado.');
     } finally {
       setIsLoading(false);
     }
@@ -107,36 +108,14 @@ export function SupportChatCard({ requestId, requestCode, isAnonymous, onChatClo
   }, [messages]);
 
   // 4. Enviar mensaje del agente con reconciliación por clientMsgId
-  const handleSendMessage = (textToSend) => {
-    const text = (textToSend || inputText).trim();
+  const handleSendMessage = async () => {
+    const text = inputText.trim();
     if (!text || !session?.id || session.status !== 'activa' || isSending) return;
-
-    setIsSending(true);
-    const clientMsgId = `cmsg-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
-    const optimisticMessage = {
-      id: clientMsgId,
-      clientMsgId,
-      sessionId: session.id,
-      senderId: currentUser?.id,
-      senderRole: 'AGENTE',
-      senderName: isAnonymous ? 'Agente Confidencial' : (currentUser?.name || 'Agente de Contact Center'),
-      text,
-      timestamp: new Date().toISOString()
-    };
-
-    setMessages((prev) => [...prev, optimisticMessage]);
-    setInputText('');
-
-    socket.emit('support:message:send', {
-      sessionId: session.id,
-      clientMsgId,
-      receiverId: session.sstAtendioId || null,
-      isAnonymous: Boolean(session.isAnonymous || isAnonymous),
-      senderName: isAnonymous ? 'Agente Confidencial' : (currentUser?.name || 'Agente de Contact Center'),
-      text
-    });
-
-    setIsSending(false);
+    const confirmed = await sendMessage(text);
+    if (!confirmed) return;
+    setMessages(previous => previous.some(message => message.id === confirmed.id)
+      ? previous : [...previous, confirmed]);
+    setInputText(previous => previous.trim() === text ? '' : previous);
   };
 
   const handleKeyDown = (e) => {
@@ -160,6 +139,7 @@ export function SupportChatCard({ requestId, requestCode, isAnonymous, onChatClo
       <div className="support-embedded-chat-error alert-banner danger" role="alert">
         <Icon name="alertTriangle" size={16} />
         <span>{errorBanner}</span>
+        <button type="button" className="btn btn-secondary btn-sm" onClick={loadChatData}>Reintentar carga</button>
       </div>
     );
   }
@@ -199,12 +179,15 @@ export function SupportChatCard({ requestId, requestCode, isAnonymous, onChatClo
               </span>
             </div>
             <span className="embedded-chat-subtitle">
-              {isAnonymous ? 'Identidad protegida · Orientación preventiva' : 'Confidencial SG-SST · Orientación preventiva'}
+              {isAnonymous ? 'Tu nombre no se muestra a SST' : 'Orientación con SST'}
             </span>
           </div>
         </div>
       </div>
 
+      {isAnonymous && <p className="chat-privacy-note">El sistema vincula el chat a tu cuenta. Evita incluir datos que te identifiquen si prefieres reservar tu identidad.</p>}
+      {sendError && <p className="chat-delivery-feedback alert-banner danger" role="alert">{sendError}</p>}
+      {isSending && <p className="chat-delivery-feedback" role="status">Esperando confirmación del envío…</p>}
       {/* Lista de Mensajes */}
       <div
         ref={messagesContainerRef}
@@ -251,7 +234,7 @@ export function SupportChatCard({ requestId, requestCode, isAnonymous, onChatClo
       {isClosed ? (
         <div className="embedded-chat-closed-footer">
           <Icon name="checkCircle" size={16} />
-          <span>Este chat ha sido cerrado por SST y permanece como registro histórico para auditoría.</span>
+          <span>La conversación ha concluido. Puedes consultar su historial en solo lectura.</span>
         </div>
       ) : (
         <form
@@ -280,7 +263,7 @@ export function SupportChatCard({ requestId, requestCode, isAnonymous, onChatClo
             aria-label="Enviar mensaje"
           >
             <Icon name="send" size={16} />
-            <span>Enviar</span>
+            <span>{isSending ? 'Enviando…' : 'Enviar'}</span>
           </button>
         </form>
       )}

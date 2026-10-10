@@ -1762,3 +1762,28 @@
 }
 
 
+
+/* Confirmación de entrega y alcance de identidad compartidos por los dos roles. */
+.chat-delivery-feedback,
+.chat-privacy-note {
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--c-texto-suave);
+  background: var(--c-superficie);
+  overflow-wrap: anywhere;
+  flex-shrink: 0;
+}
+
+.chat-delivery-feedback.alert-banner.danger {
+  color: var(--c-critico);
+  background: var(--c-superficie);
+}
+
+.embedded-chat-name-row { flex-wrap: wrap; }
+.embedded-chat-title,
+.embedded-chat-subtitle { white-space: normal; }
+.embedded-composer-input { min-width: 0; min-height: var(--space-10); }
+.embedded-composer-submit { min-height: var(--space-10); flex-shrink: 0; }
+.embedded-composer-input:focus-visible { outline: 2px solid var(--c-primario); outline-offset: 2px; }
