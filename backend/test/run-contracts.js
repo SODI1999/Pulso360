@@ -10,6 +10,6 @@ if (!database || database === process.env.DB_NAME || !database.includes('test'))
 }
 const files = fs.readdirSync(new URL('./contracts/',import.meta.url)).filter(name=>name.endsWith('.test.js'))
   .sort().map(name=>'test/contracts/'+name);
-const result = spawnSync(process.execPath,['--test','--test-concurrency=1','--test-force-exit',...files],
+const result = spawnSync(process.execPath,['--experimental-websocket','--test','--test-concurrency=1','--test-force-exit',...files],
   {stdio:'inherit',env:{...process.env,NODE_ENV:'test',JWT_SECRET:randomBytes(48).toString('hex')}});
 process.exitCode = result.status ?? 1;

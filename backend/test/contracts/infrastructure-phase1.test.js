@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
 import { once } from 'node:events';
 import jwt from 'jsonwebtoken';
+import ws from 'ws';
 import pool from '../../src/infrastructure/db.js';
 import { findUserById } from '../../src/infrastructure/repositories/adminRepository.js';
 import { analyticsRepository } from '../../src/infrastructure/repositories/analyticsRepository.js';
@@ -11,6 +12,8 @@ import { consentRepository } from '../../src/infrastructure/repositories/consent
 import { chatPersistenceService } from '../../src/application/services/chatPersistenceService.js';
 import { AppError } from '../../src/application/errors/AppError.js';
 import { initSocketServer } from '../../src/infrastructure/socket.js';
+
+const WebSocket = globalThis.WebSocket ?? ws;
 
 test('findUserById usa el pool y mantiene el identificador fuera del SQL', async t => {
   const id = "user' OR 1=1 --";
