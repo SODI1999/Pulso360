@@ -116,7 +116,12 @@ export function UsersRolesPage() {
               ) : (
                 filteredUsers.map((u) => {
                   const roleLabel = ROLE_LABELS[u.role] || u.role;
-                  const isSuspended = u.status === 'Suspendido';
+                  const statusBadgeClass =
+                    u.status === 'Suspendido'
+                      ? 'badge-danger'
+                      : u.status === 'Inactivo'
+                      ? 'badge-neutral'
+                      : 'badge-ok';
                   const orgLabel = u.campaign ? `${u.campaign} · ${u.teamName || '—'}` : u.teamName || '—';
 
                   return (
@@ -132,7 +137,7 @@ export function UsersRolesPage() {
                       </td>
                       <td>{orgLabel}</td>
                       <td>
-                        <span className={`badge ${isSuspended ? 'badge-danger' : 'badge-ok'}`}>
+                        <span className={`badge ${statusBadgeClass}`}>
                           {u.status || 'Activo'}
                         </span>
                       </td>

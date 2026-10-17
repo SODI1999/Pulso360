@@ -200,6 +200,7 @@ export function CreateUserModal({ isOpen, onClose, onSave, orgScopes = [] }) {
                   onChange={(e) => setStatus(e.target.value)}
                 >
                   <option value="Activo">Activo</option>
+                  <option value="Inactivo">Inactivo</option>
                   <option value="Suspendido">Suspendido</option>
                 </select>
               </div>

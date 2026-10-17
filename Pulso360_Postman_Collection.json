@@ -1,0 +1,1039 @@
+{
+  "info": {
+    "_postman_id": "c8d9e0f1-a2b3-4c5d-6e7f-pulso360fullproject",
+    "name": "Pulso360 - Suite Completa (Todos los CREATE y PUT/PATCH del Proyecto)",
+    "description": "Colección exhaustiva con TODOS los endpoints de creación (POST) y modificación (PUT / PATCH) del backend de Pulso360. Incluye evaluación automática de respuestas a nivel de proyecto completo (contrato SDD, códigos HTTP, seguridad y cero fuga de credenciales).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "token_agente",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "token_supervisor",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "token_sst",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "token_admin",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "journal_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "campaign_id",
+      "value": "camp-1",
+      "type": "string"
+    },
+    {
+      "key": "team_id",
+      "value": "team-alpha-1",
+      "type": "string"
+    },
+    {
+      "key": "user_id",
+      "value": "usr-1",
+      "type": "string"
+    },
+    {
+      "key": "support_request_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "intervention_id",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// ==============================================================================",
+          "// SCRIPT GLOBAL DE EVALUACIÓN DE RESPUESTAS PARA CREATE Y UPDATE",
+          "// Audita automáticamente TODOS los endpoints POST, PUT y PATCH del proyecto",
+          "// ==============================================================================",
+          "const method = pm.request.method;",
+          "const isCreate = method === 'POST';",
+          "const isUpdate = method === 'PUT' || method === 'PATCH';",
+          "",
+          "if (isCreate || isUpdate) {",
+          "    const op = isCreate ? 'CREATE (POST)' : 'UPDATE (' + method + ')';",
+          "    const statusCode = pm.response.code;",
+          "    let res;",
+          "",
+          "    // 1. Cabecera Content-Type estándar",
+          "    pm.test(`[${op}] Cabecera Content-Type contiene application/json`, function () {",
+          "        pm.expect(pm.response.headers.get('content-type')).to.include('application/json');",
+          "    });",
+          "",
+          "    // 2. Control de Latencia (RNF-02)",
+          "    pm.test(`[${op}] Tiempo de respuesta menor a 2000ms`, function () {",
+          "        pm.expect(pm.response.responseTime).to.be.below(2000);",
+          "    });",
+          "",
+          "    // 3. Integridad de Parseo JSON",
+          "    try {",
+          "        res = pm.response.json();",
+          "    } catch (err) {",
+          "        pm.test(`[${op}] El servidor debe retornar JSON parseable`, function () {",
+          "            pm.expect.fail('Respuesta no JSON: ' + pm.response.text());",
+          "        });",
+          "        return;",
+          "    }",
+          "",
+          "    // 4. Auditoría de Respuestas Exitosas (2xx)",
+          "    if (statusCode >= 200 && statusCode < 300) {",
+          "        pm.test(`[${op}] Sobre canónico SDD de éxito: success=true y data válida`, function () {",
+          "            pm.expect(res.success).to.be.true;",
+          "            pm.expect(res).to.have.property('data');",
+          "            pm.expect(res.data).to.not.be.null;",
+          "        });",
+          "",
+          "        pm.test(`[${op}] Seguridad y Privacidad: Cero fuga de contrasena_hash`, function () {",
+          "            const raw = JSON.stringify(res);",
+          "            pm.expect(raw).to.not.include('contrasena_hash');",
+          "            pm.expect(raw).to.not.include('password_hash');",
+          "        });",
+          "",
+          "        if (isCreate) {",
+          "            pm.test(`[CREATE] Código HTTP válido (200 o 201)`, function () {",
+          "                pm.expect(statusCode).to.be.oneOf([200, 201]);",
+          "            });",
+          "        }",
+          "",
+          "        if (isUpdate) {",
+          "            pm.test(`[UPDATE] Código 200 OK y confirmación de mutación`, function () {",
+          "                pm.expect(statusCode).to.equal(200);",
+          "                pm.expect(res.data).to.not.be.null;",
+          "            });",
+          "        }",
+          "    }",
+          "    // 5. Auditoría de Respuestas de Error Controladas (4xx / 5xx)",
+          "    else {",
+          "        pm.test(`[${op}] Sobre canónico SDD de error: success=false con error.code y error.message`, function () {",
+          "            pm.expect(res.success).to.be.false;",
+          "            pm.expect(res.error).to.be.an('object');",
+          "            pm.expect(res.error.code).to.be.a('string').and.not.empty;",
+          "            pm.expect(res.error.message).to.be.a('string').and.not.empty;",
+          "        });",
+          "    }",
+          "}"
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "0. Setup de Autenticación (Tokens por Rol)",
+      "description": "Genera y guarda automáticamente los tokens JWT para cada rol del sistema.",
+      "item": [
+        {
+          "name": "0.1 [POST] Login Agente (Guarda token_agente)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var res = pm.response.json();",
+                  "if (res.data && res.data.token) {",
+                  "    pm.collectionVariables.set('token_agente', res.data.token);",
+                  "    console.log('token_agente capturado');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"correo\": \"agente@pulso360.co\",\n  \"contrasena\": \"Pulso360#2026\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          }
+        },
+        {
+          "name": "0.2 [POST] Login Supervisor (Guarda token_supervisor)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var res = pm.response.json();",
+                  "if (res.data && res.data.token) {",
+                  "    pm.collectionVariables.set('token_supervisor', res.data.token);",
+                  "    console.log('token_supervisor capturado');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"correo\": \"supervisor@pulso360.co\",\n  \"contrasena\": \"Pulso360#2026\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          }
+        },
+        {
+          "name": "0.3 [POST] Login SST (Guarda token_sst)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var res = pm.response.json();",
+                  "if (res.data && res.data.token) {",
+                  "    pm.collectionVariables.set('token_sst', res.data.token);",
+                  "    console.log('token_sst capturado');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"correo\": \"sst@pulso360.co\",\n  \"contrasena\": \"Pulso360#2026\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          }
+        },
+        {
+          "name": "0.4 [POST] Login Administrador (Guarda token_admin)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var res = pm.response.json();",
+                  "if (res.data && res.data.token) {",
+                  "    pm.collectionVariables.set('token_admin', res.data.token);",
+                  "    console.log('token_admin capturado');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"correo\": \"admin@pulso360.co\",\n  \"contrasena\": \"Pulso360#2026\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "1. Módulo Agente (CREATE & PUT)",
+      "description": "Operaciones de mutación ejecutadas por el operador (Check-in, Bitácora, Consentimiento, Apoyo y Habeas Data).",
+      "item": [
+        {
+          "name": "1.1 [PUT] Actualizar Consentimiento Granular (C1..C5)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_agente}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"c1_checkin\": true,\n  \"c2_bitacora\": true,\n  \"c3_apoyo\": true,\n  \"c4_analitica\": true,\n  \"c5_contacto\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/agent/consent",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "agent",
+                "consent"
+              ]
+            }
+          }
+        },
+        {
+          "name": "1.2 [POST] Registrar Check-in Diario (6 Dimensiones)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_agente}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"energia\": 4,\n  \"carga_emocional\": 3,\n  \"recuperacion\": 4,\n  \"apoyo\": 5,\n  \"distanciamiento\": 1,\n  \"ineficacia\": 2\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/agent/checkin",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "agent",
+                "checkin"
+              ]
+            }
+          }
+        },
+        {
+          "name": "1.3 [POST] Crear Entrada de Bitácora Personal (CREATE)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var res = pm.response.json();",
+                  "if (res.data && res.data.id) {",
+                  "    pm.collectionVariables.set('journal_id', res.data.id);",
+                  "    console.log('journal_id creado: ' + res.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_agente}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"context\": \"Cierre de Turno\",\n  \"content\": \"Jornada completada con alto volumen de llamadas pero buen soporte del equipo.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/agent/journal",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "agent",
+                "journal"
+              ]
+            }
+          }
+        },
+        {
+          "name": "1.4 [PUT] Modificar Entrada de Bitácora Personal (UPDATE)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_agente}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"context\": \"Cierre de Turno Actualizado\",\n  \"content\": \"EDICIÓN: Se realizó pausa activa de 10 minutos y disminuyó la fatiga cervical.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/agent/journal/{{journal_id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "agent",
+                "journal",
+                "{{journal_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "1.5 [POST] Solicitar Apoyo Psicosocial Preventivo (CREATE)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var res = pm.response.json();",
+                  "if (res.data && res.data.id) {",
+                  "    pm.collectionVariables.set('support_request_id', res.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_agente}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mode\": \"identificado\",\n  \"urgency\": \"media\",\n  \"reason\": \"Fatiga emocional por llamadas difíciles\",\n  \"description\": \"Solicitud preventiva de orientación con especialista SST.\",\n  \"contactPreference\": \"app\",\n  \"timeWindow\": \"Tarde\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sst/support-requests",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sst",
+                "support-requests"
+              ]
+            }
+          }
+        },
+        {
+          "name": "1.6 [POST] Radicar Solicitud Habeas Data (CREATE)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_agente}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tipo_solicitud\": \"CONSULTA\",\n  \"motivo\": \"Solicito reporte de mis datos personales y bitácoras almacenadas según Ley 1581.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/agent/habeas-data",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "agent",
+                "habeas-data"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Módulo SST & Salud Ocupacional (CREATE & PATCH)",
+      "description": "Operaciones estratégicas ejecutadas por el especialista de Seguridad y Salud en el Trabajo.",
+      "item": [
+        {
+          "name": "2.1 [POST] Proponer Regla de Alerta Preventiva (CREATE)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_sst}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": \"ALERTA_SOBRECARGA_DEMO\",\n  \"dimension\": \"carga_emocional\",\n  \"operador\": \">=\",\n  \"umbral\": 3.8,\n  \"severidad\": \"ALTA\",\n  \"descripcion\": \"Alerta cuando la carga promedio supera 3.8 en la campaña.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sst/rules",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sst",
+                "rules"
+              ]
+            }
+          }
+        },
+        {
+          "name": "2.2 [POST] Crear Plan de Intervención Estratégico (CREATE)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var res = pm.response.json();",
+                  "if (res.data && res.data.id) {",
+                  "    pm.collectionVariables.set('intervention_id', res.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_sst}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Taller de Respiración y Manejo de Clientes Críticos\",\n  \"type\": \"Taller\",\n  \"campana_id\": \"camp-1\",\n  \"start_date\": \"2026-10-15\",\n  \"end_date\": \"2026-10-30\",\n  \"indicator\": \"Recuperacion agregada\",\n  \"target_desc\": \"Elevar la recuperación grupal en 15%\",\n  \"assigned_to\": \"Carlos Mendoza\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sst/interventions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sst",
+                "interventions"
+              ]
+            }
+          }
+        },
+        {
+          "name": "2.3 [PATCH] Cambiar Estado de Solicitud de Apoyo (UPDATE)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_sst}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"En gestion\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sst/support-requests/{{support_request_id}}/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sst",
+                "support-requests",
+                "{{support_request_id}}",
+                "status"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Módulo Supervisor (CREATE & UPDATE)",
+      "description": "Seguimiento operativo ejecutado por el líder de equipo.",
+      "item": [
+        {
+          "name": "3.1 [POST] Registrar Avance y Seguimiento de Intervención (CREATE)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_supervisor}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"progress\": 40,\n  \"note\": \"Se realizó la primera sesión de pausas activas con el 85% del equipo presente.\",\n  \"actionType\": \"TALLER_PAUSAS\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/supervisor/actions/{{intervention_id}}/followup",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "supervisor",
+                "actions",
+                "{{intervention_id}}",
+                "followup"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Módulo Administración (CREATE, PUT & PATCH)",
+      "description": "Gestión de infraestructura organizacional, campañas, equipos, parámetros y usuarios.",
+      "item": [
+        {
+          "name": "4.1 [POST] Crear Campaña Operativa (CREATE)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var res = pm.response.json();",
+                  "if (res.data && res.data.id) {",
+                  "    pm.collectionVariables.set('campaign_id', res.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_admin}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": \"CAM_POSTMAN_2003\",\n  \"nombre\": \"Campaña Fidelización Postman\",\n  \"descripcion\": \"Operación de contingencia para pruebas automatizadas\",\n  \"activa\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/campaigns",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "campaigns"
+              ]
+            }
+          }
+        },
+        {
+          "name": "4.2 [PATCH] Modificar Campaña Operativa (UPDATE)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_admin}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Campaña Fidelización Postman (Editada)\",\n  \"activa\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/campaigns/{{campaign_id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "campaigns",
+                "{{campaign_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "4.3 [POST] Crear Equipo de Trabajo (CREATE)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var res = pm.response.json();",
+                  "if (res.data && res.data.id) {",
+                  "    pm.collectionVariables.set('team_id', res.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_admin}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"campanaId\": \"camp-1\",\n  \"codigo\": \"TEAM_PST_2003\",\n  \"nombre\": \"Equipo Soporte Postman\",\n  \"supervisorId\": \"usr-2\",\n  \"activo\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/teams",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "teams"
+              ]
+            }
+          }
+        },
+        {
+          "name": "4.4 [PATCH] Modificar Equipo de Trabajo (UPDATE)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_admin}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Equipo Soporte Postman (Renombrado)\",\n  \"activo\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/teams/{{team_id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "teams",
+                "{{team_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "4.5 [POST] Crear Usuario del Sistema (CREATE)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var res = pm.response.json();",
+                  "if (res.data && res.data.id) {",
+                  "    pm.collectionVariables.set('user_id', res.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_admin}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rolCodigo\": \"AGENTE\",\n  \"correo\": \"agente.test.1792030632003@pulso360.co\",\n  \"nombres\": \"Mariana\",\n  \"apellidos\": \"Duarte\",\n  \"contrasena\": \"Pulso360#2026\",\n  \"status\": \"Activo\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "users"
+              ]
+            }
+          }
+        },
+        {
+          "name": "4.6 [PATCH] Modificar Datos de Usuario (UPDATE)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_admin}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Activo\",\n  \"rolCodigo\": \"AGENTE\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/users/{{user_id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "users",
+                "{{user_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "4.7 [PATCH] Actualizar Estado de Usuario (UPDATE)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_admin}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Inactivo\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/users/{{user_id}}/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "users",
+                "{{user_id}}",
+                "status"
+              ]
+            }
+          }
+        },
+        {
+          "name": "4.8 [POST] Crear y Publicar Política de Privacidad (CREATE)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_admin}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"version\": \"v3.003\",\n  \"titulo\": \"Política de Tratamiento y Bienestar Actualizada\",\n  \"textoPolitica\": \"Reglas de tratamiento preventivo de datos para Contact Center según Resolución 2764.\",\n  \"textoAviso\": \"Aviso de privacidad y voluntariedad para check-ins de agentes.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/policies",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "policies"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Módulos Transversales & Notificaciones (CREATE & PATCH)",
+      "description": "Operaciones de mutación transversales del sistema.",
+      "item": [
+        {
+          "name": "5.1 [PATCH] Marcar Todas las Notificaciones como Leídas (UPDATE)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_agente}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/notifications/read-all",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "notifications",
+                "read-all"
+              ]
+            }
+          }
+        },
+        {
+          "name": "5.2 [POST] Solicitar Reseteo de Contraseña (CREATE)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"correo\": \"agente@pulso360.co\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/password-reset/request",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "password-reset",
+                "request"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

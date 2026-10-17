@@ -54,7 +54,7 @@ export async function saveCreateUser(email, orgScopes, orgScopeId, name, role, s
     teamId: targetScope.teamId || null,
     teamName: targetScope.name,
     campaign: targetScope.campaign || undefined,
-    status: status === 'Suspendido' ? 'Suspendido' : 'Activo'
+    status: ['Suspendido', 'Inactivo'].includes(status) ? status : 'Activo'
   };
 
   // Si es agente, inicializar su estructura de consentimientos
@@ -88,7 +88,15 @@ export async function manageUser(userId, newRole, newOrgScopeId, newStatus, orgS
       if (!scope) return { success:false,data:null,error: 'La asignación seleccionada no es válida.' };
       const res = await apiClient.patch('/admin/users/' + userId, { status: newStatus, rolCodigo: newRole.toUpperCase(), equipoId: scope.teamId });
       clearAdminCache();
-      return { ...res,user: { ...res.data, name: [res.data.nombres, res.data.apellidos].join(' ') } };
+      return {
+        ...res,
+        user: {
+          ...res.data,
+          role: res.data.rol_codigo?.toLowerCase() || res.data.role,
+          status: res.data.estado || res.data.status,
+          name: [res.data.nombres, res.data.apellidos].filter(Boolean).join(' ') || res.data.name
+        }
+      };
     } catch (error) {
       return { success:false,data:null,error: error.response?.data?.error?.message || 'Error al actualizar estado en el servidor.' };
     }
@@ -137,7 +145,7 @@ export async function manageUser(userId, newRole, newOrgScopeId, newStatus, orgS
   // 3. Cambio de estado de cuenta
   const currentStatus = user.status || 'Activo';
   if (currentStatus !== newStatus) {
-    const action = newStatus === 'Suspendido' ? 'SUSPENSION_USUARIO' : 'ACTIVACION_USUARIO';
+    const action = newStatus === 'Suspendido' ? 'SUSPENSION_USUARIO' : newStatus === 'Inactivo' ? 'DESACTIVACION_USUARIO' : 'ACTIVACION_USUARIO';
     auditEntries.push({
       actor: actorLabel,
       action,

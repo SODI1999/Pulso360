@@ -82,7 +82,7 @@ const architectureRules = {
 };
 
 export default [
-  { ignores: ['dist', '.kilo', '.agents', '.cline', '.impeccable', 'anti-slop', 'docs'] },
+  { ignores: ['dist', '.kilo', '.agents', '.cline', '.impeccable', 'anti-slop', 'docs', 'archive'] },
   {
     files: ['**/*.{js,jsx}'],
     languageOptions: {

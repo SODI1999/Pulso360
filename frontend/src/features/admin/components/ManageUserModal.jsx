@@ -51,10 +51,10 @@ export function ManageUserModal({ isOpen, onClose, onSave, user, orgScopes = [],
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Regla de Protección: no permitir auto-suspensión
-    if (isSelf && status === 'Suspendido') {
+    // Regla de Protección: no permitir auto-suspensión ni auto-inactivación
+    if (isSelf && status !== 'Activo') {
       setError(
-        'Por seguridad operativa, no puedes suspender tu propia cuenta de administrador en la sesión activa.'
+        'Por seguridad operativa, no puedes inactivar ni suspender tu propia cuenta de administrador en la sesión activa.'
       );
       return;
     }
@@ -135,7 +135,15 @@ export function ManageUserModal({ isOpen, onClose, onSave, user, orgScopes = [],
                   <span className={`user-role-badge role-${user.role}`}>
                     {CANONICAL_ROLES.find((r) => r.value === user.role)?.label || user.role}
                   </span>
-                  <span className={`badge ${user.status === 'Suspendido' ? 'badge-danger' : 'badge-ok'}`}>
+                  <span
+                    className={`badge ${
+                      user.status === 'Suspendido'
+                        ? 'badge-danger'
+                        : user.status === 'Inactivo'
+                        ? 'badge-neutral'
+                        : 'badge-ok'
+                    }`}
+                  >
                     {user.status || 'Activo'}
                   </span>
                 </div>
@@ -177,11 +185,12 @@ export function ManageUserModal({ isOpen, onClose, onSave, user, orgScopes = [],
                   disabled={isSelf}
                 >
                   <option value="Activo">Activo</option>
+                  <option value="Inactivo">Inactivo</option>
                   <option value="Suspendido">Suspendido</option>
                 </select>
                 {isSelf && (
                   <span className="form-hint">
-                    No puedes suspender la cuenta activa con la que has iniciado sesión.
+                    No puedes inactivar ni suspender la cuenta activa con la que has iniciado sesión.
                   </span>
                 )}
               </div>
