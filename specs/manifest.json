@@ -1,0 +1,31 @@
+{
+  "$schema": "./.omni/runtime/schema/manifest.schema.json",
+  "schemaVersion": 1,
+  "project": "Pulso360",
+  "version": "0.5.0",
+  "profile": "general",
+  "stack": "Monorepo: Express / JavaScript + React / JavaScript",
+  "documentationStandard": "JSDoc",
+  "qualityGates": "cd \"backend\" && npm test\ncd \"frontend\" && npm test\ncd \"frontend\" && npm run lint\ncd \"frontend\" && npm run build",
+  "agent": "antigravity",
+  "active_spec": null,
+  "active_archetype": null,
+  "specs": [
+    {
+      "id": "001",
+      "type": "feature",
+      "slug": "001-chat-ui-craft",
+      "title": "Chat Ui Craft",
+      "status": "COMPLETED",
+      "created_at": "2026-10-18",
+      "branch": "feat/001-chat-ui-craft",
+      "updated_at": "2026-10-18T21:57:38.848Z",
+      "completed_at": "2026-10-18T21:57:38.848Z",
+      "verification": {
+        "mode": "automated",
+        "verifiedAt": "2026-10-18T21:57:30.970Z",
+        "fingerprint": "368f4bf71336700c0c003dad205bb66274291f3a13d34015d6b8633ccabe9e51"
+      }
+    }
+  ]
+}

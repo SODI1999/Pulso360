@@ -107,6 +107,19 @@ export function SupportChatCard({ requestId, requestCode, isAnonymous, onChatClo
     }
   }, [messages]);
 
+  // Ajustar la altura del textarea dinámicamente según el contenido
+  const adjustTextareaHeight = () => {
+    if (inputRef.current) {
+      inputRef.current.style.height = 'auto';
+      inputRef.current.style.height = `${Math.min(inputRef.current.scrollHeight, 120)}px`;
+    }
+  };
+
+  const handleInputChange = (e) => {
+    setInputText(e.target.value);
+    adjustTextareaHeight();
+  };
+
   // 4. Enviar mensaje del agente con reconciliación por clientMsgId
   const handleSendMessage = async () => {
     const text = inputText.trim();
@@ -115,7 +128,13 @@ export function SupportChatCard({ requestId, requestCode, isAnonymous, onChatClo
     if (!confirmed) return;
     setMessages(previous => previous.some(message => message.id === confirmed.id)
       ? previous : [...previous, confirmed]);
-    setInputText(previous => previous.trim() === text ? '' : previous);
+    setInputText(previous => {
+      const next = previous.trim() === text ? '' : previous;
+      if (next === '' && inputRef.current) {
+        inputRef.current.style.height = 'auto';
+      }
+      return next;
+    });
   };
 
   const handleKeyDown = (e) => {
@@ -123,6 +142,36 @@ export function SupportChatCard({ requestId, requestCode, isAnonymous, onChatClo
       e.preventDefault();
       handleSendMessage();
     }
+  };
+
+  // Helper para agrupar mensajes por fecha calendario
+  const shouldShowDateSeparator = (currentMsg, prevMsg) => {
+    if (!currentMsg?.timestamp) return false;
+    if (!prevMsg?.timestamp) return true;
+    const currentDate = new Date(currentMsg.timestamp).toDateString();
+    const prevDate = new Date(prevMsg.timestamp).toDateString();
+    return currentDate !== prevDate;
+  };
+
+  const formatChatDateSeparator = (dateString) => {
+    if (!dateString) return null;
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return null;
+    const today = new Date();
+    const yesterday = new Date();
+    yesterday.setDate(today.getDate() - 1);
+
+    if (date.toDateString() === today.toDateString()) {
+      return 'Hoy';
+    }
+    if (date.toDateString() === yesterday.toDateString()) {
+      return 'Ayer';
+    }
+    return date.toLocaleDateString('es-CO', {
+      day: 'numeric',
+      month: 'short',
+      year: date.getFullYear() !== today.getFullYear() ? 'numeric' : undefined
+    });
   };
 
   if (isLoading) {
@@ -167,7 +216,7 @@ export function SupportChatCard({ requestId, requestCode, isAnonymous, onChatClo
       <div className="embedded-chat-header">
         <div className="embedded-chat-user-info">
           <div className="embedded-chat-avatar" aria-hidden="true">
-            <Icon name="MessagesSquare" size={16} />
+            <Icon name="MessagesSquare" size={18} />
             {!isClosed && <span className="embedded-avatar-online-dot" title="En vivo" />}
           </div>
           <div className="embedded-chat-titles">
@@ -179,7 +228,7 @@ export function SupportChatCard({ requestId, requestCode, isAnonymous, onChatClo
               </span>
             </div>
             <span className="embedded-chat-subtitle">
-              {isAnonymous ? 'Tu nombre no se muestra a SST' : 'Orientación con SST'}
+              {isAnonymous ? 'Tu nombre no se muestra a SST · Canal Seguro' : 'Orientación de Bienestar con SST'}
             </span>
           </div>
         </div>
@@ -188,6 +237,7 @@ export function SupportChatCard({ requestId, requestCode, isAnonymous, onChatClo
       {isAnonymous && <p className="chat-privacy-note">El sistema vincula el chat a tu cuenta. Evita incluir datos que te identifiquen si prefieres reservar tu identidad.</p>}
       {sendError && <p className="chat-delivery-feedback alert-banner danger" role="alert">{sendError}</p>}
       {isSending && <p className="chat-delivery-feedback" role="status">Esperando confirmación del envío…</p>}
+
       {/* Lista de Mensajes */}
       <div
         ref={messagesContainerRef}
@@ -196,35 +246,42 @@ export function SupportChatCard({ requestId, requestCode, isAnonymous, onChatClo
         aria-live="polite"
         aria-label={`Mensajes del radicado ${requestCode}`}
       >
-        {messages.map((msg) => {
+        {messages.map((msg, index) => {
+          const prevMsg = index > 0 ? messages[index - 1] : null;
+          const showSeparator = shouldShowDateSeparator(msg, prevMsg);
+          const separatorLabel = showSeparator ? formatChatDateSeparator(msg.timestamp) : null;
           const isMe = msg.senderRole === 'AGENTE' || msg.senderId === currentUser?.id;
           const isSystem = msg.senderRole === 'SISTEMA';
 
-          if (isSystem) {
-            return (
-              <div key={msg.id} className="embedded-chat-msg system-msg">
-                <Icon name="info" size={14} />
-                <span>{msg.text}</span>
-              </div>
-            );
-          }
-
           return (
-            <div
-              key={msg.id}
-              className={`embedded-chat-bubble-wrap ${isMe ? 'msg-outgoing' : 'msg-incoming'}`}
-            >
-              <div className="embedded-chat-bubble">
-                <div className="embedded-msg-meta">
-                  <strong className="embedded-msg-sender">
-                    {isMe ? 'Tú' : (msg.senderName || 'Especialista SST')}
-                  </strong>
-                  <span className="embedded-msg-time">
-                    {msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
-                  </span>
+            <div key={msg.id || index} className="embedded-chat-msg-row">
+              {showSeparator && separatorLabel && (
+                <div className="chat-date-separator" role="separator" aria-label={`Mensajes del día: ${separatorLabel}`}>
+                  <span className="chat-date-pill">{separatorLabel}</span>
                 </div>
-                <p className="embedded-msg-text">{msg.text}</p>
-              </div>
+              )}
+              {isSystem ? (
+                <div className="embedded-chat-msg system-msg">
+                  <Icon name="info" size={14} />
+                  <span>{msg.text}</span>
+                </div>
+              ) : (
+                <div
+                  className={`embedded-chat-bubble-wrap ${isMe ? 'msg-outgoing' : 'msg-incoming'}`}
+                >
+                  <div className="embedded-chat-bubble">
+                    <div className="embedded-msg-meta">
+                      <strong className="embedded-msg-sender">
+                        {isMe ? 'Tú' : (msg.senderName || 'Especialista SST')}
+                      </strong>
+                      <span className="embedded-msg-time">
+                        {msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
+                      </span>
+                    </div>
+                    <p className="embedded-msg-text">{msg.text}</p>
+                  </div>
+                </div>
+              )}
             </div>
           );
         })}
@@ -244,27 +301,41 @@ export function SupportChatCard({ requestId, requestCode, isAnonymous, onChatClo
             handleSendMessage();
           }}
         >
-          <input
-            ref={inputRef}
-            type="text"
-            className="embedded-composer-input"
-            placeholder="Escribe tu mensaje sobre este caso a SST… (Enter para enviar)"
-            value={inputText}
-            onChange={(e) => setInputText(e.target.value)}
-            onKeyDown={handleKeyDown}
-            maxLength={600}
-            disabled={isSending}
-            aria-label="Mensaje para el especialista SST"
-          />
-          <button
-            type="submit"
-            className="btn btn-primary btn-sm embedded-composer-submit"
-            disabled={!inputText.trim() || isSending}
-            aria-label="Enviar mensaje"
-          >
-            <Icon name="send" size={16} />
-            <span>{isSending ? 'Enviando…' : 'Enviar'}</span>
-          </button>
+          <div className="embedded-chat-composer-box">
+            <textarea
+              ref={inputRef}
+              rows={1}
+              className="embedded-composer-textarea"
+              placeholder="Escribe tu mensaje sobre este caso a SST…"
+              value={inputText}
+              onChange={handleInputChange}
+              onKeyDown={handleKeyDown}
+              maxLength={600}
+              disabled={isSending}
+              aria-label="Mensaje para el especialista SST"
+            />
+            <div className="embedded-composer-footer">
+              <span className="composer-keyboard-hint">
+                Enter ↵ para enviar · Shift+Enter para salto de línea
+              </span>
+              <div className="composer-actions-group">
+                {inputText.length > 0 && (
+                  <span className="embedded-composer-counter" aria-live="polite">
+                    {inputText.length}/600
+                  </span>
+                )}
+                <button
+                  type="submit"
+                  className="embedded-composer-send-btn"
+                  disabled={!inputText.trim() || isSending}
+                  aria-label={isSending ? 'Enviando mensaje…' : 'Enviar mensaje'}
+                  title="Enviar mensaje (Enter)"
+                >
+                  <Icon name="send" size={15} />
+                </button>
+              </div>
+            </div>
+          </div>
         </form>
       )}
     </div>

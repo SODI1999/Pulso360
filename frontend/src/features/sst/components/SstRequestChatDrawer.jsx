@@ -126,6 +126,19 @@ export function SstRequestChatDrawer({ ticket, onClose, onSessionChanged }) {
     }
   };
 
+  // Ajustar la altura del textarea dinámicamente según el contenido
+  const adjustTextareaHeight = () => {
+    if (inputRef.current) {
+      inputRef.current.style.height = 'auto';
+      inputRef.current.style.height = `${Math.min(inputRef.current.scrollHeight, 120)}px`;
+    }
+  };
+
+  const handleInputChange = (e) => {
+    setInputText(e.target.value);
+    adjustTextareaHeight();
+  };
+
   // 5. Enviar mensaje del especialista SST con reconciliación por clientMsgId
   const handleSendMessage = async () => {
     const text = inputText.trim();
@@ -134,7 +147,50 @@ export function SstRequestChatDrawer({ ticket, onClose, onSessionChanged }) {
     if (!confirmed) return;
     setMessages(previous => previous.some(message => message.id === confirmed.id)
       ? previous : [...previous, confirmed]);
-    setInputText(previous => previous.trim() === text ? '' : previous);
+    setInputText(previous => {
+      const next = previous.trim() === text ? '' : previous;
+      if (next === '' && inputRef.current) {
+        inputRef.current.style.height = 'auto';
+      }
+      return next;
+    });
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
+    }
+  };
+
+  // Helper para agrupar mensajes por fecha calendario
+  const shouldShowDateSeparator = (currentMsg, prevMsg) => {
+    if (!currentMsg?.timestamp) return false;
+    if (!prevMsg?.timestamp) return true;
+    const currentDate = new Date(currentMsg.timestamp).toDateString();
+    const prevDate = new Date(prevMsg.timestamp).toDateString();
+    return currentDate !== prevDate;
+  };
+
+  const formatChatDateSeparator = (dateString) => {
+    if (!dateString) return null;
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return null;
+    const today = new Date();
+    const yesterday = new Date();
+    yesterday.setDate(today.getDate() - 1);
+
+    if (date.toDateString() === today.toDateString()) {
+      return 'Hoy';
+    }
+    if (date.toDateString() === yesterday.toDateString()) {
+      return 'Ayer';
+    }
+    return date.toLocaleDateString('es-CO', {
+      day: 'numeric',
+      month: 'short',
+      year: date.getFullYear() !== today.getFullYear() ? 'numeric' : undefined
+    });
   };
 
   // 6. Concluir formalmente el chat preventivo
@@ -227,6 +283,26 @@ export function SstRequestChatDrawer({ ticket, onClose, onSessionChanged }) {
             </button>
           </div>
         </header>
+
+        {/* Barra de Contexto Sobria del Radicado ("Zero Slop") */}
+        <div className="sst-drawer-context-bar" aria-label="Detalles del radicado de acompañamiento">
+          <div className="sst-context-item">
+            <span className="sst-context-label">Motivo:</span>
+            <span className="sst-context-value" title={ticket.reason || 'Sin motivo especificado'}>
+              {ticket.reason || 'Sin motivo especificado'}
+            </span>
+          </div>
+          <div className="sst-context-item">
+            <span className="sst-context-label">Urgencia:</span>
+            <span className={`sst-context-badge urgency-${(ticket.urgency || ticket.severity || 'media').toLowerCase()}`}>
+              {ticket.urgency || ticket.severity || 'Media'}
+            </span>
+          </div>
+          <div className="sst-context-item">
+            <span className="sst-context-label">Plazo:</span>
+            <span className="sst-context-value">{ticket.sla || '24h hábiles'}</span>
+          </div>
+        </div>
 
         {/* Modal canónico y accesible de confirmación de cierre */}
         {showCloseModal && (
@@ -394,35 +470,42 @@ export function SstRequestChatDrawer({ ticket, onClose, onSessionChanged }) {
               {isSending && <p className="chat-delivery-feedback" role="status">Esperando confirmación del envío…</p>}
               {/* Contenedor de mensajes */}
               <div ref={messagesEndRef} className="sst-drawer-messages-list" role="log" aria-live="polite">
-                {messages.map((m) => {
+                {messages.map((m, index) => {
+                  const prevMsg = index > 0 ? messages[index - 1] : null;
+                  const showSeparator = shouldShowDateSeparator(m, prevMsg);
+                  const separatorLabel = showSeparator ? formatChatDateSeparator(m.timestamp) : null;
                   const isSst = m.senderRole === 'SST';
                   const isSys = m.senderRole === 'SISTEMA';
 
-                  if (isSys) {
-                    return (
-                      <div key={m.id} className="embedded-chat-msg system-msg">
-                        <Icon name="info" size={14} />
-                        <span>{m.text}</span>
-                      </div>
-                    );
-                  }
-
                   return (
-                    <div
-                      key={m.id}
-                      className={`embedded-chat-bubble-wrap ${isSst ? 'msg-outgoing' : 'msg-incoming'}`}
-                    >
-                      <div className="embedded-chat-bubble">
-                        <div className="embedded-msg-meta">
-                          <strong className="embedded-msg-sender">
-                            {isSst ? 'Tú (SST)' : (m.senderName || 'Agente')}
-                          </strong>
-                          <span className="embedded-msg-time">
-                            {m.timestamp ? new Date(m.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
-                          </span>
+                    <div key={m.id || index} className="embedded-chat-msg-row">
+                      {showSeparator && separatorLabel && (
+                        <div className="chat-date-separator" role="separator" aria-label={`Mensajes del día: ${separatorLabel}`}>
+                          <span className="chat-date-pill">{separatorLabel}</span>
                         </div>
-                        <p className="embedded-msg-text">{m.text}</p>
-                      </div>
+                      )}
+                      {isSys ? (
+                        <div className="embedded-chat-msg system-msg">
+                          <Icon name="info" size={14} />
+                          <span>{m.text}</span>
+                        </div>
+                      ) : (
+                        <div
+                          className={`embedded-chat-bubble-wrap ${isSst ? 'msg-outgoing' : 'msg-incoming'}`}
+                        >
+                          <div className="embedded-chat-bubble">
+                            <div className="embedded-msg-meta">
+                              <strong className="embedded-msg-sender">
+                                {isSst ? 'Tú (SST)' : (m.senderName || 'Agente')}
+                              </strong>
+                              <span className="embedded-msg-time">
+                                {m.timestamp ? new Date(m.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
+                              </span>
+                            </div>
+                            <p className="embedded-msg-text">{m.text}</p>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   );
                 })}
@@ -444,34 +527,41 @@ export function SstRequestChatDrawer({ ticket, onClose, onSessionChanged }) {
                     handleSendMessage();
                   }}
                 >
-                  <div className="sst-composer-input-wrap">
-                    <input
+                  <div className="embedded-chat-composer-box">
+                    <textarea
                       ref={inputRef}
-                      type="text"
-                      className="form-input sst-composer-input"
-                      placeholder="Escribe tu recomendación ocupacional o respuesta preventiva… (Enter para enviar)"
+                      rows={1}
+                      className="embedded-composer-textarea"
+                      placeholder="Escribe tu recomendación ocupacional o respuesta preventiva…"
                       value={inputText}
-                      onChange={(e) => setInputText(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' && !e.shiftKey) {
-                          e.preventDefault();
-                          handleSendMessage();
-                        }
-                      }}
+                      onChange={handleInputChange}
+                      onKeyDown={handleKeyDown}
                       maxLength={800}
                       disabled={isSending}
                       aria-label="Recomendación o respuesta para el agente"
                     />
+                    <div className="embedded-composer-footer">
+                      <span className="composer-keyboard-hint">
+                        Enter ↵ para enviar · Shift+Enter para salto de línea
+                      </span>
+                      <div className="composer-actions-group">
+                        {inputText.length > 0 && (
+                          <span className="embedded-composer-counter" aria-live="polite">
+                            {inputText.length}/800
+                          </span>
+                        )}
+                        <button
+                          type="submit"
+                          className="embedded-composer-send-btn"
+                          disabled={!inputText.trim() || isSending}
+                          aria-label={isSending ? 'Enviando recomendación…' : 'Enviar recomendación'}
+                          title="Enviar recomendación (Enter)"
+                        >
+                          <Icon name="send" size={15} />
+                        </button>
+                      </div>
+                    </div>
                   </div>
-                  <button
-                    type="submit"
-                    className="btn btn-primary sst-composer-submit-btn"
-                    disabled={!inputText.trim() || isSending}
-                    aria-label="Enviar recomendación preventiva"
-                  >
-                    <Icon name="send" size={16} />
-                    <span>{isSending ? 'Enviando…' : 'Enviar'}</span>
-                  </button>
                 </form>
               )}
             </div>
