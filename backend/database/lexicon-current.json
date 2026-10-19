@@ -4,9 +4,18 @@
       "sobrecarga",
       "saturado",
       "saturada",
+      "saturacion",
+      "saturación",
+      "sobrecargado",
+      "sobrecargada",
       "demasiadas llamadas",
       "mucho volumen",
+      "llamada tras llamada",
+      "back to back",
+      "cola interminable",
       "sin parar",
+      "sin pausa",
+      "sin respiro",
       "cola",
       "presión",
       "presion"
@@ -14,18 +23,46 @@
     "Recuperación insuficiente": [
       "agotado",
       "agotada",
+      "agotamiento",
+      "cansado",
+      "cansada",
+      "cansancio",
+      "fatiga",
+      "pereza",
+      "desgano",
+      "desganado",
+      "desganada",
+      "agobio",
+      "agobiado",
+      "agobiada",
+      "desesperacion",
+      "desesperación",
       "sin descansar",
       "no descansé",
       "no descanse",
-      "cansancio",
-      "fatiga",
       "sin recuperar",
+      "sin fuerzas",
       "dormí mal",
       "dormi mal"
     ],
     "Exigencia emocional": [
       "insultos",
+      "insulto",
+      "insultar",
       "gritos",
+      "grito",
+      "gritar",
+      "gritando",
+      "grosero",
+      "grosera",
+      "groserias",
+      "groserías",
+      "maltrato",
+      "falta de respeto",
+      "déspota",
+      "despota",
+      "altanero",
+      "altanera",
       "cliente agresivo",
       "cliente molesto",
       "angustia",
@@ -35,6 +72,8 @@
     ],
     "Conflicto de rol": [
       "instrucciones contradictorias",
+      "orden contradictoria",
+      "procedimiento confuso",
       "no sé qué hacer",
       "no se que hacer",
       "dos instrucciones",
@@ -44,6 +83,9 @@
     "Bajo apoyo organizacional": [
       "sin apoyo",
       "no me apoyan",
+      "sin ayuda",
+      "supervisor ausente",
+      "nadie responde",
       "aislado",
       "aislada",
       "solo con esto",
@@ -55,6 +97,11 @@
       "me da igual",
       "desconectado del trabajo",
       "desconectada del trabajo",
+      "desmotivado",
+      "desmotivada",
+      "aburrido",
+      "aburrida",
+      "sin ganas",
       "no me importa",
       "distante",
       "evito involucrarme"
@@ -68,6 +115,9 @@
       "bono por meta",
       "presión por tiempo",
       "presion por tiempo",
+      "presion de metricas",
+      "presion de métricas",
+      "tiempo en llamada",
       "meta imposible"
     ],
     "Percepción de ineficacia": [
@@ -76,7 +126,12 @@
       "ineficaz",
       "mi trabajo no sirve",
       "no fui capaz",
-      "no puedo hacerlo bien"
+      "no puedo hacerlo bien",
+      "me bloquee",
+      "me bloqueé",
+      "no supe responder",
+      "no resolvi",
+      "no resolví"
     ]
   },
   "crisisPhrases": [
@@ -87,20 +142,30 @@
     "hacerme dano",
     "acabar con todo",
     "no quiero seguir",
-    "lastimarme"
+    "lastimarme",
+    "quitarme la vida"
   ],
   "negators": [
     "no",
     "nunca",
     "jamás",
     "jamas",
-    "sin"
+    "sin",
+    "ningun",
+    "ningún",
+    "ninguna",
+    "tampoco",
+    "cero",
+    "para nada"
   ],
   "intensifiers": [
     "muy",
     "demasiado",
     "demasiada",
     "totalmente",
-    "siempre"
+    "siempre",
+    "super",
+    "súper",
+    "bastante"
   ]
 }

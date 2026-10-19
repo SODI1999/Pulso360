@@ -4,16 +4,28 @@
 import { pulsoStore } from '../storage/pulsoStore';
 import { env } from '../config/env';
 import { apiClient } from '../api/apiClient';
+import { sanitizeInputText, stripDiacritics } from './nlpSanitizer';
+import { stemSpanish } from './spanishStemmer';
+import { damerauLevenshtein } from './damerauLevenshtein';
 
-// Categorías clínicas/operativas y sus respectivos términos asociados
+// Categorías clínicas/operativas y sus respectivos términos asociados (Léxico BPO)
 export const NLP_CATEGORIES = {
   'Sobrecarga percibida': [
     'sobrecarga',
     'saturado',
     'saturada',
+    'saturacion',
+    'saturación',
+    'sobrecargado',
+    'sobrecargada',
     'demasiadas llamadas',
     'mucho volumen',
+    'llamada tras llamada',
+    'back to back',
+    'cola interminable',
     'sin parar',
+    'sin pausa',
+    'sin respiro',
     'cola',
     'presión',
     'presion'
@@ -21,18 +33,46 @@ export const NLP_CATEGORIES = {
   'Recuperación insuficiente': [
     'agotado',
     'agotada',
+    'agotamiento',
+    'cansado',
+    'cansada',
+    'cansancio',
+    'fatiga',
+    'pereza',
+    'desgano',
+    'desganado',
+    'desganada',
+    'agobio',
+    'agobiado',
+    'agobiada',
+    'desesperacion',
+    'desesperación',
     'sin descansar',
     'no descansé',
     'no descanse',
-    'cansancio',
-    'fatiga',
     'sin recuperar',
+    'sin fuerzas',
     'dormí mal',
     'dormi mal'
   ],
   'Exigencia emocional': [
     'insultos',
+    'insulto',
+    'insultar',
     'gritos',
+    'grito',
+    'gritar',
+    'gritando',
+    'grosero',
+    'grosera',
+    'groserias',
+    'groserías',
+    'maltrato',
+    'falta de respeto',
+    'déspota',
+    'despota',
+    'altanero',
+    'altanera',
     'cliente agresivo',
     'cliente molesto',
     'angustia',
@@ -42,6 +82,8 @@ export const NLP_CATEGORIES = {
   ],
   'Conflicto de rol': [
     'instrucciones contradictorias',
+    'orden contradictoria',
+    'procedimiento confuso',
     'no sé qué hacer',
     'no se que hacer',
     'dos instrucciones',
@@ -51,6 +93,9 @@ export const NLP_CATEGORIES = {
   'Bajo apoyo organizacional': [
     'sin apoyo',
     'no me apoyan',
+    'sin ayuda',
+    'supervisor ausente',
+    'nadie responde',
     'aislado',
     'aislada',
     'solo con esto',
@@ -62,6 +107,11 @@ export const NLP_CATEGORIES = {
     'me da igual',
     'desconectado del trabajo',
     'desconectada del trabajo',
+    'desmotivado',
+    'desmotivada',
+    'aburrido',
+    'aburrida',
+    'sin ganas',
     'no me importa',
     'distante',
     'evito involucrarme'
@@ -75,6 +125,9 @@ export const NLP_CATEGORIES = {
     'bono por meta',
     'presión por tiempo',
     'presion por tiempo',
+    'presion de metricas',
+    'presion de métricas',
+    'tiempo en llamada',
     'meta imposible'
   ],
   'Percepción de ineficacia': [
@@ -83,7 +136,12 @@ export const NLP_CATEGORIES = {
     'ineficaz',
     'mi trabajo no sirve',
     'no fui capaz',
-    'no puedo hacerlo bien'
+    'no puedo hacerlo bien',
+    'me bloquee',
+    'me bloqueé',
+    'no supe responder',
+    'no resolvi',
+    'no resolví'
   ]
 };
 
@@ -96,83 +154,177 @@ export const CRISIS_PHRASES = [
   'hacerme dano',
   'acabar con todo',
   'no quiero seguir',
-  'lastimarme'
+  'lastimarme',
+  'quitarme la vida'
 ];
 
-// Palabras para detectar negaciones e intensificadores gramaticales
-const NEGATORS = ['no', 'nunca', 'jamás', 'jamas', 'sin'];
-const INTENSIFIERS = ['muy', 'demasiado', 'demasiada', 'totalmente', 'siempre'];
+// Disparadores de negación (patrón NegEx en español) e intensificadores gramaticales
+const NEGATORS = [
+  'no',
+  'nunca',
+  'jamás',
+  'jamas',
+  'sin',
+  'ningun',
+  'ningún',
+  'ninguna',
+  'tampoco',
+  'cero',
+  'para nada'
+];
+
+const INTENSIFIERS = [
+  'muy',
+  'demasiado',
+  'demasiada',
+  'totalmente',
+  'siempre',
+  'super',
+  'súper',
+  'bastante'
+];
+
 let activeLexicon = null;
+
 function dictionary() {
-  if (env.useMockStorage) return { categories:NLP_CATEGORIES,crisis:CRISIS_PHRASES,negators:NEGATORS,intensifiers:INTENSIFIERS };
+  if (env.useMockStorage) {
+    return {
+      categories: NLP_CATEGORIES,
+      crisis: CRISIS_PHRASES,
+      negators: NEGATORS,
+      intensifiers: INTENSIFIERS
+    };
+  }
   if (!activeLexicon) throw new Error('Carga el léxico autorizado antes de analizar.');
-  return { ...activeLexicon.dictionary,crisis:activeLexicon.dictionary.crisisPhrases };
+  return { ...activeLexicon.dictionary, crisis: activeLexicon.dictionary.crisisPhrases };
 }
-
-// Normalización de texto (minúsculas, colapso de espacios múltiples)
-const normalize = (text = '') => text.toLowerCase().replace(/\s+/g, ' ').trim();
-
-// Comprobar si existe una negación en una ventana de 3 palabras previas al término
-const hasNegationNear = (text, phrase) => {
-  const phraseIndex = text.indexOf(phrase);
-  if (phraseIndex < 0) return false;
-
-  const wordsBefore = text
-    .slice(Math.max(0, phraseIndex - 35), phraseIndex)
-    .trim()
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(-3);
-  return wordsBefore.some((word) => dictionary().negators.includes(word));
-};
 
 export const nlpEngine = {
   loadActiveLexicon: async () => {
     if (env.useMockStorage) return;
-    // Se vuelve a consultar: una activación o revocación no puede usar una caché indefinida.
     activeLexicon = null;
     const response = await apiClient.get('/nlp/lexicon/active');
     activeLexicon = response.data;
   },
+
   // Versión activa del clasificador léxico configurada en el sistema
-  getVersion: () => env.useMockStorage ? pulsoStore.get().settings?.nlpVersion || 'lexico-v1.2' : activeLexicon?.version,
+  getVersion: () =>
+    env.useMockStorage
+      ? pulsoStore.get().settings?.nlpVersion || 'lexico-v1.2'
+      : activeLexicon?.version,
 
   // Lista de nombres de categorías soportadas
-  getCategoryNames: () => Object.keys(env.useMockStorage ? NLP_CATEGORIES : activeLexicon?.dictionary?.categories || {}),
+  getCategoryNames: () =>
+    Object.keys(env.useMockStorage ? NLP_CATEGORIES : activeLexicon?.dictionary?.categories || {}),
 
-  // Análisis de texto determinista
+  // Análisis de texto determinista y explicable de 4 capas
   analyze: (rawText = '') => {
-    const text = normalize(rawText);
+    // Capa 1: Sanitización ortopédica, elongaciones y desacentuación simétrica
+    const cleanText = sanitizeInputText(rawText);
+    const unaccentedText = stripDiacritics(cleanText);
 
-    // 1. Detección preventiva de alerta de crisis
-    const isCrisisAlert = dictionary().crisis.some((phrase) => text.includes(phrase));
+    // 1. Detección preventiva de alerta de crisis (evaluada con y sin tildes)
+    const isCrisisAlert = dictionary().crisis.some((phrase) => {
+      const cleanPhrase = phrase.toLowerCase().trim();
+      const unaccentedPhrase = stripDiacritics(cleanPhrase);
+      return cleanText.includes(cleanPhrase) || unaccentedText.includes(unaccentedPhrase);
+    });
+
+    // Tokenización y lematización morfológica (Capa 2: Stemming Snowball)
+    const tokens = cleanText.split(/\s+/).filter(Boolean);
+    const unaccentedTokens = tokens.map(stripDiacritics);
+    const stemmedTokens = unaccentedTokens.map(stemSpanish);
+
+    const activeDict = dictionary();
+    const negatorList = (activeDict.negators || NEGATORS).map((n) => stripDiacritics(n.toLowerCase()));
+    const intensifierList = (activeDict.intensifiers || INTENSIFIERS).map((i) =>
+      stripDiacritics(i.toLowerCase())
+    );
 
     // 2. Evaluación de cada categoría contra el léxico
     const results = [];
-    Object.entries(dictionary().categories).forEach(([name, lexicon]) => {
+
+    Object.entries(activeDict.categories).forEach(([name, lexicon]) => {
       let score = 0;
       const evidence = [];
+      const matchedTokenIndices = new Set();
 
-      lexicon.forEach((term) => {
-        if (!text.includes(term)) return;
-        if (hasNegationNear(text, term)) return;
+      // Fase A: Términos compuestos / frases de múltiples palabras primero (ej: 'cliente agresivo', 'back to back')
+      const multiWordTerms = lexicon.filter((term) => term.includes(' '));
+      multiWordTerms.forEach((term) => {
+        const termClean = term.toLowerCase().trim();
+        const termUnaccented = stripDiacritics(termClean);
 
-        // Detectar si tiene un intensificador previo
-        const termIndex = text.indexOf(term);
-        const precedingWords = text
-          .slice(Math.max(0, termIndex - 25), termIndex)
-          .trim()
-          .split(/\s+/)
-          .filter(Boolean);
-        const previousWord = precedingWords.slice(-1)[0] || '';
+        if (cleanText.includes(termClean) || unaccentedText.includes(termUnaccented)) {
+          // Localizar la posición de la frase para la ventana de negación (NegEx)
+          const firstWord = termUnaccented.split(/\s+/)[0];
+          const firstIdx = unaccentedTokens.indexOf(firstWord);
+          const windowTokens = unaccentedTokens.slice(Math.max(0, firstIdx - 3), firstIdx);
+          const windowStr = windowTokens.join(' ');
 
-        if (dictionary().intensifiers.includes(previousWord)) {
-          score += 1.5;
-        } else {
-          score += 1;
+          const isNegated =
+            windowTokens.some((w) => negatorList.includes(w)) ||
+            negatorList.some((neg) => neg.includes(' ') && windowStr.includes(neg));
+
+          if (!isNegated) {
+            score += 1;
+            evidence.push(term);
+          }
         }
+      });
 
-        evidence.push(term);
+      // Fase B: Términos de una sola palabra con lematización y tolerancia Damerau-Levenshtein
+      const singleWordTerms = lexicon.filter((term) => !term.includes(' '));
+      singleWordTerms.forEach((term) => {
+        const termClean = term.toLowerCase().trim();
+        const termUnaccented = stripDiacritics(termClean);
+        const termStem = stemSpanish(termUnaccented);
+
+        for (let i = 0; i < unaccentedTokens.length; i++) {
+          if (matchedTokenIndices.has(i)) continue; // Un token solo puntúa una vez por categoría
+
+          const tok = unaccentedTokens[i];
+          const tokStem = stemmedTokens[i];
+
+          let isMatch = false;
+
+          // 1. Coincidencia exacta desacentuada
+          if (tok === termUnaccented) {
+            isMatch = true;
+          }
+          // 2. Coincidencia morfológica por raíz Snowball
+          else if (tokStem === termStem) {
+            isMatch = true;
+          }
+          // 3. Coincidencia por tolerancia tipográfica Damerau-Levenshtein (distancia <= 1 para palabras de 4+ letras)
+          else if (tok.length >= 4 && damerauLevenshtein(tok, termUnaccented) <= 1) {
+            isMatch = true;
+          }
+
+          if (isMatch) {
+            matchedTokenIndices.add(i);
+
+            // Ventana de negación NegEx (3 palabras previas)
+            const windowTokens = unaccentedTokens.slice(Math.max(0, i - 3), i);
+            const windowStr = windowTokens.join(' ');
+
+            const isNegated =
+              windowTokens.some((w) => negatorList.includes(w)) ||
+              negatorList.some((neg) => neg.includes(' ') && windowStr.includes(neg));
+
+            if (!isNegated) {
+              const prevToken = unaccentedTokens[i - 1] || '';
+              if (intensifierList.includes(prevToken)) {
+                score += 1.5;
+              } else {
+                score += 1;
+              }
+              // Siempre emitir el término canónico exacto registrado en el diccionario para el backend
+              evidence.push(term);
+            }
+            break;
+          }
+        }
       });
 
       if (score > 0) {

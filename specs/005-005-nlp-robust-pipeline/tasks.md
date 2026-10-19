@@ -1,0 +1,10 @@
+# [TASKS-005] Scope-derived work — Pipeline Robusto de NLP Determinista
+
+Tareas descompuestas en orden estricto de dependencias para cumplir con AC-01 a AC-06:
+
+- [x] **TASK-01 / AC-02**: Crear módulo de sanitización ortopédica y normalización diacrítica en `frontend/src/core/nlp/nlpSanitizer.js` (colapso de elongaciones repetidas $\ge 3$ caracteres, remoción de parásitos de teclado `<, >, /, _`, separación de signos pegados `m,e` $\rightarrow$ `m e` y desacentuación NFD).
+- [x] **TASK-02 / AC-04**: Crear módulo de distancia de edición Damerau-Levenshtein en `frontend/src/core/nlp/damerauLevenshtein.js` para tolerar transposiciones de teclas adyacentes (`uqe` $\rightarrow$ `que`) y omisiones/inserciones leves ($\text{distancia} \le 1$).
+- [x] **TASK-03 / AC-03**: Implementar lematizador de raíces Snowball para español en `frontend/src/core/nlp/spanishStemmer.js` (JavaScript puro sin dependencias externas) que reduzca formas verbales en pasado, presente, gerundio y marcas de género/número a raíces canónicas (`grit-`, `insult-`, `groser-`, `perez-`, `agot-`).
+- [x] **TASK-04 / AC-05, AC-06**: Actualizar el diccionario canónico a la versión `v1.3.0` en `backend/database/lexicon-current.json`, crear la migración de base de datos `backend/database/migrations/008_lexicon_v1_3.js` con cálculo canónico de hash SHA-256, e incorporar el nuevo vocabulario BPO y disparadores de negación estilo NegEx.
+- [x] **TASK-05 / AC-01, AC-05**: Refactorizar el motor en `frontend/src/core/nlp/nlpEngine.jsx` integrando las 4 capas (sanitización $\rightarrow$ stemming $\rightarrow$ tolerancia tipográfica $\rightarrow$ ventana de negación e intensificación NegEx) mapeando siempre las evidencias a términos canónicos del diccionario activo.
+- [x] **TASK-06 / AC-01, AC-06**: Crear la suite de pruebas unitarias y de regresión en `frontend/tests/nlpEngine.test.mjs` validando la frase testigo (`"Una señora m,e grito toda grosera uqe pere<za"`), casos de falsos positivos con negación y ejecutar los 4 quality gates del monorepo (`backend: npm test`, `frontend: npm test`, `frontend: npm run lint`, `frontend: npm run build`).

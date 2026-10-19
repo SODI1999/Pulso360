@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "criteria": [
+    {
+      "id": "AC-01",
+      "status": "passed",
+      "method": "automated",
+      "evidence": "Prueba unitaria e integración con la frase testigo 'Una señora m,e grito toda grosera uqe pere<za' identificando Exigencia emocional y Recuperación insuficiente (tests/nlpEngine.test.mjs)."
+    },
+    {
+      "id": "AC-02",
+      "status": "passed",
+      "method": "automated",
+      "evidence": "Suite de sanitización para caracteres parásitos, puntuación pegada y elongaciones emocionales >= 3 letras (src/core/nlp/nlpSanitizer.js)."
+    },
+    {
+      "id": "AC-03",
+      "status": "passed",
+      "method": "automated",
+      "evidence": "Suite de lematización Snowball en español que reduce conjugaciones verbales a raíces canónicas (src/core/nlp/spanishStemmer.js)."
+    },
+    {
+      "id": "AC-04",
+      "status": "passed",
+      "method": "automated",
+      "evidence": "Suite de distancia Damerau-Levenshtein para transposiciones y fat-finger typos de distancia <= 1 (src/core/nlp/damerauLevenshtein.js)."
+    },
+    {
+      "id": "AC-05",
+      "status": "passed",
+      "method": "automated",
+      "evidence": "Suite de negación contextual estilo NegEx en español para evitar falsos positivos con negadores explícitos (tests/nlpEngine.test.mjs)."
+    },
+    {
+      "id": "AC-06",
+      "status": "passed",
+      "method": "automated",
+      "evidence": "Registro de versión v1.3.0 con hash SHA-256 en backend y paso limpio de los 4 quality gates del monorepo (132 backend + 54 frontend tests + lint + build)."
+    }
+  ]
+}
