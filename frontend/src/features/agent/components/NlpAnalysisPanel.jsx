@@ -15,10 +15,10 @@ export function NlpAnalysisPanel({ journal, onOpenCorrection, onOpenHistory }) {
 
   return (
     <div id="analysisPanel" className="analysis-card">
-      {/* Cabecera con icono Compass y versión discreta */}
+      {/* Cabecera con icono HeartPulse y versión discreta */}
       <div className="analysis-panel-head">
         <div className="analysis-panel-title">
-          <Icon name="compass" size={18} className="analysis-title-icon" />
+          <Icon name="heartPulse" size={18} className="analysis-title-icon" />
           <strong>Reflexión asistida sobre tu nota</strong>
         </div>
         <span className="analysis-version-tag" title={`Motor léxico determinista ${journal.analysis.version}`}>
@@ -36,7 +36,7 @@ export function NlpAnalysisPanel({ journal, onOpenCorrection, onOpenHistory }) {
               className={`analysis-factor-badge ${isCorrected ? 'factor-chip-adjusted' : ''}`}
             >
               <Icon
-                name={FACTOR_METADATA[catName]?.icon || 'compass'}
+                name={FACTOR_METADATA[catName]?.icon || 'activity'}
                 size={14}
               />
               <span>{catName}</span>
@@ -78,6 +78,7 @@ export function NlpAnalysisPanel({ journal, onOpenCorrection, onOpenHistory }) {
 
         {historyCount > 0 && (
           <button type="button" className="btn btn-ghost" onClick={onOpenHistory}>
+            <Icon name="clock" size={14} />
             <span>Ver historial ({historyCount})</span>
           </button>
         )}

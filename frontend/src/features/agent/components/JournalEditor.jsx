@@ -32,7 +32,7 @@ export function JournalEditor({
       >
         <div>
           <div className="card-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Icon name="feather" size={18} style={{ color: 'var(--c-primario, #0f766e)' }} />
+            <Icon name="notebookPen" size={18} style={{ color: 'var(--c-primario, #0f766e)' }} />
             <span>Modo Desahogo</span>
           </div>
           <div className="card-subtitle">
@@ -81,15 +81,8 @@ export function JournalEditor({
 
         <div className="desahogo-container">
           <div className="form-group">
-            <label
-              className="form-label"
-              htmlFor="journalText"
-              style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
-            >
+            <label className="form-label" htmlFor="journalText">
               <span>Espacio de reflexión y desahogo personal</span>
-              <span style={{ fontSize: '11.5px', color: 'var(--c-texto-suave)', fontWeight: '500' }}>
-                Espacio de escritura privado
-              </span>
             </label>
             <textarea
               ref={textareaRef}

@@ -135,7 +135,7 @@ export function JournalPage() {
           </p>
         </div>
         <Link to="/agente/mi-analisis" className="btn btn-secondary">
-          <Icon name="compass" size={18} />
+          <Icon name="lineChart" size={18} />
           <span>Ver mis análisis</span>
         </Link>
       </div>

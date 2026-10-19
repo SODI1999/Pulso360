@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "criteria": [
+    {
+      "id": "AC-01",
+      "status": "passed",
+      "method": "manual",
+      "evidence": "Contenedor journal-empty-container renderiza bpo-agent-journal-calm.jpg, copy empático y badge de privacidad cuando journals.length === 0 en JournalEntryList.jsx."
+    },
+    {
+      "id": "AC-02",
+      "status": "passed",
+      "method": "manual",
+      "evidence": "Superficie de trabajo de JournalEditor.jsx optimizada con insignia de espacio privado e inviolable, textarea ergonómico con interlineado 1.7 y advertencia pedagógica integrada."
+    },
+    {
+      "id": "AC-03",
+      "status": "passed",
+      "method": "manual",
+      "evidence": "Gating de consentimiento C2 preservado en JournalPage.jsx. Titularidad estricta usuario_id = $1 validada en journalRepository.js y suite de tests."
+    },
+    {
+      "id": "AC-04",
+      "status": "passed",
+      "method": "manual",
+      "evidence": "NlpAnalysisPanel.jsx y motor nlpEngine.jsx conservan la detección léxica local, términos en hashtag y modales de corrección humana y crisis sin regresiones."
+    },
+    {
+      "id": "AC-05",
+      "status": "passed",
+      "method": "automated",
+      "evidence": "132/132 tests backend pasados, 48/48 tests frontend pasados, eslint limpio con 0 errores y build de Vite completado en 6.27s."
+    }
+  ]
+}

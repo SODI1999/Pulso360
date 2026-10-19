@@ -33,8 +33,10 @@
 }
 
 /* Cabeceras de lectura separadas sólo por una línea, sin franja de color que choque con el texto */
+.agent-page .agent-modal .modal-header,
 .agent-page .agent-modal.perspective-modal .modal-header,
-.agent-page .agent-modal.agent-modal--correction .modal-header {
+.agent-page .agent-modal.agent-modal--correction .modal-header,
+.agent-page .agent-modal.agent-modal--wide .modal-header {
   background: transparent;
   border-bottom: 1px solid var(--c-borde-suave);
   padding-bottom: var(--space-3);

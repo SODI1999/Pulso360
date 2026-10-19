@@ -214,6 +214,8 @@ const lucideComponents = {
   dashboard: LayoutDashboard,
   favorite: HeartPulse,
   edit_note: NotebookPen,
+  notebookPen: NotebookPen,
+  bookOpen: BookOpen,
   edit: Pencil,
   insights: TrendingUp,
   monitoring: LineChart,

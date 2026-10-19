@@ -172,10 +172,10 @@ export function NlpHistoryModal({ isOpen, history = [], analyses = [], onClose }
         <div className="modal-header">
           <div>
             <h2 id="nlp-history-title" className="modal-title">
-              Historial de correcciones NLP
+              Historial de revisiones
             </h2>
             <p className="modal-subtitle">
-              Trazabilidad cronológica de todas las intervenciones humanas sobre esta entrada.
+              Consulta los cambios de texto y los factores ajustados en esta entrada.
             </p>
           </div>
           <button type="button" className="modal-close-btn" onClick={onClose} aria-label="Cerrar">
@@ -184,29 +184,78 @@ export function NlpHistoryModal({ isOpen, history = [], analyses = [], onClose }
         </div>
 
         <div className="agent-modal-scroll">
-          {analyses.map((analysis,index) => <div className="agent-modal-history-item" key={`${analysis.contentHash}-${index}`}>
-            <strong>Análisis anterior · {analysis.version}</strong>
-            <p>Contenido analizado: {analysis.contentHash?.slice(0,12)}… · {new Date(analysis.archivedAt).toLocaleString('es-CO')}</p>
-            <p>{analysis.categories?.map(category => category.name).join(', ') || 'Sin categorías'}</p>
-            {analysis.content && <p>Texto de esa versión: {analysis.content}</p>}
-            {(analysis.correctionHistory || []).map(revision => <p key={revision.id}>Revisión: {revision.categories.join(', ') || 'Ninguna aplica'}{revision.note ? ` · ${revision.note}` : ''}</p>)}
-          </div>)}
-          {!history.length && !analyses.length && <p>No hay revisiones anteriores.</p>}
+          {analyses.map((analysis, index) => (
+            <div className="agent-modal-history-item" key={`${analysis.contentHash || 'analysis'}-${index}`}>
+              <div className="agent-modal-history-head">
+                <strong className="agent-modal-history-title">
+                  Versión anterior #{analyses.length - index}
+                </strong>
+                <span className="agent-modal-history-date">
+                  {analysis.archivedAt
+                    ? new Date(analysis.archivedAt).toLocaleString('es-CO', {
+                        dateStyle: 'short',
+                        timeStyle: 'short'
+                      })
+                    : ''}
+                </span>
+              </div>
+
+              {analysis.content && (
+                <div className="agent-modal-history-note" style={{ fontStyle: 'normal' }}>
+                  &ldquo;{analysis.content}&rdquo;
+                </div>
+              )}
+
+              <div className="agent-modal-history-badges" style={{ marginTop: '8px' }}>
+                {analysis.categories && analysis.categories.length > 0 ? (
+                  analysis.categories.map((c) => {
+                    const catName = c.name || c;
+                    return (
+                      <span key={catName} className="analysis-factor-badge">
+                        <Icon name={FACTOR_METADATA[catName]?.icon || 'activity'} size={13} />
+                        <span>{catName}</span>
+                      </span>
+                    );
+                  })
+                ) : (
+                  <span className="badge badge-neutral">Sin factores de tensión</span>
+                )}
+              </div>
+
+              {(analysis.correctionHistory || []).map((revision) => (
+                <div key={revision.id} className="agent-modal-history-previous" style={{ marginTop: '6px' }}>
+                  Ajuste realizado: <strong>{revision.categories?.join(', ') || 'Ninguna aplica'}</strong>
+                  {revision.note ? ` · "${revision.note}"` : ''}
+                </div>
+              ))}
+            </div>
+          ))}
+
+          {!history.length && !analyses.length && (
+            <p style={{ color: 'var(--c-texto-suave)', textAlign: 'center', padding: '24px 0' }}>
+              No hay revisiones anteriores para esta entrada.
+            </p>
+          )}
+
           {history.map((h, idx) => {
             const itemNumber = history.length - idx;
             return (
               <div key={idx} className="agent-modal-history-item">
                 <div className="agent-modal-history-head">
-                  <strong className="agent-modal-history-title">Corrección #{itemNumber}</strong>
+                  <strong className="agent-modal-history-title">Ajuste de factores #{itemNumber}</strong>
                   <span className="agent-modal-history-date">
-                    {h.dateFormatted || new Date(h.timestamp || h.date).toLocaleString('es-CO')}
+                    {h.dateFormatted || (h.timestamp || h.date ? new Date(h.timestamp || h.date).toLocaleString('es-CO', {
+                      dateStyle: 'short',
+                      timeStyle: 'short'
+                    }) : '')}
                   </span>
                 </div>
                 <div className="agent-modal-history-badges">
                   {h.categories && h.categories.length > 0 ? (
                     h.categories.map((cat) => (
-                      <span key={cat} className="badge badge-info">
-                        {cat}
+                      <span key={cat} className="analysis-factor-badge factor-chip-adjusted">
+                        <Icon name={FACTOR_METADATA[cat]?.icon || 'check'} size={13} />
+                        <span>{cat}</span>
                       </span>
                     ))
                   ) : (
@@ -215,7 +264,7 @@ export function NlpHistoryModal({ isOpen, history = [], analyses = [], onClose }
                 </div>
                 {h.previousCategories && (
                   <div className="agent-modal-history-previous">
-                    Anterior: {h.previousCategories.join(', ') || 'Sin clasificar'}
+                    Clasificación anterior: {h.previousCategories.join(', ') || 'Sin clasificar'}
                   </div>
                 )}
                 {h.note && <div className="agent-modal-history-note">&ldquo;{h.note}&rdquo;</div>}

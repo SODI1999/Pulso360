@@ -16,9 +16,22 @@ export function JournalEntryList({ handleNewEntry, journals, currentJournalId, h
 
       <div id="journalsList" className="journal-sidebar-list">
         {journals.length === 0 ? (
-          <p style={{ color: 'var(--c-texto-suave)', padding: '16px 0', textAlign: 'center' }}>
-            Aún no has escrito entradas.
-          </p>
+          <div className="journal-empty-container">
+            <div className="journal-empty-media">
+              <img
+                src="/assets/fotos/bpo-agent-journal-calm.jpg"
+                alt="Operadora de Contact Center escribiendo tranquilamente en su libreta de notas"
+                className="journal-empty-photo"
+                loading="lazy"
+              />
+            </div>
+            <div className="journal-empty-content">
+              <h3 className="journal-empty-title">Tu refugio de descarga</h3>
+              <p className="journal-empty-text">
+                Procesa las llamadas difíciles, la sobrecarga o lo vivido en tu turno. Tus notas son personales y no se comparten con supervisión ni SST.
+              </p>
+            </div>
+          </div>
         ) : (
           journals.map((item) => {
             const isSelected = item.id === currentJournalId;
@@ -35,8 +48,11 @@ export function JournalEntryList({ handleNewEntry, journals, currentJournalId, h
               >
                 <div style={{ width: '100%' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <strong style={{ fontSize: '13px', color: 'var(--c-texto)' }}>{item.date}</strong>
-                    <span className="badge badge-neutral" style={{ fontSize: '10px' }}>
+                    <span className="journal-row-date">
+                      <Icon name="calendar" size={13} />
+                      <strong>{item.date}</strong>
+                    </span>
+                    <span className={`badge ${item.analysis ? 'badge-info' : 'badge-neutral'}`} style={{ fontSize: '10px' }}>
                       {badge}
                     </span>
                   </div>
@@ -45,7 +61,9 @@ export function JournalEntryList({ handleNewEntry, journals, currentJournalId, h
                     {ellipsis}
                   </small>
                   {item.context && (
-                    <span style={{ fontSize: '11px', color: 'var(--c-texto-suave)' }}>{item.context}</span>
+                    <span className="journal-row-context">
+                      {item.context}
+                    </span>
                   )}
                 </div>
               </button>
