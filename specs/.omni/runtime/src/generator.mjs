@@ -7,6 +7,7 @@ import { integrationEntries, normalizeAgents } from './integrations.mjs';
 import { packageEntries } from './assets.mjs';
 import { syncManagedFiles } from './managed.mjs';
 import { detectProjectEnvironment } from './detector.mjs';
+import { acceptanceSeed } from './acceptance.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -326,6 +327,7 @@ export async function createSpec(baseDir, rawArchetype, name, options = {}) {
     }
 
     await writeFile(join(specDir, 'verification.md'), '# Verification evidence\n\n[TODO] Map each acceptance criterion to a file, test or manual observation and actual result. Record limitations and unresolved findings. For an RFC, explain the decision and alternatives reviewed.\n');
+    await writeFile(join(specDir, 'acceptance.json'), JSON.stringify(acceptanceSeed(archetypeKey), null, 2) + '\n');
 
     // Register in manifest
     const specEntry = {

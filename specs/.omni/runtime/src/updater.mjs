@@ -4,6 +4,7 @@ import { integrationEntries, normalizeAgents } from './integrations.mjs';
 import { packageEntries } from './assets.mjs';
 import { syncManagedFiles, checkManagedFiles } from './managed.mjs';
 import { ensureProjectContext } from './generator.mjs';
+import { compareVersions } from './versions.mjs';
 
 export async function getCliVersion() {
   const pkg = JSON.parse((await readFile(new URL('../package.json', import.meta.url), 'utf8')).replace(/^\uFEFF/, ''));
@@ -27,16 +28,12 @@ export async function updateProject(baseDir, options = {}) {
     const manifest = await loadManifest(baseDir);
     if (!manifest) throw new Error('Cannot update: OmniSpec is not initialized. Run init first.');
     const cliVersion = await getCliVersion();
-    const numericVersion = value => String(value || '0.0.0').split('.').slice(0, 3).map(Number);
-    const projectParts = numericVersion(manifest.version), cliParts = numericVersion(cliVersion);
-    for (let i = 0; i < 3; i++) {
-      if (projectParts[i] > cliParts[i]) throw new Error(`Refusing downgrade from ${manifest.version} to ${cliVersion}. Use the matching or newer CLI.`);
-      if (projectParts[i] < cliParts[i]) break;
-    }
+    const downgrade = compareVersions(manifest.version || '0.0.0', cliVersion) > 0;
+    if (downgrade && !options.allowDowngrade) throw new Error(`Refusing downgrade from ${manifest.version} to ${cliVersion}. Use the matching or newer CLI, or explicitly review update --allow-downgrade --dry-run.`);
     const agent = normalizeAgents(options.agent || manifest.agent).join(',');
     const entries = [...await packageEntries(), ...integrationEntries({ ...manifest, version: cliVersion, agent })];
     const assets = await syncManagedFiles(baseDir, entries, options);
-    const result = { dryRun: Boolean(options.dryRun), project: manifest.project, fromVersion: manifest.version, toVersion: cliVersion, specsCount: manifest.specs.length, specsPreserved: manifest.specs.length, assets, agentIntegrations: assets };
+    const result = { dryRun: Boolean(options.dryRun), downgrade, project: manifest.project, fromVersion: manifest.version, toVersion: cliVersion, specsCount: manifest.specs.length, specsPreserved: manifest.specs.length, assets, agentIntegrations: assets };
     if (options.dryRun) return result;
     await ensureProjectContext(baseDir);
     manifest.version = cliVersion;

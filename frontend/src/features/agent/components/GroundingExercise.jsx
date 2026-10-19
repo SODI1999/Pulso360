@@ -17,7 +17,6 @@ export function GroundingExercise({
   isVoiceEnabled,
   isFullGroundingCompleted,
   navigate,
-  setIsBpoResetOpen,
   resetGrounding,
   activeGroundingIndex,
   setActiveGroundingIndex,
@@ -88,14 +87,6 @@ export function GroundingExercise({
               onClick={() => navigate('/agente/panel')}
             >
               <span>Volver al panel con calma</span>
-            </button>
-            <button
-              type="button"
-              className="btn-crisis-secondary-action"
-              onClick={() => setIsBpoResetOpen(true)}
-            >
-              <Icon name="respiro" size={15} />
-              <span>Hacer respiración guiada Box 4×4</span>
             </button>
             <button type="button" className="btn-crisis-secondary-action" onClick={resetGrounding}>
               <Icon name="sync" size={15} />

@@ -26,6 +26,22 @@
         "verifiedAt": "2026-10-18T21:57:30.970Z",
         "fingerprint": "368f4bf71336700c0c003dad205bb66274291f3a13d34015d6b8633ccabe9e51"
       }
+    },
+    {
+      "id": "002",
+      "type": "feature",
+      "slug": "002-crisis-support-redesign",
+      "title": "Crisis Support Redesign",
+      "status": "COMPLETED",
+      "created_at": "2026-10-18",
+      "branch": "feat/002-crisis-support-redesign",
+      "updated_at": "2026-10-19T00:30:17.882Z",
+      "completed_at": "2026-10-19T00:30:17.882Z",
+      "verification": {
+        "mode": "automated",
+        "verifiedAt": "2026-10-19T00:30:03.743Z",
+        "fingerprint": "a1afa8a526fe51642434255521d30f1e208bb95de1f577febc0302356f2c33fe"
+      }
     }
   ]
 }

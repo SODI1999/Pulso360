@@ -1,31 +1,42 @@
 export function TouchScene({ isCompleted, onToggleAnchor, handleKeyDown }) {
   return (
     <g className="svg-step-tacto">
-      {/* Piso y referencias */}
+      {/* 1. Línea base de apoyo de piso serena */}
       <line
         x1="70"
-        y1="280"
+        y1="275"
         x2="470"
-        y2="280"
-        stroke="var(--c-borde)"
+        y2="275"
+        stroke="var(--c-borde-suave, #e2e8f0)"
         strokeWidth="2"
-        strokeDasharray="5 5"
+        strokeLinecap="round"
       />
-      <line x1="310" y1="165" x2="480" y2="165" stroke="var(--c-borde)" strokeWidth="3" />
-      <line x1="350" y1="165" x2="350" y2="280" stroke="var(--c-borde-suave)" strokeWidth="2" />
+      {/* Superficie de apoyo de escritorio */}
+      <line
+        x1="300"
+        y1="165"
+        x2="480"
+        y2="165"
+        stroke="var(--c-borde-suave, #e2e8f0)"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+      />
 
-      {/* Silla ergonómica de oficina con apoyo */}
+      {/* 2. Silla ergonómica con curvas orgánicas y acogedoras */}
       <path
-        d="M 160 275 L 210 275 M 185 275 L 185 195"
+        d="M 160 270 L 210 270 M 185 270 L 185 195"
         stroke="#94a3b8"
         strokeWidth="3.5"
         strokeLinecap="round"
       />
-      <rect x="145" y="185" width="85" height="15" rx="5" fill="#334155" />
+      {/* Asiento acolchado suave */}
+      <rect x="145" y="185" width="85" height="15" rx="7" fill="#334155" />
 
-      {/* t3: Respaldo lumbar ergonómico */}
+      {/* ============================================================== */}
+      {/* t3: Respaldo lumbar ergonómico                                 */}
+      {/* ============================================================== */}
       <g
-        className={`svg-hotspot ${isCompleted('t3') ? 'is-fused' : ''}`}
+        className={`svg-organic-hotspot ${isCompleted('t3') ? 'is-fused' : ''}`}
         onClick={() => onToggleAnchor && onToggleAnchor('t3')}
         onKeyDown={(e) => handleKeyDown(e, 't3')}
         role="button"
@@ -33,21 +44,29 @@ export function TouchScene({ isCompleted, onToggleAnchor, handleKeyDown }) {
         aria-label="Ancla 3: Soporte lumbar contra el respaldo"
       >
         <path
-          d="M 145 185 C 130 150, 130 95, 148 65"
+          d="M 148 185 C 132 152, 132 98, 150 68"
           fill="none"
-          stroke={isCompleted('t3') ? '#0f766e' : '#475569'}
-          strokeWidth={isCompleted('t3') ? '7' : '4.5'}
+          stroke={isCompleted('t3') ? '#0f766e' : '#64748b'}
+          strokeWidth={isCompleted('t3') ? '6.5' : '4.5'}
           strokeLinecap="round"
         />
-        {/* Halo lumbar */}
+        {/* Halo lumbar respirable */}
+        <ellipse
+          cx="120"
+          cy="140"
+          rx="25"
+          ry="30"
+          fill="url(#calm-halo-grad)"
+          className="crisis-pulse-breath"
+        />
         <circle
           cx="95"
           cy="140"
           r="16"
           fill={isCompleted('t3') ? '#0f766e' : '#ffffff'}
-          stroke={isCompleted('t3') ? '#0f766e' : 'var(--c-borde)'}
+          stroke={isCompleted('t3') ? '#0f766e' : 'var(--c-borde, #cbd5e1)'}
           strokeWidth="2"
-          filter={isCompleted('t3') ? 'url(#focal-glow)' : 'none'}
+          filter={isCompleted('t3') ? 'url(#soft-calm-glow)' : 'none'}
         />
         <text
           x="95"
@@ -55,7 +74,7 @@ export function TouchScene({ isCompleted, onToggleAnchor, handleKeyDown }) {
           textAnchor="middle"
           fontSize="11"
           fontWeight="700"
-          fill={isCompleted('t3') ? '#ffffff' : 'var(--c-texto)'}
+          fill={isCompleted('t3') ? '#ffffff' : 'var(--c-texto, #0f172a)'}
         >
           3
         </text>
@@ -65,19 +84,21 @@ export function TouchScene({ isCompleted, onToggleAnchor, handleKeyDown }) {
           textAnchor="middle"
           fontSize="10.5"
           fontWeight="700"
-          fill={isCompleted('t3') ? '#0f766e' : 'var(--c-texto)'}
+          fill={isCompleted('t3') ? '#0f766e' : 'var(--c-texto, #0f172a)'}
         >
           Soporte Lumbar
         </text>
       </g>
 
-      {/* Silueta corporal en postura de descarga */}
+      {/* 3. Silueta corporal estilizada y serena en postura de descarga */}
       {/* Cabeza */}
-      <circle cx="205" cy="40" r="19" fill="#e2e8f0" stroke="#64748b" strokeWidth="2" />
+      <circle cx="205" cy="40" r="18" fill="#f1f5f9" stroke="#64748b" strokeWidth="2" />
 
-      {/* t4: Mandíbula y Hombros relajados */}
+      {/* ============================================================== */}
+      {/* t4: Mandíbula y Hombros relajados                             */}
+      {/* ============================================================== */}
       <g
-        className={`svg-hotspot ${isCompleted('t4') ? 'is-fused' : ''}`}
+        className={`svg-organic-hotspot ${isCompleted('t4') ? 'is-fused' : ''}`}
         onClick={() => onToggleAnchor && onToggleAnchor('t4')}
         onKeyDown={(e) => handleKeyDown(e, 't4')}
         role="button"
@@ -88,31 +109,32 @@ export function TouchScene({ isCompleted, onToggleAnchor, handleKeyDown }) {
           d="M 175 75 Q 205 70 230 75"
           fill="none"
           stroke={isCompleted('t4') ? '#0f766e' : '#1e293b'}
-          strokeWidth={isCompleted('t4') ? '5' : '3'}
+          strokeWidth={isCompleted('t4') ? '4.5' : '3'}
           strokeLinecap="round"
         />
-        {/* Flechas suaves de descenso */}
+        {/* Flechas suaves y sutiles de descarga de tensión */}
         <path
-          d="M 175 83 L 175 95 M 170 90 L 175 95 L 180 90"
+          d="M 175 83 L 175 94 M 171 90 L 175 94 L 179 90"
           stroke={isCompleted('t4') ? '#0f766e' : '#94a3b8'}
-          strokeWidth="2"
+          strokeWidth="1.8"
           strokeLinecap="round"
         />
         <path
-          d="M 230 83 L 230 95 M 225 90 L 230 95 L 235 90"
+          d="M 230 83 L 230 94 M 226 90 L 230 94 L 234 90"
           stroke={isCompleted('t4') ? '#0f766e' : '#94a3b8'}
-          strokeWidth="2"
+          strokeWidth="1.8"
           strokeLinecap="round"
         />
 
+        {/* Aura de hombros suaves */}
         <circle
           cx="280"
           cy="50"
           r="16"
           fill={isCompleted('t4') ? '#0f766e' : '#ffffff'}
-          stroke={isCompleted('t4') ? '#0f766e' : 'var(--c-borde)'}
+          stroke={isCompleted('t4') ? '#0f766e' : 'var(--c-borde, #cbd5e1)'}
           strokeWidth="2"
-          filter={isCompleted('t4') ? 'url(#focal-glow)' : 'none'}
+          filter={isCompleted('t4') ? 'url(#soft-calm-glow)' : 'none'}
         />
         <text
           x="280"
@@ -120,7 +142,7 @@ export function TouchScene({ isCompleted, onToggleAnchor, handleKeyDown }) {
           textAnchor="middle"
           fontSize="11"
           fontWeight="700"
-          fill={isCompleted('t4') ? '#ffffff' : 'var(--c-texto)'}
+          fill={isCompleted('t4') ? '#ffffff' : 'var(--c-texto, #0f172a)'}
         >
           4
         </text>
@@ -130,29 +152,30 @@ export function TouchScene({ isCompleted, onToggleAnchor, handleKeyDown }) {
           textAnchor="middle"
           fontSize="10.5"
           fontWeight="700"
-          fill={isCompleted('t4') ? '#0f766e' : 'var(--c-texto)'}
+          fill={isCompleted('t4') ? '#0f766e' : 'var(--c-texto, #0f172a)'}
         >
           Hombros / Mandíbula
         </text>
       </g>
 
-      {/* Tronco y muslos */}
-      <path d="M 198 72 L 180 182" stroke="#334155" strokeWidth="20" strokeLinecap="round" />
-      <path d="M 180 182 L 255 182" stroke="#1e293b" strokeWidth="16" strokeLinecap="round" />
+      {/* Tronco y muslos con silueta suave */}
+      <path d="M 200 70 L 182 182" stroke="#475569" strokeWidth="16" strokeLinecap="round" />
+      <path d="M 182 182 L 255 182" stroke="#334155" strokeWidth="14" strokeLinecap="round" />
 
-      {/* Brazos hacia la mesa */}
+      {/* Brazo relajado hacia la mesa */}
       <path
-        d="M 200 85 L 245 135 L 330 160"
+        d="M 202 85 Q 240 130 330 160"
         fill="none"
-        stroke="#475569"
-        strokeWidth="7"
+        stroke="#64748b"
+        strokeWidth="6"
         strokeLinecap="round"
-        strokeLinejoin="round"
       />
 
-      {/* t2: Palmas de las manos firmes en mesa */}
+      {/* ============================================================== */}
+      {/* t2: Palmas de las manos firmes en mesa                         */}
+      {/* ============================================================== */}
       <g
-        className={`svg-hotspot ${isCompleted('t2') ? 'is-fused' : ''}`}
+        className={`svg-organic-hotspot ${isCompleted('t2') ? 'is-fused' : ''}`}
         onClick={() => onToggleAnchor && onToggleAnchor('t2')}
         onKeyDown={(e) => handleKeyDown(e, 't2')}
         role="button"
@@ -160,13 +183,14 @@ export function TouchScene({ isCompleted, onToggleAnchor, handleKeyDown }) {
         aria-label="Ancla 2: Palmas firmes sobre el escritorio"
       >
         <ellipse cx="335" cy="160" rx="14" ry="7" fill={isCompleted('t2') ? '#0f766e' : '#64748b'} />
+        {/* Onda expansiva de contacto firme */}
         <circle
           cx="335"
           cy="160"
-          r="20"
+          r="18"
           fill="none"
-          stroke={isCompleted('t2') ? '#0f766e' : 'var(--c-borde)'}
-          strokeWidth="2"
+          stroke={isCompleted('t2') ? '#0f766e' : 'var(--c-borde, #cbd5e1)'}
+          strokeWidth="1.8"
           strokeDasharray={isCompleted('t2') ? 'none' : '3 3'}
         />
 
@@ -175,9 +199,9 @@ export function TouchScene({ isCompleted, onToggleAnchor, handleKeyDown }) {
           cy="135"
           r="16"
           fill={isCompleted('t2') ? '#0f766e' : '#ffffff'}
-          stroke={isCompleted('t2') ? '#0f766e' : 'var(--c-borde)'}
+          stroke={isCompleted('t2') ? '#0f766e' : 'var(--c-borde, #cbd5e1)'}
           strokeWidth="2"
-          filter={isCompleted('t2') ? 'url(#focal-glow)' : 'none'}
+          filter={isCompleted('t2') ? 'url(#soft-calm-glow)' : 'none'}
         />
         <text
           x="385"
@@ -185,45 +209,49 @@ export function TouchScene({ isCompleted, onToggleAnchor, handleKeyDown }) {
           textAnchor="middle"
           fontSize="11"
           fontWeight="700"
-          fill={isCompleted('t2') ? '#ffffff' : 'var(--c-texto)'}
+          fill={isCompleted('t2') ? '#ffffff' : 'var(--c-texto, #0f172a)'}
         >
           2
         </text>
         <text
           x="385"
-          y="115"
+          y="114"
           textAnchor="middle"
           fontSize="10.5"
           fontWeight="700"
-          fill={isCompleted('t2') ? '#0f766e' : 'var(--c-texto)'}
+          fill={isCompleted('t2') ? '#0f766e' : 'var(--c-texto, #0f172a)'}
         >
           Palmas en mesa
         </text>
       </g>
 
-      {/* Pantorrillas a 90° */}
-      <path d="M 255 182 L 255 270" stroke="#1e293b" strokeWidth="15" strokeLinecap="round" />
+      {/* Pantorrillas en ángulo ergonómico relajado */}
+      <path d="M 255 182 L 255 268" stroke="#334155" strokeWidth="13" strokeLinecap="round" />
 
-      {/* t1: Pies apoyados firmes en el suelo */}
+      {/* ============================================================== */}
+      {/* t1: Pies apoyados firmes en el suelo                           */}
+      {/* ============================================================== */}
       <g
-        className={`svg-hotspot ${isCompleted('t1') ? 'is-fused' : ''}`}
+        className={`svg-organic-hotspot ${isCompleted('t1') ? 'is-fused' : ''}`}
         onClick={() => onToggleAnchor && onToggleAnchor('t1')}
         onKeyDown={(e) => handleKeyDown(e, 't1')}
         role="button"
         tabIndex={0}
         aria-label="Ancla 1: Pies planos en el suelo"
       >
+        {/* Pie apoyado con zapato cómodo */}
         <path
-          d="M 245 270 L 290 270 C 295 270, 296 278, 290 280 L 243 280 Z"
-          fill={isCompleted('t1') ? '#0f766e' : '#0f172a'}
+          d="M 245 268 L 292 268 C 298 268, 298 276, 290 277 L 243 277 Z"
+          fill={isCompleted('t1') ? '#0f766e' : '#1e293b'}
         />
         <line
           x1="230"
-          y1="282"
+          y1="279"
           x2="305"
-          y2="282"
+          y2="279"
           stroke={isCompleted('t1') ? '#0f766e' : '#64748b'}
-          strokeWidth="3.5"
+          strokeWidth="3"
+          strokeLinecap="round"
         />
 
         <circle
@@ -231,9 +259,9 @@ export function TouchScene({ isCompleted, onToggleAnchor, handleKeyDown }) {
           cy="265"
           r="16"
           fill={isCompleted('t1') ? '#0f766e' : '#ffffff'}
-          stroke={isCompleted('t1') ? '#0f766e' : 'var(--c-borde)'}
+          stroke={isCompleted('t1') ? '#0f766e' : 'var(--c-borde, #cbd5e1)'}
           strokeWidth="2"
-          filter={isCompleted('t1') ? 'url(#focal-glow)' : 'none'}
+          filter={isCompleted('t1') ? 'url(#soft-calm-glow)' : 'none'}
         />
         <text
           x="335"
@@ -241,17 +269,17 @@ export function TouchScene({ isCompleted, onToggleAnchor, handleKeyDown }) {
           textAnchor="middle"
           fontSize="11"
           fontWeight="700"
-          fill={isCompleted('t1') ? '#ffffff' : 'var(--c-texto)'}
+          fill={isCompleted('t1') ? '#ffffff' : 'var(--c-texto, #0f172a)'}
         >
           1
         </text>
         <text
           x="335"
-          y="295"
+          y="294"
           textAnchor="middle"
           fontSize="10.5"
           fontWeight="700"
-          fill={isCompleted('t1') ? '#0f766e' : 'var(--c-texto)'}
+          fill={isCompleted('t1') ? '#0f766e' : 'var(--c-texto, #0f172a)'}
         >
           Pies en el piso
         </text>

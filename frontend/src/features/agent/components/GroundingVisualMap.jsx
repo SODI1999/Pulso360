@@ -41,18 +41,40 @@ export function GroundingVisualMap({
           <filter id="focal-glow" x="-30%" y="-30%" width="160%" height="160%">
             <feDropShadow dx="0" dy="2" stdDeviation="5" floodColor="#0f766e" floodOpacity="0.4" />
           </filter>
-          <radialGradient id="desk-light-grad" cx="20%" cy="30%" r="70%">
-            <stop offset="0%" stopColor="#fef08a" stopOpacity="0.35" />
-            <stop offset="60%" stopColor="#fef08a" stopOpacity="0.08" />
+          <filter id="soft-calm-glow" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="4" result="blur" />
+            <feDropShadow dx="0" dy="3" stdDeviation="7" floodColor="#0f766e" floodOpacity="0.28" />
+          </filter>
+          <radialGradient id="desk-light-grad" cx="40%" cy="40%" r="60%">
+            <stop offset="0%" stopColor="#fef08a" stopOpacity="0.4" />
+            <stop offset="60%" stopColor="#fef9c3" stopOpacity="0.12" />
+            <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+          </radialGradient>
+          <radialGradient id="calm-halo-grad" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#0f766e" stopOpacity="0.25" />
+            <stop offset="60%" stopColor="#0f766e" stopOpacity="0.08" />
+            <stop offset="100%" stopColor="#0f766e" stopOpacity="0" />
+          </radialGradient>
+          <radialGradient id="calm-warm-sun" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#fed7aa" stopOpacity="0.45" />
+            <stop offset="60%" stopColor="#fef3c7" stopOpacity="0.15" />
             <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
           </radialGradient>
           <linearGradient id="monitor-screen-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#f8fafc" />
+            <stop offset="0%" stopColor="#f0fdfa" />
             <stop offset="100%" stopColor="#e2e8f0" />
           </linearGradient>
+          <linearGradient id="ambient-desk-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="#ffffff" stopOpacity="0.9" />
+            <stop offset="100%" stopColor="#f1f5f9" stopOpacity="0.85" />
+          </linearGradient>
           <linearGradient id="water-grad" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#99f6e4" stopOpacity="0.8" />
+            <stop offset="0%" stopColor="#99f6e4" stopOpacity="0.85" />
             <stop offset="100%" stopColor="#0f766e" stopOpacity="0.9" />
+          </linearGradient>
+          <linearGradient id="organic-teal-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#14b8a6" />
+            <stop offset="100%" stopColor="#0f766e" />
           </linearGradient>
         </defs>
 

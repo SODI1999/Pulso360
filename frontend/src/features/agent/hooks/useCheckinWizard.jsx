@@ -75,7 +75,6 @@ export function useCheckinWizard() {
   const [submittedSuccess, setSubmittedSuccess] = useState(false);
   const [draftNotice, setDraftNotice] = useState('');
   const [validationError, setValidationError] = useState('');
-  const [isResetModalOpen, setIsResetModalOpen] = useState(false);
   const [dismissDisconnectNotice, setDismissDisconnectNotice] = useState(false);
 
   const stepTimerRef = useRef(null);
@@ -190,8 +189,6 @@ export function useCheckinWizard() {
     submittedSuccess,
     draftNotice,
     validationError,
-    isResetModalOpen,
-    setIsResetModalOpen,
     dismissDisconnectNotice,
     setDismissDisconnectNotice,
     stepTimerRef,

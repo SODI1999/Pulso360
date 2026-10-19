@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Icon } from '../../../core/components/Icon';
 
-export function CheckinConfirmation({ setIsResetModalOpen }) {
+export function CheckinConfirmation() {
   return (
     <div className="card restaurador-card">
       <div className="restaurador-media">
@@ -30,14 +30,10 @@ export function CheckinConfirmation({ setIsResetModalOpen }) {
       </div>
 
       <div className="restaurador-actions">
-        <button
-          type="button"
-          className="btn btn-secondary"
-          onClick={() => setIsResetModalOpen(true)}
-        >
+        <Link to="/apoyo-crisis" className="btn btn-secondary">
           <Icon name="respiro" size={16} />
-          <span>Tomar un respiro (2 min)</span>
-        </button>
+          <span>Pausa de respiración</span>
+        </Link>
         <Link to="/agente/bitacora" className="btn btn-ghost">
           <Icon name="edit_note" size={16} />
           <span>Ir a mi bitácora</span>

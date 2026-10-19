@@ -13,7 +13,7 @@ import { auditProjectContext } from './context-auditor.mjs';
 const mutating = new Set(['create', 'focus', 'complete', 'verify', 'update', 'setup-agent', 'configure']);
 const aliases = { switch: 'focus', specs: 'list', upgrade: 'update', 'setup-agents': 'setup-agent', 'omni-init': 'init' };
 const valueFlags = new Set(['profile', 'name', 'stack', 'doc', 'gates', 'agent', 'ai', 'manual', 'timeout']);
-const booleanFlags = new Set(['yes', 'force', 'dry-run', 'json', 'accept-updates']);
+const booleanFlags = new Set(['yes', 'force', 'dry-run', 'json', 'accept-updates', 'allow-downgrade']);
 
 function parse(args) {
   const flags = {}, positionals = [];
@@ -30,6 +30,7 @@ function parse(args) {
   }
   flags.agent = flags.agent || flags.ai;
   flags.dryRun = flags['dry-run']; flags.acceptUpdates = flags['accept-updates'];
+  flags.allowDowngrade = flags['allow-downgrade'];
   if (flags.timeout !== undefined) {
     flags.timeout = Number(flags.timeout);
     if (!Number.isSafeInteger(flags.timeout) || flags.timeout < 1 || flags.timeout > 600000) throw new Error('--timeout must be 1..600000 milliseconds.');
@@ -67,6 +68,7 @@ omni-spec <command> [arguments] [options]
   check | doctor [--json]        Inspect version and managed-file integrity
   update --dry-run              Preview exact changed files and conflicts
   update [--accept-updates]      Preserve edits; opt in to backup and replacement
+    --allow-downgrade           Explicitly permit an older/pre-release CLI after review
   setup-agent <name[,name]>      Select/persist adapters; keep other existing files
   help | version
 
@@ -89,6 +91,7 @@ export async function runCli(args = process.argv.slice(2), workingDir = process.
     const { flags, positionals } = parse(args.slice(1));
     json = Boolean(flags.json);
     if (flags.dryRun && command !== 'update') throw new Error('--dry-run is supported only by update. No changes made.');
+    if (flags.allowDowngrade && command !== 'update') throw new Error('--allow-downgrade is supported only by update.');
     if (flags.force && command !== 'init') throw new Error('--force is supported only by init. Use update --accept-updates after reviewing conflicts.');
     if (flags.manual !== undefined && command !== 'verify') throw new Error('--manual is supported only by verify.');
     if (flags.timeout !== undefined && command !== 'verify') throw new Error('--timeout is supported only by verify.');

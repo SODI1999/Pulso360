@@ -7,8 +7,7 @@ export function GroundingHeader({
   setIsAssistedPlaying,
   isAssistedPlaying,
   isVoiceEnabled,
-  setIsVoiceEnabled,
-  setIsBpoResetOpen
+  setIsVoiceEnabled
 }) {
   return (
     <div className="crisis-section-top">
@@ -70,12 +69,6 @@ export function GroundingHeader({
         >
           <Icon name={isVoiceEnabled ? 'volumeOn' : 'volumeOff'} size={15} />
           <span>{isVoiceEnabled ? 'Voz activada' : 'Voz silenciada'}</span>
-        </button>
-
-        {/* Botón de respiración 4x4 */}
-        <button type="button" className="btn-crisis-bpo-reset" onClick={() => setIsBpoResetOpen(true)}>
-          <Icon name="respiro" size={16} />
-          <span>Pausa Box Breathing (4×4)</span>
         </button>
       </div>
     </div>

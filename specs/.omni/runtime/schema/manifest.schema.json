@@ -41,7 +41,7 @@
     },
     "agent": {
       "type": "string",
-      "description": "Target AI agent adapter for slash command integrations (antigravity, cursor, claude, copilot, kilo, all)."
+      "description": "Selected adapters (comma-separated): antigravity, cursor, claude, copilot, kilo, opencode, gemini, codex, generic; all selects concrete adapters. Invocation syntax depends on the host."
     },
     "active_spec": {
       "type": ["string", "null"],

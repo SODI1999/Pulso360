@@ -1,52 +1,21 @@
-import { CrisisLegalDetails } from '../components/CrisisLegalDetails';
-import { CrisisContactLines } from '../components/CrisisContactLines';
-import { GroundingExercise } from '../components/GroundingExercise';
-import { GroundingHeader } from '../components/GroundingHeader';
-import { useCrisisSupport } from '../hooks/useCrisisSupport';
-import { GROUNDING_STEPS } from '../data/crisisSupportData';
-// src/features/agent/pages/CrisisSupportPage.jsx
-// Ruta de contención, primeros auxilios psicológicos (PAP) y canalización legal diferenciada (RF-10)
-
 import { Link } from 'react-router-dom';
-
 import { Icon } from '../../../core/components/Icon';
-import { BpoResetModal } from '../components/BpoResetModal';
+import { ZenBreathingOrb } from '../components/ZenBreathingOrb';
+import { CrisisContactLines } from '../components/CrisisContactLines';
+import { CrisisLegalDetails } from '../components/CrisisLegalDetails';
+import { useCrisisSupport } from '../hooks/useCrisisSupport';
 
 import '../../../styles/crisis.css';
 
 export function CrisisSupportPage() {
   const {
     navigate,
-    consent,
-    isBpoResetOpen,
-    setIsBpoResetOpen,
-    activeGroundingIndex,
-    setActiveGroundingIndex,
-    completedAnchors,
-    setCompletedAnchors,
-    groundingMode,
-    setGroundingMode,
-    isAssistedPlaying,
-    setIsAssistedPlaying,
-    assistedAnchorIndex,
-    setAssistedAnchorIndex,
-    isVoiceEnabled,
-    setIsVoiceEnabled,
-    currentSubtitle,
-    currentStep,
-    currentStepNumber,
-    currentStepAnchors,
-    stepCompletedList,
-    isStepFullyCompleted,
-    totalAnchorsCompleted,
-    isFullGroundingCompleted,
-    toggleAnchor,
-    resetGrounding
+    consent
   } = useCrisisSupport();
 
   return (
     <div className="agent-page crisis-editorial-page">
-      {/* Navegación superior sobria */}
+      {/* Retorno al panel del agente */}
       <nav className="agent-subnav" aria-label="Navegación secundaria">
         <button type="button" className="agent-back-btn" onClick={() => navigate('/agente/panel')}>
           <Icon name="arrowLeft" size={16} />
@@ -54,130 +23,76 @@ export function CrisisSupportPage() {
         </button>
       </nav>
 
-      {/* Cabecera Editorial de Contención */}
+      {/* Cabecera Editorial Serana y Sin Relleno */}
       <header className="crisis-page-header">
-        <h1 className="crisis-page-title">Espacio de contención y primeros auxilios psicológicos</h1>
+        <h1 className="crisis-page-title">Espacio de contención y apoyo inmediato</h1>
         <p className="crisis-page-subtitle">
-          Herramientas de contención somática en puesto (Grounding 5-4-3-2-1), líneas oficiales de ayuda
-          gratuita 24/7 y orientación preventiva con SST.
+          Respira hondo y recupera el control. La llamada ya terminó y tú marcas el compás de tu turno.
         </p>
       </header>
 
-      {/* SECCIÓN 1: Primeros Auxilios Psicológicos (Grounding Somático en Puesto 5-4-3-2-1) */}
-      <section className="crisis-grounding-section" aria-labelledby="grounding-heading">
-        <GroundingHeader
-          totalAnchorsCompleted={totalAnchorsCompleted}
-          groundingMode={groundingMode}
-          setGroundingMode={setGroundingMode}
-          setIsAssistedPlaying={setIsAssistedPlaying}
-          isAssistedPlaying={isAssistedPlaying}
-          isVoiceEnabled={isVoiceEnabled}
-          setIsVoiceEnabled={setIsVoiceEnabled}
-          setIsBpoResetOpen={setIsBpoResetOpen}
-        />
+      {/* Layout Unificado y Limpio (2 Columnas Equilibradas, CERO Redundancias) */}
+      <div className="crisis-clean-layout">
+        {/* Columna 1: Pausa Somática in situ */}
+        <section className="crisis-clean-card crisis-clean-card--calm" aria-labelledby="zen-heading">
+          <div className="crisis-section-heading-group">
+            <h2 id="zen-heading" className="crisis-section-title">
+              Pausa de respiración en puesto
+            </h2>
+            <p className="crisis-section-desc">
+              Sigue el compás del círculo para bajar la frecuencia cardíaca y recuperar tu centro.
+            </p>
+          </div>
 
-        {/* Barra global de fijación somática */}
-        <div className="crisis-somatic-progress-track" aria-hidden="true">
-          <div
-            className="crisis-somatic-progress-bar"
-            style={{ width: `${(totalAnchorsCompleted / 15) * 100}%` }}
-          />
+          <ZenBreathingOrb />
+        </section>
+
+        {/* Columna 2: Líneas Oficiales de Atención 24/7 */}
+        <div className="crisis-clean-card">
+          <CrisisContactLines />
+        </div>
+      </div>
+
+      {/* Sección Secundaria Plegada: Apoyo Institucional con SST y Marco Legal */}
+      <details className="crisis-legal-details">
+        <summary className="crisis-legal-summary">
+          <div className="crisis-legal-summary-left">
+            <Icon name="Scale" size={18} />
+            <span>Orientación institucional, solicitud con SST y marco legal (Ley 1010 y Res. 3461)</span>
+          </div>
+          <span className="crisis-legal-summary-hint">
+            Canales de reporte formal y acompañamiento voluntario
+          </span>
+        </summary>
+
+        <div className="crisis-sst-section" style={{ marginTop: '16px', marginBottom: '16px' }} aria-labelledby="sst-heading">
+          <div className="crisis-sst-info">
+            <h3 id="sst-heading" className="crisis-sst-title">
+              ¿Requieres orientación personalizada con el equipo de SST?
+            </h3>
+            <p className="crisis-sst-desc">
+              Puedes registrar una solicitud voluntaria en modalidad anónima o confidencial. Tus respuestas de
+              check-in y bitácoras no se incorporan a la solicitud.
+            </p>
+          </div>
+
+          <div className="crisis-sst-actions">
+            {!consent?.c3 || consent?.active === false ? (
+              <Link to="/consentimiento" className="btn-crisis-call btn-crisis-call--secondary">
+                <Icon name="shieldCheck" size={16} />
+                <span>Gestionar consentimiento para acompañamiento (C3)</span>
+              </Link>
+            ) : (
+              <Link to="/agente/apoyo" className="btn-crisis-call btn-crisis-call--primary">
+                <Icon name="support_agent" size={18} />
+                <span>Ir al canal de acompañamiento con SST</span>
+              </Link>
+            )}
+          </div>
         </div>
 
-        {/* Selector horizontal de pasos (5-4-3-2-1) */}
-        <div className="crisis-grounding-tabs" role="tablist" aria-label="Pasos de la técnica de anclaje">
-          {GROUNDING_STEPS.map((step, idx) => {
-            const isActive = activeGroundingIndex === idx;
-            const stepDoneCount = (completedAnchors[step.number] || []).length;
-            const isStepDone = stepDoneCount === step.anchors.length;
-
-            return (
-              <button
-                key={step.number}
-                type="button"
-                role="tab"
-                aria-selected={isActive}
-                onClick={() => {
-                  setActiveGroundingIndex(idx);
-                  setAssistedAnchorIndex(0);
-                }}
-                className={`crisis-grounding-tab ${isActive ? 'is-active' : ''} ${isStepDone ? 'is-step-completed' : ''}`}
-              >
-                <div className="crisis-tab-num-row">
-                  <span className="crisis-tab-num">{step.number}</span>
-                  {isStepDone && <Icon name="check" size={14} className="crisis-tab-done-icon" />}
-                </div>
-                <div className="crisis-tab-label">
-                  <span className="crisis-tab-badge">{step.badge}</span>
-                  <span className="crisis-tab-sense">{step.sense}</span>
-                  <span className="crisis-tab-progress-micro">
-                    {stepDoneCount}/{step.anchors.length}
-                  </span>
-                </div>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* DETALLE INTERACTIVO DEL PASO ACTIVO */}
-        <GroundingExercise
-          currentStep={currentStep}
-          stepCompletedList={stepCompletedList}
-          currentStepAnchors={currentStepAnchors}
-          groundingMode={groundingMode}
-          isAssistedPlaying={isAssistedPlaying}
-          assistedAnchorIndex={assistedAnchorIndex}
-          toggleAnchor={toggleAnchor}
-          currentStepNumber={currentStepNumber}
-          currentSubtitle={currentSubtitle}
-          isVoiceEnabled={isVoiceEnabled}
-          isFullGroundingCompleted={isFullGroundingCompleted}
-          navigate={navigate}
-          setIsBpoResetOpen={setIsBpoResetOpen}
-          resetGrounding={resetGrounding}
-          activeGroundingIndex={activeGroundingIndex}
-          setActiveGroundingIndex={setActiveGroundingIndex}
-          setAssistedAnchorIndex={setAssistedAnchorIndex}
-          isStepFullyCompleted={isStepFullyCompleted}
-          setCompletedAnchors={setCompletedAnchors}
-        />
-      </section>
-
-      {/* SECCIÓN 2: Líneas Oficiales y Gratuitas 24/7 */}
-      <CrisisContactLines />
-
-      {/* SECCIÓN 3: Acordeón Sobrio de Rutas Institucionales y Marco Legal */}
-      <CrisisLegalDetails />
-
-      {/* SECCIÓN 4: Derivación y Acompañamiento con SST */}
-      <section className="crisis-sst-section" aria-labelledby="sst-heading">
-        <div className="crisis-sst-info">
-          <h3 id="sst-heading" className="crisis-sst-title">
-            ¿Requieres orientación personalizada con el equipo de SST?
-          </h3>
-          <p className="crisis-sst-desc">
-            Puedes registrar una solicitud voluntaria en modalidad anónima o confidencial. Tus respuestas de
-            check-in y bitácoras no se incorporan a la solicitud.
-          </p>
-        </div>
-
-        <div className="crisis-sst-actions">
-          {!consent?.c3 || consent?.active === false ? (
-            <Link to="/consentimiento" className="btn-crisis-call btn-crisis-call--secondary">
-              <Icon name="shieldCheck" size={16} />
-              <span>Gestionar consentimiento para acompañamiento (C3)</span>
-            </Link>
-          ) : (
-            <Link to="/agente/apoyo" className="btn-crisis-call btn-crisis-call--primary">
-              <Icon name="support_agent" size={18} />
-              <span>Ir al canal de acompañamiento con SST</span>
-            </Link>
-          )}
-        </div>
-      </section>
-
-      {/* Modal de Respiración Guiada de Emergencia (Box Breathing 4x4) */}
-      <BpoResetModal isOpen={isBpoResetOpen} onClose={() => setIsBpoResetOpen(false)} />
+        <CrisisLegalDetails />
+      </details>
     </div>
   );
 }

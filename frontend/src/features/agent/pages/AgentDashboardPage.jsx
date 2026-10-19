@@ -10,7 +10,6 @@ import { QUICK_ENERGY_SCALE, formatHour } from '../services/agentDashboardHelper
 import { Link } from 'react-router-dom';
 
 import { Icon } from '../../../core/components/Icon';
-import { BpoResetModal } from '../components/BpoResetModal';
 import { PerspectiveSimModal } from '../components/PerspectiveSimModal';
 import { EnergyFace } from '../components/EnergyFace';
 import '../../../styles/agent.css';
@@ -31,8 +30,6 @@ export function AgentDashboardPage() {
     handleQuickEnergy,
     shiftSteps,
     breakStep,
-    isResetModalOpen,
-    setIsResetModalOpen,
     isPerspectiveModalOpen,
     setIsPerspectiveModalOpen
   } = useAgentDashboard();
@@ -50,19 +47,17 @@ export function AgentDashboardPage() {
             Haz una pausa breve cuando el turno te dé espacio. Aflojar los hombros y respirar un minuto ayuda a soltar la carga de la línea.
           </p>
           <div className="calm-hero-actions">
-            <button
-              type="button"
+            <Link
+              to="/apoyo-crisis"
               className="btn btn-hero-pause"
-              onClick={() => setIsResetModalOpen(true)}
-              title="Abrir ejercicio guiado de respiración y estiramiento de 2 minutos"
-              aria-label="Tomar un respiro: abrir ejercicio guiado de 2 minutos"
+              title="Ir a la pausa de respiración y apoyo en puesto"
+              aria-label="Pausa de respiración y apoyo: ir al espacio de contención en puesto"
             >
               <span className="btn-hero-pause-icon" aria-hidden="true">
                 <Icon name="respiro" size={16} />
               </span>
-              <span className="btn-hero-pause-label">Tomar un respiro</span>
-              <span className="btn-hero-pause-tag">2 min</span>
-            </button>
+              <span className="btn-hero-pause-label">Pausa de respiración</span>
+            </Link>
           </div>
         </div>
         <div className="calm-hero-media">
@@ -194,8 +189,6 @@ export function AgentDashboardPage() {
       </footer>
 
       {/* Modales preservados */}
-      <BpoResetModal isOpen={isResetModalOpen} onClose={() => setIsResetModalOpen(false)} />
-
       <PerspectiveSimModal isOpen={isPerspectiveModalOpen} onClose={() => setIsPerspectiveModalOpen(false)} />
     </div>
   );

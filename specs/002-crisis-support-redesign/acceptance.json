@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "criteria": [
+    {
+      "id": "AC-01",
+      "status": "passed",
+      "method": "manual",
+      "evidence": "Inspección en navegador (Chrome DevTools MCP, 1440x900 px): vista sin scroll forzado con dos columnas balanceadas (orbe a la izquierda y líneas a la derecha)."
+    },
+    {
+      "id": "AC-02",
+      "status": "passed",
+      "method": "manual",
+      "evidence": "ZenBreathingOrb implementa cadencia continua y automática 4-2-6 (Inhala, Sostén, Exhala) sin forzar clics ni rompecabezas cognitivos."
+    },
+    {
+      "id": "AC-03",
+      "status": "passed",
+      "method": "manual",
+      "evidence": "Reglas CSS en crisis.css silencian animaciones bajo @media (prefers-reduced-motion: reduce)."
+    },
+    {
+      "id": "AC-04",
+      "status": "passed",
+      "method": "manual",
+      "evidence": "CrisisContactLines estructurado en filas ergonómicas con botones directos tel: para 106, 123 y 155 con contraste AA y fuentes oficiales Minsalud/Policía."
+    },
+    {
+      "id": "AC-05",
+      "status": "passed",
+      "method": "manual",
+      "evidence": "BpoResetModal e immersive-pause.css desmantelados (0 referencias residuales). El botón del hero en AgentDashboardPage y CheckinConfirmation enlazan a /apoyo-crisis."
+    },
+    {
+      "id": "AC-06",
+      "status": "passed",
+      "method": "manual",
+      "evidence": "Acompañamiento SST y marco legal colombiano (Ley 1010 y Res. 3461) confinados en un acordeón details colapsable al pie."
+    },
+    {
+      "id": "AC-07",
+      "status": "passed",
+      "method": "automated",
+      "evidence": "npm run lint (0 errores) y npm run build (éxito en 6.16s) ejecutados limpiamente sin dependencias npm nuevas."
+    }
+  ]
+}

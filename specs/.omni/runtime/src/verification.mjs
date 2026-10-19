@@ -5,6 +5,7 @@ import { spawn } from 'node:child_process';
 import { auditSpec } from './auditor.mjs';
 import { loadManifest, saveManifest, withManifestLock } from './manifest.mjs';
 import { safePath } from './managed.mjs';
+import { reviewAcceptance } from './acceptance.mjs';
 
 const excluded = new Set(['.git', 'node_modules', '.venv', 'venv', '__pycache__', '.pytest_cache', '.mypy_cache', '.ruff_cache', 'dist', 'build', 'target', 'coverage', '.next', '.nuxt', '.omni']);
 const placeholders = /\[TODO\]|\[NEEDS CLARIFICATION\]|\b(?:SPEC|BUG|DEBT|RFC)-XXX\b/i;
@@ -30,6 +31,7 @@ async function ready(root, spec) {
     const decisions = [...rfc.matchAll(/^Decision:\s*(\S+)\s*$/gm)];
     if (decisions.length !== 1 || !['ACCEPTED', 'REJECTED', 'DEFERRED'].includes(decisions[0][1])) throw new Error('RFC requires exactly one Decision: ACCEPTED, REJECTED or DEFERRED and a reasoned verification.md.');
   }
+  await reviewAcceptance(root, spec);
   return audit;
 }
 
@@ -97,7 +99,8 @@ export async function verifySpec(root, identifier, options = {}) {
     }
     const after = await projectFingerprint(root, spec, manifest.qualityGates);
     const passed = before === after && results.every(r => r.exitCode === 0 && !r.timedOut) && (mode !== 'automated' || results.length === gates.length);
-    const record = { version: 1, id: spec.id, mode, passed, verifiedAt: new Date().toISOString(), fingerprint: after, sourceChangedDuringVerification: before !== after, reason: options.manual || null, results };
+    const acceptance = await reviewAcceptance(root, spec);
+    const record = { version: 1, id: spec.id, mode, passed, verifiedAt: new Date().toISOString(), fingerprint: after, sourceChangedDuringVerification: before !== after, reason: options.manual || null, acceptance, results };
     const path = await safePath(root, `specs/${spec.slug}/verification.json`);
     await writeFile(path, JSON.stringify(record, null, 2) + '\n');
     return record;

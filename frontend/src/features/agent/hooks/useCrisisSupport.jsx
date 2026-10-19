@@ -17,7 +17,7 @@ export function useCrisisSupport() {
   const consent = env.useMockStorage ? data.consents?.[currentUserId] : currentUser?.consent;
 
   // Estado para modal de respiración guiada de emergencia
-  const [isBpoResetOpen, setIsBpoResetOpen] = useState(false);
+
 
   // Estado interactivo para Grounding 5-4-3-2-1
   const [activeGroundingIndex, setActiveGroundingIndex] = useState(0);
@@ -195,8 +195,8 @@ export function useCrisisSupport() {
   return {
     navigate,
     consent,
-    isBpoResetOpen,
-    setIsBpoResetOpen,
+
+
     activeGroundingIndex,
     setActiveGroundingIndex,
     completedAnchors,

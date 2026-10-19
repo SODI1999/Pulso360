@@ -2,7 +2,6 @@
 // Comportamiento de accesibilidad compartido por los modales del módulo de
 // agente: foco inicial, trampa de foco (Tab), cierre con Escape, bloqueo de
 // scroll del turno y devolución del foco al elemento que abrió el modal.
-// BpoResetModal no lo usa: es un flujo fullscreen con foco por fase propia.
 
 import { useEffect, useRef } from 'react';
 import { useBodyScrollLock } from '../../../core/hooks/useBodyScrollLock';

@@ -10,7 +10,6 @@ import { Link, useNavigate } from 'react-router-dom';
 
 import { Icon } from '../../../core/components/Icon';
 
-import { BpoResetModal } from '../components/BpoResetModal';
 import '../../../styles/agent.css';
 
 export function CheckinWizardPage() {
@@ -29,8 +28,6 @@ export function CheckinWizardPage() {
     submittedSuccess,
     draftNotice,
     validationError,
-    isResetModalOpen,
-    setIsResetModalOpen,
     dismissDisconnectNotice,
     setDismissDisconnectNotice,
     stepTimerRef,
@@ -116,10 +113,7 @@ export function CheckinWizardPage() {
           </div>
         </div>
 
-        <CheckinConfirmation setIsResetModalOpen={setIsResetModalOpen} />
-
-        {/* Modal de Descompresión BPO (Box Breathing, Descanso Ocular, Estiramientos) */}
-        <BpoResetModal isOpen={isResetModalOpen} onClose={() => setIsResetModalOpen(false)} />
+        <CheckinConfirmation />
       </div>
     );
   }

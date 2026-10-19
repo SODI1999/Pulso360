@@ -162,7 +162,6 @@ export function useAgentDashboard() {
   const breakStep = shiftSteps.find((step) => step.id === 'break');
 
   // Modales preservados
-  const [isResetModalOpen, setIsResetModalOpen] = useState(false);
   const [isPerspectiveModalOpen, setIsPerspectiveModalOpen] = useState(false);
 
   return { loading,loadError,
@@ -177,8 +176,6 @@ export function useAgentDashboard() {
     handleQuickEnergy,
     shiftSteps,
     breakStep,
-    isResetModalOpen,
-    setIsResetModalOpen,
     isPerspectiveModalOpen,
     setIsPerspectiveModalOpen
   };
