@@ -90,6 +90,22 @@
         "verifiedAt": "2026-10-19T04:44:16.483Z",
         "fingerprint": "d2c86c7f32629b5d6d64b4398a7cfa61ff056348332646062419a5df1f7138ed"
       }
+    },
+    {
+      "id": "006",
+      "type": "feature",
+      "slug": "006-remove-agent-my-analysis",
+      "title": "Remove Agent My Analysis",
+      "status": "COMPLETED",
+      "created_at": "2026-10-19",
+      "branch": "feat/006-remove-agent-my-analysis",
+      "updated_at": "2026-10-19T04:45:26.447Z",
+      "completed_at": "2026-10-19T04:45:26.447Z",
+      "verification": {
+        "mode": "automated",
+        "verifiedAt": "2026-10-19T04:45:15.911Z",
+        "fingerprint": "8d96f9e2a105c77b49b0d0579d984ec5a735f55e36ca65ec6364f86a4912b0aa"
+      }
     }
   ]
 }

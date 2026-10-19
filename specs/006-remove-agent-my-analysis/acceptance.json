@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "criteria": [
+    {
+      "id": "AC-01",
+      "status": "passed",
+      "method": "automated",
+      "evidence": "grep 'mi-analisis|MyAnalysis|analisis.css|Mi análisis' en frontend/src y frontend/tests: 0 resultados. Runtime (npm run dev, mock): /agente/mi-analisis termina en '/', idéntico a /agente/ruta-que-nunca-existio (catch-all App.jsx). build exit 0."
+    },
+    {
+      "id": "AC-02",
+      "status": "passed",
+      "method": "automated",
+      "evidence": "Runtime: sidebar del agente sin 'Mi análisis' (Mi panel, Mi bienestar, Mis datos, Apoyo inmediato); grupo 'Tu bienestar' conserva 2 entradas. Subtest de navegación de iconography.test.mjs pasa en frontend npm test (48/48)."
+    },
+    {
+      "id": "AC-03",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "grep 'mi-analisis' en frontend/src/core/auth: 0. Reglas C1/C2/C3 de checkin/bitacora/apoyo intactas en authService.jsx. Test 'bitácora aplica C2 al guardar y C3 al procesar' pasa."
+    },
+    {
+      "id": "AC-04",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Runtime DOM medido en /agente/bitacora: page-header flex 694x63px con título+subtítulo, 0 enlaces en el header, 0 textos 'Ver mis análisis', 0 hrefs a mi-analisis; editor (#journalArea, textarea, #journalsList) funcional. Limitación: sin captura PNG (ventana de escritorio no disponible)."
+    },
+    {
+      "id": "AC-05",
+      "status": "passed",
+      "method": "automated",
+      "evidence": "frontend npm test 48/48 incluyendo tests de análisis/corrección por entrada y hash; backend npm test 132/132 incluyendo 'análisis, revisión e historial persisten' (ok 32). FACTOR_METADATA/NlpAnalysisPanel/NlpCorrectionModal sin cambios."
+    },
+    {
+      "id": "AC-06",
+      "status": "passed",
+      "method": "automated",
+      "evidence": "MyAnalysisPage.jsx y analisis.css eliminados (Remove-Item); grep de referencias: 0; vite build exit 0 descarta imports huérfanos."
+    },
+    {
+      "id": "AC-07",
+      "status": "passed",
+      "method": "automated",
+      "evidence": "iconography.test.mjs actualizado (personalTasks sin mi-analisis, size===2, título sin 'reflexionar', aserciones de roles conservadas); cd frontend && npm test: pass 48, fail 0."
+    },
+    {
+      "id": "AC-08",
+      "status": "passed",
+      "method": "automated",
+      "evidence": "4 gates ejecutados: frontend npm test (48/48), npm run lint (exit 0), npm run build (exit 0, 4.88s), backend npm test (132/132, PostgreSQL operativo). Aviso preexistente de chunk >500kB en build, no relacionado."
+    }
+  ]
+}

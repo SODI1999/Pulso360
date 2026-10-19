@@ -4,7 +4,7 @@ import { QUICK_ENERGY_SCALE, formatHour } from '../services/agentDashboardHelper
 // src/features/agent/pages/AgentDashboardPage.jsx
 // Panel principal del agente (Pulso Calma) bajo principios de Calm Technology:
 // una pantalla = un propósito. Saludo + un único check-in rápido + ritmo del turno.
-// La analítica vive en "Mi bienestar" / "Mi análisis"; el menú lateral conserva
+// La analítica vive en "Mi bienestar"; el menú lateral conserva
 // los destinos de bitácora, apoyo y privacidad para mantener la home despejada.
 
 import { Link } from 'react-router-dom';

@@ -19,7 +19,6 @@ import { ForbiddenPage } from './features/auth/pages/ForbiddenPage';
 import { AgentDashboardPage } from './features/agent/pages/AgentDashboardPage';
 import { CheckinWizardPage } from './features/agent/pages/CheckinWizardPage';
 import { JournalPage } from './features/agent/pages/JournalPage';
-import { MyAnalysisPage } from './features/agent/pages/MyAnalysisPage';
 import { MyWellbeingPage } from './features/agent/pages/MyWellbeingPage';
 import { SupportChannelPage } from './features/agent/pages/SupportChannelPage';
 import { MyDataPrivacyPage } from './features/agent/pages/MyDataPrivacyPage';
@@ -123,14 +122,6 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={['agente']}>
                 <JournalPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/agente/mi-analisis"
-            element={
-              <ProtectedRoute allowedRoles={['agente']}>
-                <MyAnalysisPage />
               </ProtectedRoute>
             }
           />

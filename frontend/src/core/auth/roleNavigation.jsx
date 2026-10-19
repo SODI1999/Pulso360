@@ -25,7 +25,6 @@ export const roleMenus = {
     { label: 'Mi panel', icon: 'LayoutDashboard', href: '/agente/panel', group: 'Tu jornada' },
     { label: 'Check-in diario', icon: 'HeartPulse', href: '/agente/checkin', group: 'Tu jornada' },
     { label: 'Bitácora', icon: 'BookOpen', href: '/agente/bitacora', group: 'Tu jornada' },
-    { label: 'Mi análisis', icon: 'Compass', href: '/agente/mi-analisis', group: 'Tu bienestar' },
     { label: 'Mi bienestar', icon: 'LineChart', href: '/agente/mi-bienestar', group: 'Tu bienestar' },
     { label: 'Acompañamiento', icon: 'HeartHandshake', href: '/agente/apoyo', group: 'Tu bienestar' },
     /* En escritorio "Mis datos" vive en el menú de cuenta (pie del sidebar).

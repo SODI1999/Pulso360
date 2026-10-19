@@ -76,11 +76,11 @@ test('iconografía compartida: nombres de todas las vistas, semántica y tamaño
       }
     });
 
-    await t.test('la navegación diferencia registrar, reflexionar y consultar historia; los planes conservan significado entre roles', async () => {
+    await t.test('la navegación diferencia registrar y consultar historia; los planes conservan significado entre roles', async () => {
       const { roleMenus } = await server.ssrLoadModule('/src/core/auth/roleNavigation.jsx');
       const iconAt = (role, href) => render(roleMenus[role].find((item) => item.href === href).icon);
-      const personalTasks = ['/agente/checkin', '/agente/mi-analisis', '/agente/mi-bienestar'];
-      assert.equal(new Set(personalTasks.map((href) => iconAt('agente', href))).size, 3);
+      const personalTasks = ['/agente/checkin', '/agente/mi-bienestar'];
+      assert.equal(new Set(personalTasks.map((href) => iconAt('agente', href))).size, 2);
       assert.equal(iconAt('supervisor', '/supervisor/acciones'), iconAt('sst', '/sst/intervenciones'));
       assert.equal(iconAt('admin', '/reportes'), iconAt('sst', '/reportes'));
     });

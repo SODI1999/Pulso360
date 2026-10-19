@@ -305,7 +305,6 @@ export const authService = {
     return baseItems.filter((item) => {
       if (item.href.includes('checkin')) return Boolean(consent.c1);
       if (item.href.includes('bitacora')) return Boolean(consent.c2);
-      if (item.href.includes('mi-analisis')) return Boolean(consent.c2 && consent.c3);
       if (item.href.includes('apoyo')) return Boolean(consent.c3);
       return true;
     });

@@ -134,10 +134,6 @@ export function JournalPage() {
             agregadas.
           </p>
         </div>
-        <Link to="/agente/mi-analisis" className="btn btn-secondary">
-          <Icon name="lineChart" size={18} />
-          <span>Ver mis análisis</span>
-        </Link>
       </div>
 
       {/* Split View: Lista a la izquierda y Editor Modo Desahogo a la derecha */}
