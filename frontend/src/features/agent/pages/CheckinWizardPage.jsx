@@ -145,32 +145,85 @@ export function CheckinWizardPage() {
           </div>
         </div>
 
-        <div className="card center-card">
-          <h2 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '8px', color: 'var(--c-texto)' }}>
-            Ya registraste tu check-in de esta jornada
-          </h2>
+        <div className="card restaurador-card">
+          <div className="restaurador-media">
+            <img
+              src="/assets/fotos/bpo-agent-checkin-completed.jpg"
+              alt="Operadora de Contact Center en su puesto ergonómico, serena y satisfecha tras registrar su bienestar de la jornada"
+              className="restaurador-hero-img"
+              loading="eager"
+            />
+          </div>
+
+          <h2 className="restaurador-title">Ya registraste tu check-in de esta jornada</h2>
 
           {remainingTime > 0 ? (
             <>
-              <p style={{ color: 'var(--c-texto-suave)', marginBottom: '20px' }}>
-                Puedes editar tus respuestas durante {Math.floor(remainingTime / 3600000)} h{' '}
-                {Math.floor((remainingTime % 3600000) / 60000)} min.
+              <p className="restaurador-subtitle">
+                Tus respuestas están guardadas de forma segura. Puedes editar tus respuestas durante {Math.floor(remainingTime / 3600000)} h{' '}
+                {Math.floor((remainingTime % 3600000) / 60000)} min si tu percepción de carga o energía cambia durante el turno.
               </p>
-              <button
-                className="btn btn-primary"
-                onClick={() => {
-                  setDraft({ ...existingCheckin });
-                  setCurrentStep(0);
-                  setIsEditing(true);
-                }}
-              >
-                Editar registro
-              </button>
+
+              <div className="restaurador-somatic-box">
+                <div className="restaurador-somatic-icon-badge">
+                  <Icon name="clock" size={18} />
+                </div>
+                <div className="restaurador-somatic-content">
+                  <strong className="restaurador-somatic-headline">Ventana de edición activa</strong>
+                  <p className="restaurador-somatic-text">
+                    El registro sigue abierto por si necesitas ajustar algún valor antes de consolidar la tendencia diaria.
+                  </p>
+                </div>
+              </div>
+
+              <div className="restaurador-actions">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={() => {
+                    setDraft({ ...existingCheckin });
+                    setCurrentStep(0);
+                    setIsEditing(true);
+                  }}
+                >
+                  <Icon name="edit" size={16} />
+                  <span>Editar registro</span>
+                </button>
+                <Link to="/agente/bitacora" className="btn btn-ghost">
+                  <Icon name="edit_note" size={16} />
+                  <span>Ir a mi bitácora</span>
+                </Link>
+              </div>
             </>
           ) : (
-            <p style={{ color: 'var(--c-texto-suave)' }}>
-              La ventana de edición configurada ({editHours} horas) ya ha cerrado para esta jornada.
-            </p>
+            <>
+              <p className="restaurador-subtitle">
+                La ventana de edición configurada ({editHours} horas) ya ha cerrado para esta jornada. Tus respuestas ya forman parte de la tendencia agregada y protegida de hoy.
+              </p>
+
+              <div className="restaurador-somatic-box">
+                <div className="restaurador-somatic-icon-badge">
+                  <Icon name="shieldCheck" size={18} />
+                </div>
+                <div className="restaurador-somatic-content">
+                  <strong className="restaurador-somatic-headline">Autocuidado completado con éxito</strong>
+                  <p className="restaurador-somatic-text">
+                    Recuerda mantener tu postura ergonómica, relajar los hombros y tomar agua entre llamadas.
+                  </p>
+                </div>
+              </div>
+
+              <div className="restaurador-actions">
+                <Link to="/apoyo-crisis" className="btn btn-secondary">
+                  <Icon name="respiro" size={16} />
+                  <span>Pausa de respiración</span>
+                </Link>
+                <Link to="/agente/bitacora" className="btn btn-ghost">
+                  <Icon name="edit_note" size={16} />
+                  <span>Ir a mi bitácora</span>
+                </Link>
+              </div>
+            </>
           )}
         </div>
       </div>

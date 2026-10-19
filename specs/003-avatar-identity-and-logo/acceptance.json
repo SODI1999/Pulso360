@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "criteria": [
+    {
+      "id": "AC-01",
+      "status": "passed",
+      "method": "manual",
+      "evidence": "Isotipo symbol.svg y logo.svg creados con paths vectoriales limpios, gradientes institucionales teal/navy y concepto Pulso Orbital 360 sin pérdida de nitidez ni artefactos."
+    },
+    {
+      "id": "AC-02",
+      "status": "passed",
+      "method": "manual",
+      "evidence": "Actualizadas referencias de marca en AppLayout.jsx, LoginManifesto.jsx, Navbar.jsx, Footer.jsx e index.html con symbol.svg y favicon dual SVG/PNG."
+    },
+    {
+      "id": "AC-03",
+      "status": "passed",
+      "method": "manual",
+      "evidence": "Imagen bpo-agent-checkin-completed.jpg generada con la protagonista 3D oficial en pose de satisfacción y descanso ergonómico en su puesto de Contact Center."
+    },
+    {
+      "id": "AC-04",
+      "status": "passed",
+      "method": "manual",
+      "evidence": "CheckinWizardPage.jsx rediseñado con restaurador-card, imagen de avatar, texto de acompañamiento y botones directos de pausa de respiración y bitácora, retirando el enlace redundante al panel."
+    },
+    {
+      "id": "AC-05",
+      "status": "passed",
+      "method": "manual",
+      "evidence": "AppLayout.jsx actualizado con roleAvatarImg renderizando bpo-agent-profile.jpg en user-avatar y account-popover-avatar, eliminando la letra 'L' estática para agentes."
+    },
+    {
+      "id": "AC-06",
+      "status": "passed",
+      "method": "manual",
+      "evidence": "Generadas imágenes complementarias bpo-agent-journal-calm.jpg y bpo-agent-breathing-guide.jpg con estricta consistencia visual de personaje para robustecer la biblioteca."
+    },
+    {
+      "id": "AC-07",
+      "status": "passed",
+      "method": "manual",
+      "evidence": "Ejecución exitosa y limpia de npm run lint (0 errores) y npm run build (vite build exitoso en 8.02s) en frontend."
+    }
+  ]
+}

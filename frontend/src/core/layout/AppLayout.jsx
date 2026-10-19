@@ -150,6 +150,14 @@ export function AppLayout() {
     (n) => !n.read && (n.role === user.role || n.userId === user.id)
   ).length : navigationCounts.unread;
 
+  // Foto de perfil del avatar institucional para roles operativos y de salud ocupacional
+  const roleAvatarImg =
+    user.role === 'agente'
+      ? '/assets/fotos/bpo-agent-profile.jpg'
+      : user.role === 'sst'
+        ? '/assets/fotos/bpo-sst-guardian.jpg'
+        : null;
+
   const handleLogout = () => {
     authService.logout();
     navigate('/login', { replace: true });
@@ -170,7 +178,7 @@ export function AppLayout() {
             aria-label="Ir al panel principal de Pulso360"
           >
             <img
-              src="/assets/marca/logo.webp"
+              src="/assets/marca/symbol.svg"
               alt="Pulso360"
               className="sidebar-logo"
             />
@@ -268,7 +276,18 @@ export function AppLayout() {
               {/* Encabezado sutil de identidad del usuario */}
               <div className="account-popover-header">
                 <div className={`account-popover-avatar role-${user.role}`} aria-hidden="true">
-                  {user.name.charAt(0).toUpperCase()}
+                  {roleAvatarImg ? (
+                    <img
+                      src={roleAvatarImg}
+                      alt={user.name}
+                      className="user-avatar-photo"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                      }}
+                    />
+                  ) : (
+                    user.name.charAt(0).toUpperCase()
+                  )}
                 </div>
                 <div className="account-popover-info">
                   <div className="account-popover-name" title={user.name}>
@@ -324,7 +343,18 @@ export function AppLayout() {
             aria-label={sidebarCollapsed ? `Cuenta de ${user.name}` : 'Opciones de cuenta'}
           >
             <div className={`user-avatar role-${user.role}`} aria-hidden="true">
-              {user.name.charAt(0).toUpperCase()}
+              {roleAvatarImg ? (
+                <img
+                  src={roleAvatarImg}
+                  alt={user.name}
+                  className="user-avatar-photo"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                  }}
+                />
+              ) : (
+                user.name.charAt(0).toUpperCase()
+              )}
             </div>
 
             <div className="user-info" aria-hidden={sidebarCollapsed}>

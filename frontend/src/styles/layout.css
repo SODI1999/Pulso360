@@ -531,6 +531,15 @@
   flex-shrink: 0;
   box-shadow: none;
   border: 1.5px solid currentColor;
+  overflow: hidden;
+}
+
+.user-avatar-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--radius-full);
+  display: block;
 }
 
 .user-avatar.role-agente,
@@ -700,6 +709,7 @@
   flex-shrink: 0;
   box-shadow: var(--shadow-xs);
   border: 1.5px solid currentColor;
+  overflow: hidden;
 }
 
 .account-popover-avatar.role-agente {

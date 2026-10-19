@@ -33,7 +33,7 @@ export function Footer() {
             }}
             aria-label="Pulso360, volver al inicio"
           >
-            <img className="brand-logo" src="/assets/marca/logo.webp" alt="" />
+            <img className="brand-logo" src="/assets/marca/symbol.svg" alt="Pulso360" />
             <span className="brand-name">Pulso360</span>
           </Link>
           <p>
