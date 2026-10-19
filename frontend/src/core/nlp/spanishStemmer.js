@@ -21,6 +21,24 @@ export function stemSpanish(word = '') {
     .replace(/[óòöôõ]/g, 'o')
     .replace(/[úùüû]/g, 'u');
 
+  // 1.5. Paso Pronombres Enclíticos (Snowball Paso 0): Remueve sufijos reflexivos unidos a verbos
+  const enclitics = ['me', 'se', 'te', 'nos'];
+  for (const enc of enclitics) {
+    if (w.endsWith(enc) && w.length - enc.length >= 4) {
+      const stemWithout = w.slice(0, -enc.length);
+      if (
+        stemWithout.endsWith('ar') ||
+        stemWithout.endsWith('er') ||
+        stemWithout.endsWith('ir') ||
+        stemWithout.endsWith('ando') ||
+        stemWithout.endsWith('iendo')
+      ) {
+        w = stemWithout;
+        break;
+      }
+    }
+  }
+
   // 2. Paso Plural: Quitar terminación plural '-ces' -> 'z', '-es', '-s'
   if (w.endsWith('ces') && w.length >= 5) {
     w = w.slice(0, -3) + 'z';

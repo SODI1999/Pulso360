@@ -77,6 +77,20 @@ export const NLP_CATEGORIES = {
     'cliente molesto',
     'angustia',
     'llorar',
+    'rabia',
+    'ira',
+    'enojo',
+    'enojado',
+    'enojada',
+    'furia',
+    'furioso',
+    'furiosa',
+    'frustracion',
+    'frustración',
+    'frustrado',
+    'frustrada',
+    'impotencia',
+    'desespero',
     'emocionalmente difícil',
     'emocionalmente dificil'
   ],
@@ -149,13 +163,40 @@ export const NLP_CATEGORIES = {
 export const CRISIS_PHRASES = [
   'no puedo más',
   'no puedo mas',
+  'no doy más',
+  'no doy mas',
+  'no aguanto más',
+  'no aguanto mas',
   'quiero morir',
+  'morir',
+  'morirme',
+  'me quiero morir',
+  'me voy a morir',
   'hacerme daño',
   'hacerme dano',
   'acabar con todo',
+  'acabar con mi vida',
   'no quiero seguir',
   'lastimarme',
-  'quitarme la vida'
+  'quitarme la vida',
+  'suicidarme',
+  'suicidar',
+  'suicidare',
+  'suicidaré',
+  'suicidio',
+  'suicidarse',
+  'suicida',
+  'autolesion',
+  'autolesionarme',
+  'desvivirme',
+  'matarme',
+  'matar',
+  'me quiero matar',
+  'me voy a matar',
+  'quiero matar',
+  'me mato',
+  'ahorcarme',
+  'cortarme'
 ];
 
 // Disparadores de negación (patrón NegEx en español) e intensificadores gramaticales
@@ -223,19 +264,45 @@ export const nlpEngine = {
     const cleanText = sanitizeInputText(rawText);
     const unaccentedText = stripDiacritics(cleanText);
 
-    // 1. Detección preventiva de alerta de crisis (evaluada con y sin tildes)
-    const isCrisisAlert = dictionary().crisis.some((phrase) => {
-      const cleanPhrase = phrase.toLowerCase().trim();
-      const unaccentedPhrase = stripDiacritics(cleanPhrase);
-      return cleanText.includes(cleanPhrase) || unaccentedText.includes(unaccentedPhrase);
-    });
-
     // Tokenización y lematización morfológica (Capa 2: Stemming Snowball)
     const tokens = cleanText.split(/\s+/).filter(Boolean);
     const unaccentedTokens = tokens.map(stripDiacritics);
     const stemmedTokens = unaccentedTokens.map(stemSpanish);
 
     const activeDict = dictionary();
+    const crisisList = activeDict.crisis || CRISIS_PHRASES;
+
+    // 1. Detección preventiva de alerta de crisis:
+    // A) Frases compuestas multipalabra (subcadenas literales desacentuadas)
+    const directPhraseMatch = crisisList.some((phrase) => {
+      const cleanPhrase = phrase.toLowerCase().trim();
+      const unaccentedPhrase = stripDiacritics(cleanPhrase);
+      return cleanText.includes(cleanPhrase) || unaccentedText.includes(unaccentedPhrase);
+    });
+
+    // B) Coincidencia de tokens individuales con Stemming y Damerau-Levenshtein <= 1
+    const singleCrisisTerms = crisisList
+      .filter((phrase) => !phrase.includes(' '))
+      .map((p) => stripDiacritics(p.toLowerCase().trim()));
+    const singleCrisisStems = singleCrisisTerms.map(stemSpanish);
+
+    const tokenCrisisMatch = unaccentedTokens.some((tok, idx) => {
+      const tokStem = stemmedTokens[idx];
+      return singleCrisisTerms.some((term, tIdx) => {
+        const termStem = singleCrisisStems[tIdx];
+        if (tok === term) return true;
+        if (termStem.length >= 3 && tokStem === termStem) return true;
+        // Tolerancia a erratas de digitación en teclado (Damerau-Levenshtein):
+        // Para términos largos (>= 7 caracteres como 'suicidare'/'suicidarme'), tolera distancia <= 2 (ej. 'suciadare')
+        // Para términos medianos (>= 5 caracteres como 'suicidar'/'matarme'), tolera distancia <= 1 (ej. 'csuicidar')
+        const maxDist = term.length >= 7 ? 2 : (term.length >= 5 ? 1 : 0);
+        if (maxDist > 0 && tok.length >= 4 && damerauLevenshtein(tok, term) <= maxDist) return true;
+        if (termStem.length >= 4 && tokStem.length >= 4 && damerauLevenshtein(tokStem, termStem) <= 1) return true;
+        return false;
+      });
+    });
+
+    const isCrisisAlert = directPhraseMatch || tokenCrisisMatch;
     const negatorList = (activeDict.negators || NEGATORS).map((n) => stripDiacritics(n.toLowerCase()));
     const intensifierList = (activeDict.intensifiers || INTENSIFIERS).map((i) =>
       stripDiacritics(i.toLowerCase())

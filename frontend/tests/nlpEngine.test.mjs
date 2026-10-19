@@ -61,6 +61,12 @@ test('spanishStemmer: reduce formas verbales y flexiones de género/número a ra
   agotForms.forEach((word) => {
     assert.equal(stemSpanish(word), 'agot', `Fallo en forma de agotamiento: ${word}`);
   });
+
+  // Verbos reflexivos con pronombres enclíticos
+  assert.equal(stemSpanish('matarme'), 'mat');
+  assert.equal(stemSpanish('morirme'), 'mor');
+  assert.equal(stemSpanish('suicidarse'), 'suicid');
+  assert.equal(stemSpanish('lastimarme'), 'lastim');
 });
 
 // Test 4: Integración del motor nlpEngine (AC-01, AC-05, AC-06)
@@ -116,10 +122,54 @@ test('nlpEngine: negación contextual estilo NegEx anula la tensión (AC-05)', a
   });
 });
 
-test('nlpEngine: detección de alertas de crisis preventiva', async () => {
+test('nlpEngine (Ronda 1 - Centinela de Crisis): detección de alertas de crisis preventiva y tolerancia a erratas (AC-01)', async () => {
   await withViteApp(async ({ nlpEngine }) => {
-    const inputCrisis = 'Siento que ya no puedo más con este turno';
-    const analysis = nlpEngine.analyze(inputCrisis);
-    assert.equal(analysis.isCrisisAlert, true, 'Debe detectar la frase centinela de crisis');
+    // Frase centinela multipalabra clásica
+    const r1 = nlpEngine.analyze('Siento que ya no puedo más con este turno');
+    assert.equal(r1.isCrisisAlert, true, 'Debe detectar frase de crisis tradicional');
+
+    // Caso testigo del usuario: errata de teclado (inserción de 'c' en 'csuicidar')
+    const r2 = nlpEngine.analyze('me quiero csuicidar');
+    assert.equal(r2.isCrisisAlert, true, 'Debe detectar errata crítica csuicidar con Damerau-Levenshtein <= 1');
+
+    // Raíz directa de autolisis
+    const r3 = nlpEngine.analyze('quiero suicidarme no doy más');
+    assert.equal(r3.isCrisisAlert, true, 'Debe detectar suicidarme');
+
+    // Variante de autolisis con fat-finger typo
+    const r4 = nlpEngine.analyze('estoy pensando en matarme');
+    assert.equal(r4.isCrisisAlert, true, 'Debe detectar matarme');
+
+    // Casos reales reportados por el usuario
+    const r5 = nlpEngine.analyze('me quiero matar');
+    assert.equal(r5.isCrisisAlert, true, 'Debe detectar me quiero matar infaliblemente');
+
+    const r6 = nlpEngine.analyze('que rabia tengo mucha ira me suciadare');
+    assert.equal(r6.isCrisisAlert, true, 'Debe detectar errata suciadare como alerta de crisis');
+    const em6 = r6.categories.find((c) => c.name === 'Exigencia emocional');
+    assert.ok(em6, 'Debe detectar Exigencia emocional para rabia e ira');
+    assert.ok(em6.evidence.includes('rabia'), 'Debe incluir rabia en la evidencia');
+    assert.ok(em6.evidence.includes('ira'), 'Debe incluir ira en la evidencia');
+
+    const r7 = nlpEngine.analyze('me voy a morir');
+    assert.equal(r7.isCrisisAlert, true, 'Debe detectar me voy a morir');
+
+    // Texto no crítico sin crisis
+    const rNormal = nlpEngine.analyze('Turno tranquilo atendiendo clientes con normalidad');
+    assert.equal(rNormal.isCrisisAlert, false, 'No debe disparar crisis falsamente');
   });
 });
+
+test('nlpEngine (Ronda 3 - Desempeño y Cero LLM): latencia local determinista < 50ms', async () => {
+  await withViteApp(async ({ nlpEngine }) => {
+    const text = 'Una señora m,e grito toda grosera uqe pere<za y me quiero csuicidar del estres';
+    const start = performance.now();
+    for (let i = 0; i < 20; i++) {
+      nlpEngine.analyze(text);
+    }
+    const end = performance.now();
+    const avgDuration = (end - start) / 20;
+    assert.ok(avgDuration < 50, `El análisis debe tomar menos de 50ms en promedio, tomó ${avgDuration.toFixed(2)}ms`);
+  });
+});
+

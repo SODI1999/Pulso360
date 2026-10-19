@@ -16,7 +16,8 @@ export function JournalEditor({
   feedback,
   currentJournal,
   handleOpenCorrection,
-  setShowHistoryModal
+  setShowHistoryModal,
+  onOpenSomaticModal
 }) {
   return (
     <section className="card agent-work-surface agent-journal-editor">
@@ -134,6 +135,7 @@ export function JournalEditor({
         journal={currentJournal && journalText.trim() === currentJournal.text ? currentJournal : null}
         onOpenCorrection={handleOpenCorrection}
         onOpenHistory={() => setShowHistoryModal(true)}
+        onOpenSomaticModal={onOpenSomaticModal}
       />
     </section>
   );

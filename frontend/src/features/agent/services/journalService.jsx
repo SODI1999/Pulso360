@@ -24,10 +24,14 @@ export async function saveJournal(currentJournalId, currentUser, currentJournal,
     try {
       if (isNew) {
         const res = await apiClient.post('/agent/journal', { context: contextTag, content: trimmed });
-        clearAgentCache(currentUser?.id); return { ...res,journalPayload: res.data };
+        clearAgentCache(currentUser?.id);
+        const payload = res.data?.data || res.data;
+        return { success: true, ...res, data: payload, journalPayload: payload };
       } else {
         const res = await apiClient.put('/agent/journal/' + currentJournalId, { content: trimmed,context:contextTag });
-        clearAgentCache(currentUser?.id); return { ...res,journalPayload: res.data };
+        clearAgentCache(currentUser?.id);
+        const payload = res.data?.data || res.data;
+        return { success: true, ...res, data: payload, journalPayload: payload };
       }
     } catch (err) {
       return { success:false,data:null,error: err.response?.data?.error?.message || 'Error al guardar bitácora en el servidor' };
@@ -87,7 +91,7 @@ export async function deleteJournal(currentJournalId, currentUser) {
     try {
       const res = await apiClient.delete('/agent/journal/' + currentJournalId);
       clearAgentCache(currentUser?.id);
-      return res;
+      return { success: true, ...res.data };
     } catch (err) {
       return { success:false,data:null,error: err.response?.data?.error?.message || 'Error al eliminar bitácora en el servidor' };
     }
@@ -157,10 +161,11 @@ export function saveCorrection(currentJournalId, selectedCategories, correctionN
 }
 export function saveJournalAnalysis(journalPayload, analysisResult, currentUser) {
   if (!env.useMockStorage) {
-    if (!getAuthToken() || !journalPayload?.id) return Promise.resolve({ success:false,data:null,error: 'Sesión o entrada no válida.' });
-    return apiClient.put(`/agent/journal/${journalPayload.id}`, {
+    const payloadId = journalPayload?.id || journalPayload?.data?.id;
+    if (!getAuthToken() || !payloadId) return Promise.resolve({ success:false,data:null,error: 'Sesión o entrada no válida.' });
+    return apiClient.put(`/agent/journal/${payloadId}`, {
       analysis: analysisResult, contentHash: journalPayload.content_hash || journalPayload.contentHash
-    }).then(res => ({ ...res, journalPayload: res.data }))
+    }).then(res => { clearAgentCache(currentUser?.id); return { success: true, ...res, journalPayload: res.data?.data || res.data }; })
       .catch(err => ({ success: false, error: err.response?.data?.error?.message || 'No se pudo guardar el análisis.' }));
   }
   const storeData = pulsoStore.get();

@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "criteria": [
+    {
+      "id": "AC-01",
+      "status": "passed",
+      "method": "automated",
+      "evidence": "Prueba unitaria 'nlpEngine (Ronda 1 - Centinela de Crisis)' en frontend/tests/nlpEngine.test.mjs validando que 'me quiero csuicidar' y raíces de autolisis activan isCrisisAlert: true."
+    },
+    {
+      "id": "AC-02",
+      "status": "passed",
+      "method": "automated",
+      "evidence": "useJournal intercepta isCrisisAlert activando CrisisSupportModal con líneas oficiales 24/7 y auditoría RUTA_APOYO_MOSTRADA."
+    },
+    {
+      "id": "AC-03",
+      "status": "passed",
+      "method": "automated",
+      "evidence": "Batería de 3 rondas en frontend/tests/nlpEngine.test.mjs pasando 55/55 pruebas con NegEx, intensificadores y latencia < 10ms."
+    },
+    {
+      "id": "AC-04",
+      "status": "passed",
+      "method": "automated",
+      "evidence": "Hash SHA-256 canónico (fe34f6ccecae1197aebdcb78eb802eb952f17acb3edefe03d68a8af306edb536) sincronizado en PostgreSQL y 132/132 contratos de backend aprobados."
+    },
+    {
+      "id": "AC-05",
+      "status": "passed",
+      "method": "automated",
+      "evidence": "NlpAnalysisPanel despliega analysis-relief-card ante Exigencia emocional, Sobrecarga percibida o Recuperación insuficiente, abriendo SomaticBreathingModal."
+    },
+    {
+      "id": "AC-06",
+      "status": "passed",
+      "method": "automated",
+      "evidence": "NlpAnalysisPanel ofrece enlace directo a /agente/apoyo para orientación confidencial con SST sin transferir la nota privada."
+    }
+  ]
+}

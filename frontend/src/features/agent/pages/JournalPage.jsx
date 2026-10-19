@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { JournalEditor } from '../components/JournalEditor';
 import { JournalEntryList } from '../components/JournalEntryList';
 import { useJournal } from '../hooks/useJournal';
@@ -12,6 +13,7 @@ import { Icon } from '../../../core/components/Icon';
 
 import { NlpCorrectionModal, NlpHistoryModal } from '../components/NlpCorrectionModal';
 import { CrisisSupportModal } from '../components/CrisisSupportModal';
+import { SomaticBreathingModal } from '../components/SomaticBreathingModal';
 import '../../../styles/bitacora.css';
 import '../../../styles/agent.css';
 
@@ -53,6 +55,7 @@ export function JournalPage() {
     handleConfirmCrisisPriority,
     handleContinueFromCrisis
   } = useJournal();
+  const [showSomaticModal, setShowSomaticModal] = useState(false);
 
   if (loading) return <p role="status">Cargando bitácora…</p>;
   if (loadError) return <p className="alert-banner danger" role="alert">{loadError}</p>;
@@ -163,6 +166,7 @@ export function JournalPage() {
           currentJournal={currentJournal}
           handleOpenCorrection={handleOpenCorrection}
           setShowHistoryModal={setShowHistoryModal}
+          onOpenSomaticModal={() => setShowSomaticModal(true)}
         />
       </div>
 
@@ -197,6 +201,12 @@ export function JournalPage() {
         history={currentJournal?.correctionHistory || []}
         analyses={currentJournal?.analysisHistory || []}
         onClose={() => setShowHistoryModal(false)}
+      />
+
+      {/* MODAL 4: Pausa Somática de Respiración In-Situ (SPEC-007) */}
+      <SomaticBreathingModal
+        isOpen={showSomaticModal}
+        onClose={() => setShowSomaticModal(false)}
       />
     </div>
   );

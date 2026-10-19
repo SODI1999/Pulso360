@@ -127,7 +127,8 @@ export function useJournal() {
       return;
     }
     const { journalPayload } = result;
-    setCurrentJournalId(journalPayload.id);
+    const savedId = journalPayload?.id || journalPayload?.data?.id;
+    if (savedId) setCurrentJournalId(savedId);
     await loadJournals();
 
     const currentData = await fetchAgentRecords(currentUser.id);

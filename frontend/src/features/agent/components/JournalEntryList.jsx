@@ -35,37 +35,35 @@ export function JournalEntryList({ handleNewEntry, journals, currentJournalId, h
         ) : (
           journals.map((item) => {
             const isSelected = item.id === currentJournalId;
-            const preview = item.text.slice(0, 50);
-            const ellipsis = item.text.length > 50 ? '…' : '';
             const badge = item.analysis ? 'Analizada' : 'Sin análisis';
 
             return (
               <button
                 key={item.id}
                 type="button"
-                className={`btn btn-ghost journal-row ${isSelected ? 'active' : ''}`}
+                className={`journal-row ${isSelected ? 'active' : ''}`}
                 onClick={() => handleSelectJournal(item)}
               >
-                <div style={{ width: '100%' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span className="journal-row-date">
-                      <Icon name="calendar" size={13} />
-                      <strong>{item.date}</strong>
-                    </span>
-                    <span className={`badge ${item.analysis ? 'badge-info' : 'badge-neutral'}`} style={{ fontSize: '10px' }}>
-                      {badge}
+                <div className="journal-row-header">
+                  <span className="journal-row-date">
+                    <Icon name="calendar" size={13} />
+                    <strong>{item.date}</strong>
+                  </span>
+                  <span className={`badge ${item.analysis ? 'badge-info' : 'badge-neutral'}`} style={{ fontSize: '10px' }}>
+                    {badge}
+                  </span>
+                </div>
+                <div className="journal-row-preview">
+                  {item.text}
+                </div>
+                {item.context && (
+                  <div className="journal-row-footer">
+                    <span className="journal-row-context">
+                      <Icon name="clock" size={11} />
+                      <span>{item.context}</span>
                     </span>
                   </div>
-                  <small style={{ color: 'var(--c-texto-suave)', display: 'block', margin: '4px 0' }}>
-                    {preview}
-                    {ellipsis}
-                  </small>
-                  {item.context && (
-                    <span className="journal-row-context">
-                      {item.context}
-                    </span>
-                  )}
-                </div>
+                )}
               </button>
             );
           })
