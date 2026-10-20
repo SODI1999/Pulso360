@@ -1,0 +1,822 @@
+/* frontend/src/styles/agent/my-data-privacy.css */
+/* Estilos para el Centro de Datos y Privacidad del Agente (My Data Hub) */
+
+/* Barra de pestañas WAI-ARIA */
+.agent-privacy-tabs {
+  display: flex;
+  gap: 8px;
+  border-bottom: 1px solid var(--c-borde-suave);
+  margin-bottom: 24px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.agent-privacy-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.agent-privacy-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: none;
+  background: transparent;
+  color: var(--c-texto-suave);
+  font-size: 13.5px;
+  font-weight: 500;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease;
+  white-space: nowrap;
+}
+
+.agent-privacy-tab:hover {
+  color: var(--c-texto);
+}
+
+.agent-privacy-tab:focus-visible {
+  outline: 2px solid var(--c-primario);
+  outline-offset: -2px;
+}
+
+.agent-privacy-tab--active {
+  color: var(--c-primario);
+  font-weight: 600;
+  border-bottom-color: var(--c-primario);
+}
+
+.agent-privacy-tab-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 6px;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 9px;
+  background: var(--c-fondo);
+  color: var(--c-texto-suave);
+  border: 1px solid var(--c-borde-suave);
+}
+
+.agent-privacy-tab-badge.is-active {
+  background: var(--c-primario-suave);
+  color: var(--c-primario);
+  border-color: var(--c-primario-border);
+}
+
+.privacy-tab-content {
+  animation: fadeIn 0.15s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 1. Timeline Conectado de Niveles de Privacidad */
+.privacy-levels-timeline {
+  display: flex;
+  flex-direction: column;
+  margin-top: 16px;
+}
+
+.privacy-level-step {
+  display: flex;
+  gap: 16px;
+  position: relative;
+}
+
+.privacy-level-rail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 36px;
+  flex-shrink: 0;
+}
+
+.privacy-level-node {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--c-superficie);
+  border: 2px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  box-shadow: var(--shadow-sm, 0 1px 2px rgba(0, 0, 0, 0.05));
+}
+
+.privacy-level-connector {
+  width: 2px;
+  flex: 1;
+  background: var(--c-borde-suave);
+  margin: 4px 0;
+  min-height: 24px;
+}
+
+.privacy-level-content {
+  flex: 1;
+  background: var(--c-fondo);
+  border: 1px solid var(--c-borde-suave);
+  border-radius: var(--radius-card, 8px);
+  padding: 14px 16px;
+  margin-bottom: 14px;
+  transition: border-color 0.15s ease;
+}
+
+.privacy-level-content:hover {
+  border-color: var(--c-borde);
+}
+
+.privacy-level-step.is-last .privacy-level-content {
+  margin-bottom: 0;
+}
+
+.privacy-level-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.privacy-level-title-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.privacy-level-num-tag {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--c-texto-suave);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: var(--c-superficie);
+  border: 1px solid var(--c-borde-suave);
+  padding: 2px 7px;
+  border-radius: var(--radius-xs, 4px);
+}
+
+.privacy-level-title {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--c-texto);
+  margin: 0;
+}
+
+.privacy-level-scope-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--c-texto-suave);
+  background: var(--c-superficie);
+  border: 1px solid var(--c-borde-suave);
+  padding: 2px 8px;
+  border-radius: var(--radius-xs, 4px);
+  white-space: nowrap;
+}
+
+.privacy-level-body {
+  font-size: 12px;
+}
+
+.privacy-level-scope {
+  color: var(--c-texto-suave);
+  margin: 0 0 8px 0;
+  line-height: 1.45;
+}
+
+.privacy-level-label {
+  color: var(--c-texto);
+  font-weight: 600;
+}
+
+.privacy-level-safeguard {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--c-borde-suave);
+}
+
+.privacy-level-safeguard-text {
+  font-size: 12px;
+  color: var(--c-texto);
+  line-height: 1.45;
+  margin: 0;
+  flex: 1;
+}
+
+/* 2. Inspector Estructurado de Consentimientos */
+.consent-inspector-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 20px;
+  align-items: flex-start;
+  margin-top: 16px;
+}
+
+@media (max-width: 860px) {
+  .consent-inspector-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.consent-inspector-summary {
+  background: var(--c-fondo);
+  border: 1px solid var(--c-borde-suave);
+  border-radius: var(--radius-card, 8px);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.consent-coverage-box {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.consent-coverage-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--c-texto-suave);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.consent-coverage-value {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.consent-coverage-number {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--c-primario);
+  line-height: 1;
+}
+
+.consent-coverage-total {
+  font-size: 13px;
+  color: var(--c-texto-suave);
+}
+
+.consent-coverage-bar {
+  height: 6px;
+  width: 100%;
+  background: var(--c-borde-suave);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.consent-coverage-bar-fill {
+  height: 100%;
+  background: var(--c-primario);
+  border-radius: 3px;
+  transition: width 0.2s ease;
+}
+
+.consent-status-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 0;
+  border-top: 1px solid var(--c-borde-suave);
+  border-bottom: 1px solid var(--c-borde-suave);
+  font-size: 12px;
+}
+
+.consent-meta-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.consent-meta-label {
+  color: var(--c-texto-suave);
+}
+
+.consent-meta-val {
+  color: var(--c-texto);
+  font-weight: 500;
+}
+
+.consent-guarantee-note {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  background: var(--c-superficie);
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid var(--c-borde-suave);
+}
+
+.consent-action-btn {
+  width: 100%;
+  justify-content: center;
+}
+
+/* Tabla / Registro Unificado de Finalidades */
+.consent-inspector-table {
+  background: var(--c-superficie);
+  border: 1px solid var(--c-borde-suave);
+  border-radius: var(--radius-card, 8px);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm, 0 1px 2px rgba(0, 0, 0, 0.04));
+}
+
+.consent-table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  background: var(--c-fondo);
+  border-bottom: 1px solid var(--c-borde-suave);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--c-texto-mutado);
+}
+
+.consent-table-col-purpose {
+  flex: 1;
+}
+
+.consent-table-col-status {
+  flex: 0 0 auto;
+  text-align: right;
+}
+
+.consent-table-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.consent-purpose-row {
+  border-bottom: 1px solid var(--c-borde-suave);
+  background: var(--c-superficie);
+  transition: background-color 0.15s ease;
+}
+
+.consent-purpose-row:last-child {
+  border-bottom: none;
+}
+
+.consent-purpose-row:hover {
+  background-color: var(--c-fondo);
+}
+
+.consent-purpose-row.is-expanded {
+  background-color: var(--c-fondo-subtle);
+}
+
+.consent-row-main-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  gap: 16px;
+  width: 100%;
+  box-sizing: border-box;
+  background: transparent;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  user-select: none;
+  font-family: inherit;
+  color: inherit;
+  transition: background-color 0.15s ease;
+}
+
+.consent-row-main-btn:focus-visible {
+  outline: 2px solid var(--c-primario);
+  outline-offset: -2px;
+}
+
+.consent-row-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.consent-code-badge {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--c-primario);
+  background: var(--c-primario-suave);
+  border: 1px solid var(--c-primario-border);
+  padding: 2px 7px;
+  border-radius: var(--radius-xs, 4px);
+  flex-shrink: 0;
+  letter-spacing: 0.02em;
+}
+
+.consent-row-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.consent-row-title-line {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 2px;
+}
+
+.consent-row-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--c-texto);
+}
+
+.consent-scope-tag {
+  font-size: 10.5px;
+  color: var(--c-texto-suave);
+  background: var(--c-superficie);
+  border: 1px solid var(--c-borde-suave);
+  padding: 1px 6px;
+  border-radius: var(--radius-xs, 4px);
+}
+
+.consent-row-desc {
+  font-size: 11.5px;
+  color: var(--c-texto-suave);
+  margin: 0;
+  line-height: 1.35;
+}
+
+/* Alineación fija e inmutable a la derecha */
+.consent-row-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  flex: 0 0 auto;
+  margin-left: auto;
+}
+
+.consent-status-badge {
+  min-width: 98px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: var(--radius-xs, 4px);
+  text-align: center;
+}
+
+.consent-expand-indicator {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid var(--c-borde-suave);
+  border-radius: var(--radius-xs, 4px);
+  color: var(--c-texto-suave);
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+
+.consent-purpose-row:hover .consent-expand-indicator {
+  background: var(--c-superficie);
+  color: var(--c-texto);
+  border-color: var(--c-borde);
+}
+
+.consent-row-impact-box {
+  padding: 10px 16px 12px 16px;
+  background: var(--c-fondo-subtle);
+  border-top: 1px dashed var(--c-borde-suave);
+  animation: fadeIn 0.12s ease-in-out;
+}
+
+.consent-impact-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.consent-impact-text {
+  font-size: 12px;
+  color: var(--c-texto-suave);
+  line-height: 1.45;
+}
+
+/* 3. Explorador de Registros */
+.records-filter-pills {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.records-filter-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  font-size: 12.5px;
+  font-weight: 500;
+  border: 1px solid var(--c-borde-suave);
+  background: var(--c-superficie);
+  color: var(--c-texto-suave);
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.records-filter-pill.is-active {
+  background: var(--c-primario);
+  color: #fff;
+  border-color: var(--c-primario);
+}
+
+.records-filter-pill:hover:not(.is-active) {
+  background: var(--c-fondo);
+  color: var(--c-texto);
+}
+
+.records-filter-count {
+  font-size: 11px;
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+.records-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.record-item-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 14px;
+  background: var(--c-fondo);
+  border: 1px solid var(--c-borde-suave);
+  border-radius: var(--radius-card, 8px);
+  transition: border-color 0.15s ease;
+  flex-wrap: wrap;
+}
+
+.record-item-card:hover {
+  border-color: var(--c-borde);
+}
+
+.record-item-main {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  flex: 1;
+  min-width: 260px;
+}
+
+.record-item-icon-box {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: var(--c-superficie);
+  border: 1px solid var(--c-borde-suave);
+}
+
+.record-item-icon-box.icon-primary {
+  color: var(--c-primario);
+}
+
+.record-item-icon-box.icon-teal {
+  color: #0d9488;
+}
+
+.record-item-icon-box.icon-purple {
+  color: #8b5cf6;
+}
+
+.record-item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.record-item-header-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 2px;
+}
+
+.record-item-title {
+  font-size: 13px;
+  color: var(--c-texto);
+}
+
+.record-item-date {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11.5px;
+  color: var(--c-texto-suave);
+}
+
+.record-item-desc {
+  font-size: 12px;
+  color: var(--c-texto-suave);
+  margin: 0;
+  line-height: 1.35;
+}
+
+.record-item-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.records-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 36px 16px;
+  text-align: center;
+  background: var(--c-fondo);
+  border-radius: var(--radius-card, 8px);
+  border: 1px dashed var(--c-borde-suave);
+}
+
+/* 4. Línea de Tiempo de Habeas Data */
+.habeas-timeline-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.habeas-request-card {
+  padding: 14px 16px;
+  background: var(--c-fondo);
+  border: 1px solid var(--c-borde-suave);
+  border-radius: var(--radius-card, 8px);
+}
+
+.habeas-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.habeas-code-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.habeas-type-icon-box {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  background: var(--c-superficie);
+  border: 1px solid var(--c-borde-suave);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--c-primario);
+  flex-shrink: 0;
+}
+
+.habeas-id-text {
+  font-size: 13px;
+  color: var(--c-texto);
+}
+
+.habeas-type-sep {
+  color: var(--c-texto-suave);
+  margin: 0 4px;
+}
+
+.habeas-type-text {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--c-texto-suave);
+}
+
+.habeas-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+}
+
+.habeas-dates-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11.5px;
+  color: var(--c-texto-suave);
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+
+.habeas-date-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.habeas-date-sep {
+  color: var(--c-borde-suave);
+}
+
+.habeas-note-box {
+  font-size: 12px;
+  color: var(--c-texto-suave);
+  background: var(--c-superficie);
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--c-borde-suave);
+  margin-top: 6px;
+}
+
+.habeas-note-label {
+  font-weight: 600;
+  color: var(--c-texto);
+}
+
+.habeas-response-box {
+  font-size: 12px;
+  color: var(--c-texto);
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  padding: 8px 10px;
+  border-radius: 6px;
+  margin-top: 8px;
+}
+
+/* 5. Modal de Supresión */
+.privacy-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 16px;
+  backdrop-filter: blur(2px);
+}
+
+.privacy-modal-dialog {
+  max-width: 540px;
+  width: 100%;
+  box-shadow: var(--shadow-lg, 0 10px 25px rgba(0, 0, 0, 0.15));
+  border: 1px solid var(--c-borde);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+/* Badges semánticos auxiliares si no existen globalmente */
+.badge-purple {
+  background: rgba(139, 92, 246, 0.1);
+  color: #8b5cf6;
+  border: 1px solid rgba(139, 92, 246, 0.25);
+}
+
+.badge-neutral {
+  background: var(--c-fondo);
+  color: var(--c-texto-suave);
+  border: 1px solid var(--c-borde-suave);
+}

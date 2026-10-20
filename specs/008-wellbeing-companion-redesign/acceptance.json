@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "criteria": [
+    {
+      "id": "AC-01",
+      "status": "passed",
+      "method": "manual",
+      "evidence": "Matriz somática reorganizada en dos columnas limpias (Cuerpo & Vitalidad vs. Operación & Entorno) con medidores de 4px e iconografía sobria."
+    },
+    {
+      "id": "AC-02",
+      "status": "passed",
+      "method": "manual",
+      "evidence": "Descripciones cualitativas y operativas integradas en helpers sin cajas repetitivas tipo pauta ergonómica."
+    },
+    {
+      "id": "AC-03",
+      "status": "passed",
+      "method": "manual",
+      "evidence": "Erradicado el banner paternalista de intervención y los botones intrusivos de respiración que no correspondían a una vista de consulta histórica."
+    },
+    {
+      "id": "AC-04",
+      "status": "passed",
+      "method": "manual",
+      "evidence": "WellbeingTrendChart implementado con curvas Bezier spline, degradado vertical, líneas guía de referencia (1 a 5), tooltip en hover y click para seleccionar jornada."
+    },
+    {
+      "id": "AC-05",
+      "status": "passed",
+      "method": "manual",
+      "evidence": "Selector de jornadas compacto con pills de puntaje y navegación accesible por teclado mediante flechas WAI-ARIA."
+    },
+    {
+      "id": "AC-06",
+      "status": "passed",
+      "method": "manual",
+      "evidence": "Erradicado el badge de slop 'Registros personales confidenciales' junto al título y etiquetas 'BLOQUE 1/2'; empty state con imagen oficial bpo-agent-pause-completed.jpg."
+    },
+    {
+      "id": "AC-07",
+      "status": "passed",
+      "method": "automated",
+      "evidence": "npm run lint con 0 errores, npm test con 55/55 pruebas pasando y build de Vite completado en 5.67s."
+    }
+  ]
+}

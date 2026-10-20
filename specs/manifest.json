@@ -2,7 +2,7 @@
   "$schema": "./.omni/runtime/schema/manifest.schema.json",
   "schemaVersion": 1,
   "project": "Pulso360",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "profile": "general",
   "stack": "Monorepo: Express / JavaScript + React / JavaScript",
   "documentationStandard": "JSDoc",
@@ -121,6 +121,38 @@
         "mode": "automated",
         "verifiedAt": "2026-10-19T22:12:53.956Z",
         "fingerprint": "5ea4967832c43a29f2542ebb1ca1c05014e5f3c68b587c93437432f463c64e1e"
+      }
+    },
+    {
+      "id": "008",
+      "type": "feature",
+      "slug": "008-wellbeing-companion-redesign",
+      "title": "Wellbeing Companion Redesign",
+      "status": "COMPLETED",
+      "created_at": "2026-10-20",
+      "branch": "feat/008-wellbeing-companion-redesign",
+      "updated_at": "2026-10-20T01:17:38.264Z",
+      "completed_at": "2026-10-20T01:17:38.264Z",
+      "verification": {
+        "mode": "automated",
+        "verifiedAt": "2026-10-20T01:17:12.408Z",
+        "fingerprint": "c2c4035cd76df5a132b4aa399216a2b0b29c9ab684a1c39dbad4a49444149bf1"
+      }
+    },
+    {
+      "id": "009",
+      "type": "feature",
+      "slug": "009-agent-my-data-hub",
+      "title": "Agent My Data Hub",
+      "status": "COMPLETED",
+      "created_at": "2026-10-20",
+      "branch": "feat/009-agent-my-data-hub",
+      "updated_at": "2026-10-20T14:54:46.505Z",
+      "completed_at": "2026-10-20T14:54:46.505Z",
+      "verification": {
+        "mode": "automated",
+        "verifiedAt": "2026-10-20T14:54:39.814Z",
+        "fingerprint": "2ecb9bc232bce1bfc4d6289c0d73c44cc2f4e657b5bd925a607fb6304c4061de"
       }
     }
   ]

@@ -1,19 +1,31 @@
 import { useNavigate } from 'react-router-dom';
-import { RectificationRequestForm } from '../components/RectificationRequestForm';
-import { ConsentPreferencesLink } from '../components/ConsentPreferencesLink';
-import { PrivacySummary } from '../components/PrivacySummary';
 import { useMyDataPrivacy } from '../hooks/useMyDataPrivacy';
 
-// src/features/agent/pages/MyDataPrivacyPage.jsx
-// Panel de Habeas Data, inventario, portabilidad y supresión de datos personales (RF-14 / Ley 1581 de 2012)
-
 import { Icon } from '../../../core/components/Icon';
-import { DownloadLink } from '../../../core/components/DownloadLink';
+import { PrivacyVisibilityMatrix } from '../components/PrivacyVisibilityMatrix';
+import { ConsentSummaryCard } from '../components/ConsentSummaryCard';
+import { AgentRecordsExplorer } from '../components/AgentRecordsExplorer';
+import { HabeasDataActionCenter } from '../components/HabeasDataActionCenter';
+import { SuppressionConfirmModal } from '../components/SuppressionConfirmModal';
+import { HabeasRequestsTimeline } from '../components/HabeasRequestsTimeline';
+
 import '../../../styles/agent.css';
 
+/**
+ * Centro de Datos Personales, Salvaguardas y Habeas Data del Agente.
+ * Organizado en 3 pestañas focales accesibles bajo el estándar WAI-ARIA.
+ */
 export function MyDataPrivacyPage() {
   const navigate = useNavigate();
-  const { loading,loadError,
+
+  const {
+    loading,
+    loadError,
+    activeTab,
+    setActiveTab,
+    handleTabKeyDown,
+    isSuppressionModalOpen,
+    setIsSuppressionModalOpen,
     rectificationText,
     setRectificationText,
     rectificationFeedback,
@@ -21,20 +33,82 @@ export function MyDataPrivacyPage() {
     setSuppressionConfirmText,
     suppressionFeedback,
     formatDate,
-    calculateDateRange,
     summary,
     portabilityFiles,
     handleDownloadPortability,
     handleRectificationSubmit,
     handleSuppressionSubmit,
+    handleSelectForRectification,
     isSuppressionConfirmed
   } = useMyDataPrivacy();
 
-  if (loading) return <p role="status">Cargando tus datos…</p>;
-  if (loadError) return <p className="alert-banner danger" role="alert">{loadError}</p>;
+  // 1. Estado de Carga
+  if (loading) {
+    return (
+      <div className="agent-page agent-page--privacy">
+        <div className="loading-state-box" role="status" style={{ padding: '48px 16px', textAlign: 'center' }}>
+          <Icon name="RefreshCw" size={24} className="icon-spin" style={{ color: 'var(--c-primario)', marginBottom: '12px' }} />
+          <p style={{ fontSize: '13.5px', color: 'var(--c-texto-suave)', margin: 0 }}>
+            Consultando registros y salvaguardas de privacidad…
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // 2. Estado de Error
+  if (loadError) {
+    return (
+      <div className="agent-page agent-page--privacy">
+        <nav className="agent-subnav" aria-label="Navegación secundaria">
+          <button
+            type="button"
+            className="agent-back-btn"
+            onClick={() => navigate('/agente/panel')}
+            aria-label="Volver al panel principal del agente"
+          >
+            <Icon name="arrowLeft" size={16} />
+            <span>Volver al panel</span>
+          </button>
+        </nav>
+        <div className="alert-banner danger" role="alert" style={{ marginTop: '20px' }}>
+          <Icon name="AlertTriangle" size={16} />
+          <div>
+            <strong>Error al cargar la información:</strong> {loadError}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const totalRecordsCount =
+    (summary?.checkins?.length || 0) +
+    (summary?.journals?.length || 0) +
+    (summary?.support?.length || 0);
+
+  const tabs = [
+    {
+      id: 'safeguards',
+      label: 'Salvaguardas & Quién ve qué',
+      icon: 'ShieldCheck'
+    },
+    {
+      id: 'records',
+      label: 'Mi Registro de Datos',
+      icon: 'FileLock',
+      count: totalRecordsCount
+    },
+    {
+      id: 'habeas',
+      label: 'Derechos & Trámites',
+      icon: 'Scale',
+      count: summary?.requests?.length || 0
+    }
+  ];
+
   return (
     <div className="agent-page agent-page--privacy">
-      {/* Subnavegación unificada */}
+      {/* Subnavegación de retorno */}
       <nav className="agent-subnav" aria-label="Navegación secundaria">
         <button
           type="button"
@@ -47,222 +121,104 @@ export function MyDataPrivacyPage() {
         </button>
       </nav>
 
-      <header className="page-header" style={{ marginBottom: 0 }}>
-        <div>
-          <h1 className="page-title">Aquí controlas tus datos personales</h1>
-          <p className="page-subtitle">
-            Consulta, rectificación, portabilidad y solicitud de supresión de tus datos personales (Ley 1581 de 2012).
-          </p>
-        </div>
+      {/* Cabecera institucional sobria */}
+      <header className="page-header" style={{ marginBottom: '20px' }}>
+        <h1 className="page-title">Centro de Datos y Privacidad del Agente</h1>
+        <p className="page-subtitle">
+          Transparencia total sobre tu información, quién tiene acceso y tus derechos bajo la Ley Estatutaria 1581 de 2012.
+        </p>
       </header>
 
-      {/* 1. Inventario de Información Propia */}
-      <PrivacySummary summary={summary} calculateDateRange={calculateDateRange} formatDate={formatDate} />
+      {/* Barra de pestañas WAI-ARIA */}
+      <div className="agent-privacy-tabs" role="tablist" aria-label="Pestañas de gestión de datos personales y privacidad">
+        {tabs.map((tab) => {
+          const isActive = activeTab === tab.id;
+          return (
+            <button
+              key={tab.id}
+              id={`tab-${tab.id}`}
+              type="button"
+              role="tab"
+              aria-selected={isActive}
+              aria-controls={`panel-${tab.id}`}
+              tabIndex={isActive ? 0 : -1}
+              className={`agent-privacy-tab ${isActive ? 'agent-privacy-tab--active' : ''}`}
+              onClick={() => setActiveTab(tab.id)}
+              onKeyDown={(e) => handleTabKeyDown(e, tab.id)}
+            >
+              <Icon name={tab.icon} size={15} />
+              <span>{tab.label}</span>
+              {typeof tab.count === 'number' && (
+                <span className={`agent-privacy-tab-badge ${isActive ? 'is-active' : ''}`}>
+                  {tab.count}
+                </span>
+              )}
+            </button>
+          );
+        })}
+      </div>
 
-      {/* 2. Consentimientos y Solicitud de Rectificación */}
+      {/* Pestaña 1: Salvaguardas & Quién ve qué */}
       <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-          gap: '20px',
-          marginBottom: '24px'
-        }}
+        id="panel-safeguards"
+        role="tabpanel"
+        aria-labelledby="tab-safeguards"
+        hidden={activeTab !== 'safeguards'}
+        className="privacy-tab-content"
       >
-        <ConsentPreferencesLink />
+        <PrivacyVisibilityMatrix />
+        <ConsentSummaryCard consent={summary.consent} formatDate={formatDate} />
+      </div>
 
-        <RectificationRequestForm
+      {/* Pestaña 2: Mi Registro de Datos */}
+      <div
+        id="panel-records"
+        role="tabpanel"
+        aria-labelledby="tab-records"
+        hidden={activeTab !== 'records'}
+        className="privacy-tab-content"
+      >
+        <AgentRecordsExplorer
+          summary={summary}
+          formatDate={formatDate}
+          onSelectForRectification={handleSelectForRectification}
+        />
+      </div>
+
+      {/* Pestaña 3: Derechos & Trámites Habeas Data */}
+      <div
+        id="panel-habeas"
+        role="tabpanel"
+        aria-labelledby="tab-habeas"
+        hidden={activeTab !== 'habeas'}
+        className="privacy-tab-content"
+      >
+        <HabeasDataActionCenter
           rectificationText={rectificationText}
           setRectificationText={setRectificationText}
           handleRectificationSubmit={handleRectificationSubmit}
           rectificationFeedback={rectificationFeedback}
+          onOpenSuppressionModal={() => setIsSuppressionModalOpen(true)}
+          portabilityFiles={portabilityFiles}
+          handleDownloadPortability={handleDownloadPortability}
         />
+
+        <HabeasRequestsTimeline requests={summary.requests} formatDate={formatDate} />
       </div>
 
-      {/* 3. Portabilidad de Datos */}
-      <div className="card" style={{ marginBottom: '24px' }}>
-        <div className="card-title">Portabilidad de datos propios</div>
-        <p style={{ fontSize: '13px', color: 'var(--c-texto-suave)', margin: '8px 0 16px' }}>
-          Descarga una copia estructurada de los registros asociados a tu cuenta. La descarga se prepara en tu navegador.
-        </p>
-        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-          <DownloadLink
-            className="btn btn-secondary btn-sm"
-            content={portabilityFiles.json}
-            mimeType="application/json"
-            fileName={`${portabilityFiles.fileNameBase}.json`}
-            onDownload={() => handleDownloadPortability('json')}
-          >
-            <Icon name="download" size={15} />
-            <span>Descargar JSON estructurado</span>
-          </DownloadLink>
-          <DownloadLink
-            className="btn btn-secondary btn-sm"
-            content={portabilityFiles.csv}
-            mimeType="text/csv"
-            fileName={`${portabilityFiles.fileNameBase}.csv`}
-            onDownload={() => handleDownloadPortability('csv')}
-          >
-            <Icon name="download" size={15} />
-            <span>Descargar CSV propio</span>
-          </DownloadLink>
-        </div>
-      </div>
-
-      {/* 4. Solicitud Formal de Supresión */}
-      <div style={{ marginTop: '32px', marginBottom: '8px' }}>
-        <span
-          style={{
-            fontSize: '11.5px',
-            fontWeight: '700',
-            textTransform: 'uppercase',
-            letterSpacing: '0.05em',
-            color: 'var(--c-texto-suave)'
-          }}
-        >
-          Zona de gestión de derechos y supresión
-        </span>
-        <hr style={{ border: 'none', borderTop: '1px solid var(--c-borde-suave)', margin: '8px 0 16px' }} />
-      </div>
-      <div className="card" style={{ border: '1px solid var(--c-critico-border)', marginBottom: '24px' }}>
-        <div className="card-title" style={{ color: 'var(--c-critico)' }}>
-          Solicitud formal de supresión de datos
-        </div>
-        <p style={{ fontSize: '13px', color: 'var(--c-texto-suave)', margin: '8px 0 16px' }}>
-          Esta acción registra una solicitud para revisión administrativa. El registro del trámite no ejecuta automáticamente la supresión o disociación de datos.
-        </p>
-
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-            gap: '16px',
-            background: 'var(--c-fondo)',
-            padding: '14px',
-            borderRadius: 'var(--radius-card, 8px)',
-            marginBottom: '16px'
-          }}
-        >
-          <div>
-            <strong style={{ fontSize: '12.5px', color: 'var(--c-texto)' }}>Información que puedes solicitar revisar:</strong>
-            <ul
-              style={{
-                fontSize: '12px',
-                color: 'var(--c-texto-suave)',
-                paddingLeft: '18px',
-                marginTop: '6px'
-              }}
-            >
-              <li>Textos de tus bitácoras</li>
-              <li>Clasificación NLP vinculada a tus textos</li>
-              <li>Tus check-ins y solicitudes de apoyo</li>
-            </ul>
-          </div>
-          <div>
-            <strong style={{ fontSize: '12.5px', color: 'var(--c-texto)' }}>
-              Datos que conserva el radicado:
-            </strong>
-            <ul
-              style={{
-                fontSize: '12px',
-                color: 'var(--c-texto-suave)',
-                paddingLeft: '18px',
-                marginTop: '6px'
-              }}
-            >
-              <li>Tipo de solicitud y nota del titular</li>
-              <li>Estado del trámite y fecha de vencimiento</li>
-              <li>Respuesta administrativa registrada</li>
-            </ul>
-          </div>
-        </div>
-
-        <p style={{ fontSize: '13px', color: 'var(--c-texto-suave)', marginBottom: '10px' }}>
-          Para confirmar, escribe la palabra <strong style={{ color: 'var(--c-critico)' }}>SUPRIMIR</strong>{' '}
-          en el siguiente campo:
-        </p>
-
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '10px' }}>
-          <input
-            className="form-input"
-            placeholder="Escribe SUPRIMIR..."
-            autoComplete="off"
-            value={suppressionConfirmText}
-            onChange={(e) => setSuppressionConfirmText(e.target.value)}
-            style={{ maxWidth: '240px' }}
-          />
-          <button
-            type="button"
-            className="btn btn-danger"
-            disabled={!isSuppressionConfirmed}
-            onClick={handleSuppressionSubmit}
-          >
-            <span>Crear solicitud de supresión</span>
-          </button>
-        </div>
-
-        {suppressionFeedback && (
-          <div className="form-feedback info" style={{ marginTop: '12px' }}>
-            {suppressionFeedback}
-          </div>
-        )}
-      </div>
-
-      {/* 5. Seguimiento de Solicitudes de Habeas Data */}
-      <div className="card">
-        <div className="card-header">
-          <div>
-            <div className="card-title">Seguimiento de mis solicitudes de Habeas Data</div>
-            <div className="card-subtitle">
-              Los festivos colombianos no están incluidos en el cálculo automático de días hábiles.
-            </div>
-          </div>
-        </div>
-
-        <div
-          id="requestTimeline"
-          style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '16px' }}
-        >
-          {summary.requests.length === 0 ? (
-            <p style={{ color: 'var(--c-texto-suave)', margin: '16px 0', textAlign: 'center' }}>
-              No tienes solicitudes Habeas Data registradas.
-            </p>
-          ) : (
-            summary.requests.map((req) => (
-              <div
-                key={req.id}
-                style={{
-                  padding: '14px',
-                  background: 'var(--c-fondo)',
-                  borderRadius: 'var(--radius-card, 8px)',
-                  border: '1px solid var(--c-borde-suave)'
-                }}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <strong style={{ fontSize: '13.5px', color: 'var(--c-texto)' }}>
-                    {req.id} · {req.type}
-                  </strong>
-                  <span className="badge badge-info">{req.status}</span>
-                </div>
-                <div style={{ fontSize: '12px', color: 'var(--c-texto-suave)', margin: '4px 0' }}>
-                  Radicada: {formatDate(req.createdAt)} · Fecha objetivo: {formatDate(req.deadline)}
-                </div>
-                {req.note && (
-                  <div
-                    style={{
-                      fontSize: '12px',
-                      color: 'var(--c-texto-suave)',
-                      fontStyle: 'italic',
-                      marginTop: '4px'
-                    }}
-                  >
-                    Nota: {req.note}
-                  </div>
-                )}
-              </div>
-            ))
-          )}
-        </div>
-      </div>
+      {/* Modal Seguro de Confirmación para Supresión */}
+      <SuppressionConfirmModal
+        isOpen={isSuppressionModalOpen}
+        onClose={() => setIsSuppressionModalOpen(false)}
+        suppressionConfirmText={suppressionConfirmText}
+        setSuppressionConfirmText={setSuppressionConfirmText}
+        handleSuppressionSubmit={async () => {
+          await handleSuppressionSubmit();
+          setIsSuppressionModalOpen(false);
+        }}
+        suppressionFeedback={suppressionFeedback}
+        isSuppressionConfirmed={isSuppressionConfirmed}
+      />
     </div>
   );
 }

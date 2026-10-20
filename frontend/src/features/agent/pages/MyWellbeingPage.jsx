@@ -1,18 +1,18 @@
+// src/features/agent/pages/MyWellbeingPage.jsx
+// Visualización del histórico de bienestar personal del agente (RF-11 / Paleta Pulso Calma)
+// Inspector somático sobrio, interactivo, libre de slop y sin disclaimers redundantes.
+
+import { Link } from 'react-router-dom';
 import { WellbeingHistory } from '../components/WellbeingHistory';
 import { useMyWellbeing } from '../hooks/useMyWellbeing';
 import { DIMENSION_DEFINITIONS, formatShiftTabDate } from '../services/myWellbeingHelpers';
-// src/features/agent/pages/MyWellbeingPage.jsx
-// Visualización del histórico de bienestar personal del agente (RF-11 / Paleta Pulso Calma)
-// Inspector Somático de Turno con Ventana Acotada (Cero redundancia, sin scroll infinito).
-
-import { Link } from 'react-router-dom';
-
 import { Icon } from '../../../core/components/Icon';
-
 import '../../../styles/bienestar.css';
 
 export function MyWellbeingPage() {
-  const { loading,loadError,
+  const {
+    loading,
+    loadError,
     navigate,
     checkinRecords,
     recentShifts,
@@ -20,11 +20,21 @@ export function MyWellbeingPage() {
     activeShift,
     trendData,
     averageEnergy,
-    isViewingLatest
+    isViewingLatest,
+    handleTabKeyDown
   } = useMyWellbeing();
-  if (loading) return <p className="agent-page" role="status">Cargando tus registros…</p>;
-  if (loadError) return <p className="agent-page alert-banner danger" role="alert">{loadError}</p>;
 
+  if (loading) {
+    return <p className="agent-page" role="status">Cargando tus registros de bienestar…</p>;
+  }
+
+  if (loadError) {
+    return <p className="agent-page alert-banner danger" role="alert">{loadError}</p>;
+  }
+
+  // Agrupación en dos columnas limpias: Cuerpo & Vitalidad vs. Operación & Entorno
+  const bodyDimensions = DIMENSION_DEFINITIONS.filter((d) => d.group === 'body');
+  const operationDimensions = DIMENSION_DEFINITIONS.filter((d) => d.group === 'operation');
 
   return (
     <div className="agent-page wellbeing-editorial-page">
@@ -41,14 +51,13 @@ export function MyWellbeingPage() {
         </button>
       </nav>
 
-      {/* 2. Cabecera Editorial Limpia */}
+      {/* 2. Cabecera Editorial Limpia (Sin badges decorativos) */}
       <header className="wellbeing-header">
         <div className="wellbeing-header-main">
           <div>
             <h1 className="wellbeing-title">Mi tendencia personal de bienestar</h1>
             <p className="wellbeing-subtitle">
-              Historial confidencial de tus registros somáticos y ritmo de turnos. Tus respuestas individuales no se
-              exponen en la supervisión colectiva.
+              Historial somático y ritmo de recuperación en tus turnos operativos. Consulta la evolución de tu vitalidad y compara el desgaste entre jornadas.
             </p>
           </div>
           <Link to="/agente/checkin" className="btn btn-secondary wellbeing-header-btn">
@@ -58,42 +67,53 @@ export function MyWellbeingPage() {
         </div>
       </header>
 
-      {/* 4. Nivel 1: Tendencia de Batería de Turno del Ciclo Reciente */}
+      {/* 3. Nivel 1: Gráfico Interactivo Curvo con Curvatura Bezier, Gradiente y Tooltip */}
       {trendData.labels.length >= 2 && (
-        <WellbeingHistory trendData={trendData} averageEnergy={averageEnergy} />
+        <WellbeingHistory
+          recentShifts={recentShifts}
+          averageEnergy={averageEnergy}
+          selectedShiftId={activeShift.id}
+          onSelectShift={setSelectedShiftId}
+        />
       )}
 
-      {/* 5. Nivel 2: Inspector Somático por Jornada (Cero Choque de Títulos, Cero Duplicación) */}
+      {/* 4. Nivel 2: Inspector Somático de Jornada */}
       <section className="wellbeing-section" aria-labelledby="somatic-matrix-heading">
         <div className="wellbeing-section-header">
           <div className="wellbeing-section-title-wrap">
             <h2 id="somatic-matrix-heading" className="wellbeing-section-title">
               <Icon name="ClipboardList" size={18} aria-hidden="true" />
-              <span>Detalle somático por jornada</span>
+              <span>Desglose somático por jornada</span>
             </h2>
             <p className="wellbeing-section-desc">
-              Selecciona una jornada reciente para inspeccionar sus 6 dimensiones somáticas y recomendaciones
-              ergonómicas.
+              Selecciona una fecha en el gráfico o en las pestañas para inspeccionar los 6 factores autorreportados en ese turno.
             </p>
           </div>
         </div>
 
         {checkinRecords.length === 0 ? (
+          /* Empty State con Fotografía Documental BPO */
           <div className="wellbeing-empty-state">
-            <Icon name="ClipboardList" size={40} className="wellbeing-empty-icon" aria-hidden="true" />
-            <h3 className="wellbeing-empty-title">Aún no tienes registros de bienestar</h3>
-            <p className="wellbeing-empty-desc">
-              Cada check-in diario te ayuda a monitorear tu batería y nivel de tensión entre llamadas en total
-              privacidad. Al completar tu primer registro podrás inspeccionar aquí tus dimensiones somáticas.
-            </p>
-            <Link to="/agente/checkin" className="wellbeing-action-btn wellbeing-action-btn--primary">
-              <Icon name="heartPulse" size={18} />
-              <span>Completar mi primer check-in</span>
-            </Link>
+            <img
+              src="/assets/fotos/bpo-agent-pause-completed.jpg"
+              alt="Operadora de Contact Center en su puesto de trabajo serena tras completar su pausa"
+              className="wellbeing-empty-photo"
+              loading="lazy"
+            />
+            <div className="wellbeing-empty-content">
+              <h3 className="wellbeing-empty-title">Aún no tienes registros de bienestar</h3>
+              <p className="wellbeing-empty-desc">
+                Cada check-in diario al cierre de turno te permite monitorear tu vitalidad, tensión en llamadas y calidad de descanso a lo largo de las semanas.
+              </p>
+              <Link to="/agente/checkin" className="btn btn-primary wellbeing-empty-cta">
+                <Icon name="heartPulse" size={16} />
+                <span>Completar mi primer check-in</span>
+              </Link>
+            </div>
           </div>
         ) : (
           <div>
-            {/* Selector Horizontal de Turnos Recientes */}
+            {/* Selector Horizontal Compacto de Turnos Recientes con WAI-ARIA */}
             <div className="wellbeing-shift-selector-wrap">
               <div
                 className="wellbeing-shift-selector"
@@ -103,6 +123,8 @@ export function MyWellbeingPage() {
                 {recentShifts.map((shift, idx) => {
                   const isActive = activeShift.id === shift.id;
                   const isLatest = idx === 0;
+                  const energyVal = shift.energia;
+                  const energyTone = energyVal <= 2 ? 'alert' : energyVal === 3 ? 'warm' : 'calm';
 
                   return (
                     <button
@@ -112,12 +134,21 @@ export function MyWellbeingPage() {
                       aria-selected={isActive}
                       aria-controls="somatic-panel"
                       id={`tab-${shift.id}`}
+                      tabIndex={isActive ? 0 : -1}
                       className={`wellbeing-shift-tab ${isActive ? 'is-active' : ''}`}
                       onClick={() => setSelectedShiftId(shift.id)}
+                      onKeyDown={(e) => handleTabKeyDown(e, shift.id)}
                     >
-                      <span className="wellbeing-shift-tab-date">
-                        {formatShiftTabDate(shift.date, isLatest)}
-                      </span>
+                      <div className="wellbeing-shift-tab-top">
+                        <span className="wellbeing-shift-tab-date">
+                          {formatShiftTabDate(shift.date, isLatest)}
+                        </span>
+                        {energyVal != null && (
+                          <span className={`wellbeing-shift-tab-pill wellbeing-shift-tab-pill--${energyTone}`}>
+                            {energyVal}/5
+                          </span>
+                        )}
+                      </div>
                       <span className="wellbeing-shift-tab-type">{shift.shiftType || 'Turno operativo'}</span>
                     </button>
                   );
@@ -126,10 +157,10 @@ export function MyWellbeingPage() {
             </div>
 
             {/* Ficha Activa de la Jornada Inspeccionada */}
-            <div id="somatic-panel" role="tabpanel" aria-labelledby={`tab-${activeShift.id}`}>
+            <div id="somatic-panel" role="tabpanel" aria-labelledby={`tab-${activeShift.id}`} className="wellbeing-active-panel">
               <div className="wellbeing-shift-active-meta">
                 <div className="wellbeing-shift-active-info">
-                  <Icon name="calendar" size={16} aria-hidden="true" />
+                  <Icon name="calendar" size={15} aria-hidden="true" />
                   <span>
                     Jornada del {activeShift.date} · {activeShift.shiftType || 'Turno operativo'}
                   </span>
@@ -139,64 +170,117 @@ export function MyWellbeingPage() {
                 </div>
               </div>
 
-              {/* Matriz Somática Continua de las 6 Dimensiones */}
-              <div id="wellbeingGrid" className="wellbeing-matrix-list" role="list">
-                {DIMENSION_DEFINITIONS.map((dim) => {
-                  const val = activeShift[dim.key];
-                  const displayVal = val != null ? val : '–';
-                  const hasVal = val != null;
-                  const interpretation = dim.evaluator(val);
+              {/* Matriz Somática en 2 Columnas Equilibradas */}
+              <div className="wellbeing-two-col-grid">
+                {/* Columna 1: Cuerpo y Vitalidad */}
+                <div className="wellbeing-group-card">
+                  <h3 className="wellbeing-group-heading">Cuerpo y vitalidad somática</h3>
+                  <div className="wellbeing-dim-list">
+                    {bodyDimensions.map((dim) => {
+                      const val = activeShift[dim.key];
+                      const displayVal = val != null ? val : '–';
+                      const hasVal = val != null;
+                      const interpretation = dim.evaluator(val);
 
-                  return (
-                    <div key={dim.key} className="wellbeing-matrix-row" role="listitem">
-                      <div className="wellbeing-matrix-info">
-                        <div className="wellbeing-matrix-heading">
-                          <span className="wellbeing-matrix-name">{dim.label}</span>
-                        </div>
-                        <p className="wellbeing-matrix-desc">{dim.desc}</p>
-                      </div>
-
-                      <div className="wellbeing-matrix-gauge">
-                        {hasVal && (
-                          <div
-                            className="wellbeing-meter-track"
-                            role="progressbar"
-                            aria-valuenow={val}
-                            aria-valuemin={1}
-                            aria-valuemax={5}
-                            aria-label={`${dim.label}: ${val} sobre 5`}
-                          >
-                            <div
-                              className={`wellbeing-meter-fill wellbeing-meter-fill--${interpretation.tone}`}
-                              style={{ width: `${(val / 5) * 100}%` }}
-                            />
+                      return (
+                        <div key={dim.key} className="wellbeing-dim-row">
+                          <div className="wellbeing-dim-row-top">
+                            <div className="wellbeing-dim-name-wrap">
+                              <Icon name={dim.icon} size={15} className="wellbeing-dim-icon" aria-hidden="true" />
+                              <span className="wellbeing-dim-label">{dim.label}</span>
+                            </div>
+                            <div className="wellbeing-dim-values">
+                              <span className={`wellbeing-dim-status wellbeing-dim-status--${interpretation.tone}`}>
+                                {interpretation.text}
+                              </span>
+                              <span className="wellbeing-dim-score">
+                                <strong>{displayVal}</strong>
+                                {hasVal && <span className="wellbeing-dim-score-unit">/5</span>}
+                              </span>
+                            </div>
                           </div>
-                        )}
-                        <div className="wellbeing-matrix-level-hint">
-                          <span className={!hasVal ? 'wellbeing-hint-empty' : ''}>{interpretation.text}</span>
-                        </div>
-                      </div>
 
-                      <div className="wellbeing-matrix-score">
-                        <span className={`wellbeing-matrix-val ${!hasVal ? 'wellbeing-matrix-val--empty' : ''}`}>
-                          {displayVal}
-                        </span>
-                        {hasVal && <span className="wellbeing-matrix-unit">/ 5</span>}
-                      </div>
-                    </div>
-                  );
-                })}
+                          {hasVal && (
+                            <div
+                              className="wellbeing-meter-track"
+                              role="progressbar"
+                              aria-valuenow={val}
+                              aria-valuemin={1}
+                              aria-valuemax={5}
+                              aria-label={`${dim.label}: ${val} sobre 5`}
+                            >
+                              <div
+                                className={`wellbeing-meter-fill wellbeing-meter-fill--${interpretation.tone}`}
+                                style={{ width: `${(val / 5) * 100}%` }}
+                              />
+                            </div>
+                          )}
+
+                          <p className="wellbeing-dim-description">{dim.desc}</p>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Columna 2: Operación y Entorno */}
+                <div className="wellbeing-group-card">
+                  <h3 className="wellbeing-group-heading">Operación y soporte de línea</h3>
+                  <div className="wellbeing-dim-list">
+                    {operationDimensions.map((dim) => {
+                      const val = activeShift[dim.key];
+                      const displayVal = val != null ? val : '–';
+                      const hasVal = val != null;
+                      const interpretation = dim.evaluator(val);
+
+                      return (
+                        <div key={dim.key} className="wellbeing-dim-row">
+                          <div className="wellbeing-dim-row-top">
+                            <div className="wellbeing-dim-name-wrap">
+                              <Icon name={dim.icon} size={15} className="wellbeing-dim-icon" aria-hidden="true" />
+                              <span className="wellbeing-dim-label">{dim.label}</span>
+                            </div>
+                            <div className="wellbeing-dim-values">
+                              <span className={`wellbeing-dim-status wellbeing-dim-status--${interpretation.tone}`}>
+                                {interpretation.text}
+                              </span>
+                              <span className="wellbeing-dim-score">
+                                <strong>{displayVal}</strong>
+                                {hasVal && <span className="wellbeing-dim-score-unit">/5</span>}
+                              </span>
+                            </div>
+                          </div>
+
+                          {hasVal && (
+                            <div
+                              className="wellbeing-meter-track"
+                              role="progressbar"
+                              aria-valuenow={val}
+                              aria-valuemin={1}
+                              aria-valuemax={5}
+                              aria-label={`${dim.label}: ${val} sobre 5`}
+                            >
+                              <div
+                                className={`wellbeing-meter-fill wellbeing-meter-fill--${interpretation.tone}`}
+                                style={{ width: `${(val / 5) * 100}%` }}
+                              />
+                            </div>
+                          )}
+
+                          <p className="wellbeing-dim-description">{dim.desc}</p>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
               </div>
 
-              {/* Nota de Ventana Acotada para Prevenir Crecimiento Infinito */}
+              {/* Pie Discreto de Ventana */}
               {checkinRecords.length > 7 && (
                 <footer className="wellbeing-window-note">
                   <span>
-                    Mostrando la ventana operativa de los{' '}
-                    <strong>{recentShifts.length} turnos más recientes</strong>. Tienes{' '}
-                    {checkinRecords.length} jornadas registradas en total.
+                    Mostrando los <strong>{recentShifts.length} turnos más recientes</strong> de tu ciclo de trabajo. Tienes {checkinRecords.length} jornadas registradas.
                   </span>
-                  <span>Almacenamiento local en tu estación</span>
                 </footer>
               )}
             </div>

@@ -62,11 +62,11 @@
       "section": false
     },
     "specs/.omni/runtime/src/generator.mjs": {
-      "hash": "3112d3a7eb4e715a8c5a587dfd574eac5a310f27b4f737f856e909f6b7215421",
+      "hash": "ee5a0a3645a9a20c81656a4911237c43c883ae34e9e14f8222ca44fcd8ee6cfb",
       "section": false
     },
     "specs/.omni/runtime/src/integrations.mjs": {
-      "hash": "963f8fd8e69046c2e698965577cb0f796b34eac8ff210610fc4fec64612db14c",
+      "hash": "342339eac6c913f542001df376eeb29854938df253eec7125709712bd9c4b66e",
       "section": false
     },
     "specs/.omni/runtime/src/managed.mjs": {
@@ -154,7 +154,7 @@
       "section": false
     },
     "specs/.omni/runtime/src/workflows.mjs": {
-      "hash": "b2551575ab92a66e209f27c07455eeb7053270bd7d012a514563cf290aa2d109",
+      "hash": "704b540318c9e7be0a4703dc817573efbdf67162fc056145c29cd260acea4274",
       "section": false
     },
     "specs/.omni/runtime/bin/omni-spec.mjs": {
@@ -166,7 +166,7 @@
       "section": false
     },
     "specs/.omni/runtime/package.json": {
-      "hash": "3ee61696cbca42308d3609b24f9447b664d2267fc637e3c814ee963b9c1c9032",
+      "hash": "cadf70da32f131fe78f799f383c9637c416dcc1af0ff01d91f713768eb2c7471",
       "section": false
     },
     "specs/.omni/runtime/LICENSE": {
@@ -174,39 +174,39 @@
       "section": false
     },
     ".agents/skills/omni-init/SKILL.md": {
-      "hash": "4ad732e42ea3c58d43091418b43ffc8df09f78b55e4d207b64ffd716937a85b6",
+      "hash": "5530e5bb17ad324a73337b54fbe82eaed0ad9ab552c0ba9b45ecb53b181f560d",
       "section": false
     },
     ".agents/skills/omni-discuss/SKILL.md": {
-      "hash": "9c831686a2d949078f5bb00625c76f0899a5ef28ade3369b696cdfee524d8967",
+      "hash": "6b630191ad423a79762d108bcc72df7079d8b06026ce8dcf08afb5851bc125a8",
       "section": false
     },
     ".agents/skills/omni-specify/SKILL.md": {
-      "hash": "6441a7f4b66e49193b3a6d1184697efcab880cdf32a20509568f39407625abbf",
+      "hash": "5032b5e39637f786c46a46a2d453ad2d7049c2a199861203f34cd00d92dbe91b",
       "section": false
     },
     ".agents/skills/omni-clarify/SKILL.md": {
-      "hash": "988a2e542b68a27709a6e9ee60556363cf30febd9cb5f03c618a202d18be5616",
+      "hash": "b50be7982252aecc44a1097799e7809330c0df7cc824559214e0ff27c67cf80d",
       "section": false
     },
     ".agents/skills/omni-plan/SKILL.md": {
-      "hash": "0b037a244bea7f11a41aa6eef62de78cf56cb8fc436c5ab0fcdf213daa4e393d",
+      "hash": "42dce4cf497f5cdbe30f5958915e2979b46c840e92cb8444a5fa275ece6f9d5a",
       "section": false
     },
     ".agents/skills/omni-tasks/SKILL.md": {
-      "hash": "08f5ab4dab644a1c55c8e6fb708824c7214722a1e9ba755b20a5c4af79368926",
+      "hash": "8f586b4e42de17d21534ca593813e76c012ab816c7cb101c0d83d19f371f1b13",
       "section": false
     },
     ".agents/skills/omni-audit/SKILL.md": {
-      "hash": "3839116a8abb5159f37eb01022b4e50cadcc09621ad790530bafed2161cc4ee5",
+      "hash": "5f60bcf2021ce1ee91f1f4292140f0caebcc67cfdb12054c015990d864c77cc7",
       "section": false
     },
     ".agents/skills/omni-implement/SKILL.md": {
-      "hash": "9fd412a426d481dbb79ea591d6741083d868bc7b441007633f8b187363d2f43a",
+      "hash": "8e4b0850011add4446b34fb98751f45a1762227324ff15c23015926f43f5f075",
       "section": false
     },
     ".agents/skills/omni-converge/SKILL.md": {
-      "hash": "581d11047c46e8f181b10b4d575d349347253ed9e1e5e78b9923a675fd4cbfa6",
+      "hash": "db41d76dd72baf9bb55914203f2fb937e2d09b5eb7bf2e705c0692a5cdb4fa4d",
       "section": false
     },
     "specs/.omni/runtime/src/acceptance.mjs": {

@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "criteria": [
+    {
+      "id": "AC-01",
+      "status": "passed",
+      "method": "manual",
+      "evidence": "Navegación WAI-ARIA por pestañas con role=tablist, role=tab, role=tabpanel y flechas de teclado (ArrowLeft, ArrowRight, Home, End) verificada en navegador sin controles anidados"
+    },
+    {
+      "id": "AC-02",
+      "status": "passed",
+      "method": "manual",
+      "evidence": "Timeline vertical de 4 niveles de visibilidad con salvaguardas k >= 5 y NLP local renderizado sin badges redundantes de marketing ni pastillas radius-9999"
+    },
+    {
+      "id": "AC-03",
+      "status": "passed",
+      "method": "manual",
+      "evidence": "Registro formal de finalidades C1 a C5 bajo Habeas Data, con acordeón accesible nativo y columna de estados 'Autorizada' rígidamente alineada a la derecha (X=1323px en las 5 filas)"
+    },
+    {
+      "id": "AC-04",
+      "status": "passed",
+      "method": "manual",
+      "evidence": "Explorador cronológico con filtros Todos/Check-ins/Bitácoras/Apoyos y acción contextual de prellenado para rectificación verificado"
+    },
+    {
+      "id": "AC-05",
+      "status": "passed",
+      "method": "manual",
+      "evidence": "Descargas JSON/CSV operativas vía Blob y modal seguro de supresión con trampa de foco, cierre con Escape y confirmación SUPRIMIR probado"
+    },
+    {
+      "id": "AC-06",
+      "status": "passed",
+      "method": "manual",
+      "evidence": "Línea de tiempo de radicados de Habeas Data con cálculo de plazos de Ley 1581 (10 y 15 días hábiles) y badges semánticos validada"
+    },
+    {
+      "id": "AC-07",
+      "status": "passed",
+      "method": "automated",
+      "evidence": "npm run lint (0 errores/warnings), npm run build (exitoso) y npm test (55/55 pruebas unitarias aprobadas)"
+    }
+  ]
+}

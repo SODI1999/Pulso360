@@ -2,13 +2,16 @@ import { useExpiredFormDraft } from '../../../core/auth/useExpiredFormDraft';
 import { env } from '../../../core/config/env';
 import { fetchAgentRecords, getAgentRecords } from '../services/agentQueries';
 import { createHabeasRequest as registerHabeasRequest } from '../services/myDataPrivacyService';
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 
 import { authService, roleLabels } from '../../../core/auth/authService';
 import { pulsoStore } from '../../../core/storage/pulsoStore';
 
 export function useMyDataPrivacy() {
   const currentUser = authService.getCurrentUser();
+
+  const [activeTab, setActiveTab] = useState('safeguards');
+  const [isSuppressionModalOpen, setIsSuppressionModalOpen] = useState(false);
 
   const [rectificationText, setRectificationText] = useState('');
   const [rectificationFeedback, setRectificationFeedback] = useState('');
@@ -17,22 +20,39 @@ export function useMyDataPrivacy() {
   const [suppressionFeedback, setSuppressionFeedback] = useState('');
 
   useExpiredFormDraft('habeas:new', { rectificationText, suppressionConfirmText }, draft => {
-    setRectificationText(draft.rectificationText); setSuppressionConfirmText(draft.suppressionConfirmText);
+    setRectificationText(draft.rectificationText);
+    setSuppressionConfirmText(draft.suppressionConfirmText);
   });
 
   const [requestsVersion, setRequestsVersion] = useState(0);
 
   // Formatear fechas en formato colombiano
-  const formatDate = (val) => {
+  const formatDate = useCallback((val) => {
     if (!val) return '–';
     const str = val.includes('T') ? val : `${val}T12:00:00Z`;
-    return new Intl.DateTimeFormat('es-CO', { timeZone:'America/Bogota', year: 'numeric', month: '2-digit', day: '2-digit' }).format(
-      new Date(str)
-    );
-  };
+    return new Intl.DateTimeFormat('es-CO', {
+      timeZone: 'America/Bogota',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    }).format(new Date(str));
+  }, []);
+
+  const formatDateTime = useCallback((val) => {
+    if (!val) return '–';
+    const str = val.includes('T') ? val : `${val}T12:00:00Z`;
+    return new Intl.DateTimeFormat('es-CO', {
+      timeZone: 'America/Bogota',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit'
+    }).format(new Date(str));
+  }, []);
 
   // Calcular rango de fechas
-  const calculateDateRange = (rows, dateField) => {
+  const calculateDateRange = useCallback((rows, dateField) => {
     const values = rows
       .map((item) => item[dateField])
       .filter(Boolean)
@@ -41,9 +61,7 @@ export function useMyDataPrivacy() {
 
     if (!values.length) return 'Sin registros';
     return `${formatDate(values[0].toISOString())} – ${formatDate(values.at(-1).toISOString())}`;
-  };
-
-  // Calcular días hábiles
+  }, [formatDate]);
 
   // Resumen de datos propios
   const [summary, setSummary] = useState(() => {
@@ -57,12 +75,13 @@ export function useMyDataPrivacy() {
     };
   });
 
-  const [loadError,setLoadError] = useState('');
-  const [loading,setLoading] = useState(() => {
+  const [loadError, setLoadError] = useState('');
+  const [loading, setLoading] = useState(() => {
     if (env.useMockStorage) return false;
     const initial = getAgentRecords(currentUser?.id);
     return !initial?.consents?.[currentUser?.id];
   });
+
   useEffect(() => {
     let mounted = true;
     async function load() {
@@ -77,9 +96,62 @@ export function useMyDataPrivacy() {
         requests: storeData.habeasRequests || []
       });
     }
-    load().catch(error => { if(mounted) setLoadError(error.message); }).finally(() => { if(mounted) setLoading(false); });
-    return () => { mounted = false; };
+    load()
+      .catch((error) => {
+        if (mounted) setLoadError(error.message);
+      })
+      .finally(() => {
+        if (mounted) setLoading(false);
+      });
+    return () => {
+      mounted = false;
+    };
   }, [currentUser?.id, requestsVersion]);
+
+  // Navegación accesible por teclado entre pestañas (WAI-ARIA)
+  const tabsList = useMemo(() => ['safeguards', 'records', 'habeas'], []);
+
+  const handleTabKeyDown = (e, currentTabId) => {
+    const currentIndex = tabsList.indexOf(currentTabId);
+    if (currentIndex === -1) return;
+
+    let nextIndex = currentIndex;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+      e.preventDefault();
+      nextIndex = (currentIndex + 1) % tabsList.length;
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      nextIndex = (currentIndex - 1 + tabsList.length) % tabsList.length;
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      nextIndex = 0;
+    } else if (e.key === 'End') {
+      e.preventDefault();
+      nextIndex = tabsList.length - 1;
+    }
+
+    if (nextIndex !== currentIndex) {
+      const nextTabId = tabsList[nextIndex];
+      setActiveTab(nextTabId);
+      const nextButton = document.getElementById(`tab-${nextTabId}`);
+      if (nextButton) {
+        nextButton.focus();
+      }
+    }
+  };
+
+  // Preseleccionar registro para rectificación y pasar a pestaña de trámites
+  const handleSelectForRectification = (record) => {
+    setActiveTab('habeas');
+    const typeLabels = {
+      checkin: 'Check-in de turno',
+      journal: 'Bitácora personal',
+      support: 'Solicitud de apoyo'
+    };
+    const label = record.typeLabel || typeLabels[record.type] || record.type || 'registro';
+    const refDate = formatDate(record.date || record.createdAt);
+    setRectificationText(`Solicito rectificar el registro de ${label} del ${refDate} (Ref: ${record.id}): `);
+  };
 
   // Crear solicitud de Habeas Data
   const createHabeasRequest = async (requestType, noteText) => {
@@ -91,10 +163,11 @@ export function useMyDataPrivacy() {
     return result.generatedId;
   };
 
-  // Preparar la copia propia para los enlaces de descarga.
+  // Preparar la copia propia para los enlaces de descarga
   const currentUserId = currentUser?.id;
   const currentUserEmail = currentUser?.email;
   const currentUserName = currentUser?.name;
+
   const portabilityFiles = useMemo(() => {
     if (!currentUserId) return { json: '', csv: '', fileNameBase: 'pulso360_mis-datos' };
 
@@ -119,16 +192,18 @@ export function useMyDataPrivacy() {
   }, [currentUserId, currentUserEmail, currentUserName, summary]);
 
   const handleDownloadPortability = (format) => {
-    if (env.useMockStorage) pulsoStore.audit({
-      actor: `${currentUser.id} (${roleLabels[currentUser.role] || currentUser.role})`,
-      action: 'PORTABILIDAD_DATOS',
-      target: format.toUpperCase()
-    });
+    if (env.useMockStorage) {
+      pulsoStore.audit({
+        actor: `${currentUser.id} (${roleLabels[currentUser.role] || currentUser.role})`,
+        action: 'PORTABILIDAD_DATOS',
+        target: format.toUpperCase()
+      });
+    }
   };
 
   // Solicitar rectificación
   const handleRectificationSubmit = async (e) => {
-    e.preventDefault();
+    if (e && e.preventDefault) e.preventDefault();
     const detail = rectificationText.trim();
     if (detail.length < 10) {
       setRectificationFeedback(
@@ -139,7 +214,7 @@ export function useMyDataPrivacy() {
 
     try {
       const reqId = await createHabeasRequest('Rectificacion', detail);
-      setRectificationFeedback(`Solicitud ${reqId} recibida. No se modifica ningún dato automáticamente.`);
+      setRectificationFeedback(`Solicitud ${reqId} radicada exitosamente. Se gestionará administrativamente en un plazo de hasta 15 días hábiles.`);
       setRectificationText('');
     } catch (err) {
       setRectificationFeedback(`Error: ${err.message}`);
@@ -151,9 +226,9 @@ export function useMyDataPrivacy() {
     try {
       const reqId = await createHabeasRequest(
         'Supresion',
-        'Solicitud de supresión de datos conforme a la Ley 1581 de 2012.'
+        'Solicitud formal de supresión de datos personales conforme a la Ley 1581 de 2012.'
       );
-      setSuppressionFeedback(`Solicitud ${reqId} radicada exitosamente. Se gestionará administrativamente.`);
+      setSuppressionFeedback(`Solicitud ${reqId} radicada con éxito. Será evaluada administrativamente dentro de los 15 días hábiles siguientes.`);
       setSuppressionConfirmText('');
     } catch (err) {
       setSuppressionFeedback(`Error: ${err.message}`);
@@ -162,7 +237,15 @@ export function useMyDataPrivacy() {
 
   const isSuppressionConfirmed = suppressionConfirmText.trim() === 'SUPRIMIR';
 
-  return { loading,loadError,
+  return {
+    loading,
+    loadError,
+    currentUser,
+    activeTab,
+    setActiveTab,
+    handleTabKeyDown,
+    isSuppressionModalOpen,
+    setIsSuppressionModalOpen,
     rectificationText,
     setRectificationText,
     rectificationFeedback,
@@ -170,12 +253,14 @@ export function useMyDataPrivacy() {
     setSuppressionConfirmText,
     suppressionFeedback,
     formatDate,
+    formatDateTime,
     calculateDateRange,
     summary,
     portabilityFiles,
     handleDownloadPortability,
     handleRectificationSubmit,
     handleSuppressionSubmit,
+    handleSelectForRectification,
     isSuppressionConfirmed
   };
 }
