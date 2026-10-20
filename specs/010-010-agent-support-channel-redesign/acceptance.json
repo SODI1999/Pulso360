@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "criteria": [
+    {
+      "id": "AC-01",
+      "status": "passed",
+      "method": "manual",
+      "evidence": "SupportChannelPage.jsx implementa pestañas WAI-ARIA (tablist, tab, tabpanel) con navegación por teclado (ArrowLeft, ArrowRight, Home, End) y selección inteligente de casos prioritarios."
+    },
+    {
+      "id": "AC-02",
+      "status": "passed",
+      "method": "manual",
+      "evidence": "SupportChatCard desacoplado hacia contenedor de diálogo maestro-detalle con cabecera de especialista SST, atajos de teclado Enter/Shift+Enter y WebSockets."
+    },
+    {
+      "id": "AC-03",
+      "status": "passed",
+      "method": "manual",
+      "evidence": "SupportTimelineBadge.jsx implementa la trazabilidad de 4 fases (Radicación -> Revisión SST -> Orientación -> Cierre) bajo la Res. 2646 / SG-SST."
+    },
+    {
+      "id": "AC-04",
+      "status": "passed",
+      "method": "manual",
+      "evidence": "SupportRequestForm.jsx rediseñado con tarjetas de modalidad Anónima vs Confidencial, motivos BPO reales, tiempos de atención y distinción del CCL."
+    },
+    {
+      "id": "AC-05",
+      "status": "passed",
+      "method": "manual",
+      "evidence": "Nuevo activo documental generado bpo-agent-support-dialogue.jpg/webp con operador de contact center en diálogo sereno y profesional con la especialista SST (representación de género masculino en agente BPO), integrado en el hero banner."
+    },
+    {
+      "id": "AC-06",
+      "status": "passed",
+      "method": "manual",
+      "evidence": "Barra de acceso rápido integrada en SupportChannelPage con enlace a Línea 106 y apertura interactiva in-situ de SomaticBreathingModal (respiración somática 4-2-6)."
+    },
+    {
+      "id": "AC-07",
+      "status": "passed",
+      "method": "automated",
+      "evidence": "Compuerta de consentimiento C3 bajo Ley 1581 preservada; 0 errores de ESLint, build exitoso de Vite, 55/55 pruebas unitarias de frontend y 132/132 pruebas de contrato de backend aprobadas."
+    }
+  ]
+}

@@ -14,7 +14,7 @@ import { authService } from '../../../core/auth/authService';
 import { chatService } from '../../../core/api/chatService';
 import { Icon } from '../../../core/components/Icon';
 
-export function SupportChatCard({ requestId, requestCode, isAnonymous, onChatClosed }) {
+export function SupportChatCard({ requestId, requestCode, isAnonymous, onChatClosed, onBack }) {
   const { socket } = useSocket();
   const currentUser = authService.getCurrentUser();
 
@@ -214,6 +214,17 @@ export function SupportChatCard({ requestId, requestCode, isAnonymous, onChatClo
     <div className={`support-embedded-chat-box ${isClosed ? 'is-closed' : 'is-active'}`}>
       {/* Cabecera compacta y profesional del Chat */}
       <div className="embedded-chat-header">
+        {onBack && (
+          <button
+            type="button"
+            className="btn-chat-back"
+            onClick={onBack}
+            aria-label="Volver a la lista de radicados"
+            title="Volver a la lista"
+          >
+            <Icon name="arrowLeft" size={16} />
+          </button>
+        )}
         <div className="embedded-chat-user-info">
           <div className="embedded-chat-avatar" aria-hidden="true">
             <Icon name="MessagesSquare" size={18} />
@@ -228,6 +239,7 @@ export function SupportChatCard({ requestId, requestCode, isAnonymous, onChatClo
               </span>
             </div>
             <span className="embedded-chat-subtitle">
+              {requestCode ? `Radicado ${requestCode} · ` : ''}
               {isAnonymous ? 'Tu nombre no se muestra a SST · Canal Seguro' : 'Orientación de Bienestar con SST'}
             </span>
           </div>
@@ -346,5 +358,6 @@ SupportChatCard.propTypes = {
   requestId: PropTypes.string.isRequired,
   requestCode: PropTypes.string,
   isAnonymous: PropTypes.bool,
-  onChatClosed: PropTypes.func
+  onChatClosed: PropTypes.func,
+  onBack: PropTypes.func
 };

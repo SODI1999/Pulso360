@@ -220,6 +220,7 @@ const lucideComponents = {
   insights: TrendingUp,
   monitoring: LineChart,
   support_agent: HeartHandshake,
+  heartHandshake: HeartHandshake,
   group: Users,
   task_alt: CheckCircle2,
   analytics: Activity,
