@@ -17,6 +17,7 @@ export function InactivityModal() {
   const inactivityTimerRef = useRef(null);
   const warningTimerRef = useRef(null);
   const countdownIntervalRef = useRef(null);
+  const lastTouchRef = useRef(0);
 
   // Cierre seguro de sesión
   const handleLogout = useCallback(() => {
@@ -40,8 +41,12 @@ export function InactivityModal() {
     const user = authService.getCurrentUser();
     if (!user) return;
 
-    // Actualizar marca de tiempo de sesión
-    authService.touchSession(user);
+    // Actualizar marca de tiempo de sesión si han transcurrido al menos 30 segundos
+    const now = Date.now();
+    if (!lastTouchRef.current || now - lastTouchRef.current > 30000) {
+      lastTouchRef.current = now;
+      authService.touchSession(user);
+    }
 
     // Programar advertencia preventiva a los 29 minutos
     warningTimerRef.current = setTimeout(() => {

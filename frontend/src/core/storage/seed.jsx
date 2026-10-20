@@ -10,13 +10,15 @@ export const initialSeed = {
       teamId: 'team-alpha-1',
       teamName: 'Equipo Alpha 1',
       campaign: 'Campaña Soporte Alpha',
-      shiftStartHour: 8
+      shiftStartHour: 8,
+      avatar: '/assets/fotos/bpo-agent-profile.jpg'
     },
     {
       id: 'usr-2',
       email: 'supervisor@pulso360.co',
       name: 'Carlos Mendoza',
       role: 'supervisor',
+      avatar: '/assets/fotos/bpo-avatar-male-supervisor.webp',
       teamId: 'team-alpha-1',
       teamName: 'Equipo Alpha 1',
       campaign: 'Campaña Soporte Alpha'
@@ -26,6 +28,7 @@ export const initialSeed = {
       email: 'sst@pulso360.co',
       name: 'Patricia Silva',
       role: 'sst',
+      avatar: '/assets/fotos/bpo-sst-guardian.jpg',
       teamId: null,
       teamName: 'Seguridad y Salud en el Trabajo'
     },
@@ -34,6 +37,7 @@ export const initialSeed = {
       email: 'auditor@pulso360.co',
       name: 'Marcos Rivas',
       role: 'auditor',
+      avatar: '/assets/fotos/bpo-avatar-male-agent.webp',
       teamId: null,
       teamName: 'Auditoría'
     },
@@ -42,6 +46,7 @@ export const initialSeed = {
       email: 'admin@pulso360.co',
       name: 'Admin Pulso360',
       role: 'admin',
+      avatar: '/assets/fotos/bpo-avatar-female-agent-2.webp',
       teamId: null,
       teamName: 'Administración'
     }

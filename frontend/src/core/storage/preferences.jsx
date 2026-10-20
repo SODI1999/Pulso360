@@ -52,5 +52,37 @@ export const preferences = {
       return fallback;
     }
   },
-  saveSidebarCollapsed: (collapsed) => localData.setItem('pulso_sidebar_collapsed', String(collapsed))
+  saveSidebarCollapsed: (collapsed) => localData.setItem('pulso_sidebar_collapsed', String(collapsed)),
+  readReducedMotion: (fallback = false) => {
+    try {
+      const value = localData.getItem('pulso_reduced_motion');
+      return value == null ? fallback : value === 'true';
+    } catch {
+      return fallback;
+    }
+  },
+  saveReducedMotion: (enabled) => {
+    localData.setItem('pulso_reduced_motion', String(enabled));
+    if (typeof document !== 'undefined') {
+      document.documentElement.setAttribute('data-reduced-motion', String(enabled));
+      if (enabled) {
+        document.documentElement.classList.add('reduced-motion');
+      } else {
+        document.documentElement.classList.remove('reduced-motion');
+      }
+    }
+  }
 };
+
+// Inicializar preferencia ergonómica de descanso visual al arrancar la aplicación
+if (typeof document !== 'undefined') {
+  try {
+    const isReduced = preferences.readReducedMotion(false);
+    document.documentElement.setAttribute('data-reduced-motion', String(isReduced));
+    if (isReduced) {
+      document.documentElement.classList.add('reduced-motion');
+    }
+  } catch {
+    // Entorno sin acceso al DOM
+  }
+}

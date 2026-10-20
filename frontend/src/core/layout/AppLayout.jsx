@@ -8,6 +8,7 @@ import { pulsoStore } from '../storage/pulsoStore';
 import { preferences } from '../storage/preferences';
 import { Icon } from '../components/Icon';
 import { InactivityModal } from '../components/InactivityModal';
+import { UserProfileModal } from '../components/UserProfileModal';
 import { env } from '../config/env';
 
 // Formatea "8" como "08:00" para el bloque de turno del topbar
@@ -49,6 +50,7 @@ export function AppLayout() {
 
   // Menú de cuenta (estado y referencia declarados antes del early return)
   const [accountOpen, setAccountOpen] = useState(false);
+  const [profileModalOpen, setProfileModalOpen] = useState(false);
   const accountRef = useRef(null);
 
   // Cierra el menú de cuenta al hacer clic fuera o con Escape (devuelve el foco al botón)
@@ -152,11 +154,14 @@ export function AppLayout() {
 
   // Foto de perfil del avatar institucional para roles operativos y de salud ocupacional
   const roleAvatarImg =
-    user.role === 'agente'
+    user.avatar ||
+    (user.role === 'agente'
       ? '/assets/fotos/bpo-agent-profile.jpg'
       : user.role === 'sst'
         ? '/assets/fotos/bpo-sst-guardian.jpg'
-        : null;
+        : user.role === 'supervisor'
+          ? '/assets/fotos/bpo-avatar-male-supervisor.webp'
+          : null);
 
   const handleLogout = () => {
     authService.logout();
@@ -273,41 +278,34 @@ export function AppLayout() {
               role="menu"
               aria-label="Opciones de cuenta"
             >
-              {/* Encabezado sutil de identidad del usuario */}
-              <div className="account-popover-header">
-                <div className={`account-popover-avatar role-${user.role}`} aria-hidden="true">
-                  {roleAvatarImg ? (
-                    <img
-                      src={roleAvatarImg}
-                      alt={user.name}
-                      className="user-avatar-photo"
-                      onError={(e) => {
-                        e.currentTarget.style.display = 'none';
-                      }}
-                    />
-                  ) : (
-                    user.name.charAt(0).toUpperCase()
-                  )}
-                </div>
-                <div className="account-popover-info">
-                  <div className="account-popover-name" title={user.name}>
-                    {user.name}
-                  </div>
-                  <div className="account-popover-meta">
-                    <span className={`account-popover-badge role-${user.role}`}>{roleLabel}</span>
-                    {contextLabel && (
-                      <span className="account-popover-context" title={contextLabel}>
-                        • {contextLabel}
-                      </span>
-                    )}
-                  </div>
-                </div>
+              {/* Cabecera contextual ligera sin duplicar la tarjeta de identidad */}
+              <div className="account-popover-context-header">
+                <span className="account-popover-email" title={user.email}>
+                  {user.email}
+                </span>
+                <span className="account-popover-shift-badge">
+                  <Icon name="Clock" size={11} />
+                  <span>{contextLabel || roleLabel}</span>
+                </span>
               </div>
 
               <div className="account-popover-divider" role="separator" />
 
               {/* Acciones de cuenta */}
               <div className="account-popover-actions">
+                <button
+                  type="button"
+                  className="account-popover-item account-menu-item"
+                  role="menuitem"
+                  onClick={() => {
+                    setAccountOpen(false);
+                    setProfileModalOpen(true);
+                  }}
+                >
+                  <Icon name="User" size={15} />
+                  <span>Mi perfil y preferencias</span>
+                </button>
+
                 {/* "Mis datos y privacidad" es un módulo exclusivo del rol agente (Habeas Data) */}
                 {user.role === 'agente' && (
                   <Link
@@ -448,6 +446,14 @@ export function AppLayout() {
 
       {/* 3. Modal de Inactividad Global */}
       <InactivityModal />
+
+      {/* 4. Modal de Perfil de Usuario y Preferencias */}
+      <UserProfileModal
+        isOpen={profileModalOpen}
+        onClose={() => setProfileModalOpen(false)}
+        user={user}
+        onProfileUpdated={() => setUser(authService.getCurrentUser())}
+      />
     </div>
   );
 }

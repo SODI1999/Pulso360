@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "criteria": [
+    {
+      "id": "AC-01",
+      "status": "passed",
+      "method": "manual",
+      "evidence": "Inspección interactiva de menú de cuenta en AppLayout sin duplicidad de tarjeta; cabecera ligera con correo corporativo y opciones claras."
+    },
+    {
+      "id": "AC-02",
+      "status": "passed",
+      "method": "automated",
+      "evidence": "Verificación física de activos bpo-avatar-male-agent.webp, bpo-avatar-male-supervisor.webp, bpo-avatar-female-agent-2.webp y asignación en seed.jsx y normalizeUser."
+    },
+    {
+      "id": "AC-03",
+      "status": "passed",
+      "method": "manual",
+      "evidence": "Prueba interactiva vía DevTools: selección de avatar institucional (Mateo Ramos, Sofía Vega), subida de imagen local con canvas crop 256x256 (~6KB) y restablecimiento predeterminado."
+    },
+    {
+      "id": "AC-04",
+      "status": "passed",
+      "method": "manual",
+      "evidence": "Prueba de alternancia de preferencias de bienestar (sonido pausas, recordatorio checkin, descanso visual reduced-motion) persistiendo en preferences y documentElement."
+    },
+    {
+      "id": "AC-05",
+      "status": "passed",
+      "method": "manual",
+      "evidence": "Validación WAI-ARIA (role=dialog, aria-modal, radiogroup, Escape, focus trap, retorno de foco) y feedback accesible politeness."
+    },
+    {
+      "id": "AC-06",
+      "status": "passed",
+      "method": "automated",
+      "evidence": "Sincronización reactiva sin reload vía pulso360-session-changed. Quality gates superados: npm run lint (0 errores, 0 warnings), npm test frontend (55/55), npm test backend (132/132) y npm run build."
+    }
+  ]
+}

@@ -1,4 +1,5 @@
 import { ROLE_LABELS } from '../data/usersRolesData';
+import { getRandomAvatarForRole } from '../../../core/auth/avatarPool';
 
 import { pulsoStore } from '../../../core/storage/pulsoStore';
 import { apiClient, getAuthToken } from '../../../core/api/apiClient';
@@ -51,6 +52,7 @@ export async function saveCreateUser(email, orgScopes, orgScopeId, name, role, s
     name,
     email,
     role,
+    avatar: getRandomAvatarForRole(role),
     teamId: targetScope.teamId || null,
     teamName: targetScope.name,
     campaign: targetScope.campaign || undefined,

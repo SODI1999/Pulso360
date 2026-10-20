@@ -4,7 +4,7 @@ import { normalizeStoredData } from './normalizeStoredData';
 import { env } from '../config/env';
 import { initialSeed } from './seed';
 import { migrateStoredData } from './migrations';
-import { localData } from './browserStorage';
+import { localData, sessionData } from './browserStorage';
 
 const STORAGE_KEY = env.storageKey;
 
@@ -43,6 +43,36 @@ export const pulsoStore = {
   // Reinicia los datos al estado de fábrica de la semilla
   reset: () => {
     localData.setItem(STORAGE_KEY, JSON.stringify(cloneSeed()));
+  },
+  // Actualiza los datos de perfil y avatar de un usuario en el almacén y sincroniza la sesión
+  updateUserProfile: (userId, updates) => {
+    const data = pulsoStore.get();
+    const userIndex = (data.users || []).findIndex((u) => u.id === userId);
+    if (userIndex !== -1) {
+      data.users[userIndex] = { ...data.users[userIndex], ...updates };
+      pulsoStore.save(data);
+    }
+    // Sincronizar también la sesión activa en sessionData si coincide el usuario autenticado
+    const rawSession = sessionData.getItem('pulso360_current_session');
+    if (rawSession) {
+      try {
+        const session = JSON.parse(rawSession);
+        if (session.id === userId) {
+          const updatedSession = { ...session, ...updates };
+          sessionData.setItem('pulso360_current_session', JSON.stringify(updatedSession));
+        }
+      } catch {
+        // Ignorar error de parsing
+      }
+    }
+    pulsoStore.audit({
+      actor: `${userId}`,
+      action: 'ACTUALIZACION_PERFIL_USUARIO',
+      target: 'Perfil y avatar institucional',
+      status: 'EXITO'
+    });
+    globalThis.window?.dispatchEvent?.(new Event('pulso360-session-changed'));
+    return userIndex !== -1 ? data.users[userIndex] : null;
   },
   // Registra un evento en la historial local de auditoría
   audit: ({

@@ -8,15 +8,41 @@ import { apiClient, getAuthToken, setAuthToken, removeAuthToken } from '../api/a
 
 import { normalizeConsent } from './consentContract';
 import { preferences } from '../storage/preferences';
+import { getRandomAvatarForRole } from './avatarPool';
 
-const normalizeUser = (u, previous = {}) => ({
-  ...previous, id: u.id, name: `${u.nombres || ''} ${u.apellidos || ''}`.trim(),
-  email: u.correo, role: u.rol_codigo?.toLowerCase(), rol_codigo: u.rol_codigo, status: u.estado,
-  team: u.equipo_nombre || null, teamId: u.equipo_id || null, campaign: u.campana_nombre || null,
-  campaignId: u.campana_id || null, shiftStartHour: u.shift_start_hour ?? 8,
-  scopes: u.scopes || [], supervisors: u.supervisors || [], lastActivity: previous.lastActivity || Date.now(),
-  assignments:u.assignments || [], navigationCounts:u.navigation_counts || {}
-});
+const normalizeUser = (u, previous = {}) => {
+  const resolvedId = u.id || previous.id;
+  const savedAvatar = resolvedId ? localData.getItem(`pulso360_avatar_${resolvedId}`) : null;
+  const resolvedRole = u.rol_codigo?.toLowerCase() || previous.role || 'agente';
+  const userAvatar =
+    u.avatar ||
+    previous.avatar ||
+    savedAvatar ||
+    getRandomAvatarForRole(resolvedRole);
+  if (resolvedId && !savedAvatar && userAvatar) {
+    localData.setItem(`pulso360_avatar_${resolvedId}`, userAvatar);
+  }
+  return {
+    ...previous,
+    id: resolvedId,
+    name: `${u.nombres || ''} ${u.apellidos || ''}`.trim() || previous.name || 'Usuario',
+    email: u.correo || previous.email,
+    role: resolvedRole,
+    rol_codigo: u.rol_codigo || previous.rol_codigo,
+    status: u.estado || previous.status,
+    team: u.equipo_nombre || previous.team || null,
+    teamId: u.equipo_id || previous.teamId || null,
+    campaign: u.campana_nombre || previous.campaign || null,
+    campaignId: u.campana_id || previous.campaignId || null,
+    shiftStartHour: u.shift_start_hour ?? previous.shiftStartHour ?? 8,
+    scopes: u.scopes || previous.scopes || [],
+    supervisors: u.supervisors || previous.supervisors || [],
+    lastActivity: previous.lastActivity || Date.now(),
+    assignments: u.assignments || previous.assignments || [],
+    navigationCounts: u.navigation_counts || previous.navigationCounts || {},
+    avatar: userAvatar
+  };
+};
 
 const SESSION_KEY = 'pulso360_current_session';
 const GUARD_KEY = 'pulso360_login_guard';
@@ -249,6 +275,18 @@ export const authService = {
   updateConsent: (consent) => {
     const user = authService.getCurrentUser();
     if (user) authService.touchSession({ ...user, consent });
+  },
+
+  updateProfile: (profileUpdates) => {
+    const user = authService.getCurrentUser();
+    if (!user) return null;
+    const updatedUser = { ...user, ...profileUpdates };
+    if (profileUpdates.avatar && user.id) {
+      localData.setItem(`pulso360_avatar_${user.id}`, profileUpdates.avatar);
+    }
+    authService.touchSession(updatedUser);
+    pulsoStore.updateUserProfile(user.id, profileUpdates);
+    return updatedUser;
   },
   refreshSession: async () => {
     const user = authService.getCurrentUser();
