@@ -1,5 +1,16 @@
 import { Icon } from '../../../core/components/Icon';
 
+/**
+ * Accessible form enabling agents to submit statutory data rectification requests under Habeas Data regulations.
+ * Enforces audit logging and formal ticket tracking.
+ *
+ * @param {Object} props - Component properties.
+ * @param {string} props.rectificationText - Request explanation or justification text.
+ * @param {import('react').Dispatch<import('react').SetStateAction<string>>} props.setRectificationText - Text setter.
+ * @param {() => void} props.handleRectificationSubmit - Form submission handler.
+ * @param {string} props.rectificationFeedback - Notification feedback message.
+ * @returns {import('react').JSX.Element} Data rectification request form card.
+ */
 export function RectificationRequestForm({
   rectificationText,
   setRectificationText,

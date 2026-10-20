@@ -1,29 +1,81 @@
+// src/features/agent/hooks/useCheckinWizard.jsx
 import { fetchAgentRecords, getAgentRecords } from '../services/agentQueries';
 import { saveCheckin } from '../services/checkinWizardService';
 import { preferences } from '../../../core/storage/preferences';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { env } from '../../../core/config/env';
 import { authService } from '../../../core/auth/authService';
-
 import { QUESTIONS } from '../data/checkinWizardData';
 
+/**
+ * Hook para la orquestación del asistente de Check-in diario de bienestar (RF-03).
+ * Gestiona el paso a paso de las 6 dimensiones somáticas y operativas, borrador local,
+ * atajos de teclado (1-5), ventana de edición de 2 horas y envío persistente.
+ *
+ * @returns {Object} Estado del wizard de check-in y manejadores de evento.
+ * @property {boolean} loading - Indica si los registros se encuentran cargando.
+ * @property {string} loadError - Mensaje de error si la carga falla.
+ * @property {Function} reload - Función interactiva para reintentar la carga.
+ * @property {Object} data - Registros globales y consentimientos del agente.
+ * @property {Object} consent - Objeto de finalidades activas (C1-C5) del usuario.
+ * @property {string} journeyKey - Identificador único de jornada (YYYY-MM-DD).
+ * @property {number} shiftStartHour - Hora de inicio de turno programada.
+ * @property {boolean} isOutsideShift - Indica si el registro se realiza fuera de jornada.
+ * @property {number} currentStep - Índice del paso activo (0 a 5).
+ * @property {Function} setCurrentStep - Actualiza el índice del paso.
+ * @property {Object} draft - Respuestas acumuladas en el borrador en memoria.
+ * @property {Function} setDraft - Modifica el borrador.
+ * @property {Object|null} existingCheckin - Registro previo si ya se completó el turno.
+ * @property {boolean} isEditing - Si el usuario está en modo de edición de su registro.
+ * @property {Function} setIsEditing - Habilita/deshabilita la edición dentro de la ventana de 2h.
+ * @property {boolean} submittedSuccess - Indica si el check-in fue guardado con éxito.
+ * @property {string} draftNotice - Mensaje sutil de autoguardado en almacenamiento local.
+ * @property {string} validationError - Mensaje de error si faltan dimensiones por contestar.
+ * @property {boolean} dismissDisconnectNotice - Estado del aviso de desconexión.
+ * @property {Function} setDismissDisconnectNotice - Controla el descarte del aviso.
+ * @property {Object} stepTimerRef - Referencia al temporizador de avance automático.
+ * @property {Function} updateDraftValue - Guarda una dimensión y avanza de paso suavemente.
+ * @property {Function} handleSubmit - Envía y persiste formalmente el check-in.
+ */
 export function useCheckinWizard() {
   const user = authService.getCurrentUser();
   const [data, setData] = useState(() => getAgentRecords(user?.id));
 
-  const [loadError,setLoadError] = useState('');
-  const [loading,setLoading] = useState(() => {
+  const [loadError, setLoadError] = useState('');
+  const [loading, setLoading] = useState(() => {
     if (env.useMockStorage) return false;
     const initial = getAgentRecords(user?.id);
     return !initial?.consents?.[user?.id];
   });
+
+  const reload = useCallback(() => {
+    if (!user?.id) return;
+    setLoading(true);
+    setLoadError('');
+    if (!env.useMockStorage) {
+      fetchAgentRecords(user.id)
+        .then((remoteData) => {
+          if (remoteData) setData(remoteData);
+        })
+        .catch((error) => {
+          setLoadError(error.message || 'Error al conectar con el servidor.');
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    } else {
+      setData(getAgentRecords(user.id));
+      setLoading(false);
+    }
+  }, [user?.id]);
+
   useEffect(() => {
     let mounted = true;
     if (!env.useMockStorage && user?.id) {
       fetchAgentRecords(user.id).then((remoteData) => {
         if (mounted && remoteData) setData(remoteData);
-      }).catch(error => { if(mounted) setLoadError(error.message); })
-        .finally(() => { if(mounted) setLoading(false); });
+      }).catch(error => { if (mounted) setLoadError(error.message); })
+        .finally(() => { if (mounted) setLoading(false); });
     }
     return () => { mounted = false; };
   }, [user?.id]);
@@ -171,9 +223,10 @@ export function useCheckinWizard() {
     setSubmittedSuccess(true);
   };
 
-  // 1. Caso: Bloqueo por falta de consentimiento C1
-
-  return { loading,loadError,
+  return {
+    loading,
+    loadError,
+    reload,
     data,
     consent,
     journeyKey,

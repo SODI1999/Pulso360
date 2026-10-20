@@ -1,3 +1,13 @@
+/**
+ * Visual SVG scene for Grounding Step 1: Presence & Closure (Conexión / Presencia).
+ * Renders the final cognitive anchoring seal affirming workstation safety and operational pacing.
+ *
+ * @param {Object} props - Component properties.
+ * @param {(id: string) => boolean} props.isCompleted - Checks if anchor 'c1' is completed.
+ * @param {(id: string) => void} props.onToggleAnchor - Toggles completion state for anchor 'c1'.
+ * @param {(e: import('react').KeyboardEvent, id: string) => void} props.handleKeyDown - Accessible keyboard activator (Enter/Space).
+ * @returns {import('react').JSX.Element} SVG group representing closure affirmation seal.
+ */
 export function GroundingClosureScene({ isCompleted, onToggleAnchor, handleKeyDown }) {
   return (
     <g className="svg-step-conexion">

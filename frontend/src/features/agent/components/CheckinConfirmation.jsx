@@ -1,6 +1,12 @@
 import { Link } from 'react-router-dom';
 import { Icon } from '../../../core/components/Icon';
 
+/**
+ * Confirmation card rendered upon successful submission of the daily check-in.
+ * Promotes restorative somatic transitions before wearing headsets and starting calls.
+ *
+ * @returns {import('react').JSX.Element} Restorative confirmation view.
+ */
 export function CheckinConfirmation() {
   return (
     <div className="card restaurador-card">

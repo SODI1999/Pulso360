@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "criteria": [
+    {
+      "id": "AC-01",
+      "status": "passed",
+      "method": "automated",
+      "evidence": "Script de auditoría sobre los 65 archivos de agent y UserProfileModal.jsx validando 100% de presencia de bloques JSDoc exhaustivos (@param, @returns, @type)."
+    },
+    {
+      "id": "AC-02",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Estandarización del botón interactivo de Reintentar (Retry) y exposición del hook reload en las 6 páginas principales del Agente (AgentDashboardPage, CheckinWizardPage, JournalPage, MyWellbeingPage, SupportChannelPage, MyDataPrivacyPage)."
+    },
+    {
+      "id": "AC-03",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Eliminación de catch silencioso en SupportChannelPage con manejo de estado chatSyncDegraded y soporte reactivo sin console.warn en useCrisisSupport."
+    },
+    {
+      "id": "AC-04",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Desanidamiento de <details> redundante en CrisisSupportPage, fecha de vigencia formateada en español en ConsentPage, saludo corregido sin espacio espurio y sincronización de Finalidad C3 en CrisisSupportModal."
+    },
+    {
+      "id": "AC-05",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Preservación total de invariantes de privacidad (aislamiento absoluto de bitácoras, k-anonimato k >= 5 en check-in y reportes) y erradicación estricta de patrones AI-slop."
+    },
+    {
+      "id": "AC-06",
+      "status": "passed",
+      "method": "automated",
+      "evidence": "Superación limpia de quality gates: npm run lint (0 errores, 0 warnings), npm test frontend (55/55 pasando), npm test backend (132/132 pasando) y npm run build (0 errores en 5.55s)."
+    }
+  ]
+}

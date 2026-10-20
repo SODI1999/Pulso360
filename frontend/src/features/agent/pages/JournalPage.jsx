@@ -1,25 +1,32 @@
-import { useState } from 'react';
-import { JournalEditor } from '../components/JournalEditor';
-import { JournalEntryList } from '../components/JournalEntryList';
-import { useJournal } from '../hooks/useJournal';
-
 // src/features/agent/pages/JournalPage.jsx
 // Bitácora privada con análisis NLP explicable, corrección humana y protocolo de crisis
 
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-
+import { JournalEditor } from '../components/JournalEditor';
+import { JournalEntryList } from '../components/JournalEntryList';
+import { useJournal } from '../hooks/useJournal';
 import { nlpEngine } from '../../../core/nlp/nlpEngine';
 import { Icon } from '../../../core/components/Icon';
-
 import { NlpCorrectionModal, NlpHistoryModal } from '../components/NlpCorrectionModal';
 import { CrisisSupportModal } from '../components/CrisisSupportModal';
 import { SomaticBreathingModal } from '../components/SomaticBreathingModal';
 import '../../../styles/bitacora.css';
 import '../../../styles/agent.css';
 
+/**
+ * Página de la Bitácora Privada de Desahogo del Agente.
+ * Ofrece un espacio personal protegido con procesamiento léxico determinista en el cliente,
+ * posibilidad de corrección humana activa y derivación prioritaria voluntaria ante crisis.
+ *
+ * @returns {JSX.Element} Vista de la bitácora personal.
+ */
 export function JournalPage() {
   const navigate = useNavigate();
-  const { loading,loadError,
+  const {
+    loading,
+    loadError,
+    reload,
     consent,
     journals,
     currentJournalId,
@@ -57,8 +64,26 @@ export function JournalPage() {
   } = useJournal();
   const [showSomaticModal, setShowSomaticModal] = useState(false);
 
-  if (loading) return <p role="status">Cargando bitácora…</p>;
-  if (loadError) return <p className="alert-banner danger" role="alert">{loadError}</p>;
+  if (loading) {
+    return <p className="agent-page" role="status">Cargando bitácora…</p>;
+  }
+
+  if (loadError) {
+    return (
+      <div className="agent-page agent-page--journal" role="alert">
+        <div
+          className="alert-banner danger"
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap' }}
+        >
+          <span>{loadError}</span>
+          <button type="button" className="btn btn-secondary btn-sm" onClick={reload}>
+            Reintentar
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   if (!consent?.c2) {
     return (
       <div className="agent-page agent-page--journal">
@@ -170,6 +195,12 @@ export function JournalPage() {
         />
       </div>
 
+      {/* Modales Complementarios */}
+      <SomaticBreathingModal
+        isOpen={showSomaticModal}
+        onClose={() => setShowSomaticModal(false)}
+      />
+
       {/* MODAL 1: Protocolo de Apoyo en Crisis */}
       <CrisisSupportModal
         isOpen={showCrisisModal}
@@ -177,7 +208,8 @@ export function JournalPage() {
         onSetPriorityStep={setCrisisPriorityStep}
         crisisMode={crisisMode}
         onChangeCrisisMode={setCrisisMode}
-        hasC5Consent={Boolean(consent?.c5)}
+        hasC3Consent={Boolean(consent?.c3)}
+        hasC5Consent={Boolean(consent?.c3 || consent?.c5)}
         onConfirmPriority={handleConfirmCrisisPriority}
         onContinue={handleContinueFromCrisis}
         onClose={() => setShowCrisisModal(false)}
@@ -195,18 +227,11 @@ export function JournalPage() {
         onClose={() => setShowCorrectionModal(false)}
       />
 
-      {/* MODAL 3: Historial de Correcciones NLP */}
+      {/* MODAL 3: Historial de Auditoría Local */}
       <NlpHistoryModal
         isOpen={showHistoryModal}
-        history={currentJournal?.correctionHistory || []}
-        analyses={currentJournal?.analysisHistory || []}
+        currentJournal={currentJournal}
         onClose={() => setShowHistoryModal(false)}
-      />
-
-      {/* MODAL 4: Pausa Somática de Respiración In-Situ (SPEC-007) */}
-      <SomaticBreathingModal
-        isOpen={showSomaticModal}
-        onClose={() => setShowSomaticModal(false)}
       />
     </div>
   );

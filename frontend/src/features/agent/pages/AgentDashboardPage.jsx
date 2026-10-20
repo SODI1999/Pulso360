@@ -1,6 +1,3 @@
-import { useAgentDashboard } from '../hooks/useAgentDashboard';
-import { QUICK_ENERGY_SCALE, formatHour } from '../services/agentDashboardHelpers';
-
 // src/features/agent/pages/AgentDashboardPage.jsx
 // Panel principal del agente (Pulso Calma) bajo principios de Calm Technology:
 // una pantalla = un propósito. Saludo + un único check-in rápido + ritmo del turno.
@@ -8,17 +5,25 @@ import { QUICK_ENERGY_SCALE, formatHour } from '../services/agentDashboardHelper
 // los destinos de bitácora, apoyo y privacidad para mantener la home despejada.
 
 import { Link } from 'react-router-dom';
-
+import { useAgentDashboard } from '../hooks/useAgentDashboard';
+import { QUICK_ENERGY_SCALE, formatHour } from '../services/agentDashboardHelpers';
 import { Icon } from '../../../core/components/Icon';
 import { PerspectiveSimModal } from '../components/PerspectiveSimModal';
 import { EnergyFace } from '../components/EnergyFace';
 import '../../../styles/agent.css';
 
-// Escala rápida de energía: reutiliza las etiquetas de la dimensión "energia"
-// del Check-in Wizard (no se inventa un concepto ni una escala paralela).
-
+/**
+ * Página principal del Agente (Panel de Calma Operativa).
+ * Provee sintonización rápida de energía al inicio de turno, visualización
+ * del ritmo de la jornada en Bogotá, aviso de desconexión laboral y simulación de privacidad.
+ *
+ * @returns {JSX.Element} Vista del panel de inicio del agente.
+ */
 export function AgentDashboardPage() {
-  const { loading,loadError,
+  const {
+    loading,
+    loadError,
+    reload,
     currentUser,
     consent,
     greeting,
@@ -33,16 +38,35 @@ export function AgentDashboardPage() {
     isPerspectiveModalOpen,
     setIsPerspectiveModalOpen
   } = useAgentDashboard();
-  if (loading) return <p className="agent-page" role="status">Cargando tus registros…</p>;
-  if (loadError) return <p className="agent-page alert-banner danger" role="alert">{loadError}</p>;
 
+  if (loading) {
+    return <p className="agent-page" role="status">Cargando tus registros…</p>;
+  }
+
+  if (loadError) {
+    return (
+      <div className="agent-page" role="alert">
+        <div
+          className="alert-banner danger"
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap' }}
+        >
+          <span>{loadError}</span>
+          <button type="button" className="btn btn-secondary btn-sm" onClick={reload}>
+            Reintentar
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="agent-page calm-home">
       {/* 1. Cabecera / Hero Banner: Bienvenida y pausa del turno */}
       <header className="calm-hero-banner" aria-label="Bienvenida y pausa del turno">
         <div className="calm-hero-content">
-          <h1 className="calm-hero-title">{greeting}, {currentUser?.name || 'Agente'}</h1>
+          <h1 className="calm-hero-title">
+            {greeting ? `${greeting.trim()}, ` : ''}{currentUser?.name || 'Agente'}
+          </h1>
           <p className="calm-hero-desc">
             Haz una pausa breve cuando el turno te dé espacio. Aflojar los hombros y respirar un minuto ayuda a soltar la carga de la línea.
           </p>

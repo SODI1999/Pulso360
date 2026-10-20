@@ -6,16 +6,51 @@ import { clearAgentCache } from './agentQueries';
 
 const unavailableJournal = () => ({ success:false,error: 'La entrada no está disponible para este usuario.' });
 const missingConsent = () => ({ success:false,error: 'La finalidad requerida no está activa para este usuario.' });
+
+/**
+ * Validates if the user has active informed consent for private journal usage (Finalidad C2).
+ *
+ * @param {Object} data - PulsoStore snapshot.
+ * @param {Object} user - Current user session.
+ * @returns {boolean} True if consent is explicitly active.
+ */
 const canUseJournal = (data, user) => {
   const consent = data.consents?.[user?.id];
   return Boolean(
     consent?.policyAccepted && consent.policyVersion === data.settings.policyVersion && consent.c2
   );
 };
+
+/**
+ * Validates if the user has active consent for NLP analysis on private journal entries (Finalidad C3).
+ *
+ * @param {Object} data - PulsoStore snapshot.
+ * @param {Object} user - Current user session.
+ * @returns {boolean} True if NLP analysis consent is active.
+ */
 const canAnalyze = (data, user) => canUseJournal(data, user) && Boolean(data.consents?.[user?.id]?.c3);
+
+/**
+ * Ensures strict ownership of a journal entry by the agent.
+ *
+ * @param {Object|null} journal - Journal entry record.
+ * @param {Object} user - Current user session.
+ * @returns {boolean} True if the journal belongs to the agent.
+ */
 const ownsJournal = (journal, user) =>
   Boolean(user?.id && user.role === 'agente' && journal?.userId === user.id);
 
+/**
+ * Saves a private journal entry (new creation or text modification).
+ * Enforces privacy isolation, versioning of prior analyses, and audit logging.
+ *
+ * @param {string|null} currentJournalId - Entry ID if updating, or null/empty if creating.
+ * @param {Object} currentUser - Authenticated agent user object.
+ * @param {Object|null} currentJournal - Existing journal object in state.
+ * @param {string} contextTag - Shift context tag (e.g., 'Campaña general', 'Turno tarde').
+ * @param {string} trimmed - Sanitized journal text content.
+ * @returns {Promise<{success: boolean, data?: Object, journalPayload?: Object, error?: string}>} Operation outcome.
+ */
 export async function saveJournal(currentJournalId, currentUser, currentJournal, contextTag, trimmed) {
   const isNew = !currentJournalId;
 
@@ -85,6 +120,13 @@ export async function saveJournal(currentJournalId, currentUser, currentJournal,
   return { success:true,data:journalPayload,journalPayload };
 }
 
+/**
+ * Permanently deletes a private journal entry owned by the agent.
+ *
+ * @param {string} currentJournalId - ID of the journal entry to delete.
+ * @param {Object} currentUser - Current user session.
+ * @returns {Promise<{success: boolean, error?: string}>} Operation outcome.
+ */
 export async function deleteJournal(currentJournalId, currentUser) {
   if (!env.useMockStorage) {
     if (!getAuthToken()) return { success:false,data:null,error: 'Sesión no válida o expirada.' };
@@ -112,6 +154,17 @@ export async function deleteJournal(currentJournalId, currentUser) {
   return {success:true};
 }
 
+/**
+ * Saves agent feedback or correction over automated NLP factor detection.
+ * Enforces ownership, consent C3, and records an auditable correction timeline.
+ *
+ * @param {string} currentJournalId - Journal entry identifier.
+ * @param {string[]} selectedCategories - Corrected occupational factors selected by the agent.
+ * @param {string} correctionNote - Optional user explanation/note.
+ * @param {Object} currentUser - Current user session.
+ * @param {string} [contentHash] - Integrity hash of entry content.
+ * @returns {Promise<{success: boolean, error?: string, journalPayload?: Object}>} Operation outcome.
+ */
 export function saveCorrection(currentJournalId, selectedCategories, correctionNote, currentUser, contentHash) {
   if (!env.useMockStorage) {
     if (!getAuthToken()) return Promise.resolve({ success:false,data:null,error: 'Sesión no válida o expirada.' });
@@ -159,6 +212,15 @@ export function saveCorrection(currentJournalId, selectedCategories, correctionN
   });
   return {success:true};
 }
+
+/**
+ * Persists local lexical NLP analysis results into a journal entry.
+ *
+ * @param {Object} journalPayload - Journal entry object or reference.
+ * @param {Object} analysisResult - Lexical engine analysis outcome.
+ * @param {Object} currentUser - Current user session.
+ * @returns {Promise<{success: boolean, error?: string, journalPayload?: Object}>} Operation outcome.
+ */
 export function saveJournalAnalysis(journalPayload, analysisResult, currentUser) {
   if (!env.useMockStorage) {
     const payloadId = journalPayload?.id || journalPayload?.data?.id;
@@ -186,6 +248,13 @@ export function saveJournalAnalysis(journalPayload, analysisResult, currentUser)
   return {success:true};
 }
 
+/**
+ * Creates a priority SST support request originated directly from the private journal or crisis modal.
+ *
+ * @param {Object} currentUser - Current user session.
+ * @param {'anonimo'|'identificado'} crisisMode - Support modality selected by the agent.
+ * @returns {Promise<{success: boolean, code?: string, error?: string, data?: Object}>} Generated case radicado.
+ */
 export async function createPriorityRequest(currentUser, crisisMode) {
   if (!env.useMockStorage) {
     if (!getAuthToken()) {

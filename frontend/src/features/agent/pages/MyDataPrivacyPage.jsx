@@ -21,6 +21,7 @@ export function MyDataPrivacyPage() {
   const {
     loading,
     loadError,
+    reload,
     activeTab,
     setActiveTab,
     handleTabKeyDown,
@@ -71,11 +72,20 @@ export function MyDataPrivacyPage() {
             <span>Volver al panel</span>
           </button>
         </nav>
-        <div className="alert-banner danger" role="alert" style={{ marginTop: '20px' }}>
-          <Icon name="AlertTriangle" size={16} />
-          <div>
-            <strong>Error al cargar la información:</strong> {loadError}
+        <div
+          className="alert-banner danger"
+          role="alert"
+          style={{ marginTop: '20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap' }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Icon name="AlertTriangle" size={16} />
+            <div>
+              <strong>Error al cargar la información:</strong> {loadError}
+            </div>
           </div>
+          <button type="button" className="btn btn-secondary btn-sm" onClick={reload}>
+            Reintentar
+          </button>
         </div>
       </div>
     );

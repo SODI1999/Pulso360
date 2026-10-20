@@ -1,3 +1,4 @@
+// src/features/agent/hooks/useJournal.jsx
 import { useExpiredFormDraft } from '../../../core/auth/useExpiredFormDraft';
 import { fetchAgentRecords, getAgentRecords } from '../services/agentQueries';
 import { createPriorityRequest } from '../services/journalService';
@@ -10,15 +11,22 @@ import { authService, roleLabels } from '../../../core/auth/authService';
 import { pulsoStore } from '../../../core/storage/pulsoStore';
 import { nlpEngine } from '../../../core/nlp/nlpEngine';
 
+/**
+ * Hook para la gestión de la Bitácora Privada de Desahogo del Agente.
+ * Integra análisis determinista léxico local, detección pedagógica de datos de terceros,
+ * corrección humana de categorizaciones, protocolo de apoyo en crisis y aislamiento de datos.
+ *
+ * @returns {Object} Estado reactivo de la bitácora y manejadores de interacción.
+ */
 export function useJournal() {
   const currentUser = authService.getCurrentUser();
   const [storeState, setStoreState] = useState(() => getAgentRecords(currentUser?.id));
-  const [loading,setLoading] = useState(() => {
+  const [loading, setLoading] = useState(() => {
     if (env.useMockStorage) return false;
     const initial = getAgentRecords(currentUser?.id);
     return !initial?.consents?.[currentUser?.id];
   });
-  const [loadError,setLoadError] = useState('');
+  const [loadError, setLoadError] = useState('');
   const savingRef = useRef(false);
   const consent = storeState.consents?.[currentUser?.id] || {};
 
@@ -71,6 +79,14 @@ export function useJournal() {
     return myJournals;
   }, [currentUser?.id]);
 
+  const reload = useCallback(() => {
+    setLoading(true);
+    setLoadError('');
+    loadJournals()
+      .catch((error) => setLoadError(error.message || 'Error al cargar bitácora.'))
+      .finally(() => setLoading(false));
+  }, [loadJournals]);
+
   useEffect(() => {
     loadJournals().catch(error => setLoadError(error.message)).finally(() => setLoading(false));
   }, [loadJournals]);
@@ -120,90 +136,98 @@ export function useJournal() {
     savingRef.current = true;
     setIsAnalyzing(true);
     try {
-    const result = await saveJournal(currentJournalId, currentUser, currentJournal, contextTag, trimmed);
+      const result = await saveJournal(currentJournalId, currentUser, currentJournal, contextTag, trimmed);
 
-    if (result.success !== true) {
-      setFeedback({ type: 'warn', message: result.error });
-      return;
-    }
-    const { journalPayload } = result;
-    const savedId = journalPayload?.id || journalPayload?.data?.id;
-    if (savedId) setCurrentJournalId(savedId);
-    await loadJournals();
+      if (result.success !== true) {
+        setFeedback({ type: 'warn', message: result.error });
+        return;
+      }
+      const { journalPayload } = result;
+      const savedId = journalPayload?.id || journalPayload?.data?.id;
+      if (savedId) setCurrentJournalId(savedId);
+      await loadJournals();
 
-    const currentData = await fetchAgentRecords(currentUser.id);
-    const latestConsent = currentData.consents?.[currentUser.id] || {};
+      const currentData = await fetchAgentRecords(currentUser.id);
+      const latestConsent = currentData.consents?.[currentUser.id] || {};
 
-    // Si no tiene C3 autorizado, no analiza con NLP
-    if (!latestConsent.c3) {
-      setFeedback({
-        type: 'success',
-        message: 'Entrada guardada sin análisis NLP por preferencia de consentimiento.'
-      });
-      return;
-    }
-
-    // Ejecución de análisis NLP con estado de carga visual
-    setIsAnalyzing(true);
-
-    try {
-      const activeConsent = latestConsent;
-      if (
-        !activeConsent?.policyAccepted ||
-        activeConsent.policyVersion !== currentData.settings.policyVersion ||
-        !activeConsent.c2 ||
-        !activeConsent.c3
-      ) {
-        setIsAnalyzing(false);
+      // Si no tiene C3 autorizado, no analiza con NLP
+      if (!latestConsent.c3) {
         setFeedback({
-          type: 'warn',
-          message: 'Entrada guardada sin análisis porque cambió tu consentimiento.'
+          type: 'success',
+          message: 'Entrada guardada sin análisis NLP por preferencia de consentimiento.'
         });
         return;
       }
-      await nlpEngine.loadActiveLexicon();
-      const analysisResult = nlpEngine.analyze(trimmed);
 
-      const finishProcessing = async () => {
-        try {
-        const result = await saveJournalAnalysis(journalPayload, analysisResult, currentUser);
-        if (result.success !== true) {
+      // Ejecución de análisis NLP con estado de carga visual
+      setIsAnalyzing(true);
+
+      try {
+        const activeConsent = latestConsent;
+        if (
+          !activeConsent?.policyAccepted ||
+          activeConsent.policyVersion !== currentData.settings.policyVersion ||
+          !activeConsent.c2 ||
+          !activeConsent.c3
+        ) {
           setIsAnalyzing(false);
-          setFeedback({ type: 'warn', message: result.error });
-          return false;
+          setFeedback({
+            type: 'warn',
+            message: 'Entrada guardada sin análisis porque cambió tu consentimiento.'
+          });
+          return;
         }
+        await nlpEngine.loadActiveLexicon();
+        const analysisResult = nlpEngine.analyze(trimmed);
 
+        const finishProcessing = async () => {
+          try {
+            const result = await saveJournalAnalysis(journalPayload, analysisResult, currentUser);
+            if (result.success !== true) {
+              setIsAnalyzing(false);
+              setFeedback({ type: 'warn', message: result.error });
+              return false;
+            }
+
+            setIsAnalyzing(false);
+            await loadJournals();
+            setFeedback({
+              type: 'success',
+              message: 'Entrada analizada y guardada con éxito.'
+            });
+            return true;
+          } catch (error) {
+            setFeedback({ type: 'warn', message: `No se pudo completar o recargar el análisis: ${error.message}` });
+            return false;
+          } finally {
+            setIsAnalyzing(false);
+          }
+        };
+
+        if (analysisResult.isCrisisAlert) {
+          if (env.useMockStorage) {
+            pulsoStore.audit({
+              actor: `${currentUser.id} (${roleLabels[currentUser.role] || currentUser.role})`,
+              action: 'RUTA_APOYO_MOSTRADA',
+              target: 'Ruta de apoyo prioritario'
+            });
+          }
+          pendingAnalysisRef.current = finishProcessing;
+          setShowCrisisModal(true);
+          setCrisisPriorityStep(false);
+        } else {
+          await finishProcessing();
+        }
+      } catch (error) {
         setIsAnalyzing(false);
-        await loadJournals();
-        setFeedback({
-          type: 'success',
-          message: 'Entrada analizada y guardada con éxito.'
-        });
-        return true;
-        } catch(error) {
-          setFeedback({type:'warn',message:`No se pudo completar o recargar el análisis: ${error.message}`});
-          return false;
-        } finally { setIsAnalyzing(false); }
-      };
-
-      if (analysisResult.isCrisisAlert) {
-        if (env.useMockStorage) pulsoStore.audit({
-          actor: `${currentUser.id} (${roleLabels[currentUser.role] || currentUser.role})`,
-          action: 'RUTA_APOYO_MOSTRADA',
-          target: 'Ruta de apoyo prioritario'
-        });
-        pendingAnalysisRef.current = finishProcessing;
-        setShowCrisisModal(true);
-        setCrisisPriorityStep(false);
-      } else {
-        await finishProcessing();
+        setFeedback({ type: 'warn', message: error.message });
       }
     } catch (error) {
+      setFeedback({ type: 'warn', message: error.message || 'No se pudo guardar la entrada.' });
+    } finally {
+      savingRef.current = false;
       setIsAnalyzing(false);
-      setFeedback({ type: 'warn', message: error.message });
     }
-    } catch(error) { setFeedback({type:'warn',message:error.message || 'No se pudo guardar la entrada.'}); }
-    finally { savingRef.current = false; setIsAnalyzing(false); }
   };
 
   // Eliminar entrada (con confirmación de 2 pasos y escritura de palabra ELIMINAR)
@@ -230,15 +254,23 @@ export function useJournal() {
     }
 
     handleNewEntry();
-    try { await loadJournals(); }
-    catch(error) { setFeedback({type:'warn',message:`Entrada eliminada; no se pudo recargar: ${error.message}`}); return; }
+    try {
+      await loadJournals();
+    } catch (error) {
+      setFeedback({ type: 'warn', message: `Entrada eliminada; no se pudo recargar: ${error.message}` });
+      return;
+    }
     setFeedback({ type: 'success', message: 'Entrada eliminada definitivamente.' });
   };
 
   // Abrir modal de corrección humana
   const handleOpenCorrection = async () => {
-    try { await nlpEngine.loadActiveLexicon(); }
-    catch(error) { setFeedback({type:'warn',message:error.response?.data?.error?.message || error.message}); return; }
+    try {
+      await nlpEngine.loadActiveLexicon();
+    } catch (error) {
+      setFeedback({ type: 'warn', message: error.response?.data?.error?.message || error.message });
+      return;
+    }
     if (!currentJournal?.analysis) return;
     const initial = currentJournal.correctedCategories
       ? [...currentJournal.correctedCategories]
@@ -278,8 +310,12 @@ export function useJournal() {
       return;
     }
 
-    try { await loadJournals(); }
-    catch(error) { setFeedback({type:'warn',message:`Corrección guardada; no se pudo recargar: ${error.message}`}); return; }
+    try {
+      await loadJournals();
+    } catch (error) {
+      setFeedback({ type: 'warn', message: `Corrección guardada; no se pudo recargar: ${error.message}` });
+      return;
+    }
     setShowCorrectionModal(false);
     setFeedback({ type: 'success', message: 'Corrección humana aplicada y registrada en auditoría.' });
   };
@@ -297,7 +333,10 @@ export function useJournal() {
       const analyzed = await pendingAnalysisRef.current();
       pendingAnalysisRef.current = null;
       if (!analyzed) {
-        setFeedback({type:'warn',message:`Solicitud registrada (Caso ${code}); el análisis no se pudo completar o recargar. El texto de tu bitácora no se transmitió a SST.`});
+        setFeedback({
+          type: 'warn',
+          message: `Solicitud registrada (Caso ${code}); el análisis no se pudo completar o recargar. El texto de tu bitácora no se transmitió a SST.`
+        });
         return;
       }
     }
@@ -316,10 +355,10 @@ export function useJournal() {
     }
   };
 
-  // 1. Caso: Bloqueo por falta de consentimiento C2
-  // 1. Caso: Bloqueo por falta de consentimiento C2
-
-  return { loading,loadError,
+  return {
+    loading,
+    loadError,
+    reload,
     consent,
     journals,
     currentJournalId,

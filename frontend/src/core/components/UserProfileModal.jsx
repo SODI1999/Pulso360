@@ -38,7 +38,13 @@ const INSTITUTIONAL_AVATARS = [
   }
 ];
 
-// Función para recortar y optimizar imágenes cargadas localmente a 256x256 cuadrado
+/**
+ * Resizes and center-crops an uploaded user image to a square dimension (e.g. 256x256).
+ *
+ * @param {File} file - Uploaded image file.
+ * @param {number} [maxDimension=256] - Maximum pixel dimension.
+ * @returns {Promise<string>} Base64 Data URL JPEG image.
+ */
 function resizeImageToAvatar(file, maxDimension = 256) {
   return new Promise((resolve, reject) => {
     const img = new Image();
@@ -64,11 +70,31 @@ function resizeImageToAvatar(file, maxDimension = 256) {
   });
 }
 
+/**
+ * Resolves the default avatar URI for a given user session based on stored preferences or assigned role.
+ *
+ * @param {Object} user - User profile object.
+ * @returns {string} Avatar asset URI.
+ */
 function getDefaultAvatarForUser(user) {
   if (user?.avatar) return user.avatar;
   return getRandomAvatarForRole(user?.role);
 }
 
+/**
+ * User Profile & Wellbeing Preferences modal dialog.
+ * Features 3 WAI-ARIA tabs:
+ * 1. Identity & Diverse Avatar Catalog: preset representative avatars or optimized custom upload.
+ * 2. Ergonomic Shift Preferences: active pause audio ambient toggle, discrete shift reminder, and visual rest / reduced motion.
+ * 3. Safeguards & Privacy: reminders of k-anonymity (k >= 5), local NLP processing, and direct Habeas Data link.
+ *
+ * @param {Object} props - Component properties.
+ * @param {boolean} props.isOpen - Modal visibility flag.
+ * @param {() => void} props.onClose - Modal dismissal callback.
+ * @param {Object} props.user - Active authenticated user record.
+ * @param {(updatedUser: Object) => void} [props.onProfileUpdated] - Callback fired after persisting profile updates.
+ * @returns {import('react').JSX.Element|null} Rendered modal dialog or null if not open.
+ */
 export function UserProfileModal({ isOpen, onClose, user, onProfileUpdated }) {
   const [activeTab, setActiveTab] = useState('identity'); // 'identity' | 'preferences' | 'privacy'
   const [selectedAvatar, setSelectedAvatar] = useState(() => getDefaultAvatarForUser(user));
@@ -353,7 +379,7 @@ export function UserProfileModal({ isOpen, onClose, user, onProfileUpdated }) {
                     <span>{user.email}</span>
                     {user.campaign && <span>• {user.campaign}</span>}
                     {user.shiftStartHour && (
-                      <span>• Turno desde las {String(user.shiftStartHour).padStart(2, '0')}:00</span>
+                       <span>• Turno desde las {String(user.shiftStartHour).padStart(2, '0')}:00</span>
                     )}
                   </div>
                 </div>

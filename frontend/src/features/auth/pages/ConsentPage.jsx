@@ -1,19 +1,22 @@
+// src/features/auth/pages/ConsentPage.jsx
+// Gestión del consentimiento informado del agente y preferencias C1 a C5
+// Documento de consentimiento y preferencias bajo la Ley 1581 de 2012 y Res. 2646 de 2008.
+
+import { useMemo } from 'react';
 import { ConsentPolicyModal } from '../components/ConsentPolicyModal';
 import { ConsentHistory } from '../components/ConsentHistory';
 import { ConsentPreferences } from '../components/ConsentPreferences';
 import { useConsent } from '../hooks/useConsent';
-
-// src/features/auth/pages/ConsentPage.jsx
-// Gestión del consentimiento informado del agente y preferencias C1 a C5
-// Documento de consentimiento y preferencias.
-
 import { Icon } from '../../../core/components/Icon';
-
-// Estilos editoriales continuos
 import '../../../styles/consentimiento.css';
 
-// Finalidades de tratamiento C1 a C5 con terminología de Contact Center y salud ocupacional
-
+/**
+ * Página de Consentimiento Informado y Preferencias de Privacidad (C1 a C5).
+ * Permite al agente habilitar o pausar con plena autonomía las finalidades de tratamiento,
+ * consultar el marco legal (Ley 1581) y auditar el histórico inmutable de decisiones.
+ *
+ * @returns {JSX.Element} Vista del consentimiento informado.
+ */
 export function ConsentPage() {
   const {
     navigate,
@@ -39,6 +42,21 @@ export function ConsentPage() {
     formatDateTime
   } = useConsent();
 
+  // Formatear fecha de vigencia a texto en español (ej. "15 de octubre de 2026")
+  const formattedEffectiveDate = useMemo(() => {
+    if (!settings.policyEffectiveDate) return 'reciente';
+    try {
+      const d = new Date(settings.policyEffectiveDate);
+      if (isNaN(d.getTime())) return settings.policyEffectiveDate;
+      return new Intl.DateTimeFormat('es-CO', {
+        dateStyle: 'long',
+        timeZone: 'America/Bogota'
+      }).format(d);
+    } catch {
+      return settings.policyEffectiveDate;
+    }
+  }, [settings.policyEffectiveDate]);
+
   return (
     <div className="agent-page consent-editorial-page">
       {/* Retorno sobrio */}
@@ -56,7 +74,7 @@ export function ConsentPage() {
         <h1 className="consent-page-title">Consentimiento informado y preferencias</h1>
         <p className="consent-page-subtitle">
           Decide con plena autonomía qué herramientas de bienestar deseas habilitar en tu estación. Política
-          versión {settings.policyVersion}, vigente desde el {settings.policyEffectiveDate}.
+          versión {settings.policyVersion}, vigente desde el {formattedEffectiveDate}.
         </p>
       </header>
 

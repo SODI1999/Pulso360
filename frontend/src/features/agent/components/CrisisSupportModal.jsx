@@ -1,14 +1,33 @@
+// src/features/agent/components/CrisisSupportModal.jsx
 import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Icon } from '../../../core/components/Icon';
 import { useAgentModalAccessibility } from '../hooks/useAgentModalAccessibility';
 
+/**
+ * Modal de Apoyo y Contención Inmediata ante Alertas de Sobrecarga o Crisis.
+ * Provee desescalada cognitiva, acceso a Línea 106 y canal prioritario voluntario con SST.
+ *
+ * @param {Object} props - Propiedades del componente modal.
+ * @param {boolean} props.isOpen - Si el modal se encuentra abierto.
+ * @param {boolean} props.priorityStep - Si está en el paso secundario de contacto con SST.
+ * @param {Function} props.onSetPriorityStep - Alterna entre vista de contención y paso prioritario.
+ * @param {string} props.crisisMode - Modalidad de contacto ('anonimo' o 'confidencial').
+ * @param {Function} props.onChangeCrisisMode - Cambia la modalidad de contacto.
+ * @param {boolean} [props.hasC3Consent] - Si tiene activa la finalidad C3 de acompañamiento.
+ * @param {boolean} [props.hasC5Consent] - Prop de compatibilidad con C5 o C3.
+ * @param {Function} props.onConfirmPriority - Confirma la radicación prioritaria con SST.
+ * @param {Function} props.onContinue - Cierra el modal y continúa el flujo de la bitácora.
+ * @param {Function} props.onClose - Cierra el modal sin radicación.
+ * @returns {JSX.Element|null} Elemento modal renderizado o null si está cerrado.
+ */
 export function CrisisSupportModal({
   isOpen,
   priorityStep,
   onSetPriorityStep,
   crisisMode,
   onChangeCrisisMode,
+  hasC3Consent,
   hasC5Consent,
   onConfirmPriority,
   onContinue,
@@ -16,6 +35,8 @@ export function CrisisSupportModal({
 }) {
   const dialogRef = useRef(null);
   useAgentModalAccessibility({ isOpen, onClose, dialogRef });
+
+  const hasAuthorizedSupport = Boolean(hasC3Consent ?? hasC5Consent);
 
   if (!isOpen) return null;
 
@@ -114,12 +135,12 @@ export function CrisisSupportModal({
               </button>
             </div>
 
-            {!hasC5Consent ? (
+            {!hasAuthorizedSupport ? (
               <div className="alert-banner warn">
                 <Icon name="info" size={18} />
                 <div>
-                  <strong>Finalidad C5 requerida:</strong> Debes activar la finalidad{' '}
-                  <em>C5 (Acompañamiento)</em> en tus preferencias para solicitar contacto con SST.
+                  <strong>Finalidad C3 requerida:</strong> Debes activar la finalidad{' '}
+                  <em>C3 (Acompañamiento y Canal de Apoyo)</em> en tus preferencias para solicitar contacto con SST.
                   <div style={{ marginTop: '10px' }}>
                     <Link to="/consentimiento" className="btn btn-primary" style={{ fontSize: '12.5px' }}>
                       Gestionar consentimiento
@@ -171,7 +192,7 @@ export function CrisisSupportModal({
               <button type="button" className="btn btn-secondary" onClick={() => onSetPriorityStep(false)}>
                 Atrás
               </button>
-              {hasC5Consent && (
+              {hasAuthorizedSupport && (
                 <button type="button" className="btn btn-primary" onClick={onConfirmPriority}>
                   Confirmar solicitud prioritaria
                 </button>

@@ -1,3 +1,13 @@
+/**
+ * Data inventory summary card displaying counts and date ranges of user personal records.
+ * Covers check-ins, journals, support requests, and active informed consent status.
+ *
+ * @param {Object} props - Component properties.
+ * @param {Object} props.summary - Summary metrics object (checkins, journals, support, consent).
+ * @param {(items: Array<any>, field: string) => string} props.calculateDateRange - Helper formatting date ranges.
+ * @param {(dateStr: string) => string} props.formatDate - Helper formatting ISO dates to readable locale format.
+ * @returns {import('react').JSX.Element} Personal data inventory card.
+ */
 export function PrivacySummary({ summary, calculateDateRange, formatDate }) {
   return (
     <div className="card" style={{ marginBottom: '24px' }}>

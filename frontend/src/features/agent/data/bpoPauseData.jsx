@@ -1,7 +1,19 @@
-export // Respiración: ciclo completo de 12s (inhala 4 · sostén 2 · exhala 6).
-// Las pistas enseñan el gesto correcto; el orbe lo marca con precisión.
-const BREATH_SECONDS = 12;
+/**
+ * @file bpoPauseData.jsx
+ * Active somatic pause configuration and phase timing for BPO contact center agents.
+ * Calibrated for micro-breaks between intensive call queues: breathing, eye rest, and stretches.
+ */
+
+/** Duration of each breathing cycle in seconds (inhale 4s, hold 2s, exhale 6s). */
+export const BREATH_SECONDS = 12;
+
+/** Total breathing repetitions recommended per pause. */
 export const BREATH_CYCLES = 5;
+
+/**
+ * Visual and cognitive guidance for each breathing phase.
+ * @type {Array<{label: string, hint: string}>}
+ */
 export const BREATH_PHASES = [
   {
     label: 'Inhala',
@@ -16,8 +28,17 @@ export const BREATH_PHASES = [
     hint: 'Suelta por la boca, más lento que al inhalar.'
   }
 ];
+
+/** 20-20-20 visual rest guideline (20 seconds focusing into distance). */
 export const EYE_REST_SECONDS = 20;
+
+/** Duration per somatic stretch exercise in seconds. */
 export const STRETCH_SECONDS = 12;
+
+/**
+ * Ergonomic somatic stretches targeted at BPO operator pain points (cervical, wrists, dorsal).
+ * @type {Array<{title: string, desc: string}>}
+ */
 export const STRETCHES = [
   {
     title: 'Descarga cervical',
@@ -32,20 +53,35 @@ export const STRETCHES = [
     desc: 'Manos entrelazadas detrás de la espalda; eleva el pecho al inhalar.'
   }
 ];
+
+/** Total duration of stretching section in seconds. */
 export const STRETCH_TOTAL = STRETCH_SECONDS * STRETCHES.length;
+
+/** Total duration of breathing section in seconds. */
 export const BREATH_TOTAL = BREATH_SECONDS * BREATH_CYCLES;
+
+/** Total active pause duration in seconds. */
 export const PAUSE_TOTAL = BREATH_TOTAL + EYE_REST_SECONDS + STRETCH_TOTAL;
+
+/**
+ * Mapping of phase identifier to allotted duration in seconds.
+ * @type {Record<string, number>}
+ */
 export const PHASE_DURATIONS = {
   breathing: BREATH_TOTAL,
   eyes: EYE_REST_SECONDS,
   stretch: STRETCH_TOTAL
 };
+
+/** List of phases that run with active countdown timers. */
 export const TIMED_PHASES = Object.keys(PHASE_DURATIONS);
+
+/**
+ * State machine sequence for phase progression.
+ * @type {Record<string, string>}
+ */
 export const NEXT_PHASE = {
   breathing: 'eyes',
   eyes: 'stretch',
   stretch: 'done'
 };
-
-// Preferencias de audio del agente (no son datos personales: solo un interruptor).
-// localStorage guarda la elección para no tener que silenciar en cada pausa.

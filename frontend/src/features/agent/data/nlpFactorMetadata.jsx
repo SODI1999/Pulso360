@@ -1,4 +1,13 @@
-// Factores orientativos compartidos por lectura, historial y corrección de la bitácora.
+/**
+ * @file nlpFactorMetadata.jsx
+ * Metadata catalog for occupational stress factors recognized by the lexical NLP engine in private journals.
+ * Provides accessible icon mapping and non-clinical domain descriptions.
+ */
+
+/**
+ * Descriptive metadata for each occupational stress factor in BPO environments.
+ * @type {Record<string, {icon: string, desc: string}>}
+ */
 export const FACTOR_METADATA = {
   'Sobrecarga percibida': {
     icon: 'phone',

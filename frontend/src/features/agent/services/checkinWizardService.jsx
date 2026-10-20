@@ -5,6 +5,16 @@ import { apiClient, getAuthToken } from '../../../core/api/apiClient';
 import { env } from '../../../core/config/env';
 import { normalizeCheckin, clearAgentCache } from './agentQueries';
 
+/**
+ * Persists an agent daily check-in record either to the remote API or mock storage.
+ * Handles validation, payload normalization across BPO wellbeing dimensions, and audit logging.
+ *
+ * @param {Object|null} existingCheckin - Existing check-in object if editing, or null for new submissions.
+ * @param {Object} user - Currently authenticated user object (must contain id and role).
+ * @param {string} journeyKey - Shift identifier / date formatted string (e.g., 'YYYY-MM-DD').
+ * @param {Object} draft - Key-value map of question responses (energia, cargaEmocional, recuperacion, etc.).
+ * @returns {Promise<{success: boolean, data: Object|null, payload?: Object, error?: string}>} Operation outcome with normalized payload or error message.
+ */
 export async function saveCheckin(existingCheckin, user, journeyKey, draft) {
   if (!env.useMockStorage) {
     if (!getAuthToken()) return { success:false,data:null,error: 'Sesión no válida o expirada.' };

@@ -7,6 +7,13 @@ import { useState, useMemo, useEffect, useCallback } from 'react';
 import { authService, roleLabels } from '../../../core/auth/authService';
 import { pulsoStore } from '../../../core/storage/pulsoStore';
 
+/**
+ * Hook para la gestión del Centro de Privacidad, Salvaguardas y Habeas Data del Agente.
+ * Administra el ejercicio de derechos ARCO (Acceso, Rectificación, Cancelación/Supresión, Oposición),
+ * generación de archivos de portabilidad en cliente y navegación por pestañas WAI-ARIA.
+ *
+ * @returns {Object} Estado del centro de privacidad y manejadores de acción ARCO.
+ */
 export function useMyDataPrivacy() {
   const currentUser = authService.getCurrentUser();
 
@@ -81,6 +88,40 @@ export function useMyDataPrivacy() {
     const initial = getAgentRecords(currentUser?.id);
     return !initial?.consents?.[currentUser?.id];
   });
+
+  const reload = useCallback(() => {
+    if (!currentUser?.id) return;
+    setLoading(true);
+    setLoadError('');
+    if (!env.useMockStorage) {
+      fetchAgentRecords(currentUser.id)
+        .then((storeData) => {
+          setSummary({
+            checkins: storeData.checkins || [],
+            journals: storeData.journals || [],
+            support: storeData.supportRequests || [],
+            consent: storeData.consents?.[currentUser.id],
+            requests: storeData.habeasRequests || []
+          });
+        })
+        .catch((error) => {
+          setLoadError(error.message || 'Error al conectar con el servidor.');
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    } else {
+      const initial = getAgentRecords(currentUser.id);
+      setSummary({
+        checkins: initial?.checkins || [],
+        journals: initial?.journals || [],
+        support: initial?.supportRequests || [],
+        consent: initial?.consents?.[currentUser.id] || null,
+        requests: initial?.habeasRequests || []
+      });
+      setLoading(false);
+    }
+  }, [currentUser?.id]);
 
   useEffect(() => {
     let mounted = true;
@@ -240,6 +281,7 @@ export function useMyDataPrivacy() {
   return {
     loading,
     loadError,
+    reload,
     currentUser,
     activeTab,
     setActiveTab,

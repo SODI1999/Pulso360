@@ -19,7 +19,14 @@ const ENERGY_EMOJIS = {
   }
 };
 
-// value fuera de rango o ausente (p. ej. dimensión omitida) cae al nivel neutro
+/**
+ * Animated/static expressive avatar face representing affective and energy state on a 1-5 scale.
+ * Respects 'prefers-reduced-motion' by switching to static 3D renderings.
+ *
+ * @param {Object} props - Component properties.
+ * @param {number|string} [props.value=3] - Perceived score from 1 to 5.
+ * @returns {import('react').JSX.Element} Visual emoji image.
+ */
 export function EnergyFace({ value = 3 }) {
   const level = Math.min(5, Math.max(1, Math.round(Number(value) || 3)));
   const asset = ENERGY_EMOJIS[level];

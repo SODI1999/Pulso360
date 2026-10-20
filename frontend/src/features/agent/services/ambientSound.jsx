@@ -42,6 +42,16 @@ const createPinkNoiseBuffer = (context) => {
   return buffer;
 };
 
+/**
+ * Sintetizador local en cliente de paisaje sonoro y campanas suaves (Web Audio API).
+ * Genera ruido rosa adaptativo y acordes senoidales cálidos sin consumir ancho de banda.
+ *
+ * @returns {Object} Controlador de audio ambiental.
+ * @property {Function} start - Inicializa el contexto de audio e inicia el fade-in progresivo.
+ * @property {Function} setPhase - Ajusta dinámicamente el brillo del filtro según la fase somática.
+ * @property {Function} chime - Reproduce una campana suave con caída larga (aguda o grave).
+ * @property {Function} stop - Realiza fade-out y libera de memoria el AudioContext.
+ */
 export function createAmbientSound() {
   let context = null;
   let masterGain = null;
@@ -128,18 +138,16 @@ export function createAmbientSound() {
 
     const softener = context.createBiquadFilter();
     softener.type = 'lowpass';
-    softener.frequency.value = 2400;
+    softener.frequency.value = 1800;
 
-    const envelope = context.createGain();
-    envelope.gain.value = 0;
+    const chimeGain = context.createGain();
+    chimeGain.gain.setValueAtTime(0, now);
+    chimeGain.gain.linearRampToValueAtTime(level, now + 0.02);
+    chimeGain.gain.exponentialRampToValueAtTime(0.0001, now + seconds);
 
-    fundamental.connect(envelope);
-    overtone.connect(overtoneGain).connect(envelope);
-    envelope.connect(softener).connect(masterGain);
-
-    envelope.gain.setValueAtTime(0, now);
-    envelope.gain.linearRampToValueAtTime(level, now + 0.02);
-    envelope.gain.exponentialRampToValueAtTime(0.0001, now + seconds);
+    fundamental.connect(softener);
+    overtone.connect(overtoneGain).connect(softener);
+    softener.connect(chimeGain).connect(masterGain);
 
     fundamental.start(now);
     overtone.start(now);
@@ -148,25 +156,18 @@ export function createAmbientSound() {
   };
 
   return {
-    // Inicia (o reanuda) el ambiente con entrada suave
     start() {
-      if (!context) buildGraph();
-      if (!context || !masterGain) return false;
-      if (context.state === 'suspended') context.resume();
+      if (context) return;
+      if (!buildGraph()) return;
+      if (context.state === 'suspended') {
+        context.resume().catch(() => {});
+      }
       fadeTo(TARGET_GAIN, FADE_IN_SECONDS);
-      return true;
     },
 
-    // Silencia o reactiva sin destruir el grafo (para el botón Sonido/Silencio)
-    setEnabled(enabled) {
-      fadeTo(enabled ? TARGET_GAIN : 0, enabled ? FADE_IN_SECONDS : FADE_OUT_SECONDS);
-    },
-
-    // Ajusta el brillo y el peso del aire según la sub-fase respiratoria.
-    // Sin índice (null) vuelve al perfil neutro fuera de la fase de respiración.
-    setBreathPhase(index) {
+    setPhase(phaseIndex) {
       if (!context || !airFilter || !airGain || !droneGain) return;
-      const profile = AIR_PROFILES[index] ?? NEUTRAL_PROFILE;
+      const profile = AIR_PROFILES[phaseIndex] || NEUTRAL_PROFILE;
       const now = context.currentTime;
       const glide = 1.1; // segundos: transición inaudible, sin cortes
       airFilter.frequency.setTargetAtTime(profile.filter, now, glide);
@@ -174,12 +175,10 @@ export function createAmbientSound() {
       droneGain.gain.setTargetAtTime(profile.drone, now, glide);
     },
 
-    // Campana de ritmo: aguda al abrir cada ciclo, grave y larga al cerrar la pausa
     chime({ deep = false } = {}) {
       playChime(deep ? 220 : 440, deep ? 0.05 : 0.042, deep ? 3.4 : 1.9);
     },
 
-    // Apaga con desvanecimiento y libera el contexto de audio
     stop() {
       if (!context || !masterGain) return;
       const closingContext = context;

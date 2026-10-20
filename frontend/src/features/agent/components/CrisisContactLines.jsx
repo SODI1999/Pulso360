@@ -1,5 +1,11 @@
 import { Icon } from '../../../core/components/Icon';
 
+/**
+ * Directory of certified emergency and mental health crisis hotlines in Colombia.
+ * Surfaces 24/7 direct-call links for Línea 106 (Salud Mental), Línea 123 (Emergencias), and Línea 155 (Violencias de Género).
+ *
+ * @returns {import('react').JSX.Element} Emergency hotline directory section.
+ */
 export function CrisisContactLines() {
   return (
     <section id="crisis-lines" className="crisis-lines-section" aria-labelledby="lines-heading">

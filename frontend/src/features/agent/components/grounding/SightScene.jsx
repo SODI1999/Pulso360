@@ -1,3 +1,13 @@
+/**
+ * Visual SVG scene for Grounding Step 5: Sight (Vista).
+ * Renders 5 interactive workstation anchors: monitor edge, headset cable, spacebar, water bottle, and light/shadow.
+ *
+ * @param {Object} props - Component properties.
+ * @param {(id: string) => boolean} props.isCompleted - Checks if a specific anchor ID is currently completed.
+ * @param {(id: string) => void} props.onToggleAnchor - Toggles completion state for an anchor.
+ * @param {(e: import('react').KeyboardEvent, id: string) => void} props.handleKeyDown - Accessible keyboard activator (Enter/Space).
+ * @returns {import('react').JSX.Element} SVG group representing the visual workstation scene.
+ */
 export function SightScene({ isCompleted, onToggleAnchor, handleKeyDown }) {
   return (
     <g className="svg-step-vista">

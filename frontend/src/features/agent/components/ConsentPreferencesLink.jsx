@@ -1,6 +1,12 @@
 import { Link } from 'react-router-dom';
 import { Icon } from '../../../core/components/Icon';
 
+/**
+ * Navigation shortcut card linking to the informed consent preference manager.
+ * Reminds agents of their statutory right to grant, modify, or revoke C1-C5 purposes without employment penalties.
+ *
+ * @returns {import('react').JSX.Element} Consent preferences card.
+ */
 export function ConsentPreferencesLink() {
   return (
     <div className="card">

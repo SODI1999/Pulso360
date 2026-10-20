@@ -9,10 +9,18 @@ import { DIMENSION_DEFINITIONS, formatShiftTabDate } from '../services/myWellbei
 import { Icon } from '../../../core/components/Icon';
 import '../../../styles/bienestar.css';
 
+/**
+ * Página de Mi Bienestar y Tendencia Somática (RF-11).
+ * Presenta la curva de Bezier interactiva de energía, inspector de 6 dimensiones somáticas,
+ * desglose por jornada con pestañas accesibles WAI-ARIA y estado de reintento ante fallos.
+ *
+ * @returns {JSX.Element} Vista del histórico de bienestar personal.
+ */
 export function MyWellbeingPage() {
   const {
     loading,
     loadError,
+    reload,
     navigate,
     checkinRecords,
     recentShifts,
@@ -29,7 +37,19 @@ export function MyWellbeingPage() {
   }
 
   if (loadError) {
-    return <p className="agent-page alert-banner danger" role="alert">{loadError}</p>;
+    return (
+      <div className="agent-page wellbeing-editorial-page" role="alert">
+        <div
+          className="alert-banner danger"
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap' }}
+        >
+          <span>{loadError}</span>
+          <button type="button" className="btn btn-secondary btn-sm" onClick={reload}>
+            Reintentar
+          </button>
+        </div>
+      </div>
+    );
   }
 
   // Agrupación en dos columnas limpias: Cuerpo & Vitalidad vs. Operación & Entorno

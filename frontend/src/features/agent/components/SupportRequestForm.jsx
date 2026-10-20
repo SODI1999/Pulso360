@@ -1,6 +1,3 @@
-// src/features/agent/components/SupportRequestForm.jsx
-// Formulario ergonómico y guiado para registro de orientación psicosocial con SST (RF-10)
-
 import PropTypes from 'prop-types';
 import { Icon } from '../../../core/components/Icon';
 
@@ -31,6 +28,28 @@ const REASON_OPTIONS = [
   }
 ];
 
+/**
+ * Ergonomic guided intake form for psychosocial and occupational support requests (SST).
+ * Features modality selection (anonymous vs identified), reason selection cards,
+ * urgency scoring, contact preferences, and statutory CCL disclaimers.
+ *
+ * @param {Object} props - Component properties.
+ * @param {boolean} props.isAnonymous - Flag indicating whether anonymity is requested.
+ * @param {(mode: string) => void} props.onSetSupportMode - Support mode setter callback ('anonimo'|'confidencial').
+ * @param {string} props.reason - Currently selected occupational reason.
+ * @param {(val: string) => void} props.onChangeReason - Reason setter.
+ * @param {string} props.details - Context or description text.
+ * @param {(val: string) => void} props.onChangeDetails - Details setter.
+ * @param {string} props.urgency - Selected urgency level ('baja'|'media'|'alta').
+ * @param {(val: string) => void} props.onChangeUrgency - Urgency setter.
+ * @param {string} props.contactPreference - Preferred contact method ('app'|'correo'|'llamada').
+ * @param {(val: string) => void} props.onChangeContactPreference - Contact preference setter.
+ * @param {string} props.timeWindow - Preferred availability slot.
+ * @param {(val: string) => void} props.onChangeTimeWindow - Time window setter.
+ * @param {(e: import('react').FormEvent) => void} props.onSubmit - Form submission handler.
+ * @param {string} [props.feedback] - Feedback alert message.
+ * @returns {import('react').JSX.Element} Support request form section.
+ */
 export function SupportRequestForm({
   isAnonymous,
   onSetSupportMode,

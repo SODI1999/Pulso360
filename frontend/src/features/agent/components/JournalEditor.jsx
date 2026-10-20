@@ -1,6 +1,30 @@
 import { Icon } from '../../../core/components/Icon';
 import { NlpAnalysisPanel } from '../components/NlpAnalysisPanel';
 
+/**
+ * Main editing workplace for the private agent journal (Modo Desahogo).
+ * Manages free-text composition, operational context tagging, third-party privacy alerts,
+ * character counting, deletion controls, and lexical NLP analysis presentation.
+ *
+ * @param {Object} props - Component properties.
+ * @param {Object|undefined} props.consent - User consent snapshot.
+ * @param {boolean} props.hasThirdPartyData - True if privacy heuristic flags names, IDs or sensitive third-party terms.
+ * @param {(e: import('react').FormEvent) => void} props.handleSaveJournal - Save/analyze submit handler.
+ * @param {string} props.contextTag - Selected shift context tag.
+ * @param {import('react').Dispatch<import('react').SetStateAction<string>>} props.setContextTag - Context tag setter.
+ * @param {import('react').RefObject<HTMLTextAreaElement>} props.textareaRef - Ref to textarea element for focus management.
+ * @param {string} props.journalText - Current journal text content.
+ * @param {import('react').Dispatch<import('react').SetStateAction<string>>} props.setJournalText - Journal text setter.
+ * @param {boolean} props.isAnalyzing - Indicates if lexical NLP analysis is processing.
+ * @param {string|null} props.currentJournalId - ID of active entry if editing, or null if new.
+ * @param {() => void} props.handleDeleteJournal - Handler for deleting current journal entry.
+ * @param {{message: string, type: string}} props.feedback - Notification feedback state.
+ * @param {Object|null} props.currentJournal - Active journal entry object.
+ * @param {() => void} props.handleOpenCorrection - Callback to open NLP category correction modal.
+ * @param {import('react').Dispatch<import('react').SetStateAction<boolean>>} props.setShowHistoryModal - History modal visibility setter.
+ * @param {() => void} props.onOpenSomaticModal - Callback to initiate somatic breathing pause.
+ * @returns {import('react').JSX.Element} Journal editor work surface.
+ */
 export function JournalEditor({
   consent,
   hasThirdPartyData,

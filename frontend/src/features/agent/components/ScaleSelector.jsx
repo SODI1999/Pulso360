@@ -1,6 +1,3 @@
-// src/features/agent/components/ScaleSelector.jsx
-// Selector de escala somática de percepción (1 a 5) con notas empáticas y atajos ergonómicos
-
 import { useRef } from 'react';
 import { Icon } from '../../../core/components/Icon';
 import { EnergyFace } from './EnergyFace';
@@ -14,6 +11,18 @@ const FACE_DIRECTION = {
   ineficacia: 'negative'
 };
 
+/**
+ * Accessible 1-5 somatic scale radio selector for check-in wizard questions.
+ * Handles empathetic non-judgmental contextual microcopy, horizontal arrow key navigation,
+ * dynamic heat color mapping, and voluntary question skipping.
+ *
+ * @param {Object} props - Component properties.
+ * @param {Object} props.question - Active question object containing key, title, labels, and contextNote.
+ * @param {number|null} props.currentValue - Currently selected value (1-5) or null.
+ * @param {(val: number) => void} props.onSelectValue - Selection callback.
+ * @param {() => void} props.onSkip - Question skip callback.
+ * @returns {import('react').JSX.Element|null} Rendered scale selector or null if question is missing.
+ */
 export function ScaleSelector({ question, currentValue, onSelectValue, onSkip }) {
   const buttonRefs = useRef([]);
 

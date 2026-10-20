@@ -1,8 +1,3 @@
-// src/features/agent/hooks/useAgentModalAccessibility.jsx
-// Comportamiento de accesibilidad compartido por los modales del módulo de
-// agente: foco inicial, trampa de foco (Tab), cierre con Escape, bloqueo de
-// scroll del turno y devolución del foco al elemento que abrió el modal.
-
 import { useEffect, useRef } from 'react';
 import { useBodyScrollLock } from '../../../core/hooks/useBodyScrollLock';
 
@@ -16,6 +11,16 @@ const FOCUSABLE_SELECTOR = [
   '[tabindex]:not([tabindex="-1"])'
 ].join(', ');
 
+/**
+ * Custom hook providing accessibility, focus trapping (Tab), Escape dismissal,
+ * body scroll locking, and initial focus restoration for agent modals.
+ *
+ * @param {Object} options - Hook options.
+ * @param {boolean} options.isOpen - Indicates whether the modal dialog is currently visible.
+ * @param {() => void} options.onClose - Callback triggered when Escape is pressed.
+ * @param {import('react').RefObject<HTMLElement>} options.dialogRef - Reference to the modal dialog DOM element.
+ * @returns {{openerRef: import('react').MutableRefObject<HTMLElement|null>}} Ref holding the DOM element that triggered the modal.
+ */
 export function useAgentModalAccessibility({ isOpen, onClose, dialogRef }) {
   const openerRef = useRef(null);
   const hasFocusedRef = useRef(false);

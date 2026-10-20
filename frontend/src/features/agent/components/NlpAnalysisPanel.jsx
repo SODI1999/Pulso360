@@ -1,12 +1,20 @@
-// src/features/agent/components/NlpAnalysisPanel.jsx
-// Panel explicable de factores identificados por NLP, evidencia léxica y acciones de corrección
-
 import { Icon } from '../../../core/components/Icon';
-
 import { FACTOR_METADATA } from '../data/nlpFactorMetadata';
 
 const TENSION_CATEGORIES = ['Exigencia emocional', 'Sobrecarga percibida', 'Recuperación insuficiente'];
 
+/**
+ * Explainable lexical NLP analysis card for agent journal entries.
+ * Displays recognized occupational stress factors, lexical evidence tokens,
+ * proactive somatic pause triggers, bridge to SST support, and non-clinical legal disclaimers.
+ *
+ * @param {Object} props - Component properties.
+ * @param {Object|null} props.journal - Active journal record containing analysis payload.
+ * @param {() => void} props.onOpenCorrection - Callback to open human-in-the-loop correction modal.
+ * @param {() => void} props.onOpenHistory - Callback to open analysis/correction history modal.
+ * @param {() => void} props.onOpenSomaticModal - Callback to initiate somatic relief breathing pause.
+ * @returns {import('react').JSX.Element|null} Rendered analysis panel or null/history button if no active analysis.
+ */
 export function NlpAnalysisPanel({ journal, onOpenCorrection, onOpenHistory, onOpenSomaticModal }) {
   if (!journal?.analysis) return journal?.analysisHistory?.length ? <button type="button" className="btn btn-secondary" onClick={onOpenHistory}>Ver análisis de versiones anteriores del texto</button> : null;
 

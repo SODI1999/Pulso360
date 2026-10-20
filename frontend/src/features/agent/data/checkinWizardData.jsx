@@ -1,3 +1,14 @@
+/**
+ * @file checkinWizardData.jsx
+ * Multi-dimensional occupational check-in questionnaire for BPO agents.
+ * Grounded in daily shift operational reality: energy battery, emotional friction with customers,
+ * recovery/sleep, on-line supervisor support, protective detachment, and tooling friction.
+ */
+
+/**
+ * Specification of questions for the daily check-in wizard.
+ * @type {Array<{key: string, title: string, labels: string[], contextNote: string}>}
+ */
 export const QUESTIONS = [
   {
     key: 'energia',

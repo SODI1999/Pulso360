@@ -14,9 +14,17 @@ import { chatService } from '../../../core/api/chatService';
 import { useSocket } from '../../../core/socket/socketClient';
 import '../../../styles/apoyo.css';
 
+/**
+ * Página del Canal de Acompañamiento y Diálogo con SST (RF-10).
+ * Permite radicar solicitudes anónimas o confidenciales, consultar estados SLA
+ * de radicado (SG-SST), interactuar por chat seguro en vivo y acceder a pausas somáticas.
+ *
+ * @returns {JSX.Element} Vista del canal de apoyo del agente.
+ */
 export function SupportChannelPage() {
   const { socket } = useSocket();
   const [activeChatsMap, setActiveChatsMap] = useState({});
+  const [, setChatSyncDegraded] = useState(false);
   const [activeTab, setActiveTab] = useState('cases'); // 'cases' | 'new-request'
   const [selectedRequestId, setSelectedRequestId] = useState(null);
   const [isBreathingModalOpen, setIsBreathingModalOpen] = useState(false);
@@ -58,8 +66,10 @@ export function SupportChannelPage() {
         }
       });
       setActiveChatsMap(map);
+      setChatSyncDegraded(false);
     } catch {
-      // Ignorar error de red no bloqueante
+      // Modo degradado elegante: se preserva el estado local de radicados
+      setChatSyncDegraded(true);
     }
   }, []);
 
@@ -151,7 +161,22 @@ export function SupportChannelPage() {
   };
 
   if (loading) return <p className="agent-page" role="status">Cargando tus registros…</p>;
-  if (loadError) return <p className="agent-page alert-banner danger" role="alert">{loadError}</p>;
+
+  if (loadError) {
+    return (
+      <div className="agent-page support-editorial-page" role="alert">
+        <div
+          className="alert-banner danger"
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap' }}
+        >
+          <span>{loadError}</span>
+          <button type="button" className="btn btn-secondary btn-sm" onClick={reload}>
+            Reintentar
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (!consent?.c3) {
     return (

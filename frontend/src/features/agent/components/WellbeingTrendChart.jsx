@@ -1,9 +1,17 @@
-// src/features/agent/components/WellbeingTrendChart.jsx
-// Visualización interactiva premium de la curva de vitalidad semanal del agente.
-// Curvatura Bezier suave, relleno degradado, cuadrícula de referencia, puntos interactivos y selección sincronizada.
-
 import { useEffect, useRef, useState, useCallback } from 'react';
 
+/**
+ * High-performance HTML5 Canvas interactive chart for agent weekly vitality trends.
+ * Features smooth cubic Bezier splines, soft gradient fills, hover tooltips, and responsive DPI scaling.
+ *
+ * @param {Object} props - Component properties.
+ * @param {Array<Object>} [props.shifts=[]] - Shift records to render.
+ * @param {string|null} [props.selectedShiftId] - Currently selected shift identifier.
+ * @param {(id: string) => void} [props.onSelectShift] - Shift click callback.
+ * @param {number} [props.height=220] - Canvas height in pixels.
+ * @param {string} [props.className=''] - Optional wrapper CSS class name.
+ * @returns {import('react').JSX.Element} Interactive canvas trend chart.
+ */
 export function WellbeingTrendChart({
   shifts = [],
   selectedShiftId,

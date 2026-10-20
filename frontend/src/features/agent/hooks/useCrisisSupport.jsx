@@ -1,12 +1,19 @@
+// src/features/agent/hooks/useCrisisSupport.jsx
 import { getAgentRecords } from '../services/agentQueries';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authService, roleLabels } from '../../../core/auth/authService';
 import { pulsoStore } from '../../../core/storage/pulsoStore';
 import { env } from '../../../core/config/env';
-
 import { GROUNDING_STEPS, STEP_INTRO_SPEECH, ANCHOR_FEEDBACK_SPEECH } from '../data/crisisSupportData';
 
+/**
+ * Hook para la gestión del soporte en crisis, grounding somático 5-4-3-2-1 y contención.
+ * Maneja locución asistida mediante Web Speech API de forma resiliente, atajos de teclado
+ * ergonómicos y trazabilidad institucional sin exponer información confidencial.
+ *
+ * @returns {Object} Estado reactivo de soporte en crisis y manejadores de anclaje.
+ */
 export function useCrisisSupport() {
   const navigate = useNavigate();
   const currentUser = authService.getCurrentUser();
@@ -16,9 +23,6 @@ export function useCrisisSupport() {
   const data = getAgentRecords(currentUser?.id);
   const consent = env.useMockStorage ? data.consents?.[currentUserId] : currentUser?.consent;
 
-  // Estado para modal de respiración guiada de emergencia
-
-
   // Estado interactivo para Grounding 5-4-3-2-1
   const [activeGroundingIndex, setActiveGroundingIndex] = useState(0);
   const [completedAnchors, setCompletedAnchors] = useState({ 5: [], 4: [], 3: [], 2: [], 1: [] });
@@ -27,7 +31,8 @@ export function useCrisisSupport() {
   const [assistedAnchorIndex, setAssistedAnchorIndex] = useState(0);
 
   // Guía por voz nativa del sistema
-  const [isVoiceEnabled, setIsVoiceEnabled] = useState(true);
+  const isVoiceSupported = typeof window !== 'undefined' && 'speechSynthesis' in window;
+  const [isVoiceEnabled, setIsVoiceEnabled] = useState(isVoiceSupported);
   const [currentSubtitle, setCurrentSubtitle] = useState(STEP_INTRO_SPEECH[5]);
 
   const assistedTimerRef = useRef(null);
@@ -50,8 +55,9 @@ export function useCrisisSupport() {
         if (esVoice) utterance.voice = esVoice;
 
         window.speechSynthesis.speak(utterance);
-      } catch (err) {
-        console.warn('SpeechSynthesis error:', err);
+      } catch {
+        // Fallback silencioso y reactivo si la síntesis no está disponible en el entorno
+        setIsVoiceEnabled(false);
       }
     },
     [isVoiceEnabled]
@@ -195,8 +201,7 @@ export function useCrisisSupport() {
   return {
     navigate,
     consent,
-
-
+    isVoiceSupported,
     activeGroundingIndex,
     setActiveGroundingIndex,
     completedAnchors,

@@ -1,20 +1,27 @@
-import { CheckinStepForm } from '../components/CheckinStepForm';
-import { CheckinConfirmation } from '../components/CheckinConfirmation';
-import { useCheckinWizard } from '../hooks/useCheckinWizard';
-import { QUESTIONS } from '../data/checkinWizardData';
-
 // src/features/agent/pages/CheckinWizardPage.jsx
 // Formulario de Check-in diario por pasos (RF-03) somático, ergonómico y restaurador
 
 import { Link, useNavigate } from 'react-router-dom';
-
+import { CheckinStepForm } from '../components/CheckinStepForm';
+import { CheckinConfirmation } from '../components/CheckinConfirmation';
+import { useCheckinWizard } from '../hooks/useCheckinWizard';
+import { QUESTIONS } from '../data/checkinWizardData';
 import { Icon } from '../../../core/components/Icon';
-
 import '../../../styles/agent.css';
 
+/**
+ * Página del Asistente de Check-in diario por pasos (RF-03).
+ * Guía al agente por las 6 dimensiones somáticas y operativas con atajos de teclado,
+ * prevención de fatiga, soporte para desconexión y confirmación reflexiva.
+ *
+ * @returns {JSX.Element} Vista del wizard de check-in.
+ */
 export function CheckinWizardPage() {
   const navigate = useNavigate();
-  const { loading,loadError,
+  const {
+    loading,
+    loadError,
+    reload,
     data,
     consent,
     isOutsideShift,
@@ -34,9 +41,26 @@ export function CheckinWizardPage() {
     updateDraftValue,
     handleSubmit
   } = useCheckinWizard();
-  if (loading) return <p className="agent-page" role="status">Cargando tus registros…</p>;
-  if (loadError) return <p className="agent-page alert-banner danger" role="alert">{loadError}</p>;
 
+  if (loading) {
+    return <p className="agent-page" role="status">Cargando tus registros…</p>;
+  }
+
+  if (loadError) {
+    return (
+      <div className="agent-page agent-page--checkin" role="alert">
+        <div
+          className="alert-banner danger"
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap' }}
+        >
+          <span>{loadError}</span>
+          <button type="button" className="btn btn-secondary btn-sm" onClick={reload}>
+            Reintentar
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (!consent?.c1) {
     return (

@@ -1,9 +1,16 @@
-// src/features/agent/components/SupportTimelineBadge.jsx
-// Trazabilidad del ciclo de vida del radicado institucional (SG-SST / Res. 2646)
-
 import PropTypes from 'prop-types';
 import { Icon } from '../../../core/components/Icon';
 
+/**
+ * Visual progress stepper tracking the 4-phase lifecycle of an institutional SST support ticket (Radicado).
+ * Phases: 1. Radicación, 2. Revisión SST, 3. Orientación interactiva, 4. Cierre y recomendaciones.
+ *
+ * @param {Object} props - Component properties.
+ * @param {string} [props.status] - Raw ticket status string from store/API.
+ * @param {boolean} [props.hasActiveChat=false] - True if interactive dialogue messages exist.
+ * @param {boolean} [props.isChatClosed=false] - True if ticket is resolved/closed.
+ * @returns {import('react').JSX.Element} Visual timeline stepper badge.
+ */
 export function SupportTimelineBadge({ status, hasActiveChat, isChatClosed }) {
   const normStatus = (status || '').toLowerCase().trim();
 

@@ -3,12 +3,21 @@ import { TouchScene } from './grounding/TouchScene';
 import { SoundScene } from './grounding/SoundScene';
 import { SmellScene } from './grounding/SmellScene';
 import { GroundingClosureScene } from './grounding/GroundingClosureScene';
-// src/features/agent/components/GroundingVisualMap.jsx
-// Lienzo sensorial interactivo en SVG de alta fidelidad para el anclaje somático 5-4-3-2-1
-// Diseñado para BPO: ergonomía visual, trazo técnico fino, halos de respiración y subtítulos en vivo
-
 import { Icon } from '../../../core/components/Icon';
 
+/**
+ * Interactive SVG sensory canvas for the Grounding 5-4-3-2-1 exercise.
+ * Dynamically mounts the appropriate workstation scene based on stepNumber, provides live accessible subtitles,
+ * and handles click and keyboard interactions.
+ *
+ * @param {Object} props - Component properties.
+ * @param {number} props.stepNumber - Current sensory step (5: Sight, 4: Touch, 3: Sound, 2: Smell, 1: Closure).
+ * @param {string[]} [props.completedAnchorIds=[]] - Array of currently completed anchor keys.
+ * @param {(id: string) => void} props.onToggleAnchor - Handler for toggling anchor status.
+ * @param {string} [props.currentSubtitle=''] - Real-time spoken guidance caption.
+ * @param {boolean} [props.isVoiceEnabled=true] - Current voice synthesis status.
+ * @returns {import('react').JSX.Element} SVG grounding visual map with caption live-region.
+ */
 export function GroundingVisualMap({
   stepNumber,
   completedAnchorIds = [],
@@ -78,9 +87,7 @@ export function GroundingVisualMap({
           </linearGradient>
         </defs>
 
-        {/* ============================================================== */}
-        {/* PASO 5: VISTA - MAPA ESQUEMÁTICO DEL PUESTO CONTACT CENTER     */}
-        {/* ============================================================== */}
+        {/* PASO 5: VISTA - MAPA ESQUEMÁTICO DEL PUESTO CONTACT CENTER */}
         {stepNumber === 5 && (
           <SightScene
             isCompleted={isCompleted}
@@ -89,9 +96,7 @@ export function GroundingVisualMap({
           />
         )}
 
-        {/* ============================================================== */}
-        {/* PASO 4: TACTO - MAPA ERGONÓMICO CORPORAL DE DESCARGA FÍSICA    */}
-        {/* ============================================================== */}
+        {/* PASO 4: TACTO - MAPA ERGONÓMICO CORPORAL DE DESCARGA FÍSICA */}
         {stepNumber === 4 && (
           <TouchScene
             isCompleted={isCompleted}
@@ -100,9 +105,7 @@ export function GroundingVisualMap({
           />
         )}
 
-        {/* ============================================================== */}
-        {/* PASO 3: OÍDO - PAISAJE ACÚSTICO Y FRECUENCIAS DE SALA BPO      */}
-        {/* ============================================================== */}
+        {/* PASO 3: OÍDO - PAISAJE ACÚSTICO Y FRECUENCIAS DE SALA BPO */}
         {stepNumber === 3 && (
           <SoundScene
             isCompleted={isCompleted}
@@ -111,9 +114,7 @@ export function GroundingVisualMap({
           />
         )}
 
-        {/* ============================================================== */}
-        {/* PASO 2: OLFATO / AIRE - INHALACIÓN Y AROMA FAMILIAR            */}
-        {/* ============================================================== */}
+        {/* PASO 2: OLFATO / AIRE - INHALACIÓN Y AROMA FAMILIAR */}
         {stepNumber === 2 && (
           <SmellScene
             isCompleted={isCompleted}
@@ -122,9 +123,7 @@ export function GroundingVisualMap({
           />
         )}
 
-        {/* ============================================================== */}
-        {/* PASO 1: CONEXIÓN / PRESENTE - EJE Y ANCLAJE OPERATIVO          */}
-        {/* ============================================================== */}
+        {/* PASO 1: CONEXIÓN / PRESENTE - EJE Y ANCLAJE OPERATIVO */}
         {stepNumber === 1 && (
           <GroundingClosureScene
             isCompleted={isCompleted}

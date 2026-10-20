@@ -1,9 +1,33 @@
 import { GROUNDING_STEPS } from '../data/crisisSupportData';
-
 import { Icon } from '../../../core/components/Icon';
-
 import { GroundingVisualMap } from '../components/GroundingVisualMap';
 
+/**
+ * Interactive execution shell for the Grounding 5-4-3-2-1 somatic exercise.
+ * Coordinates step header information, assisted mode banners, SVG visual map rendering,
+ * completion summaries, and step navigation controls.
+ *
+ * @param {Object} props - Component properties.
+ * @param {Object} props.currentStep - Active step configuration object from GROUNDING_STEPS.
+ * @param {string[]} props.stepCompletedList - List of completed anchor IDs in the current step.
+ * @param {Array<{id: string, label: string, cue: string}>} props.currentStepAnchors - All anchors belonging to current step.
+ * @param {'tactile'|'assisted'} props.groundingMode - Active pacing mode.
+ * @param {boolean} props.isAssistedPlaying - Flag indicating if guided cadence timer is running.
+ * @param {number} props.assistedAnchorIndex - Index of currently focused anchor in assisted mode.
+ * @param {(step: number, id: string) => void} props.toggleAnchor - Anchor toggle callback.
+ * @param {number} props.currentStepNumber - Current step countdown number (5 to 1).
+ * @param {string} props.currentSubtitle - Active subtitle caption text.
+ * @param {boolean} props.isVoiceEnabled - Voice synthesis toggle status.
+ * @param {boolean} props.isFullGroundingCompleted - True if all 15 anchors across all 5 steps are checked.
+ * @param {import('react-router-dom').NavigateFunction} props.navigate - Router navigation hook.
+ * @param {() => void} props.resetGrounding - Callback to reset all anchor progress.
+ * @param {number} props.activeGroundingIndex - Current index in GROUNDING_STEPS array (0 to 4).
+ * @param {import('react').Dispatch<import('react').SetStateAction<number>>} props.setActiveGroundingIndex - Step index setter.
+ * @param {import('react').Dispatch<import('react').SetStateAction<number>>} props.setAssistedAnchorIndex - Assisted anchor index setter.
+ * @param {boolean} props.isStepFullyCompleted - True if all anchors in current step are completed.
+ * @param {import('react').Dispatch<import('react').SetStateAction<Record<number, string[]>>>} props.setCompletedAnchors - Anchor map setter.
+ * @returns {import('react').JSX.Element} Grounding exercise UI.
+ */
 export function GroundingExercise({
   currentStep,
   stepCompletedList,

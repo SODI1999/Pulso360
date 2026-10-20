@@ -4,6 +4,34 @@ import { apiClient, getAuthToken } from '../../../core/api/apiClient';
 import { env } from '../../../core/config/env';
 import { clearAgentCache } from './agentQueries';
 
+/**
+ * Calculates a future business date skipping Saturdays and Sundays.
+ * Used for statutory response deadlines under Colombian Habeas Data legislation (Ley 1581 de 2012).
+ *
+ * @param {Date|string} startDate - Starting timestamp.
+ * @param {number} daysCount - Number of business days to add.
+ * @returns {string} Target date formatted as 'YYYY-MM-DD'.
+ */
+const addBusinessDays = (startDate, daysCount) => {
+  const target = new Date(startDate);
+  let added = 0;
+  while (added < daysCount) {
+    target.setDate(target.getDate() + 1);
+    const dayOfWeek = target.getDay();
+    if (dayOfWeek !== 0 && dayOfWeek !== 6) added++;
+  }
+  return target.toISOString().slice(0, 10);
+};
+
+/**
+ * Submits a statutory Habeas Data request (Access, Rectification, Suppression/Revocation).
+ * Enforces legal deadlines (10 days for consultations, 15 days for claims/rectifications).
+ *
+ * @param {'Acceso'|'Rectificacion'|'Supresion'|'Revocatoria'} requestType - ARCO request modality.
+ * @param {Object} currentUser - Current user session.
+ * @param {string} noteText - Justification or request detail provided by the agent.
+ * @returns {Promise<{success: boolean, data?: {id: string}, generatedId?: string, error?: string}>} Outcome with radicado identifier.
+ */
 export async function createHabeasRequest(requestType, currentUser, noteText) {
   if (!env.useMockStorage) {
     if (!getAuthToken()) {
@@ -47,14 +75,3 @@ export async function createHabeasRequest(requestType, currentUser, noteText) {
 
   return { success:true,data:{id:generatedId},generatedId };
 }
-
-const addBusinessDays = (startDate, daysCount) => {
-  const target = new Date(startDate);
-  let added = 0;
-  while (added < daysCount) {
-    target.setDate(target.getDate() + 1);
-    const dayOfWeek = target.getDay();
-    if (dayOfWeek !== 0 && dayOfWeek !== 6) added++;
-  }
-  return target.toISOString().slice(0, 10);
-};

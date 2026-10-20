@@ -1,3 +1,13 @@
+/**
+ * Visual SVG scene for Grounding Step 2: Smell & Air (Olfato / Aire).
+ * Renders 2 olfactory anchors: slow fresh air inhalation into lungs and comforting drink aroma (coffee/tea).
+ *
+ * @param {Object} props - Component properties.
+ * @param {(id: string) => boolean} props.isCompleted - Checks if a specific anchor ID is currently completed.
+ * @param {(id: string) => void} props.onToggleAnchor - Toggles completion state for an anchor.
+ * @param {(e: import('react').KeyboardEvent, id: string) => void} props.handleKeyDown - Accessible keyboard activator (Enter/Space).
+ * @returns {import('react').JSX.Element} SVG group representing olfactory sensory anchors in the workstation.
+ */
 export function SmellScene({ isCompleted, onToggleAnchor, handleKeyDown }) {
   return (
     <g className="svg-step-olfato">

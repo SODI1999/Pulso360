@@ -1,9 +1,23 @@
 import { useRef } from 'react';
 import { Icon } from '../../../core/components/Icon';
 import { useAgentModalAccessibility } from '../hooks/useAgentModalAccessibility';
-
 import { FACTOR_METADATA } from '../data/nlpFactorMetadata';
 
+/**
+ * Accessible modal allowing agents to correct or fine-tune lexical NLP factor tags on their entries.
+ * Upholds psychological safety: the agent's human lived experience strictly supersedes automated classifications.
+ *
+ * @param {Object} props - Component properties.
+ * @param {boolean} props.isOpen - Modal open status.
+ * @param {string[]} props.allCategories - All selectable factor keys.
+ * @param {string[]} props.selectedCategories - Currently checked factor keys.
+ * @param {(category: string) => void} props.onToggleCategory - Toggle handler for a factor.
+ * @param {string} props.correctionNote - User feedback or explanation note text.
+ * @param {(note: string) => void} props.onChangeNote - Note setter.
+ * @param {() => void} props.onSave - Save callback.
+ * @param {() => void} props.onClose - Modal dismissal callback.
+ * @returns {import('react').JSX.Element|null} Rendered modal dialog.
+ */
 export function NlpCorrectionModal({
   isOpen,
   allCategories,
@@ -152,6 +166,16 @@ export function NlpCorrectionModal({
   );
 }
 
+/**
+ * Historical revision modal displaying previous textual versions and human adjustments of NLP analysis.
+ *
+ * @param {Object} props - Component properties.
+ * @param {boolean} props.isOpen - Modal open status.
+ * @param {Array<Object>} [props.history=[]] - Factor adjustment history records.
+ * @param {Array<Object>} [props.analyses=[]] - Prior archived textual analyses.
+ * @param {() => void} props.onClose - Modal dismissal callback.
+ * @returns {import('react').JSX.Element|null} Rendered revision history dialog.
+ */
 export function NlpHistoryModal({ isOpen, history = [], analyses = [], onClose }) {
   const dialogRef = useRef(null);
   useAgentModalAccessibility({ isOpen, onClose, dialogRef });

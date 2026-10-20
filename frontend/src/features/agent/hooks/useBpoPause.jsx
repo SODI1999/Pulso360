@@ -3,6 +3,24 @@ import { preferences } from '../../../core/storage/preferences';
 import { useBodyScrollLock } from '../../../core/hooks/useBodyScrollLock';
 import { createAmbientSound } from '../services/ambientSound';
 import { BREATH_SECONDS, PHASE_DURATIONS, TIMED_PHASES, NEXT_PHASE } from '../data/bpoPauseData';
+
+/**
+ * Custom hook governing the multi-phase active pause state machine for BPO agents.
+ * Coordinates breathing cycles, eye rest timers, somatic stretch intervals, ambient sound synthesis,
+ * focus containment, and body scroll lock.
+ *
+ * @param {boolean} isOpen - Indicates whether the pause modal is active.
+ * @param {() => void} onClose - Callback invoked when closing or completing the pause.
+ * @returns {Object} Reactive state and handlers:
+ * @returns {string} returns.phase - Current active phase ('entry' | 'breathing' | 'eyes' | 'stretch' | 'done').
+ * @returns {number} returns.secondsLeft - Remaining seconds in the current timed phase.
+ * @returns {import('react').RefObject<HTMLElement>} returns.overlayRef - Overlay container reference for focus trapping.
+ * @returns {import('react').Dispatch<import('react').SetStateAction<boolean>>} returns.setSoundOn - Toggle sound state.
+ * @returns {boolean} returns.soundOn - Current sound ambient preference.
+ * @returns {import('react').RefObject<HTMLElement>} returns.exitButtonRef - Reference to exit button for autofocus.
+ * @returns {import('react').RefObject<HTMLElement>} returns.entryButtonRef - Reference to entry button for autofocus.
+ * @returns {() => void} returns.startPause - Initiates the active pause progression.
+ */
 export function useBpoPause(isOpen, onClose) {
   const [phase, setPhase] = useState('entry');
   const [secondsLeft, setSecondsLeft] = useState(0);

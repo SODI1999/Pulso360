@@ -1,10 +1,16 @@
-// src/features/agent/components/PerspectiveSimModal.jsx
-// Simulador de transparencia y k-anonimato: clarifica qué información permanece privada y qué visualiza el supervisor/SST
-
 import { useRef } from 'react';
 import { Icon } from '../../../core/components/Icon';
 import { useAgentModalAccessibility } from '../hooks/useAgentModalAccessibility';
 
+/**
+ * Interactive transparency modal simulating role perspective separation (Agent vs Supervisor/SST).
+ * Clarifies k-anonymity (k >= 5), absolute private journal containment, and segregation of wellbeing from operational metrics.
+ *
+ * @param {Object} props - Component properties.
+ * @param {boolean} props.isOpen - Modal open status.
+ * @param {() => void} props.onClose - Modal dismissal handler.
+ * @returns {import('react').JSX.Element|null} Perspective simulation dialog.
+ */
 export function PerspectiveSimModal({ isOpen, onClose }) {
   const dialogRef = useRef(null);
   useAgentModalAccessibility({ isOpen, onClose, dialogRef });
@@ -142,10 +148,7 @@ export function PerspectiveSimModal({ isOpen, onClose }) {
           </div>
         </div>
 
-        {/* Garantía de separación: un solo aviso reúne lo que antes eran dos cajas
-                    (urna + aislamiento). Cada frase describe una regla comprobable en el código:
-                    agregación k ≥ 5, vistas sin identidad y ausencia de funciones de evaluación
-                    (auditoría 015, hallazgos 1 y 4). */}
+        {/* Garantía de separación de bienestar y desempeño */}
         <div className="agent-notice agent-notice--flat">
           <Icon name="shieldCheck" size={18} className="agent-notice-icon" />
           <div className="agent-notice-text">

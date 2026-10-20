@@ -1,10 +1,18 @@
-// src/features/agent/components/WellbeingHistory.jsx
-// Sección de tendencia de vitalidad con gráfico interactivo curvo y síntesis de ciclo.
-
 import { Icon } from '../../../core/components/Icon';
 import { WellbeingTrendChart } from './WellbeingTrendChart';
 import { getVitalitySummary } from '../services/myWellbeingHelpers';
 
+/**
+ * Historical wellbeing section presenting interactive weekly vitality trends and cycle synthesis.
+ * Couples the Bezier spline canvas chart with qualitative BPO ergonomic recommendations.
+ *
+ * @param {Object} props - Component properties.
+ * @param {Array<Object>} [props.recentShifts=[]] - Shift records for the current observation cycle.
+ * @param {string|number|null} props.averageEnergy - Arithmetic mean energy score (1-5).
+ * @param {string|null} props.selectedShiftId - ID of currently inspected shift.
+ * @param {(id: string) => void} props.onSelectShift - Shift selection callback.
+ * @returns {import('react').JSX.Element} Historical wellbeing overview section.
+ */
 export function WellbeingHistory({
   recentShifts = [],
   averageEnergy,

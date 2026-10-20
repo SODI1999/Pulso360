@@ -1,5 +1,16 @@
 import { Icon } from '../../../core/components/Icon';
 
+/**
+ * Sidebar list displaying the agent's historical private journal entries.
+ * Includes empty state with restorative graphic, creation button, entry dates, analysis status badges, and context tags.
+ *
+ * @param {Object} props - Component properties.
+ * @param {() => void} props.handleNewEntry - Handler to start a new blank journal entry.
+ * @param {Array<Object>} props.journals - List of agent journal records.
+ * @param {string|null} props.currentJournalId - ID of currently active journal in editor.
+ * @param {(journal: Object) => void} props.handleSelectJournal - Selection callback.
+ * @returns {import('react').JSX.Element} Journal entry list sidebar section.
+ */
 export function JournalEntryList({ handleNewEntry, journals, currentJournalId, handleSelectJournal }) {
   return (
     <section className="card agent-work-surface">

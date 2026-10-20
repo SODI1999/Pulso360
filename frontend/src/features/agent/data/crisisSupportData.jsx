@@ -1,3 +1,13 @@
+/**
+ * @file crisisSupportData.jsx
+ * Somatic Grounding 5-4-3-2-1 sequence and audio prompts for acute post-call de-escalation.
+ * Anchors agents in sensory workstation reality (sight, touch, hearing, scent, and psychological safety closure).
+ */
+
+/**
+ * Structural steps for somatic grounding in contact center workstations.
+ * @type {Array<{number: number, sense: string, verb: string, title: string, guide: string, badge: string, anchors: Array<{id: string, label: string, cue: string}>}>}
+ */
 export const GROUNDING_STEPS = [
   {
     number: 5,
@@ -131,6 +141,10 @@ export const GROUNDING_STEPS = [
   }
 ];
 
+/**
+ * Spoken guidance script for introducing each grounding step via speech synthesis.
+ * @type {Record<number, string>}
+ */
 export const STEP_INTRO_SPEECH = {
   5: 'Paso 5: Vista. Respira despacio y ubica con la mirada cinco puntos en tu puesto de trabajo. Toca cada número cuando lo encuentres.',
   4: 'Paso 4: Tacto. Siente el apoyo físico de tu cuerpo. Libera la tensión en pies, palmas, espalda y hombros.',
@@ -139,6 +153,10 @@ export const STEP_INTRO_SPEECH = {
   1: 'Paso 1: Conexión. Reconoce que esta llamada ya concluyó. Tu puesto es un espacio seguro y tú conduces tu ritmo.'
 };
 
+/**
+ * Spoken confirmation feedback emitted when the user selects or touches an anchor.
+ * @type {Record<string, string>}
+ */
 export const ANCHOR_FEEDBACK_SPEECH = {
   v1: 'Monitor localizado. Respira hondo y busca el siguiente punto.',
   v2: 'Diadema telefónica ubicada.',

@@ -1,12 +1,29 @@
 // src/features/agent/hooks/useMyWellbeing.jsx
-// Hook para gestión de estado del histórico de bienestar personal y navegación accesible por jornadas.
-
 import { fetchAgentRecords, getAgentRecords } from '../services/agentQueries';
 import { useState, useMemo, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { env } from '../../../core/config/env';
 import { authService } from '../../../core/auth/authService';
 
+/**
+ * Hook para la gestión de estado del histórico de bienestar personal del agente.
+ * Computa promedios de vitalidad, tendencias recientes de energía, navegación accesible
+ * por teclado (WAI-ARIA) entre jornadas y recarga reactiva de datos.
+ *
+ * @returns {Object} Estado del historial de bienestar y manejadores de interacción.
+ * @property {boolean} loading - Estado de carga de los registros.
+ * @property {string} loadError - Mensaje de error si falla la consulta.
+ * @property {Function} reload - Función interactiva para reintentar la carga.
+ * @property {Function} navigate - Función de navegación de react-router.
+ * @property {Array} checkinRecords - Todos los check-ins registrados por el usuario.
+ * @property {Array} recentShifts - Ventana de las 7 jornadas más recientes.
+ * @property {Function} setSelectedShiftId - Actualiza la jornada seleccionada en el inspector.
+ * @property {Object} activeShift - Objeto de la jornada actualmente inspeccionada.
+ * @property {Object} trendData - Puntos de datos y etiquetas para la curva de tendencia.
+ * @property {string|null} averageEnergy - Promedio redondeado de energía del ciclo.
+ * @property {boolean} isViewingLatest - Indica si se está viendo la jornada más reciente.
+ * @property {Function} handleTabKeyDown - Controlador de teclado para pestañas WAI-ARIA.
+ */
 export function useMyWellbeing() {
   const navigate = useNavigate();
   const currentUser = authService.getCurrentUser();
@@ -18,6 +35,27 @@ export function useMyWellbeing() {
     const initial = getAgentRecords(currentUser?.id);
     return !initial?.consents?.[currentUser?.id];
   });
+
+  const reload = useCallback(() => {
+    if (!currentUser?.id) return;
+    setLoading(true);
+    setLoadError('');
+    if (!env.useMockStorage) {
+      fetchAgentRecords(currentUser.id)
+        .then((remoteData) => {
+          if (remoteData) setData(remoteData);
+        })
+        .catch((error) => {
+          setLoadError(error.message || 'Error al conectar con el servidor.');
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    } else {
+      setData(getAgentRecords(currentUser.id));
+      setLoading(false);
+    }
+  }, [currentUser?.id]);
 
   useEffect(() => {
     let mounted = true;
@@ -117,6 +155,7 @@ export function useMyWellbeing() {
   return {
     loading,
     loadError,
+    reload,
     navigate,
     checkinRecords,
     recentShifts,

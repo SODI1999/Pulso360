@@ -1,6 +1,23 @@
 import { Icon } from '../../../core/components/Icon';
 import { ScaleSelector } from '../components/ScaleSelector';
 
+/**
+ * Step form container for the daily check-in wizard.
+ * Presents the active wellbeing dimension, somatic scale selector, validation alert,
+ * step progress track, and navigation buttons.
+ *
+ * @param {Object} props - Component properties.
+ * @param {(e: import('react').FormEvent) => void} props.handleSubmit - Submission event handler.
+ * @param {number} props.currentStep - Current dimension step index (0-5).
+ * @param {string} props.draftNotice - Status text indicating draft recovery state.
+ * @param {Object} props.currentQ - Active question configuration object.
+ * @param {number|null} props.currentValue - Selected score (1-5) or null if omitted.
+ * @param {(key: string, val: number|null) => void} props.updateDraftValue - Handler for setting dimension scores.
+ * @param {string} props.validationError - Validation error message if mandatory fields are missing.
+ * @param {import('react').MutableRefObject<any>} props.stepTimerRef - Timer ref for auto-progression.
+ * @param {import('react').Dispatch<import('react').SetStateAction<number>>} props.setCurrentStep - Step index setter.
+ * @returns {import('react').JSX.Element} Check-in step form component.
+ */
 export function CheckinStepForm({
   handleSubmit,
   currentStep,

@@ -1,30 +1,74 @@
+// src/features/agent/hooks/useAgentDashboard.jsx
 import { fetchAgentRecords, getAgentRecords } from '../services/agentQueries';
 import { preferences } from '../../../core/storage/preferences';
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { env } from '../../../core/config/env';
 import { authService } from '../../../core/auth/authService';
-
 import { formatHour } from '../services/agentDashboardHelpers';
 
+/**
+ * Hook para la gestión del ciclo de turno, ritmo circadiano y accesos del Agente.
+ * Integra horario local de Bogotá, desconexión laboral (Ley 2191) y carga de datos.
+ *
+ * @returns {Object} Estado reactivo del dashboard del agente y manejadores de acción.
+ * @property {boolean} loading - Estado de carga de los registros.
+ * @property {string} loadError - Mensaje de error de carga en caso de fallo.
+ * @property {Function} reload - Función interactiva para reintentar la carga.
+ * @property {Object} currentUser - Usuario autenticado actual.
+ * @property {Object} consent - Preferencias de consentimiento (C1-C5) del usuario.
+ * @property {string} greeting - Saludo contextual según la hora del día.
+ * @property {number} shiftStartHour - Hora de inicio de turno (0-23).
+ * @property {boolean} isOutsideShift - Indica si el momento actual está fuera de jornada.
+ * @property {boolean} dismissedDisconnect - Si el aviso de desconexión fue descartado.
+ * @property {Function} handleDismissDisconnect - Descarta el aviso de desconexión.
+ * @property {Object|null} todayCheckin - Check-in registrado para la jornada actual.
+ * @property {Function} handleQuickEnergy - Precarga energía en borrador y navega al wizard.
+ * @property {Array} shiftSteps - Hitos y etapas del turno del operador.
+ * @property {Object|null} breakStep - Etapa sugerida de pausa activa dentro de la jornada.
+ * @property {boolean} isPerspectiveModalOpen - Estado del modal de simulación de visibilidad.
+ * @property {Function} setIsPerspectiveModalOpen - Controla la apertura del modal de visibilidad.
+ */
 export function useAgentDashboard() {
   const currentUser = authService.getCurrentUser();
   const navigate = useNavigate();
   const [storeData, setStoreData] = useState(() => getAgentRecords(currentUser?.id));
 
-  const [loadError,setLoadError] = useState('');
-  const [loading,setLoading] = useState(() => {
+  const [loadError, setLoadError] = useState('');
+  const [loading, setLoading] = useState(() => {
     if (env.useMockStorage) return false;
     const initial = getAgentRecords(currentUser?.id);
     return !initial?.consents?.[currentUser?.id];
   });
+
+  const reload = useCallback(() => {
+    if (!currentUser?.id) return;
+    setLoading(true);
+    setLoadError('');
+    if (!env.useMockStorage) {
+      fetchAgentRecords(currentUser.id)
+        .then((remoteData) => {
+          if (remoteData) setStoreData(remoteData);
+        })
+        .catch((error) => {
+          setLoadError(error.message || 'Error al conectar con el servidor.');
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    } else {
+      setStoreData(getAgentRecords(currentUser.id));
+      setLoading(false);
+    }
+  }, [currentUser?.id]);
+
   useEffect(() => {
     let mounted = true;
     if (!env.useMockStorage && currentUser?.id) {
       fetchAgentRecords(currentUser.id).then((remoteData) => {
         if (mounted && remoteData) setStoreData(remoteData);
-      }).catch(error => { if(mounted) setLoadError(error.message); })
-        .finally(() => { if(mounted) setLoading(false); });
+      }).catch(error => { if (mounted) setLoadError(error.message); })
+        .finally(() => { if (mounted) setLoading(false); });
     }
     return () => { mounted = false; };
   }, [currentUser?.id]);
@@ -164,7 +208,10 @@ export function useAgentDashboard() {
   // Modales preservados
   const [isPerspectiveModalOpen, setIsPerspectiveModalOpen] = useState(false);
 
-  return { loading,loadError,
+  return {
+    loading,
+    loadError,
+    reload,
     currentUser,
     consent,
     greeting,

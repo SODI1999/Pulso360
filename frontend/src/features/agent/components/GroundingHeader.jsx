@@ -1,5 +1,20 @@
 import { Icon } from '../../../core/components/Icon';
 
+/**
+ * Header toolbar for the Somatic Grounding 5-4-3-2-1 exercise in the Agent Crisis/Support view.
+ * Displays overall anchor progress, mode switcher (tactile self-paced vs guided cadence),
+ * and speech synthesis voice toggle.
+ *
+ * @param {Object} props - Component properties.
+ * @param {number} props.totalAnchorsCompleted - Number of completed sensory anchors (0-15).
+ * @param {'tactile'|'assisted'} props.groundingMode - Active pacing mode.
+ * @param {import('react').Dispatch<import('react').SetStateAction<'tactile'|'assisted'>>} props.setGroundingMode - Mode setter.
+ * @param {import('react').Dispatch<import('react').SetStateAction<boolean>>} props.setIsAssistedPlaying - Play/pause toggle setter.
+ * @param {boolean} props.isAssistedPlaying - Flag indicating if assisted cadence is running.
+ * @param {boolean} props.isVoiceEnabled - Flag indicating whether speech synthesis voice is active.
+ * @param {import('react').Dispatch<import('react').SetStateAction<boolean>>} props.setIsVoiceEnabled - Voice toggle setter.
+ * @returns {import('react').JSX.Element} Grounding header component.
+ */
 export function GroundingHeader({
   totalAnchorsCompleted,
   groundingMode,

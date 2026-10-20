@@ -1,5 +1,12 @@
 import { Icon } from '../../../core/components/Icon';
 
+/**
+ * Expandable legal reference accordion for workplace conflict resolution in Colombia.
+ * Differentiates the Labor Coexistence Committee (CCL) route under Ley 1010 de 2006
+ * from the non-conciliatory sexual harassment/violence escalation protocol under Resolución 3461 de 2025.
+ *
+ * @returns {import('react').JSX.Element} Collapsible legal reference details.
+ */
 export function CrisisLegalDetails() {
   return (
     <details className="crisis-legal-details">

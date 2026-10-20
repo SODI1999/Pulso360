@@ -1,3 +1,13 @@
+/**
+ * Visual SVG scene for Grounding Step 4: Touch (Tacto).
+ * Renders 4 somatic anchors: feet flat on floor, palms on desk, lumbar support against chair, and relaxed shoulders/jaw.
+ *
+ * @param {Object} props - Component properties.
+ * @param {(id: string) => boolean} props.isCompleted - Checks if a specific anchor ID is currently completed.
+ * @param {(id: string) => void} props.onToggleAnchor - Toggles completion state for an anchor.
+ * @param {(e: import('react').KeyboardEvent, id: string) => void} props.handleKeyDown - Accessible keyboard activator (Enter/Space).
+ * @returns {import('react').JSX.Element} SVG group representing somatic posture and physical touch anchors.
+ */
 export function TouchScene({ isCompleted, onToggleAnchor, handleKeyDown }) {
   return (
     <g className="svg-step-tacto">
