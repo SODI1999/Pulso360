@@ -27,11 +27,59 @@ export function UsersRolesPage() {
     orgScopes,
     filteredUsers,
     handleSaveCreateUser,
-    handleSaveManageUser
+    handleSaveManageUser,
+    reload
   } = useUsersRoles();
 
-  if (loading) return <p role="status">Cargando datos del servidor…</p>;
-  if (loadError) return <p className="alert-banner danger" role="alert">No se pudieron cargar los datos: {loadError}</p>;
+  if (loading) {
+    return (
+      <div>
+        <div className="page-header">
+          <div>
+            <h1 className="page-title">Usuarios, roles y gobernanza de acceso</h1>
+            <p className="page-subtitle">
+              Administración centralizada de identidades institucionales, roles canónicos y asignaciones
+              organizacionales.
+            </p>
+          </div>
+        </div>
+        <div
+          className="supervisor-loading"
+          style={{ padding: 'var(--space-8)', textAlign: 'center', color: 'var(--c-texto-suave)' }}
+          role="status"
+          aria-live="polite"
+        >
+          <Icon name="refresh" size={24} className="icon-spin" />
+          <p style={{ marginTop: 'var(--space-2)' }}>Cargando usuarios y roles del servidor…</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (loadError) {
+    return (
+      <div role="alert">
+        <div className="page-header">
+          <div>
+            <h1 className="page-title">Usuarios, roles y gobernanza de acceso</h1>
+            <p className="page-subtitle">
+              Administración centralizada de identidades institucionales, roles canónicos y asignaciones
+              organizacionales.
+            </p>
+          </div>
+        </div>
+        <div
+          className="alert-banner danger"
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap' }}
+        >
+          <span>No se pudieron cargar los datos: {loadError}</span>
+          <button type="button" className="btn btn-secondary btn-sm" onClick={reload}>
+            Reintentar
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>

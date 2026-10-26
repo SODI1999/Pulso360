@@ -1,9 +1,9 @@
 // src/features/reports/components/ReportHistoryTable.jsx
 // Tabla abierta con el historial de exportaciones realizadas y hash criptográfico demo (RF-12, Sin Carditis)
 
-export function ReportHistoryTable({ reportHistory = [], loading, error }) {
-  if (loading) return <p role="status">Cargando historial de reportes…</p>;
-  if (error) return <p className="alert-banner danger" role="alert">No se pudo cargar el historial: {error}</p>;
+import { Icon } from '../../../core/components/Icon';
+
+export function ReportHistoryTable({ reportHistory = [], loading, error, onRetry }) {
   return (
     <section className="reports-history-section" aria-labelledby="historyTableTitle">
       <div className="reports-history-header">
@@ -18,7 +18,42 @@ export function ReportHistoryTable({ reportHistory = [], loading, error }) {
         <span className="badge badge-neutral">{reportHistory.length} registros</span>
       </div>
 
-      <div className="table-responsive">
+      {loading && (
+        <div
+          className="supervisor-loading"
+          style={{ padding: 'var(--space-6)', textAlign: 'center', color: 'var(--c-texto-suave)' }}
+          role="status"
+          aria-live="polite"
+        >
+          <Icon name="refresh" size={20} className="icon-spin" />
+          <p style={{ marginTop: 'var(--space-2)' }}>Cargando historial de reportes…</p>
+        </div>
+      )}
+
+      {error && (
+        <div
+          className="alert-banner danger"
+          role="alert"
+          style={{
+            marginBottom: 'var(--space-4)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '12px',
+            flexWrap: 'wrap'
+          }}
+        >
+          <span>No se pudo cargar el historial: {error}</span>
+          {onRetry && (
+            <button type="button" className="btn btn-secondary btn-sm" onClick={onRetry}>
+              Reintentar
+            </button>
+          )}
+        </div>
+      )}
+
+      {!loading && !error && (
+        <div className="table-responsive">
         <table className="data-table">
           <thead>
             <tr>
@@ -72,6 +107,7 @@ export function ReportHistoryTable({ reportHistory = [], loading, error }) {
           </tbody>
         </table>
       </div>
+      )}
     </section>
   );
 }

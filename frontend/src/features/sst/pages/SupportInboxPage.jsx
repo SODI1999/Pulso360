@@ -21,8 +21,53 @@ export function SupportInboxPage() {
 
   const [selectedTicketForChat, setSelectedTicketForChat] = useState(null);
 
-  if (loading) return <p role="status">Cargando datos del servidor…</p>;
-  if (loadError) return <p className="alert-banner danger" role="alert">No se pudieron cargar los datos: {loadError}</p>;
+  if (loading) {
+    return (
+      <div>
+        <div className="page-header">
+          <div>
+            <h1 className="page-title">Buzón de Radicados de Acompañamiento SG-SST</h1>
+            <p className="page-subtitle">
+              Gestión institucional de solicitudes formales de apoyo preventivo y canales interactivos de orientación en vivo.
+            </p>
+          </div>
+        </div>
+        <div
+          className="supervisor-loading"
+          style={{ padding: 'var(--space-8)', textAlign: 'center', color: 'var(--c-texto-suave)' }}
+          role="status"
+          aria-live="polite"
+        >
+          <Icon name="refresh" size={24} className="icon-spin" />
+          <p style={{ marginTop: 'var(--space-2)' }}>Cargando casos radicados del servidor…</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (loadError) {
+    return (
+      <div role="alert">
+        <div className="page-header">
+          <div>
+            <h1 className="page-title">Buzón de Radicados de Acompañamiento SG-SST</h1>
+            <p className="page-subtitle">
+              Gestión institucional de solicitudes formales de apoyo preventivo y canales interactivos de orientación en vivo.
+            </p>
+          </div>
+        </div>
+        <div
+          className="alert-banner danger"
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap' }}
+        >
+          <span>No se pudieron cargar los datos: {loadError}</span>
+          <button type="button" className="btn btn-secondary btn-sm" onClick={reload}>
+            Reintentar
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>

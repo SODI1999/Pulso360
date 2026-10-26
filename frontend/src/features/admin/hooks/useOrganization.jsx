@@ -162,6 +162,7 @@ export function useOrganization() {
     handleSaveTeam,
     handleToggleTeam,
     handleSaveSupervisorAssignment,
-    handleResetDemo
+    handleResetDemo,
+    reload: () => setVersion((v) => v + 1)
   };
 }

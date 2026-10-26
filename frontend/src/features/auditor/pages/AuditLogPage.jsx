@@ -19,7 +19,7 @@ export function AuditLogPage() {
     filteredLogs,
     exportContent,
     handleVerifyIntegrity,
-    handleExportCrypto, error, loading, busy, pagination, loadMore
+    handleExportCrypto, error, loading, busy, pagination, loadMore, reload
   } = useAuditLog();
 
   return (
@@ -65,8 +65,39 @@ export function AuditLogPage() {
         </div>
       )}
 
-      {error && <p className="alert-banner danger" role="alert">{error}</p>}
-      {loading && filteredLogs.length === 0 && <p role="status">Cargando registros…</p>}
+      {error && (
+        <div
+          className="alert-banner danger"
+          role="alert"
+          style={{
+            marginBottom: 'var(--space-4)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '12px',
+            flexWrap: 'wrap'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Icon name="alertTriangle" size={18} />
+            <span>{error}</span>
+          </div>
+          <button type="button" className="btn btn-secondary btn-sm" onClick={reload}>
+            Reintentar
+          </button>
+        </div>
+      )}
+      {loading && filteredLogs.length === 0 && (
+        <div
+          className="supervisor-loading"
+          style={{ padding: 'var(--space-8)', textAlign: 'center', color: 'var(--c-texto-suave)' }}
+          role="status"
+          aria-live="polite"
+        >
+          <Icon name="refresh" size={24} className="icon-spin" />
+          <p style={{ marginTop: 'var(--space-2)' }}>Cargando registros de auditoría del servidor…</p>
+        </div>
+      )}
       {/* Tabla Modular de Registros */}
       <AuditLogTable
         logs={filteredLogs}

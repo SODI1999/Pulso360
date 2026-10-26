@@ -8,6 +8,7 @@ import { packageEntries } from './assets.mjs';
 import { syncManagedFiles } from './managed.mjs';
 import { detectProjectEnvironment } from './detector.mjs';
 import { acceptanceSeed } from './acceptance.mjs';
+import { QUESTIONS, DOCUMENTATION } from './protocols.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -37,26 +38,26 @@ export const ARCHETYPES = {
     folder: '01-feature',
     prefix: 'SPEC',
     branchPrefix: 'feat',
-    name: 'Feature Specification'
+    name: 'Feature Specification',
   },
   bugfix: {
     folder: '02-bugfix',
     prefix: 'BUG',
     branchPrefix: 'fix',
-    name: 'Bugfix & Incident RCA'
+    name: 'Bugfix & Incident RCA',
   },
   debt: {
     folder: '03-tech-debt',
     prefix: 'DEBT',
     branchPrefix: 'debt',
-    name: 'Technical Debt Refactor'
+    name: 'Technical Debt Refactor',
   },
   rfc: {
     folder: '04-rfc-idea',
     prefix: 'RFC',
     branchPrefix: 'rfc',
-    name: 'Architectural Decision Record'
-  }
+    name: 'Architectural Decision Record',
+  },
 };
 
 export function buildConstitutionContent(options) {
@@ -68,7 +69,7 @@ export function buildConstitutionContent(options) {
 
   return `# CONSTITUTION — ${projectName}
 
-> This file acts as the supreme engineering law for developers and AI coding agents. Every specification, architecture plan, and line of code must strictly adhere to these guidelines before merging.
+> Project engineering agreement. Apply it within the user's instructions and authorized scope; resolve material conflicts explicitly rather than silently overriding decisions.
 
 ---
 
@@ -81,7 +82,7 @@ export function buildConstitutionContent(options) {
 5. **Demonstrable Quality Gates:** Record actual results and pre-existing failures. Automated gates must pass for automated verification; when none apply, document explicitly labeled manual evidence. A checklist is not proof of behavior.
 6. **Backend Pragmatic Craft & Zero Code Slop:**
    - *Strict YAGNI & Direct Implementation:* Never add speculative abstraction layers, premature interfaces, DTOs, factories, or wrapper classes when a direct, idiomatic function or standard module satisfies the acceptance criteria.
-   - *Zero Comment Slop:* Strictly forbid obvious, narrative, or parrot comments that paraphrase code syntax (\`// return user\`, \`// initialize variable\`). Self-documenting code with clean naming is mandatory; preserve comments only for non-obvious business invariants or non-trivial domain edge-cases.
+   - *Zero Comment Slop:* Avoid comments that only narrate syntax. Preserve accurate API documentation and explanations of purpose, contracts and non-obvious domain constraints.
    - *Fail-Fast & Transparent Failures:* Strictly forbid defensive \`try/catch\` wrappers that swallow exceptions, return dummy nulls, or silently mask errors without a documented business requirement.
    - *Zero Spec & Plan Slop:* Specifications and plans must maintain high technical density: tabular evidence, explicit non-goals, and atomic, falsable criteria (\`AC-01\`). No marketing fluff, corporate filler, or conversational apologies.
 
@@ -100,6 +101,15 @@ These profile controls are review prompts; applicability must be established for
 * **Primary Tech Stack:** \`${stack}\`
 * **Documentation Standard:** \`${docStandard}\` (All public APIs, exported interfaces, and complex functions must follow this convention).
 
+${DOCUMENTATION}
+
+### Supported technology decisions
+Never select or pin a dependency or runtime version from memory: consult current official sources and the package registry, record the dated sources with the approval or delegation (decision-record), and prefer runtime-native APIs when they suffice. Without web access the choice stays provisional.
+
+### Clarification and setup
+${QUESTIONS}
+Setup, Git, the commit convention and session capabilities follow guide setup.
+
 ---
 
 ## 4. Delivery Quality Gates
@@ -114,12 +124,7 @@ ${qualityGates}
 
 ## 5. UI Ergonomics & Frontend Craft (Anti-Slop)
 
-When modifying or generating user interfaces, apply deliberate design craftsmanship:
-* **Zero Visual Slop:** Strictly avoid generic AI clichés: default purple-to-blue gradients, centered pill badges with ungrounded outer glow, and repetitive nested bordered cards with diffuse drop shadows ("card-itis").
-* **Intentional Typography & Whitespace:** Establish a clear typographic scale and deliberate whitespace hierarchy rather than partitioning every element with artificial boxes and borders.
-* **Interactive Polish & Micro-Interactions:** Provide responsive visual feedback on interactive elements with hover, active, and accessible \`focus-visible\` styling.
-* **4 Mandatory Interface States:** Loading (skeletons/indicators), Empty (contextual explanation with actionable next step), Error (human-readable message with clear retry trigger), and Protected/Restricted.
-* **Accessibility (WCAG AA):** Full keyboard navigation (\`Tab\`, \`Enter\`, \`Escape\`), semantic HTML, and verified color contrast ratios on measured foreground/background color pairs.
+Interface work follows guide design: references, direction, applicable states and rendered and interaction evidence. Changes without an interface do not load it.
 `;
 }
 
@@ -149,7 +154,10 @@ This workspace organizes changes into four archetypes with explicit scope and ev
 }
 
 export async function scaffoldProject(baseDir, options = {}) {
-  options = { ...options, agent: normalizeAgents(options.agent || options.ai || (await loadManifest(baseDir))?.agent).join(',') };
+  options = {
+    ...options,
+    agent: normalizeAgents(options.agent || options.ai || (await loadManifest(baseDir))?.agent).join(','),
+  };
   getProfile(options.profile || 'general');
   return withManifestLock(baseDir, () => scaffoldUnlocked(baseDir, options));
 }
@@ -171,10 +179,12 @@ async function scaffoldUnlocked(baseDir, options) {
       ['profile', options.profile, options.explicitProfile],
       ['stack', options.stack, options.explicitStack],
       ['documentationStandard', options.docStandard, options.explicitDoc],
-      ['qualityGates', options.qualityGates, options.explicitGates]
+      ['qualityGates', options.qualityGates, options.explicitGates],
     ].filter(([key, value, explicit]) => explicit && value !== undefined && value !== existingManifest[key]);
     if (changes.length) {
-      throw new Error('Configuration changes require init --force to update CONSTITUTION.md and manifest.json together.');
+      throw new Error(
+        'Configuration changes require init --force to update CONSTITUTION.md and manifest.json together.',
+      );
     }
   }
 
@@ -184,14 +194,22 @@ async function scaffoldUnlocked(baseDir, options) {
     const preserved = [];
     for (const entry of entries) {
       if (entry.path.startsWith('specs/_templates/')) {
-        try { await access(join(baseDir, entry.path)); continue; }
-        catch (error) { if (error.code !== 'ENOENT') throw error; }
+        try {
+          await access(join(baseDir, entry.path));
+          continue;
+        } catch (error) {
+          if (error.code !== 'ENOENT') throw error;
+        }
       }
       preserved.push(entry);
     }
     entries = preserved;
   }
-  const assets = await syncManagedFiles(baseDir, [...entries, ...integrationEntries({ ...existingManifest, ...options, version })], { acceptUpdates: force });
+  const assets = await syncManagedFiles(
+    baseDir,
+    [...entries, ...integrationEntries({ ...existingManifest, ...options, version })],
+    { acceptUpdates: force },
+  );
 
   if (!constitutionExists || force) {
     const constitutionContent = buildConstitutionContent(options);
@@ -223,13 +241,13 @@ async function scaffoldUnlocked(baseDir, options) {
     constitutionPath,
     specsDir,
     manifestPath: join(specsDir, 'manifest.json'),
-    assets
+    assets,
   };
 }
 
 export async function createSpec(baseDir, rawArchetype, name, options = {}) {
   const requestedType = rawArchetype.toLowerCase();
-  const archetypeKey = ({ bug: 'bugfix', fix: 'bugfix', feat: 'feature', idea: 'rfc' })[requestedType] || requestedType;
+  const archetypeKey = { bug: 'bugfix', fix: 'bugfix', feat: 'feature', idea: 'rfc' }[requestedType] || requestedType;
   const archetype = Object.hasOwn(ARCHETYPES, archetypeKey) ? ARCHETYPES[archetypeKey] : null;
   if (!archetype) {
     throw new Error(`Invalid archetype "${rawArchetype}". Valid types are: ${Object.keys(ARCHETYPES).join(', ')}`);
@@ -244,25 +262,22 @@ export async function createSpec(baseDir, rawArchetype, name, options = {}) {
       existingDirs = await readdir(join(baseDir, 'specs'));
     } catch {}
 
-    const dirNumbers = existingDirs
-      .map(d => parseInt(d.split('-')[0], 10))
-      .filter(n => !isNaN(n));
+    const dirNumbers = existingDirs.map(d => parseInt(d.split('-')[0], 10)).filter(n => !Number.isNaN(n));
 
-    const manifestNumbers = (manifest.specs || [])
-      .map(s => parseInt(s.id, 10))
-      .filter(n => !isNaN(n));
+    const manifestNumbers = (manifest.specs || []).map(s => parseInt(s.id, 10)).filter(n => !Number.isNaN(n));
 
     const allNumbers = [...dirNumbers, ...manifestNumbers];
     let nextNum = allNumbers.length > 0 ? Math.max(...allNumbers) + 1 : 1;
 
     // Sanitize name slug: transliterate diacritics (gestión -> gestion, ñ -> n)
     // instead of deleting them, so Spanish names produce readable slugs.
-    const sanitizedName = (name
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .toLowerCase()
-      .replace(/[^a-z0-9_-]+/g, '-')
-      .replace(/^-+|-+$/g, '') || 'spec');
+    const sanitizedName =
+      name
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .replace(/[^a-z0-9_-]+/g, '-')
+        .replace(/^-+|-+$/g, '') || 'spec';
 
     let idStr = String(nextNum).padStart(3, '0');
     let slug = `${idStr}-${sanitizedName}`;
@@ -312,14 +327,15 @@ export async function createSpec(baseDir, rawArchetype, name, options = {}) {
 
       // Inject profile compliance matrix if feature and questions exist, preserving custom template rows
       if (file === 'spec.md' && profile && profile.specSecurityQuestions) {
-        const tableMatch = content.match(/(^\| Control de Seguridad[^\r\n]*\r?\n(?:\|[^\r\n]*(?:\r?\n|$))*)/m);
+        const tableMatch = content.match(
+          /(^\| (?:Control de Seguridad|Security Control)[^\r\n]*\r?\n(?:\|[^\r\n]*(?:\r?\n|$))*)/m,
+        );
         if (tableMatch) {
           const tableText = tableMatch[1];
           const lines = tableText.split('\n');
-          const projectRows = lines.slice(1).filter(line =>
-            line.trim().startsWith('|') &&
-            !/^\s*\|[\s:|\-]+$/.test(line)
-          );
+          const projectRows = lines
+            .slice(1)
+            .filter(line => line.trim().startsWith('|') && !/^\s*\|[\s:|-]+$/.test(line));
 
           let replacement = profile.specSecurityQuestions;
           const existingRows = new Set(replacement.split('\n').map(line => line.trim()));
@@ -334,7 +350,10 @@ export async function createSpec(baseDir, rawArchetype, name, options = {}) {
       await writeFile(destFile, content, 'utf-8');
     }
 
-    await writeFile(join(specDir, 'verification.md'), '# Verification evidence\n\n[TODO] Map each acceptance criterion to a file, test or manual observation and actual result. Record limitations and unresolved findings. For an RFC, explain the decision and alternatives reviewed.\n');
+    await writeFile(
+      join(specDir, 'verification.md'),
+      '# Verification evidence\n\n[TODO] Map each acceptance criterion to a file, test or manual observation and actual result. Record limitations and unresolved findings. For an RFC, explain the decision and alternatives reviewed.\n',
+    );
     await writeFile(join(specDir, 'acceptance.json'), JSON.stringify(acceptanceSeed(archetypeKey), null, 2) + '\n');
 
     // Register in manifest
@@ -345,10 +364,10 @@ export async function createSpec(baseDir, rawArchetype, name, options = {}) {
       title,
       status: 'IN_PROGRESS',
       created_at: today,
-      branch: `${archetype.branchPrefix}/${slug}`
+      branch: `${archetype.branchPrefix}/${slug}`,
     };
 
-    let updatedManifest = (await loadManifest(baseDir)) || manifest;
+    const updatedManifest = (await loadManifest(baseDir)) || manifest;
     updatedManifest.active_spec = specEntry.slug;
     updatedManifest.active_archetype = specEntry.type;
 
@@ -366,25 +385,47 @@ export async function createSpec(baseDir, rawArchetype, name, options = {}) {
       slug,
       specDir,
       branch: specEntry.branch,
-      archetype: archetype.name
+      archetype: archetype.name,
     };
   });
 }
 
 export async function ensureProjectContext(baseDir, environment) {
   const path = join(baseDir, 'specs', 'project-context.md');
-  try { await access(path); return; }
-  catch (error) { if (error.code !== 'ENOENT') throw error; }
-  try { await writeFile(path, buildContext(environment || await detectProjectEnvironment(baseDir)), { flag: 'wx' }); }
-  catch (error) { if (error.code !== 'EEXIST') throw error; }
+  try {
+    await access(path);
+    return;
+  } catch (error) {
+    if (error.code !== 'ENOENT') throw error;
+  }
+  try {
+    await writeFile(path, buildContext(environment || (await detectProjectEnvironment(baseDir))), { flag: 'wx' });
+  } catch (error) {
+    if (error.code !== 'EEXIST') throw error;
+  }
 }
 
 function buildContext(environment) {
-  const code = value => '`' + String(value).replaceAll('`', '\\`').replace(/[\r\n|]/g, ' ') + '`';
+  const code = value =>
+    '`' +
+    String(value)
+      .replaceAll('`', '\\`')
+      .replace(/[\r\n|]/g, ' ') +
+    '`';
   const commands = (environment.modules || []).flatMap(m => m.commandCandidates || []);
-  const rows = commands.map(c => `| ${code(c.command)} | ${code(c.cwd)} | ${code(c.source)} (${c.basis}) | NOT_ASSESSED | REVIEW_REQUIRED | NOT_RUN |`).join('\n');
-  const runtimes = (environment.modules || []).filter(m => m.declaredRuntime)
-    .map(m => `- DECLARED runtime constraint: ${code(m.declaredRuntime.constraint)} for ${code(m.declaredRuntime.tool)} in ${code(m.source)}; installed version and compatibility NOT_ASSESSED.`).join('\n');
+  const rows = commands
+    .map(
+      c =>
+        `| ${code(c.command)} | ${code(c.cwd)} | ${code(c.source)} (${c.basis}) | NOT_ASSESSED | REVIEW_REQUIRED | NOT_RUN |`,
+    )
+    .join('\n');
+  const runtimes = (environment.modules || [])
+    .filter(m => m.declaredRuntime)
+    .map(
+      m =>
+        `- DECLARED runtime constraint: ${code(m.declaredRuntime.constraint)} for ${code(m.declaredRuntime.tool)} in ${code(m.source)}; installed version and compatibility NOT_ASSESSED.`,
+    )
+    .join('\n');
   return `# Project context
 
 User-owned context. Run /omni-init without extra instructions to review this seed; bootstrap is not completed conversational onboarding.
@@ -406,6 +447,13 @@ ${runtimes || '- Runtime targets, installed versions and compatibility: UNKNOWN;
 ## 3. Goals and decisions
 - Purpose, intended users, constraints and smallest outcome: UNKNOWN until confirmed from repository/user evidence.
 - Preserve existing confirmed decisions; ask only material questions unanswered by available evidence.
+- Stack/version selection: UNDECIDED until approved or explicitly delegated; record current official support/compatibility sources and consultation date before a material selection.
+- Documentation convention per module: REVIEW_REQUIRED; preserve established API documentation and inspect language evidence before proposing JSDoc, TSDoc, Javadoc or another convention.
+- Git boundary and local setup: UNKNOWN; initialization, commits and remote publication are separate operations requiring appropriate authorization.
+- Commit convention and language: REVIEW_REQUIRED; preserve an existing convention or propose Conventional Commits 1.0.0 before the first authorized commit.
+- Publication/deployment authorization: NOT_GRANTED by bootstrap; preserve any explicit local-only restriction.
+- Session capabilities (native questions, web research, terminal, rendered UI inspection, delegation): UNKNOWN; inspect actual availability and record fallbacks and dependent blockers.
+- UI direction and references: NOT_ASSESSED; record task, approved identity and sources when applicable, otherwise justified N/A.
 
 ## 4. Command matrix (not executed)
 | Command | Working directory | Source / basis | Prerequisites | Gate selection / reason | Execution |

@@ -10,6 +10,7 @@ export function useSstDashboard({ campanaId, equipoId, desde, hasta } = {}) {
   const storeData = getSstData();
   const defaultMinThreshold = storeData.settings?.umbralMinimo || 5;
 
+  const [version, setVersion] = useState(0);
   const [alerts, setAlerts] = useState([]);
   const [requests, setRequests] = useState([]);
   const [metricsResponse, setMetricsResponse] = useState(null);
@@ -48,7 +49,7 @@ export function useSstDashboard({ campanaId, equipoId, desde, hasta } = {}) {
     return () => {
       active = false;
     };
-  }, [campanaId, equipoId, desde, hasta]);
+  }, [campanaId, equipoId, desde, hasta, version]);
 
   // Alertas activas pendientes de atención
   const pendingAlerts = useMemo(() => {
@@ -100,6 +101,7 @@ export function useSstDashboard({ campanaId, equipoId, desde, hasta } = {}) {
     isProtected,
     loading,
     error,
-    reason: metricsResponse?.reason ?? null
+    reason: metricsResponse?.reason ?? null,
+    reload: () => setVersion((v) => v + 1)
   };
 }

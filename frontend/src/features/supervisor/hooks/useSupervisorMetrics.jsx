@@ -34,6 +34,7 @@ export function useSupervisorMetrics({
   scopeFilter = 'all',
   periodFilter
 } = {}) {
+  const [version, setVersion] = useState(0);
   const [data, setData] = useState(() => getCachedSupervisorMetrics(campanaId, equipoId, scopeFilter, periodFilter));
   const [loading, setLoading] = useState(() => !getCachedSupervisorMetrics(campanaId, equipoId, scopeFilter, periodFilter));
   const [error, setError] = useState(null);
@@ -66,7 +67,7 @@ export function useSupervisorMetrics({
     return () => {
       active = false;
     };
-  }, [campanaId, equipoId, scopeFilter, periodFilter]);
+  }, [campanaId, equipoId, scopeFilter, periodFilter, version]);
 
   const kThreshold = data?.k_threshold ?? 5;
   const cohortCount = data?.cohort_count ?? 0;
@@ -121,6 +122,7 @@ export function useSupervisorMetrics({
     kThreshold,
     metrics: rawMetrics,
     reason: data?.reason || null,
-    kpis: processedKpis
+    kpis: processedKpis,
+    reload: () => setVersion((v) => v + 1)
   };
 }

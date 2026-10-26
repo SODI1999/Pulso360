@@ -48,7 +48,7 @@ export function ReportConfiguration({
           </select>
           <span className="form-hint">
             {currentScope?.n == null ? 'El servidor comprobará la muestra del periodo seleccionado.' : currentScope.n < minThreshold ? (
-              <strong style={{ color: '#b45309' }}>
+              <strong style={{ color: 'var(--c-alerta)' }}>
                 Corte con N = {currentScope.n} (Bajo umbral confidencial N &ge; {minThreshold})
               </strong>
             ) : (

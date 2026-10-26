@@ -52,11 +52,59 @@ export function SystemParamsPage() {
     handleActivateNlp,
     handleRevertNlp,
     handleApproveRule,
-    rules
+    rules,
+    reload
   } = useSystemParams();
 
-  if (loading) return <p role="status">Cargando datos del servidor…</p>;
-  if (loadError) return <p className="alert-banner danger" role="alert">No se pudieron cargar los datos: {loadError}</p>;
+  if (loading) {
+    return (
+      <div className="admin-params-container">
+        <div className="page-header">
+          <div>
+            <h1 className="page-title">Parámetros institucionales, SLAs y gobernanza</h1>
+            <p className="page-subtitle">
+              Configuración global de umbrales confidenciales, tiempos máximos de respuesta, versionado de
+              políticas y modelos NLP.
+            </p>
+          </div>
+        </div>
+        <div
+          className="supervisor-loading"
+          style={{ padding: 'var(--space-8)', textAlign: 'center', color: 'var(--c-texto-suave)' }}
+          role="status"
+          aria-live="polite"
+        >
+          <Icon name="refresh" size={24} className="icon-spin" />
+          <p style={{ marginTop: 'var(--space-2)' }}>Cargando parámetros institucionales del servidor…</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (loadError) {
+    return (
+      <div className="admin-params-container" role="alert">
+        <div className="page-header">
+          <div>
+            <h1 className="page-title">Parámetros institucionales, SLAs y gobernanza</h1>
+            <p className="page-subtitle">
+              Configuración global de umbrales confidenciales, tiempos máximos de respuesta, versionado de
+              políticas y modelos NLP.
+            </p>
+          </div>
+        </div>
+        <div
+          className="alert-banner danger"
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap' }}
+        >
+          <span>No se pudieron cargar los datos: {loadError}</span>
+          <button type="button" className="btn btn-secondary btn-sm" onClick={reload}>
+            Reintentar
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="admin-params-container">

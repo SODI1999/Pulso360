@@ -73,6 +73,7 @@ export function useAlertsInbox() {
     alerts,
     handleUpdateStatus,
     handleConfirmDismiss,
-    handleCreateIntervention
+    handleCreateIntervention,
+    reload: () => setVersion((v) => v + 1)
   };
 }

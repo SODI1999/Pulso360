@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 2,
+  "criteria": [
+    {
+      "id": "AC-01",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Enlace en SstDashboardPage.jsx:105 corregido a /sst/buzon. Enlaces secundarios de retorno verificados contra roleHomePaths."
+    },
+    {
+      "id": "AC-02",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Patrón de 4 estados con Reintentar (Retry) y contenedores estructurados implementados en Supervisor, SST, Administrador, Auditor, Reportes y Notificaciones sin desarmar layouts."
+    },
+    {
+      "id": "AC-03",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Valores hexadecimales hardcodeados reemplazados por tokens de tokens.css en TrendLineChart y ReportConfiguration. Resolución dinámica de variables CSS en Canvas 2D."
+    },
+    {
+      "id": "AC-04",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Verificación de WCAG 2.2 y WAI-ARIA en modales de los 5 roles mediante useModalA11y, useAgentModalAccessibility y UserProfileModal con captura de Escape y gestión de foco."
+    },
+    {
+      "id": "AC-05",
+      "kind": "functional",
+      "status": "passed",
+      "method": "automated",
+      "checkIds": ["gate-1", "gate-2"],
+      "evidence": "132 pruebas de backend y 55 pruebas de frontend verifican que el k-anonimato (k >= 5) y el aislamiento de bitácoras permanecen intactos sin fugas de datos."
+    },
+    {
+      "id": "AC-06",
+      "kind": "functional",
+      "status": "passed",
+      "method": "automated",
+      "checkIds": ["gate-1", "gate-2", "gate-3", "gate-4"],
+      "evidence": "Quality gates 100% aprobados: frontend lint (0 errores/0 warnings), vite build exitoso en 8.76s, frontend tests 55/55 pasados, backend tests 132/132 pasados."
+    }
+  ]
+}

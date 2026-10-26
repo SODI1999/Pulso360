@@ -10,11 +10,68 @@ import '../../../styles/supervisor.css';
 
 export function ActionsPage() {
   const {
-    loading, loadError, selectedIntervention, setSelectedIntervention, feedback, interventions, handleSaveFollowup } =
+    loading, loadError, selectedIntervention, setSelectedIntervention, feedback, interventions, handleSaveFollowup, reload } =
     useActions();
 
-  if (loading) return <p role="status">Cargando datos del servidor…</p>;
-  if (loadError) return <p className="alert-banner danger" role="alert">No se pudieron cargar los datos: {loadError}</p>;
+  if (loading) {
+    return (
+      <div className="supervisor-page">
+        <nav className="supervisor-subnav" aria-label="Navegación secundaria">
+          <Link to="/supervisor/panel" className="supervisor-back-btn">
+            <Icon name="arrow_back" size={16} />
+            <span>Volver al panel de equipo</span>
+          </Link>
+        </nav>
+        <div className="page-header">
+          <div>
+            <h1 className="page-title">Planes de acción asignados</h1>
+            <p className="page-subtitle">
+              Seguimiento de intervenciones preventivas propuestas por SST para tu equipo de trabajo.
+            </p>
+          </div>
+        </div>
+        <div
+          className="supervisor-loading"
+          style={{ padding: 'var(--space-8)', textAlign: 'center', color: 'var(--c-texto-suave)' }}
+          role="status"
+          aria-live="polite"
+        >
+          <Icon name="refresh" size={24} className="icon-spin" />
+          <p style={{ marginTop: 'var(--space-2)' }}>Cargando planes de acción del servidor…</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (loadError) {
+    return (
+      <div className="supervisor-page" role="alert">
+        <nav className="supervisor-subnav" aria-label="Navegación secundaria">
+          <Link to="/supervisor/panel" className="supervisor-back-btn">
+            <Icon name="arrow_back" size={16} />
+            <span>Volver al panel de equipo</span>
+          </Link>
+        </nav>
+        <div className="page-header">
+          <div>
+            <h1 className="page-title">Planes de acción asignados</h1>
+            <p className="page-subtitle">
+              Seguimiento de intervenciones preventivas propuestas por SST para tu equipo de trabajo.
+            </p>
+          </div>
+        </div>
+        <div
+          className="alert-banner danger"
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap' }}
+        >
+          <span>No se pudieron cargar los datos: {loadError}</span>
+          <button type="button" className="btn btn-secondary btn-sm" onClick={reload}>
+            Reintentar
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="supervisor-page">

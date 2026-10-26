@@ -119,10 +119,10 @@ export function InactivityModal() {
         </div>
 
         <div className="modal-footer">
-          <button className="btn btn-secondary" onClick={handleLogout}>
+          <button type="button" className="btn btn-secondary" onClick={handleLogout}>
             Cerrar sesión
           </button>
-          <button className="btn btn-primary" onClick={resetTimer}>
+          <button type="button" className="btn btn-primary" onClick={resetTimer}>
             Seguir conectado
           </button>
         </div>

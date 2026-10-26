@@ -283,6 +283,7 @@ export function useReports() {
     jsonContent,
     downloadFileBaseName: `pulso360_reporte_${selectedScopeId}_${generatedReport?.date?.substring(0, 10) || new Date().toISOString().substring(0, 10)}`,
     handlePrintPdf,
-    reportHistory
+    reportHistory,
+    reloadHistory: () => setVersion((v) => v + 1)
   };
 }

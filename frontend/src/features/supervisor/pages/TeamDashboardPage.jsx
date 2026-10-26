@@ -30,7 +30,8 @@ export function TeamDashboardPage() {
     kThreshold,
     metrics,
     reason,
-    kpis
+    kpis,
+    reload
   } = useSupervisorMetrics({
     campanaId: user?.scopes?.find(s => s.id===scopeFilter)?.campana_id || user?.campaignId,
     equipoId: env.useMockStorage ? user?.teamId : scopeFilter,
@@ -133,9 +134,25 @@ export function TeamDashboardPage() {
 
       {/* Mensaje de error si la sincronización falla */}
       {error && (
-        <div className="alert-banner warn" role="alert" style={{ marginBottom: 'var(--space-4)' }}>
-          <Icon name="alertTriangle" size={18} />
-          <span>{error.message || 'No se pudieron consultar las métricas.'}</span>
+        <div
+          className="alert-banner danger"
+          role="alert"
+          style={{
+            marginBottom: 'var(--space-4)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '12px',
+            flexWrap: 'wrap'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Icon name="alertTriangle" size={18} />
+            <span>{error.message || 'No se pudieron consultar las métricas.'}</span>
+          </div>
+          <button type="button" className="btn btn-secondary btn-sm" onClick={reload}>
+            Reintentar
+          </button>
         </div>
       )}
 
@@ -154,7 +171,7 @@ export function TeamDashboardPage() {
           <Icon name="refresh" size={24} className="icon-spin" />
           <p style={{ marginTop: 'var(--space-2)' }}>Consultando métricas agregadas del equipo...</p>
         </div>
-      ) : error ? <p role="alert">La consulta no está disponible. Reintenta cambiando el periodo.</p> : isBlocked ? (
+      ) : isBlocked ? (
         <PrivacyBlockedCard sampleCount={cohortCount} minThreshold={minThreshold} customMessage={reason} />
       ) : (
         <div id="teamDashboard">
@@ -180,7 +197,7 @@ export function TeamDashboardPage() {
                 {env.useMockStorage && <TrendLineChart
                   labels={['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4']}
                   values={kpis.trendValues}
-                  strokeColor="#2563eb"
+                  strokeColor="var(--c-azul-600)"
                   height={220}
                 />}
               </div>

@@ -47,5 +47,5 @@ export function useActions() {
     return message;
   };
 
-  return { loading, loadError, selectedIntervention, setSelectedIntervention, feedback, interventions, handleSaveFollowup };
+  return { loading, loadError, selectedIntervention, setSelectedIntervention, feedback, interventions, handleSaveFollowup, reload: () => setVersion((v) => v + 1) };
 }

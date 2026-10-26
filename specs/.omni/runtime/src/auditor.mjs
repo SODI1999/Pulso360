@@ -2,13 +2,16 @@ import { readFile, readdir, stat } from 'node:fs/promises';
 import { join } from 'node:path';
 import { loadManifest, getActiveSpec } from './manifest.mjs';
 import { safePath } from './managed.mjs';
+import { specRoute } from './fit.mjs';
 
 function stripHtmlComments(content) {
   return content.replace(/<!--[\s\S]*?-->/g, '');
 }
 
 function checklistStats(content) {
-  let fence = null, checked = 0, unchecked = 0;
+  let fence = null,
+    checked = 0,
+    unchecked = 0;
   for (const line of stripHtmlComments(content).split(/\r?\n/)) {
     const marker = /^\s*(`{3,}|~{3,})/.exec(line)?.[1];
     if (marker) {
@@ -21,7 +24,7 @@ function checklistStats(content) {
     if (task) task[1] === ' ' ? unchecked++ : checked++;
   }
   const total = checked + unchecked;
-  return { total, completed: checked, pending: unchecked, percentage: total ? Math.round(100 * checked / total) : 0 };
+  return { total, completed: checked, pending: unchecked, percentage: total ? Math.round((100 * checked) / total) : 0 };
 }
 
 async function readRegularFile(filePath) {
@@ -52,13 +55,13 @@ export async function auditSpec(baseDir, specIdentifier = null) {
       valid: false,
       errors: ['No OmniSpec manifest found. Run `omni-spec init` first.'],
       warnings: [],
-      spec: null
+      spec: null,
     };
   }
 
   let spec = null;
   if (specIdentifier) {
-    spec = manifest.specs.find((s) => s.id === specIdentifier || s.slug === specIdentifier);
+    spec = manifest.specs.find(s => s.id === specIdentifier || s.slug === specIdentifier);
   } else {
     spec = await getActiveSpec(baseDir);
   }
@@ -68,7 +71,7 @@ export async function auditSpec(baseDir, specIdentifier = null) {
       valid: false,
       errors: ['No active specification found. Create one with `omni-spec create <type> <name>`.'],
       warnings: [],
-      spec: null
+      spec: null,
     };
   }
 
@@ -76,6 +79,23 @@ export async function auditSpec(baseDir, specIdentifier = null) {
   const errors = [];
   const warnings = [];
   let taskStats = { total: 0, completed: 0, pending: 0, percentage: 0 };
+  const route = await specRoute(baseDir, spec);
+  if (route?.route === 'invalid') errors.push(`fit.json is invalid: ${route.errors.join(' ')}`);
+  const needsPlan = !route || route.artifacts.plan;
+  const needsTasks = !route || route.artifacts.tasks;
+  const optionalArtifacts = new Set();
+  if (['feature', 'debt'].includes(spec.type)) {
+    if (!needsPlan) optionalArtifacts.add(spec.type === 'feature' ? 'plan.md' : 'migration-plan.md');
+    if (!needsTasks) optionalArtifacts.add('tasks.md');
+  }
+  if (spec.type === 'bugfix' && route && route.route !== 'invalid') {
+    if (!needsPlan) optionalArtifacts.add('rca.md');
+    if (!needsPlan) optionalArtifacts.add('fix.md');
+  }
+  if (optionalArtifacts.size)
+    warnings.push(
+      `Spec fit route is ${route.route}: ${[...optionalArtifacts].join(', ')} are not required and are not audited. Keep required decisions in the active contract or select a fuller route.`,
+    );
 
   let files = [];
   try {
@@ -85,13 +105,13 @@ export async function auditSpec(baseDir, specIdentifier = null) {
       valid: false,
       errors: [`Specification directory not found at specs/${spec.slug}: ${err.message}`],
       warnings: [],
-      spec
+      spec,
     };
   }
 
-  // Common check across all archetypes: placeholder tokens and regular files
+  // Optional route artifacts remain on disk for later promotion, but do not block this route.
   for (const file of files) {
-    if (!file.endsWith('.md') || file === 'verification.md') continue;
+    if (!file.endsWith('.md') || file === 'verification.md' || optionalArtifacts.has(file)) continue;
     const readResult = await readRegularFile(join(specDir, file));
     if (readResult.error) {
       errors.push(`File ${file} could not be read as a regular file: ${readResult.error}`);
@@ -107,7 +127,8 @@ export async function auditSpec(baseDir, specIdentifier = null) {
       content.includes('Nombre / Rol') ||
       content.includes('ej. ¿Esta operación') ||
       content.includes('[Rol Autorizado]') ||
-      content.includes('[TODO]') || content.includes('[NEEDS CLARIFICATION]')
+      content.includes('[TODO]') ||
+      content.includes('[NEEDS CLARIFICATION]')
     ) {
       errors.push(`File ${file} still contains unreplaced placeholder tokens or sample template text.`);
     }
@@ -144,8 +165,7 @@ export async function auditSpec(baseDir, specIdentifier = null) {
         const cleanSpec = specData.clean;
         // Phase 0 Clarification check
         const hasSection0 =
-          cleanSpec.includes('## 0. Fase de Clarificación') ||
-          cleanSpec.includes('## 0. Clarification');
+          cleanSpec.includes('## 0. Fase de Clarificación') || cleanSpec.includes('## 0. Clarification');
 
         if (!hasSection0) {
           errors.push('spec.md is missing Section 0: Clarification & Assumptions (Anti-Hallucination Gate).');
@@ -157,7 +177,7 @@ export async function auditSpec(baseDir, specIdentifier = null) {
             .replace(/<!--[\s\S]*?-->/g, '')
             .replace(/^\s*#{1,6}\s+.*$/gm, '')
             .replace(/^\s*(?:[-*_]\s*){3,}$/gm, '')
-            .replace(/^\s*\|[\s:|\-]+$/gm, '')
+            .replace(/^\s*\|[\s:|-]+$/gm, '')
             .replace(/Phase 0|Clarification|Fase de Clarificación|Supuestos|Assumptions/gi, '')
             .trim();
           if (substantiveText.length < 30) {
@@ -180,24 +200,28 @@ export async function auditSpec(baseDir, specIdentifier = null) {
       }
 
       // 2. Audit plan.md
-      const planData = await getCleanMandatoryContent('plan.md', 'feature');
-      if (planData) {
-        const cleanPlan = planData.clean;
-        if (!cleanPlan.includes('Contratos') && !cleanPlan.includes('Contracts') && !cleanPlan.includes('API')) {
-          errors.push('plan.md does not clearly define Data Contracts or API contracts (or justified N/A).');
-        }
-        if (!cleanPlan.includes('Rollback') && !cleanPlan.includes('Reversión')) {
-          errors.push('plan.md does not define a Rollback / Migration reversal strategy (or justified N/A).');
+      if (needsPlan) {
+        const planData = await getCleanMandatoryContent('plan.md', 'feature');
+        if (planData) {
+          const cleanPlan = planData.clean;
+          if (!cleanPlan.includes('Contratos') && !cleanPlan.includes('Contracts') && !cleanPlan.includes('API')) {
+            errors.push('plan.md does not clearly define Data Contracts or API contracts (or justified N/A).');
+          }
+          if (!cleanPlan.includes('Rollback') && !cleanPlan.includes('Reversión')) {
+            errors.push('plan.md does not define a Rollback / Migration reversal strategy (or justified N/A).');
+          }
         }
       }
 
       // 3. Audit tasks.md & progress
-      const tasksData = await getCleanMandatoryContent('tasks.md', 'feature');
-      if (tasksData) {
-        taskStats = checklistStats(tasksData.clean);
+      if (needsTasks) {
+        const tasksData = await getCleanMandatoryContent('tasks.md', 'feature');
+        if (tasksData) {
+          taskStats = checklistStats(tasksData.clean);
 
-        if (taskStats.total === 0) {
-          errors.push('tasks.md has no actionable checkbox tasks defined (- [ ]).');
+          if (taskStats.total === 0) {
+            errors.push('tasks.md has no actionable checkbox tasks defined (- [ ]).');
+          }
         }
       }
       break;
@@ -209,18 +233,18 @@ export async function auditSpec(baseDir, specIdentifier = null) {
         errors.push('bug.md lacks substantive defect reproduction details.');
       }
 
-      const rcaData = await getCleanMandatoryContent('rca.md', 'bugfix');
+      const rcaData = needsPlan ? await getCleanMandatoryContent('rca.md', 'bugfix') : null;
       if (rcaData) {
         if (rcaData.clean.length < 30) {
           errors.push('rca.md lacks substantive root cause analysis.');
         }
       }
 
-      const fixData = await getCleanMandatoryContent('fix.md', 'bugfix');
+      const fixData = needsPlan ? await getCleanMandatoryContent('fix.md', 'bugfix') : null;
       if (fixData && fixData.clean.length < 30) {
         errors.push('fix.md lacks substantive fix strategy and test verification details.');
       }
-      if (fixData) {
+      if (fixData && needsTasks) {
         taskStats = checklistStats(fixData.clean);
         if (!taskStats.total) errors.push('fix.md requires an actionable regression/fix task checklist.');
       }
@@ -233,17 +257,21 @@ export async function auditSpec(baseDir, specIdentifier = null) {
         errors.push('audit.md lacks substantive debt analysis and blast radius.');
       }
 
-      const migrationData = await getCleanMandatoryContent('migration-plan.md', 'tech-debt');
-      if (migrationData && migrationData.clean.length < 30) {
-        errors.push('migration-plan.md lacks substantive migration steps.');
+      if (needsPlan) {
+        const migrationData = await getCleanMandatoryContent('migration-plan.md', 'tech-debt');
+        if (migrationData && migrationData.clean.length < 30) {
+          errors.push('migration-plan.md lacks substantive migration steps.');
+        }
       }
 
-      const debtTasksData = await getCleanMandatoryContent('tasks.md', 'tech-debt');
-      if (debtTasksData) {
-        taskStats = checklistStats(debtTasksData.clean);
+      if (needsTasks) {
+        const debtTasksData = await getCleanMandatoryContent('tasks.md', 'tech-debt');
+        if (debtTasksData) {
+          taskStats = checklistStats(debtTasksData.clean);
 
-        if (taskStats.total === 0) {
-          errors.push('tasks.md has no actionable checkbox tasks defined (- [ ]).');
+          if (taskStats.total === 0) {
+            errors.push('tasks.md has no actionable checkbox tasks defined (- [ ]).');
+          }
         }
       }
       break;
@@ -269,6 +297,6 @@ export async function auditSpec(baseDir, specIdentifier = null) {
     specDir,
     errors,
     warnings,
-    tasks: taskStats
+    tasks: taskStats,
   };
 }

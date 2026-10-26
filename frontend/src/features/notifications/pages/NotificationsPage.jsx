@@ -23,13 +23,42 @@ export function NotificationsPage() {
     handleNotificationClick,
     handleMarkAllRead,
     formatDate,
-    handleBack
+    handleBack,
+    reload
   } = useNotifications();
 
   return (
     <div className="agent-page notif-inbox-layout">
-      {loading && <p role="status">Cargando notificaciones…</p>}
-      {loadError && <p className="alert-banner danger" role="alert">{loadError}</p>}
+      {loading && userNotifications.length === 0 && (
+        <div
+          className="supervisor-loading"
+          style={{ padding: 'var(--space-8)', textAlign: 'center', color: 'var(--c-texto-suave)' }}
+          role="status"
+          aria-live="polite"
+        >
+          <Icon name="refresh" size={24} className="icon-spin" />
+          <p style={{ marginTop: 'var(--space-2)' }}>Cargando notificaciones del servidor…</p>
+        </div>
+      )}
+      {loadError && (
+        <div
+          className="alert-banner danger"
+          role="alert"
+          style={{
+            marginBottom: 'var(--space-4)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '12px',
+            flexWrap: 'wrap'
+          }}
+        >
+          <span>{loadError}</span>
+          <button type="button" className="btn btn-secondary btn-sm" onClick={reload}>
+            Reintentar
+          </button>
+        </div>
+      )}
       {/* 1. Subnavegación secundaria sobria */}
       <nav className="agent-subnav" aria-label="Navegación secundaria">
         <button

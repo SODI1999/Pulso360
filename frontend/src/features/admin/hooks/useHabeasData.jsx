@@ -115,6 +115,7 @@ export function useHabeasData() {
     users,
     formatDate,
     handleOpenAdvance,
-    handleConfirmAdvance
+    handleConfirmAdvance,
+    reload: () => setVersion((v) => v + 1)
   };
 }

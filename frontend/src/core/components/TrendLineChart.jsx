@@ -37,8 +37,17 @@ export function TrendLineChart({
     const maxValue = Math.max(...chartValues.filter(value => value != null && Number.isFinite(value)), 5);
     const minValue = 0;
 
+    const resolveCssVar = (val) => {
+      if (typeof val === 'string' && val.startsWith('var(')) {
+        const varName = val.slice(4, -1).trim();
+        return getComputedStyle(canvas).getPropertyValue(varName).trim() || '#0f766e';
+      }
+      return val;
+    };
+    const resolvedStroke = resolveCssVar(activeColor);
+
     // 1. Línea base del eje X
-    ctx.strokeStyle = '#e0e3e5';
+    ctx.strokeStyle = resolveCssVar('var(--c-borde-suave, #e0e3e5)');
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.moveTo(padding, height - padding);
@@ -54,7 +63,7 @@ export function TrendLineChart({
     });
 
     // 3. Dibujar la línea de tendencia
-    ctx.strokeStyle = activeColor;
+    ctx.strokeStyle = resolvedStroke;
     ctx.lineWidth = 2.5;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
@@ -75,13 +84,13 @@ export function TrendLineChart({
     points.forEach((point, index) => {
       if (point.y == null) return;
       // Punto exterior
-      ctx.fillStyle = activeColor;
+      ctx.fillStyle = resolvedStroke;
       ctx.beginPath();
       ctx.arc(point.x, point.y, 4, 0, Math.PI * 2);
       ctx.fill();
 
       // Etiqueta del eje X
-      ctx.fillStyle = '#45464d';
+      ctx.fillStyle = resolveCssVar('var(--c-texto-suave, #45464d)');
       ctx.font = '11px system-ui, sans-serif';
       ctx.textAlign = 'center';
       if (labels[index]) {

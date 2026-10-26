@@ -29,7 +29,8 @@ export function SstDashboardPage() {
     isProtected,
     loading,
     error,
-    reason
+    reason,
+    reload
   } = useSstDashboard();
 
   const { socket } = useSocket();
@@ -102,7 +103,7 @@ export function SstDashboardPage() {
               </span>
             </div>
           </div>
-          <Link to="/sst/support-inbox" className="btn btn-primary btn-sm" style={{ whiteSpace: 'nowrap' }}>
+          <Link to="/sst/buzon" className="btn btn-primary btn-sm" style={{ whiteSpace: 'nowrap' }}>
             Responder en el chat
           </Link>
         </div>
@@ -159,9 +160,25 @@ export function SstDashboardPage() {
 
       {/* Banner de error si la sincronización falla */}
       {error && (
-        <div className="alert-banner warn" role="alert" style={{ marginBottom: 'var(--space-4)' }}>
-          <Icon name="alertTriangle" size={18} />
-          <span>{error.message || 'No se pudieron cargar las métricas.'}</span>
+        <div
+          className="alert-banner danger"
+          role="alert"
+          style={{
+            marginBottom: 'var(--space-4)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '12px',
+            flexWrap: 'wrap'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Icon name="alertTriangle" size={18} />
+            <span>{error.message || 'No se pudieron cargar las métricas.'}</span>
+          </div>
+          <button type="button" className="btn btn-secondary btn-sm" onClick={reload}>
+            Reintentar
+          </button>
         </div>
       )}
 

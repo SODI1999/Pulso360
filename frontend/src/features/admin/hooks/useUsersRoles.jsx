@@ -183,6 +183,7 @@ export function useUsersRoles() {
     orgScopes,
     filteredUsers,
     handleSaveCreateUser,
-    handleSaveManageUser
+    handleSaveManageUser,
+    reload: () => setVersion((v) => v + 1)
   };
 }

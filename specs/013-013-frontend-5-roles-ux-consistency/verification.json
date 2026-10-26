@@ -1,0 +1,237 @@
+{
+  "version": 3,
+  "id": "013",
+  "mode": "automated",
+  "passed": true,
+  "verifiedAt": "2026-10-26T07:34:22.168Z",
+  "fingerprint": "64376fb200c3852f8efca1504ddbe2c0af9f9ff2bb63ff7527edac13f20d9e57",
+  "attestedFiles": 470,
+  "sourceChangedDuringVerification": false,
+  "changedDuringVerification": [],
+  "changedDuringVerificationCount": 0,
+  "reason": null,
+  "checks": [
+    {
+      "id": "gate-1",
+      "command": "cd \"backend\" && npm test",
+      "cwd": ".",
+      "timeoutMs": 120000,
+      "kind": "automated"
+    },
+    {
+      "id": "gate-2",
+      "command": "cd \"frontend\" && npm test",
+      "cwd": ".",
+      "timeoutMs": 120000,
+      "kind": "automated"
+    },
+    {
+      "id": "gate-3",
+      "command": "cd \"frontend\" && npm run lint",
+      "cwd": ".",
+      "timeoutMs": 120000,
+      "kind": "automated"
+    },
+    {
+      "id": "gate-4",
+      "command": "cd \"frontend\" && npm run build",
+      "cwd": ".",
+      "timeoutMs": 120000,
+      "kind": "automated"
+    }
+  ],
+  "timeoutOverride": null,
+  "acceptance": {
+    "criteria": [
+      {
+        "id": "AC-01",
+        "status": "passed",
+        "method": "inspection",
+        "kind": "functional"
+      },
+      {
+        "id": "AC-02",
+        "status": "passed",
+        "method": "inspection",
+        "kind": "functional"
+      },
+      {
+        "id": "AC-03",
+        "status": "passed",
+        "method": "inspection",
+        "kind": "functional"
+      },
+      {
+        "id": "AC-04",
+        "status": "passed",
+        "method": "inspection",
+        "kind": "functional"
+      },
+      {
+        "id": "AC-05",
+        "status": "passed",
+        "method": "automated",
+        "kind": "functional",
+        "checkIds": [
+          "gate-1",
+          "gate-2"
+        ],
+        "checks": [
+          {
+            "checkId": "gate-1",
+            "command": "cd \"backend\" && npm test",
+            "cwd": ".",
+            "status": "PASSED"
+          },
+          {
+            "checkId": "gate-2",
+            "command": "cd \"frontend\" && npm test",
+            "cwd": ".",
+            "status": "PASSED"
+          }
+        ],
+        "execution": "PASSED"
+      },
+      {
+        "id": "AC-06",
+        "status": "passed",
+        "method": "automated",
+        "kind": "functional",
+        "checkIds": [
+          "gate-1",
+          "gate-2",
+          "gate-3",
+          "gate-4"
+        ],
+        "checks": [
+          {
+            "checkId": "gate-1",
+            "command": "cd \"backend\" && npm test",
+            "cwd": ".",
+            "status": "PASSED"
+          },
+          {
+            "checkId": "gate-2",
+            "command": "cd \"frontend\" && npm test",
+            "cwd": ".",
+            "status": "PASSED"
+          },
+          {
+            "checkId": "gate-3",
+            "command": "cd \"frontend\" && npm run lint",
+            "cwd": ".",
+            "status": "PASSED"
+          },
+          {
+            "checkId": "gate-4",
+            "command": "cd \"frontend\" && npm run build",
+            "cwd": ".",
+            "status": "PASSED"
+          }
+        ],
+        "execution": "PASSED"
+      }
+    ],
+    "scope": "DECLARED_EVIDENCE_WITH_EXECUTED_CHECK_BINDINGS",
+    "truthOfEvidence": "AGENT_OR_HUMAN_REVIEW_REQUIRED",
+    "automatedChecksPassed": true
+  },
+  "results": [
+    {
+      "command": "cd \"backend\" && npm test",
+      "checkId": "gate-1",
+      "cwd": "C:\\Users\\brahi\\OneDrive\\Escritorio\\TdeA\\4to semestre\\Construccion3\\Pulso360",
+      "checkCwd": ".",
+      "kind": "automated",
+      "timeoutMs": 120000,
+      "processId": 16024,
+      "startedAt": "2026-10-26T07:33:28.026Z",
+      "finishedAt": "2026-10-26T07:34:00.600Z",
+      "durationMs": 32573,
+      "output": "be retornar 200 OK con arreglo de bitÃ¡coras del propio usuario autenticado (10.2882ms)\n  ✔ BitÃ¡coras Privadas (GET y POST /api/v1/agent/journal) (52.6197ms)\n  ▶ Control RBAC: RestricciÃ³n de Acceso para SUPERVISOR (403 Forbidden)\n    ✔ debe rechazar con 403 Forbidden y AUTH_FORBIDDEN_ROLE cualquier intento de acceso a /api/v1/agent por SUPERVISOR (43.2533ms)\n  ✔ Control RBAC: RestricciÃ³n de Acceso para SUPERVISOR (403 Forbidden) (43.5101ms)\n✔ Sprint 2 Â· Agent Module & Privacy Contract Tests (877.1246ms)\n◇ injected env (0) from .env\n◇ injected env (0) from .env.test\n▶ P05 · HTTP API Contract Tests (Test Harness)\n  ▶ GET /api/v1/health (RNF-03)\n    ✔ debe responder con HTTP 200 y el esquema canónico de salud (96.1603ms)\n  ✔ GET /api/v1/health (RNF-03) (97.3933ms)\n  ▶ Manejo Unificado de Rutas Inexistentes (404 Not Found)\n    ✔ debe retornar HTTP 404 con el estándar de error SDD ante rutas no implementadas (9.8849ms)\n  ✔ Manejo Unificado de Rutas Inexistentes (404 Not Found) (10.2439ms)\n✔ P05 · HTTP API Contract Tests (Test Harness) (108.5324ms)\n◇ injected env (0) from .env\n◇ injected env (0) from .env.test\n▶ Sprint 3 · Auditor Contract Tests\n  ▶ GET /api/v1/auditor/logs\n    ✔ debe retornar 200 OK con lista de logs inmutables (45.4665ms)\n  ✔ GET /api/v1/auditor/logs (46.5149ms)\n  ▶ POST /api/v1/auditor/export\n    ✔ debe retornar 200 OK con metadatos de exportación (450.389ms)\n  ✔ POST /api/v1/auditor/export (450.9565ms)\n✔ Sprint 3 · Auditor Contract Tests (758.8227ms)\n◇ injected env (0) from .env\n◇ injected env (0) from .env.test\n▶ Sprint 1 · Authentication and Profile Contract Tests\n  ▶ POST /api/v1/auth/login\n    ✔ debe autenticar exitosamente con credenciales validas (200 OK), retornar usuario y token, y omitir contrasena_hash (281.3896ms)\n    ✔ debe rechazar con 401 y AUTH_INVALID_CREDENTIALS ante una contrasena incorrecta (89.4055ms)\n    ✔ debe rechazar con 401 y AUTH_INVALID_CREDENTIALS ante un usuario inexistente (5.5295ms)\n    ✔ debe rechazar con 400 y AUTH_MISSING_FIELDS ante un body vacio o campos incompletos (12.3085ms)\n  ✔ POST /api/v1/auth/login (390.2167ms)\n  ▶ GET /api/v1/auth/me\n    ✔ debe responder con 200 OK y el perfil completo del usuario (usr-1, AGENTE, equipo) con Bearer token valido (21.3077ms)\n    ✔ debe rechazar con 401 y AUTH_TOKEN_MISSING sin cabecera Authorization (4.3779ms)\n    ✔ debe rechazar con 401 y AUTH_TOKEN_INVALID con token malformado o invalido (10.564ms)\n  ✔ GET /api/v1/auth/me (36.8075ms)\n✔ Sprint 1 · Authentication and Profile Contract Tests (430.772ms)\n◇ injected env (0) from .env\n◇ injected env (0) from .env.test\n✔ activaciones simultáneas crean una sesión, una bienvenida y una auditoría (892.788ms)\n✔ todos los DTO de chat anónimo omiten identidad, incluida la histórica y el cierre del agente (70.6848ms)\n✔ servicio valida rol real, titularidad y C3 sin depender del socket o botón (104.1197ms)\n✔ reintentos se reconcilian sin duplicar mensaje ni auditoría y rechazan texto distinto (72.3826ms)\n▶ fallos intermedios revierten activación, envío y cierre completos\n  ✔ activación (9.4425ms)\n  ✔ envío (5.1534ms)\n  ✔ cierre (12.5678ms)\n✔ fallos intermedios revierten activación, envío y cierre completos (57.731ms)\n✔ envío concurrente con cierre no deja mensajes nuevos después del cierre (42.549ms)\n▶ P08 · Domain Contracts & Invariants (Test Harness)\n  ▶ Regla 1: Invariante de k-Anonimato (k >= 5)\n    ✔ debe suprimir métricas y retornar estado protegido cuando la cohorte es menor al umbral (k < 5) (0.9071ms)\n    ✔ debe permitir la emisión de métricas cuando la cohorte alcanza o supera el umbral (k >= 5) (0.1846ms)\n  ✔ Regla 1: Invariante de k-Anonimato (k >= 5) (2.0923ms)\n  ▶ Regla 3: Validación de las 6 Dimensiones del Check-in\n    ✔ debe aceptar un registro completo con enteros entre 1 y 5 (0.365ms)\n    ✔ debe rechazar dimensiones fuera del rango 1 a 5 (valores 0 o 6) (0.1796ms)\n    ✔ debe rechazar dimensiones fraccionarias (ej. 3.5) (0.1909ms)\n    ✔ debe rechazar cuando falte alguna de las 6 dimensiones obligatorias (0.1988ms)\n  ✔ Regla 3: Validación de las 6 Dimensiones del Check-in (1.3057ms)\n  ▶ Regla 4: Verificación de Consentimiento Informado (C1..C5)\n    ✔ debe retornar true solo si la política general fue aceptada y el flag específico está activo (0.2679ms)\n    ✔ debe retornar false si la política general no fue aceptada aunque el flag esté en true (0.1414ms)\n    ✔ debe retornar false para valores nulos o indefinidos (0.1343ms)\n  ✔ Regla 4: Verificación de Consentimiento Informado (C1..C5) (0.8529ms)\n✔ P08 · Domain Contracts & Invariants (Test Harness) (4.9723ms)\n◇ injected env (0) from .env\n◇ injected env (0) from .env.test\n✔ findUserById usa el pool y mantiene el identificador fuera del SQL (4.3851ms)\n✔ analítica impide reducir k y suprime dimensiones con menos de cinco personas (2.5485ms)\n✔ socket rechaza rol ajeno y mensajes sin sesión persistida (105.6375ms)\n✔ socket sin sessionId no guarda ni emite un mensaje efímero (18.361ms)\n✔ socket impide guardar mensajes en la sesión de otro titular (13.7445ms)\n✔ socket deriva destinatario de BD e ignora identidad y receptor del payload (19.9231ms)\n✔ socket exige consentimiento vigente y no filtra errores SQL (17.5916ms)\n✔ socket rechaza JWT revocado al conectar y vuelve a verificar antes de operar (26.796ms)\n◇ injected env (0) from .env\n◇ injected env (0) from .env.test\n▶ Configuración JWT y errores públicos\n  ✔ rechaza claves ausentes, triviales y el ejemplo público incluso en test (1.5905ms)\n  ✔ rechaza un token fabricado con la clave pública (38.3614ms)\n  ✔ health no expone errores internos de PostgreSQL (8.9378ms)\n✔ Configuración JWT y errores públicos (50.8167ms)\n▶ P05 · OpenAPI 3.1 Specification Contract Integrity\n  ✔ documenta todas las operaciones montadas y no anuncia rutas inexistentes (7.5774ms)\n  ✔ el archivo openapi.json debe existir y ser un JSON sintácticamente válido (2.7565ms)\n  ✔ debe contener la definición de los 13 endpoints canónicos principales (2.4958ms)\n  ✔ debe definir el esquema estandarizado de error con 'success' y 'error' (2.16ms)\n  ✔ debe definir el esquema de entrada de Checkin con las 6 dimensiones requeridas (1 a 5) (1.9912ms)\n  ✔ debe requerir autenticación Bearer JWT en los esquemas de seguridad (2.7457ms)\n✔ P05 · OpenAPI 3.1 Specification Contract Integrity (22.2098ms)\n◇ injected env (0) from .env\n◇ injected env (0) from .env.test\n✔ campaña inactiva y equipo con supervisor real se conservan (314.0265ms)\n✔ alta suspendida exige contraseña y asignación inválida no deja filas parciales (195.9654ms)\n✔ rol, equipo y estado persisten juntos y por separado (77.9796ms)\n✔ parámetros sin efecto operativo rechazan modificación remota (12.5323ms)\n✔ Habeas Data conserva titular, creación y vencimiento y recupera respuesta en ambas vistas (155.689ms)\n✔ catálogo de usuarios no duplica cuentas con varias asignaciones activas (19.4089ms)\n✔ sesión existente aplica rol y suspensión persistidos sin confiar en el rol antiguo del JWT (182.3972ms)\n◇ injected env (0) from .env\n◇ injected env (0) from .env.test\n✔ jornada de Bogotá respeta cambio UTC y comienzo real de turno (342.1876ms)\n✔ perfil recupera asignación y contadores propios completos sin datos administrativos de otros roles (49.0024ms)\n✔ análisis, revisión e historial persisten; editar invalida y rechaza respuesta atrasada (109.3132ms)\n✔ C3 y aceptación se verifican por HTTP; preferencias e historial son del servidor (49.6497ms)\n✔ check-in: 119 minutos permite editar, 121 rechaza; fechas y valores persistidos se recuperan (61.7185ms)\n✔ cada finalidad y una política nueva se verifican por petición directa; C5 no bloquea apoyo voluntario (133.243ms)\n[ServerError] { code: 'P0001', method: 'POST', path: '/api/v1/agent/journal' }\n✔ fallo de auditoría revierte la escritura privada; eventos efectivos no guardan su contenido (74.7551ms)\n◇ injected env (0) from .env\n◇ injected env (0) from .env.test\n✔ reglas: propuesta persistente, únicamente ADMIN aprueba, revisión duplicada 409 (627.8158ms)\n✔ léxico: contenido registrado e íntegro, activación y reversión con permisos (83.8186ms)\n✔ auditoría: contenido alterado, concurrentes, continuidad entre páginas, exportación >50 (1548.0912ms)\n[ServerError] {\n  code: 'PASSWORD_RESET_UNAVAILABLE',\n  method: 'POST',\n  path: '/api/v1/auth/password-reset/request'\n}\n✔ recuperación sin SMTP devuelve indisponibilidad sin confirmar envío (4.2029ms)\n✔ Nodemailer prepara el correo con transporte local controlado y solo persiste el hash del token (23.1407ms)\n✔ recuperación: SMTP controlado, sin token en respuesta, expiración, fallo y uso único revocan sesión (648.1185ms)\n◇ injected env (0) from .env\n◇ injected env (0) from .env.test\n✔ dos supervisores: corte ajeno se rechaza antes de agregar (968.7594ms)\n✔ periodo, dimensiones y null se conservan en un único snapshot (226.6551ms)\n✔ CSV del servidor incluye solo dimensiones elegidas; periodo vacío no pasa k (82.2694ms)\n✔ C4 desactivado excluye al titular del conteo y los promedios del mismo periodo (69.4705ms)\n◇ injected env (0) from .env\n◇ injected env (0) from .env.test\n✔ alerta N=4 protege descripción y evidencia incluso al actualizar (1025.8106ms)\n✔ todos los campos de intervención y seguimiento se recuperan; responsable ajeno se rechaza (151.6695ms)\n✔ apoyo identificado conserva canal y franja; descripción opcional y tipo inválido devuelve 400 (55.117ms)\n✔ apoyo conserva preferencias, omite identidad anónima y audita actor autenticado (43.422ms)\n◇ injected env (0) from .env\n◇ injected env (0) from .env.test\n▶ Sprint 3 · SST, Supervision & k-Anonymity Analytics Contract Tests\n  ▶ Autenticación y tokens de roles\n    ✔ debe contar con tokens JWT válidos para SST, SUPERVISOR y AGENTE (1.2834ms)\n  ✔ Autenticación y tokens de roles (2.3161ms)\n  ▶ GET /api/v1/sst/metrics — k-Anonimato en Analítica Agregada\n    ✔ con k >= 5: debe retornar 200 OK con { protected: false, cohort_count >= 5, k_threshold: 5, metrics: { ... } } (61.7663ms)\n    ✔ con k >= 5 en consulta general sin filtros: debe retornar 200 OK con protected: false y metrics calculadas (13.4679ms)\n    ✔ con k < 5: debe retornar 200 OK con { protected: true, reason, cohort_count < 5, k_threshold: 5, metrics: null } (15.7223ms)\n    ✔ con k < 5 por rango de fechas sin agentes suficientes: debe retornar 200 OK con protected: true y metrics: null (13.7526ms)\n  ✔ GET /api/v1/sst/metrics — k-Anonimato en Analítica Agregada (105.7393ms)\n  ▶ GET /api/v1/sst/alerts — Catálogo de Alertas Tempranas\n    ✔ debe retornar 200 OK con arreglo de alertas tempranas preventivas para rol SST (16.7547ms)\n  ✔ GET /api/v1/sst/alerts — Catálogo de Alertas Tempranas (17.2918ms)\n  ▶ Intervenciones Preventivas (GET y POST /api/v1/sst/interventions)\n    ✔ debe retornar 200 OK con arreglo de intervenciones psicosociales para rol SST (19.4573ms)\n    ✔ debe retornar 201 Created con { id, status: 'Activa', created_at } al crear intervención con datos válidos (51.424ms)\n    ✔ debe retornar 400 Bad Request con código 'INTERVENTION_MISSING_REQUIRED_FIELDS' cuando faltan campos obligatorios (10.8681ms)\n  ✔ Intervenciones Preventivas (GET y POST /api/v1/sst/interventions) (82.3806ms)\n  ▶ Solicitudes de Apoyo Psicosocial (/api/v1/sst/support-requests)\n    ✔ debe retornar 200 OK en GET con rol SST comprobando estrictamente que mode = 'anonimo' tenga solicitante === null (15.7299ms)\n    ✔ debe retornar 201 Created con { id, code, status: 'Recibida', sla: '24 h habiles' } al radicar solicitud con rol AGENTE (16.9164ms)\n  ✔ Solicitudes de Apoyo Psicosocial (/api/v1/sst/support-requests) (33.0719ms)\n  ▶ Control RBAC: Restricción de Roles No Autorizados (403 Forbidden)\n    ✔ debe rechazar con 403 Forbidden y AUTH_FORBIDDEN_ROLE cuando un AGENTE intenta acceder a GET /api/v1/sst/metrics (8.2885ms)\n    ✔ debe rechazar con 403 Forbidden y AUTH_FORBIDDEN_ROLE cuando un AGENTE intenta acceder a GET /api/v1/sst/alerts (7.7451ms)\n    ✔ debe rechazar con 403 Forbidden y AUTH_FORBIDDEN_ROLE cuando un AGENTE intenta acceder a GET /api/v1/sst/interventions (9.0068ms)\n    ✔ debe rechazar con 403 Forbidden y AUTH_FORBIDDEN_ROLE cuando un AGENTE intenta acceder a GET /api/v1/sst/support-requests (8.0132ms)\n    ✔ debe rechazar con 403 Forbidden y AUTH_FORBIDDEN_ROLE cuando un SUPERVISOR intenta acceder a GET /api/v1/sst/alerts (7.2341ms)\n    ✔ debe rechazar con 403 Forbidden y AUTH_FORBIDDEN_ROLE cuando un SUPERVISOR intenta crear una intervención (8.7426ms)\n  ✔ Control RBAC: Restricción de Roles No Autorizados (403 Forbidden) (49.9346ms)\n✔ Sprint 3 · SST, Supervision & k-Anonymity Analytics Contract Tests (1037.4189ms)\n◇ injected env (0) from .env\n◇ injected env (0) from .env.test\n▶ Sprint 3 · Supervisor Contract Tests\n  ▶ GET /api/v1/supervisor/actions\n    ✔ debe retornar 200 OK con arreglo de intervenciones y seguimientos con token de supervisor (59.6245ms)\n    ✔ debe retornar 403 Forbidden si un agente intenta acceder (16.3384ms)\n  ✔ GET /api/v1/supervisor/actions (78.4478ms)\n  ▶ POST /api/v1/supervisor/actions/:id/followup\n    ✔ debe retornar 200 OK actualizando avance y agregando seguimiento (73.3734ms)\n    ✔ debe retornar 403 Forbidden cuando supervisor intenta reportar avance sobre intervención ajena (IDOR) (12.211ms)\n  ✔ POST /api/v1/supervisor/actions/:id/followup (86.4558ms)\n✔ Sprint 3 · Supervisor Contract Tests (775.9845ms)\n◇ injected env (0) from .env\n◇ injected env (0) from .env.test\n✔ Privacidad RBAC: SUPERVISOR es bloqueado con 403 Forbidden al intentar acceder al chat de apoyo (705.1112ms)\n✔ Journey Radicado a Chat: Radicación formal, activación por SST y comunicación en vivo (172.4917ms)\n◇ injected env (0) from .env\n◇ injected env (0) from .env.test\n▶ Sprint 3 Â· Transversal Contract Tests\n  ▶ GET /api/v1/reports\n    ✔ debe retornar 200 OK con reportes del usuario (32.8482ms)\n  ✔ GET /api/v1/reports (34.0201ms)\n  ▶ GET /api/v1/notifications\n    ✔ debe retornar 200 OK con notificaciones (10.2228ms)\n  ✔ GET /api/v1/notifications (10.732ms)\n  ▶ PATCH /api/v1/notifications/read-all\n    ✔ debe retornar 200 OK marcando leÃ­das (9.8165ms)\n  ✔ PATCH /api/v1/notifications/read-all (10.3682ms)\n  ▶ Ciclo de vida de reportes e Integridad (Canonical JSON)\n    ✔ debe retornar 200 OK en la descarga de un reporte intacto (Canonical JSON) (32.7543ms)\n    ✔ debe rechazar con 409 Conflict y REPORT_INTEGRITY_MISMATCH si el reporte fue alterado (15.5655ms)\n  ✔ Ciclo de vida de reportes e Integridad (Canonical JSON) (50.2252ms)\n✔ Sprint 3 Â· Transversal Contract Tests (521.7734ms)\n◇ injected env (0) from .env\n◇ injected env (0) from .env.test\n✔ Bogotá: lunes 05:59 todavía no vence; 06:00 sí, martes y domingo usan el mismo cierre (133.8187ms)\n✔ carga elevada genera snapshot persistente; reintento no duplica ni reabre una alerta descartada (328.0759ms)\n✔ caída relativa: tres descensos requieren cuatro semanas; un rebote rompe la persistencia (140.8978ms)\n✔ N=4, muchas filas de cuatro personas y dimensión omitida nunca generan alerta (197.6177ms)\n✔ C4 revocado o política no vigente, semana ausente y condición incumplida se distinguen sin ceros fabricados (307.6254ms)\n✔ propuesta, regla inactiva o aprobada después del cierre no emiten; Sobrecarga queda sin evaluación (296.6855ms)\n✔ ámbito campaña usa solo sus equipos; equipo inactivo o inexistente no produce alertas (169.1428ms)\n✔ bloqueo entre instancias: un proceso ocupado no escribe; ejecuciones concurrentes conservan una sola alerta (192.7106ms)\n✔ auditoría del job y operaciones concurrentes mantienen enlaces y contenido verificables (455.7419ms)\n✔ fallo revierte alerta, auditoría y cursor; el reintento completa y recupera cierres pendientes (287.7798ms)\n✔ planificador: deshabilitado no ejecuta, no solapa ticks, se detiene y reintenta tras error (4.771ms)\n✔ umbral estricto: igualdad no cumple; una dimensión con null permanece no evaluable (2.9623ms)\n✔ no acepta fecha futura ni una semana todavía sin vencer (2.6276ms)\nℹ tests 132\nℹ suites 44\nℹ pass 132\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 31582.4623\n",
+      "outputTruncated": true,
+      "outputBytes": 19334,
+      "outputTotalBytes": 19334,
+      "outputLimitExceeded": false,
+      "outputLimitBytes": 8388608,
+      "outputLog": "specs/.omni/verification-logs/5debef5c-2011-4059-bba9-4f86264eaa1a.log",
+      "timedOut": false,
+      "exitCode": 0,
+      "signal": null,
+      "errorType": null,
+      "outputLogHash": "47409964c10154bbac1aac406b6daf93267481d58376c54daf11f7afbca761df"
+    },
+    {
+      "command": "cd \"frontend\" && npm test",
+      "checkId": "gate-2",
+      "cwd": "C:\\Users\\brahi\\OneDrive\\Escritorio\\TdeA\\4to semestre\\Construccion3\\Pulso360",
+      "checkCwd": ".",
+      "kind": "automated",
+      "timeoutMs": 120000,
+      "processId": 14224,
+      "startedAt": "2026-10-26T07:34:00.603Z",
+      "finishedAt": "2026-10-26T07:34:05.290Z",
+      "durationMs": 4687,
+      "output": "\n> pulso360@0.0.0 test\n> node --test tests/*.test.mjs\n\n✔ fechas SST: el día de Bogotá y el cierre a 28 días no cambian con medianoche UTC (814.3267ms)\n✔ API real: el perfil conserva contadores completos y asignaciones sin inicializar dominio demo (222.4274ms)\n✔ borradores tras 401: solo RAM, mismo titular, caducidad y limpieza al salir o cambiar cuenta (233.9411ms)\n✔ sesión API: una respuesta atrasada no recupera contadores antiguos ni reabre una sesión cerrada (191.3597ms)\n✔ API real: solo mutaciones confirmadas refrescan contadores y un 401 retiene antes de revocar (110.1432ms)\n✔ API real: análisis/corrección esperan respuesta, conservan hash y jamás escriben mock (199.175ms)\n✔ API real: seguimiento normaliza nota, fecha, acción y autor para ambas vistas (167.9041ms)\n✔ API real: avisos esperan sobre del servidor y restablecer demo no accede al mock (185.2678ms)\n✔ API real: Habeas Data propio conserva timestamp de radicación y respuesta (158.821ms)\n✔ API real: consulta fallida no cae a mock y sobre success:false no se anuncia como éxito (195.9171ms)\n✔ API real: parámetros anidados, política publicada, reglas y catálogo de léxico se normalizan (144.6058ms)\n✔ API real: NLP carga el diccionario activo y falla sin autorización sin cambiar algoritmo (92.655ms)\n✔ API real: exportación e integridad provienen del servidor, paginación mantiene sobre (112.3865ms)\n✔ API real: apoyo confidencial usa modalidad identificada y conserva preferencia/franja (210.2213ms)\n✔ CSV: estructura permitida sin garantías falsas ni pérdida silenciosa de filas (392.7762ms)\n✔ cambiar la identidad desconecta el socket anterior antes del nuevo handshake (812.0024ms)\n✔ el envío espera confirmación y descarta errores/mensajes de otro intento (2.1093ms)\n✔ el error de servidor rechaza el intento y limpia listeners, sin una confirmación falsa (1.3605ms)\n✔ acknowledgement confirma el guardado aunque no llegue el evento de difusión (0.6884ms)\n✔ sin conexión no emite a la cola; una desconexión pendiente se informa como no confirmada (0.7442ms)\n✔ timeout y cancelación no retienen suscripciones ni aceptan confirmaciones tardías (10.9906ms)\n▶ iconografía compartida: nombres de todas las vistas, semántica y tamaños\n  ✔ cada nombre estático y catálogo utilizado resuelve a un símbolo real (1074.8106ms)\n  ✔ la navegación diferencia registrar y consultar historia; los planes conservan significado entre roles (12.5264ms)\n  ✔ los accesos de chat en ambos roles usan conversación y el envío no usa navegación (609.735ms)\n  ✔ corregir un factor conserva su símbolo y expresa el ajuste con texto (32.9892ms)\n  ✔ indicadores sin tendencia no sugieren mejora ni alarma mediante el icono (17.1301ms)\n[Pulso360] Icono no registrado: test-missing-icon\n  ✔ un aviso destinado a SST no se presenta como alerta sólo por su destinatario (22.3987ms)\n  ✔ archivo protegido, alta de usuario, escritura y tendencia tienen símbolos específicos (1.7371ms)\n  ✔ Lucide y SVG propios conservan tamaño, trazo y estilos adicionales (2.2342ms)\n  ✔ un nombre desconocido produce un marcador detectable en lugar de un punto (1.62ms)\n✔ iconografía compartida: nombres de todas las vistas, semántica y tamaños (2441.6433ms)\n✔ nlpSanitizer: colapsa elongaciones y limpia parásitos de teclado sin alterar la letra ñ (3.5828ms)\n✔ damerauLevenshtein: detecta transposiciones inmediatas y fat-finger typos de distancia <= 1 (1.3802ms)\n✔ spanishStemmer: reduce formas verbales y flexiones de género/número a raíces canónicas (1.6236ms)\n✔ nlpEngine: procesa exitosamente la frase testigo del operador (AC-01) (825.518ms)\n✔ nlpEngine: negación contextual estilo NegEx anula la tensión (AC-05) (216.4807ms)\n✔ nlpEngine (Ronda 1 - Centinela de Crisis): detección de alertas de crisis preventiva y tolerancia a erratas (AC-01) (213.6163ms)\n✔ nlpEngine (Ronda 3 - Desempeño y Cero LLM): latencia local determinista < 50ms (303.0941ms)\n✔ almacenamiento recuperable: null (499.2799ms)\n✔ almacenamiento recuperable: \"not-json\" (124.1869ms)\n✔ almacenamiento recuperable: \"null\" (105.7543ms)\n✔ almacenamiento recuperable: \"{}\" (94.9922ms)\n✔ almacenamiento recuperable: \"[]\" (98.9807ms)\n✔ conserva registros, campos adicionales y colecciones vacías al completar estructura (113.6039ms)\n✔ migra correos antiguos sin cambiar los demás datos del usuario (120.0095ms)\n✔ almacenamiento bloqueado: conserva cambios en memoria y comunica modo temporal (91.7491ms)\n✔ cuota agotada: no vuelve a leer una versión anterior al último cambio (86.2924ms)\n✔ bitácora rechaza otro titular o rol: null (442.6345ms)\n✔ bitácora rechaza otro titular o rol: {\"id\":\"other\",\"role\":\"agente\"} (191.0379ms)\n✔ bitácora rechaza otro titular o rol: {\"id\":\"usr-1\",\"role\":\"admin\"} (187.086ms)\n✔ el titular puede crear, editar, analizar, corregir y eliminar sin confiar en metadatos de la UI (247.3448ms)\n✔ la sesión aplica cambios de rol y suspensión sin esperar un nuevo login (134.5841ms)\n✔ bitácora aplica C2 al guardar y C3 al procesar incluso después de guardar (127.6111ms)\n✔ descarta elementos dañados de listas sin perder registros válidos (123.4771ms)\n✔ nlpEngine analiza intensificadores, negaciones y límites de ventana (164.366ms)\nℹ tests 55\nℹ suites 0\nℹ pass 55\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 3861.5364\n",
+      "outputTruncated": false,
+      "outputBytes": 5458,
+      "outputTotalBytes": 5458,
+      "outputLimitExceeded": false,
+      "outputLimitBytes": 8388608,
+      "outputLog": "specs/.omni/verification-logs/8042fe6c-2fe4-4941-9941-388ff3d0c113.log",
+      "timedOut": false,
+      "exitCode": 0,
+      "signal": null,
+      "errorType": null,
+      "outputLogHash": "eef59048a051ce1f563c140bf74ea786bb75cab84991b7414383311c688091ba"
+    },
+    {
+      "command": "cd \"frontend\" && npm run lint",
+      "checkId": "gate-3",
+      "cwd": "C:\\Users\\brahi\\OneDrive\\Escritorio\\TdeA\\4to semestre\\Construccion3\\Pulso360",
+      "checkCwd": ".",
+      "kind": "automated",
+      "timeoutMs": 120000,
+      "processId": 11680,
+      "startedAt": "2026-10-26T07:34:05.296Z",
+      "finishedAt": "2026-10-26T07:34:12.503Z",
+      "durationMs": 7207,
+      "output": "\n> pulso360@0.0.0 lint\n> eslint .\n\n",
+      "outputTruncated": false,
+      "outputBytes": 35,
+      "outputTotalBytes": 35,
+      "outputLimitExceeded": false,
+      "outputLimitBytes": 8388608,
+      "outputLog": "specs/.omni/verification-logs/b7258761-3d0d-4a05-bf94-1e17e57b8e99.log",
+      "timedOut": false,
+      "exitCode": 0,
+      "signal": null,
+      "errorType": null,
+      "outputLogHash": "02e62610fcddf5b48a5664b25f47a0883fbb8fa925b9251025cf602821db34e5"
+    },
+    {
+      "command": "cd \"frontend\" && npm run build",
+      "checkId": "gate-4",
+      "cwd": "C:\\Users\\brahi\\OneDrive\\Escritorio\\TdeA\\4to semestre\\Construccion3\\Pulso360",
+      "checkCwd": ".",
+      "kind": "automated",
+      "timeoutMs": 120000,
+      "processId": 18216,
+      "startedAt": "2026-10-26T07:34:12.506Z",
+      "finishedAt": "2026-10-26T07:34:21.735Z",
+      "durationMs": 9229,
+      "output": "\n> pulso360@0.0.0 build\n> vite build\n\n\u001b[36mvite v6.4.4 \u001b[32mbuilding for production...\u001b[36m\u001b[39m\ntransforming...\n\u001b[32m✓\u001b[39m 2226 modules transformed.\nrendering chunks...\ncomputing gzip size...\n\u001b[2mdist/\u001b[22m\u001b[32mindex.html                 \u001b[39m\u001b[1m\u001b[2m  0.63 kB\u001b[22m\u001b[1m\u001b[22m\u001b[2m │ gzip:   0.38 kB\u001b[22m\n\u001b[2mdist/\u001b[22m\u001b[35massets/index-DisgoDY6.css  \u001b[39m\u001b[1m\u001b[2m399.38 kB\u001b[22m\u001b[1m\u001b[22m\u001b[2m │ gzip:  60.51 kB\u001b[22m\n\u001b[2mdist/\u001b[22m\u001b[36massets/index-BOP0kGZm.js   \u001b[39m\u001b[1m\u001b[33m957.64 kB\u001b[39m\u001b[22m\u001b[2m │ gzip: 269.31 kB\u001b[22m\n\u001b[33m\n(!) Some chunks are larger than 500 kB after minification. Consider:\n- Using dynamic import() to code-split the application\n- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks\n- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.\u001b[39m\n\u001b[32m✓ built in 7.73s\u001b[39m\n",
+      "outputTruncated": false,
+      "outputBytes": 900,
+      "outputTotalBytes": 900,
+      "outputLimitExceeded": false,
+      "outputLimitBytes": 8388608,
+      "outputLog": "specs/.omni/verification-logs/e4a39970-370c-4063-9765-daeeb4b9fc24.log",
+      "timedOut": false,
+      "exitCode": 0,
+      "signal": null,
+      "errorType": null,
+      "outputLogHash": "2187569954871aa05d7ac302b5f2e2bdc00d72bb517a2afcffba38c21438967f"
+    }
+  ]
+}

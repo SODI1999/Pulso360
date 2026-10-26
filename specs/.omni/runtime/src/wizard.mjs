@@ -1,9 +1,14 @@
 import * as readline from 'node:readline/promises';
 import { stdin as input, stdout as output } from 'node:process';
-import { basename } from 'node:path';
+import { basename, resolve, parse } from 'node:path';
+import { homedir } from 'node:os';
+import { lstat } from 'node:fs/promises';
 import { listProfiles } from './profiles/index.mjs';
 import { detectProjectEnvironment } from './detector.mjs';
 import { loadManifest } from './manifest.mjs';
+import { normalizeAgents } from './integrations.mjs';
+import { initText } from './installation.mjs';
+import { supportsTerminalUI, TerminalInstaller } from './terminal-ui.mjs';
 
 const STACK_PRESETS = [
   { label: 'Node.js / TypeScript', doc: 'TSDoc', gates: 'npm test\nnpm run lint\nnpm run build' },
@@ -12,7 +17,7 @@ const STACK_PRESETS = [
   { label: 'Java / Spring Boot', doc: 'JavaDoc', gates: 'mvn test\nmvn checkstyle:check' },
   { label: 'Go', doc: 'Go doc', gates: 'go test -v ./...\ngolangci-lint run' },
   { label: 'Rust', doc: 'Rustdoc', gates: 'cargo test\ncargo clippy' },
-  { label: 'Mobile / Flutter', doc: 'Dartdoc', gates: 'flutter test\nflutter analyze' }
+  { label: 'Mobile / Flutter', doc: 'Dartdoc', gates: 'flutter test\nflutter analyze' },
 ];
 
 function findPresetIndex(target) {
@@ -51,6 +56,52 @@ function findPresetIndex(target) {
   return -1;
 }
 
+/**
+ * Line reader that keeps lines arriving before a prompt (piped or pasted input), unlike
+ * readline.question, which drops lines read ahead of the question.
+ * @param {import('node:stream').Readable} stream Input stream.
+ * @param {import('node:stream').Writable} out Prompt output.
+ */
+export function createLineReader(stream = input, out = output, options = {}) {
+  const terminal = options.terminal ?? Boolean(stream.isTTY && out.isTTY);
+  const rl = readline.createInterface({ input: stream, ...(terminal ? { output: out, terminal } : { terminal }) });
+  const lines = [];
+  const waiting = [];
+  let ended = false;
+  rl.on('line', line => (waiting.length ? waiting.shift().resolve(line) : lines.push(line)));
+  rl.on('close', () => {
+    ended = true;
+    while (waiting.length)
+      waiting
+        .shift()
+        .reject(
+          new Error(
+            'Input ended; no installation was started. Entrada cerrada; no se inició la instalación. For automation use `init --yes --agent <name>` (or generic). The --yes before the package name belongs to npx, not OmniSpec.',
+          ),
+        );
+  });
+  return {
+    question(prompt) {
+      // In a terminal readline owns the prompt so line editing redraws it correctly.
+      if (terminal) {
+        rl.setPrompt(prompt);
+        rl.prompt();
+      } else out.write(prompt);
+      if (lines.length) return Promise.resolve(lines.shift());
+      if (ended)
+        return Promise.reject(
+          new Error(
+            'Input ended; no installation was started. Entrada cerrada; no se inició la instalación. For automation use `init --yes --agent <name>` (or generic). The --yes before the package name belongs to npx, not OmniSpec.',
+          ),
+        );
+      return new Promise((resolve, reject) => waiting.push({ resolve, reject }));
+    },
+    close() {
+      rl.close();
+    },
+  };
+}
+
 export async function promptUser(rl, question, defaultValue) {
   const displayPrompt = defaultValue ? `${question} [${defaultValue}]: ` : `${question}: `;
   const answer = await rl.question(displayPrompt);
@@ -64,184 +115,177 @@ export async function promptChoice(rl, question, choices, defaultIndex = 0) {
     console.log(`  [${idx + 1}] ${marker} ${c.label || c.name || c}`);
   });
 
-  const answer = await rl.question(`Select an option (1-${choices.length}) [${defaultIndex + 1}]: `);
-  const selectedIdx = parseInt(answer.trim(), 10) - 1;
-
-  if (isNaN(selectedIdx) || selectedIdx < 0 || selectedIdx >= choices.length) {
-    return choices[defaultIndex];
+  while (true) {
+    const answer = (await rl.question(`Select an option (1-${choices.length}) [${defaultIndex + 1}]: `)).trim();
+    if (!answer) return choices[defaultIndex];
+    if (/^\d+$/.test(answer) && Number(answer) >= 1 && Number(answer) <= choices.length)
+      return choices[Number(answer) - 1];
+    console.log(`Choose a number from 1 to ${choices.length}. Elige un número del 1 al ${choices.length}.`);
   }
-  return choices[selectedIdx];
 }
 
+/** Prepare installation configuration without deciding the product or adopting candidate checks. */
 export async function runWizard(baseDir, cliOptions = {}) {
-  const defaultProjectName = basename(baseDir);
-  const detected = await detectProjectEnvironment(baseDir);
-  for (const warning of detected.warnings || []) {
-    console.warn(`[WARN] ${warning}`);
-  }
-  const existingManifest = await loadManifest(baseDir);
-  const availableProfiles = listProfiles();
-  const validProfileIds = availableProfiles.map(p => p.id);
+  const directory = resolve(baseDir);
+  if (directory === parse(directory).root || directory === resolve(homedir()))
+    throw new Error(
+      'Choose a project folder, not the filesystem root or home directory. Elige una carpeta de proyecto. Use mkdir and cd, then run init.',
+    );
+  if ((await lstat(directory)).isSymbolicLink()) throw new Error('Use a regular project directory, not a symlink.');
+  if (cliOptions.lang !== undefined) initText(cliOptions.lang);
+  const existing = await loadManifest(directory);
+  const detected = await detectProjectEnvironment(directory);
+  const validProfiles = listProfiles().map(p => p.id);
+  if (cliOptions.profile && !validProfiles.includes(cliOptions.profile))
+    throw new Error(`Invalid profile "${cliOptions.profile}". Valid profiles: ${validProfiles.join(', ')}`);
 
-  if (cliOptions.profile && !validProfileIds.includes(cliOptions.profile)) {
-    throw new Error(`Invalid profile "${cliOptions.profile}". Valid profiles are: ${validProfileIds.join(', ')}`);
-  }
+  const locale =
+    process.env.LC_ALL || process.env.LC_MESSAGES || process.env.LANG || Intl.DateTimeFormat().resolvedOptions().locale;
+  let language = cliOptions.lang || existing?.language || (/^es(?:[-_.]|$)/i.test(locale) ? 'es' : 'en');
+  initText(language);
+  let agent = normalizeAgents(cliOptions.agent || cliOptions.ai || existing?.agent || 'generic').join(',');
+  const explicitStack = cliOptions.stack !== undefined;
+  const stack = cliOptions.stack || existing?.stack || detected.detectedStack || 'Undecided';
+  const preset = STACK_PRESETS[findPresetIndex(stack)];
+  const changedStack = explicitStack && stack !== existing?.stack;
+  const config = {
+    projectName: cliOptions.name || existing?.project || detected.projectName || basename(directory),
+    stack,
+    docStandard:
+      cliOptions.doc ||
+      (changedStack ? preset?.doc : existing?.documentationStandard) ||
+      detected.docStandard ||
+      'Project conventions',
+    profile: cliOptions.profile || existing?.profile || 'general',
+    qualityGates: cliOptions.gates ?? existing?.qualityGates ?? '',
+    environment: detected,
+    agent,
+    language,
+    force: Boolean(cliOptions.force),
+    explicitProfile: cliOptions.profile !== undefined,
+    explicitStack,
+    explicitDoc: cliOptions.doc !== undefined || changedStack,
+    explicitGates: cliOptions.gates !== undefined,
+  };
+  // --yes here is an OmniSpec option. npx --yes is consumed before this CLI starts.
+  if (cliOptions.yes) return config;
 
-  const isExplicitProfile = Boolean(cliOptions.profile);
-  const isExplicitStack = Boolean(cliOptions.stack);
-  const isExplicitDoc = Boolean(cliOptions.doc);
-  const isExplicitGates = cliOptions.gates !== undefined;
-
-  // If non-interactive mode is requested (e.g. --yes or in CI)
-  if (cliOptions.yes) {
-    const resolvedProfile = isExplicitProfile
-      ? cliOptions.profile
-      : (existingManifest?.profile || 'general');
-
-    let defaultGates = existingManifest?.qualityGates ?? detected.qualityGates ?? '';
-    let defaultDoc = existingManifest?.documentationStandard || detected.docStandard || 'Project conventions';
-    let resolvedStack = isExplicitStack
-      ? cliOptions.stack
-      : (existingManifest?.stack || detected.detectedStack || 'Undecided');
-
-    const presetIdx = findPresetIndex(resolvedStack);
-    const preset = STACK_PRESETS[presetIdx];
-    const changedStack = isExplicitStack && (!existingManifest?.stack || presetIdx !== findPresetIndex(existingManifest.stack));
-    const detectedMatches = presetIdx >= 0 && presetIdx === findPresetIndex(detected.detectedStack);
-    if (preset && (isExplicitStack || !existingManifest?.stack)) {
-      if (!isExplicitDoc && (changedStack || !existingManifest?.documentationStandard)) {
-        defaultDoc = preset.doc;
+  if (supportsTerminalUI(input, output, process.env, cliOptions.plain)) {
+    const ui = new TerminalInstaller(input, output, { version: cliOptions.cliVersion });
+    let cancelled = false;
+    try {
+      if (!cliOptions.lang && !existing?.language)
+        language = await ui.choose({
+          language,
+          step: 1,
+          title: 'Language / Idioma',
+          options: [
+            { value: 'en', label: 'English' },
+            { value: 'es', label: 'Español' },
+          ],
+          defaultValue: language,
+        });
+      const es = language === 'es',
+        t = initText(language);
+      const details = [
+        `${t.directory}: ${directory}`,
+        existing ? t.reinit : detected.isGreenfield ? t.fresh : t.existing,
+      ];
+      if (!cliOptions.agent && !cliOptions.ai && !existing?.agent) {
+        const selected = await ui.choose({
+          language,
+          step: 2,
+          title: es ? '¿Dónde usarás OmniSpec?' : 'Where will you use OmniSpec?',
+          details,
+          multiple: true,
+          options: [
+            { value: 'antigravity', label: 'Antigravity' },
+            { value: 'claude', label: 'Claude Code' },
+            { value: 'codex', label: 'Codex' },
+            { value: 'cursor', label: 'Cursor' },
+            { value: 'copilot', label: 'VS Code / GitHub Copilot' },
+            { value: 'kilo', label: 'Kilo' },
+            { value: 'opencode', label: 'OpenCode' },
+            { value: 'gemini', label: 'Gemini CLI' },
+            { value: 'generic', label: es ? 'Otra herramienta / aún sin elegir' : 'Another tool / not decided yet' },
+          ],
+        });
+        agent = normalizeAgents(selected).join(',');
       }
-      if (!isExplicitGates && !detectedMatches && (changedStack || !existingManifest?.qualityGates)) {
-        defaultGates = '';
-      }
+      const declarations = ['name', 'stack', 'doc', 'profile', 'gates']
+        .filter(key => cliOptions[key] !== undefined)
+        .map(key => `--${key}: ${cliOptions[key]}`);
+      const warnings = (detected.warnings || []).filter(
+        warning => !warning.startsWith('No quality-gate commands detected.'),
+      );
+      const confirmed = await ui.choose({
+        language,
+        step: 3,
+        title: es ? '¿Preparar OmniSpec en esta carpeta?' : 'Prepare OmniSpec in this folder?',
+        details: [
+          ...details,
+          `${t.selected}: ${agent}`,
+          ...declarations,
+          ...warnings,
+          ...(config.force ? [t.force] : []),
+        ],
+        options: [
+          { value: 'yes', label: es ? 'Preparar proyecto' : 'Prepare project' },
+          { value: 'no', label: es ? 'Cancelar' : 'Cancel' },
+        ],
+      });
+      if (confirmed === 'no') cancelled = true;
+      else return { ...config, agent, language };
+    } catch (error) {
+      if (error.code !== 'OMNI_INIT_CANCELLED') throw error;
+      cancelled = true;
+    } finally {
+      ui.close();
+      if (cancelled) console.log(initText(language).cancelled);
     }
-
-    return {
-      projectName: cliOptions.name || existingManifest?.project || detected.projectName || defaultProjectName,
-      stack: resolvedStack,
-      docStandard: isExplicitDoc ? cliOptions.doc : defaultDoc,
-      profile: resolvedProfile,
-      qualityGates: cliOptions.gates ?? defaultGates,
-      environment: detected,
-      agent: cliOptions.agent || cliOptions.ai || existingManifest?.agent || 'antigravity',
-      force: Boolean(cliOptions.force),
-      explicitProfile: isExplicitProfile,
-      explicitStack: isExplicitStack,
-      explicitDoc: isExplicitDoc || changedStack,
-      explicitGates: isExplicitGates
-    };
+    return null;
   }
 
-  const rl = readline.createInterface({ input, output });
-
-  // Fail loudly when the input stream ends before the wizard completes
-  // (non-interactive terminal, closed stdin, or Ctrl+D). Without this guard,
-  // pending readline questions never settle and Node exits silently with code 0
-  // while the project stays uninitialized.
-  let rejectOnInputEnd;
-  const inputEnded = new Promise((_, reject) => { rejectOnInputEnd = reject; });
-  const onInputEnd = () => rejectOnInputEnd(new Error(
-    'Interactive input ended before the wizard completed (non-interactive terminal or closed stdin). ' +
-    'Re-run with `--yes` to accept the detected defaults automatically.'
-  ));
-  input.once('end', onInputEnd);
-  inputEnded.catch(() => {}); // never surface as an unhandled rejection
-  const guarded = (promise) => Promise.race([promise, inputEnded]);
-
-  console.log('\nOmniSpec — Universal Spec-Driven Development');
-  if (detected.isGreenfield) {
-    console.log('[INIT] Greenfield environment detected (starting fresh repository).\n');
-  } else {
-    console.log(`[DETECT] Existing codebase detected (${detected.detectedStack}). Setting up in-place SDD.\n`);
-  }
-
+  const rl = createLineReader(input, output, { terminal: false });
   try {
-    // 1. Project Name
-    const projectName = await guarded(promptUser(
-      rl,
-      'Project Name',
-      cliOptions.name || existingManifest?.project || defaultProjectName
-    ));
-
-    // 2. Tech Stack - resolve default index from CLI or detector
-    const targetStack = cliOptions.stack || existingManifest?.stack || detected.detectedStack || '';
-    const defaultStackIdx = Math.max(0, findPresetIndex(targetStack));
-
-    const customStack = { label: targetStack || 'Undecided / custom stack', doc: detected.docStandard, gates: '' };
-    const selectedStack = await guarded(promptChoice(
-      rl,
-      'Select your primary technology stack:',
-      [...STACK_PRESETS, customStack],
-      findPresetIndex(targetStack) < 0 ? STACK_PRESETS.length : defaultStackIdx
-    ));
-    const resolvedInteractiveStack = !isExplicitStack && existingManifest &&
-      findPresetIndex(existingManifest.stack) === STACK_PRESETS.indexOf(selectedStack)
-      ? existingManifest.stack : selectedStack.label;
-
-    // 3. Documentation Standard - resolve default according to selected stack
-    const docStandard = await guarded(promptUser(
-      rl,
-      'Preferred Documentation Standard',
-      cliOptions.doc || (existingManifest && findPresetIndex(existingManifest.stack) === STACK_PRESETS.indexOf(selectedStack)
-        ? existingManifest.documentationStandard : null) || selectedStack.doc
-    ));
-
-    // 4. Domain & Regulatory Profile - resolve default index from CLI or existing manifest
-    const targetProfile = cliOptions.profile || existingManifest?.profile || 'general';
-    let defaultProfileIdx = availableProfiles.findIndex(p => p.id === targetProfile);
-    if (defaultProfileIdx < 0) defaultProfileIdx = 0;
-
-    const selectedProfile = await guarded(promptChoice(
-      rl,
-      'Select the domain profile (regulatory & architectural invariants):',
-      availableProfiles.map(p => ({ label: `${p.name} — ${p.description}`, id: p.id })),
-      defaultProfileIdx
-    ));
-
-    // 5. Quality Gates
-    console.log('\nDefine your delivery quality gates (commands that must pass before merging):');
-    const selectedIndex = STACK_PRESETS.indexOf(selectedStack);
-    const detectedMatchesSelected = findPresetIndex(detected.detectedStack) === selectedIndex;
-    const existingMatchesSelected = existingManifest && findPresetIndex(existingManifest.stack) === selectedIndex;
-    const defaultGatesSource = cliOptions.gates || (existingMatchesSelected ? existingManifest.qualityGates : null) ||
-      (detectedMatchesSelected ? detected.qualityGates : null) || '';
-    const defaultGatesPrompt = defaultGatesSource.replace(/\n/g, '\\n');
-    const qualityGates = await guarded(promptUser(
-      rl,
-      'Quality Gates command(s)',
-      defaultGatesPrompt || 'none'
-    ));
-
-    console.log('\n[SUMMARY] Configuration:');
-    console.log(`  - Project:       ${projectName}`);
-    console.log(`  - Stack:         ${resolvedInteractiveStack}`);
-    console.log(`  - Documentation: ${docStandard}`);
-    console.log(`  - Profile:       ${selectedProfile.id}`);
-    console.log(`  - Quality Gates: ${qualityGates}\n`);
-
-    const confirm = await guarded(promptUser(rl, 'Proceed with scaffolding? (Y/n)', 'Y'));
-    if (confirm.toLowerCase() === 'n') {
-      console.log('Setup aborted by user.');
-      return null;
+    if (!cliOptions.lang && !existing?.language) {
+      const choice = await promptChoice(rl, 'Language / Idioma', ['English', 'Español'], language === 'es' ? 1 : 0);
+      language = choice === 'Español' ? 'es' : 'en';
     }
-
-    return {
-      projectName,
-      stack: resolvedInteractiveStack,
-      docStandard,
-      profile: selectedProfile.id,
-      qualityGates: qualityGates === 'none' ? '' : qualityGates.replace(/\\n/g, '\n'),
-      environment: detected,
-      agent: cliOptions.agent || cliOptions.ai || existingManifest?.agent || 'antigravity',
-      force: Boolean(cliOptions.force),
-      explicitProfile: true,
-      explicitStack: true,
-      explicitDoc: true,
-      explicitGates: true
-    };
+    const t = initText(language);
+    console.log(`\nOmniSpec — ${t.welcome}\n${t.directory}: ${directory}`);
+    console.log(existing ? t.reinit : detected.isGreenfield ? t.fresh : t.existing);
+    for (const warning of detected.warnings || []) {
+      if (!warning.startsWith('No quality-gate commands detected.')) console.log(`[INFO] ${warning}`);
+    }
+    if (!cliOptions.agent && !cliOptions.ai && !existing?.agent) {
+      console.log(`\n${t.tool}\n${t.tools}`);
+      while (true) {
+        const answer = (await rl.question(t.toolPrompt)).trim() || 'generic';
+        try {
+          agent = normalizeAgents(answer).join(',');
+          break;
+        } catch (error) {
+          console.log(error.message);
+        }
+      }
+    }
+    console.log(`\n${t.selected}: ${agent}\n${t.pending}`);
+    // Explicit engineering declarations are reviewed here, not requested from every user.
+    for (const key of ['name', 'stack', 'doc', 'profile', 'gates'])
+      if (cliOptions[key] !== undefined) console.log(`  --${key}: ${cliOptions[key]}`);
+    if (config.force) console.log(t.force);
+    while (true) {
+      const answer = (await rl.question(t.confirm)).trim().toLowerCase();
+      if (['n', 'no'].includes(answer)) {
+        console.log(t.cancelled);
+        return null;
+      }
+      if (['', 's', 'si', 'sí', 'y', 'yes'].includes(answer)) break;
+      console.log(t.invalidConfirm);
+    }
+    return { ...config, agent, language };
   } finally {
-    input.removeListener('end', onInputEnd);
     rl.close();
   }
 }

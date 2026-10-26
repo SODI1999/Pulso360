@@ -54,8 +54,53 @@ export function InterventionsPage() {
     return { success: true };
   };
 
-  if (loading) return <p role="status">Cargando intervenciones…</p>;
-  if (loadError) return <p className="alert-banner danger" role="alert">No se pudieron cargar las intervenciones: {loadError}</p>;
+  if (loading) {
+    return (
+      <div>
+        <div className="page-header">
+          <div>
+            <h1 className="page-title">Planes de acción preventiva</h1>
+            <p className="page-subtitle">
+              Formulación, seguimiento y evaluación de efectividad sobre indicadores de equipo.
+            </p>
+          </div>
+        </div>
+        <div
+          className="supervisor-loading"
+          style={{ padding: 'var(--space-8)', textAlign: 'center', color: 'var(--c-texto-suave)' }}
+          role="status"
+          aria-live="polite"
+        >
+          <Icon name="refresh" size={24} className="icon-spin" />
+          <p style={{ marginTop: 'var(--space-2)' }}>Cargando planes de acción del servidor…</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (loadError) {
+    return (
+      <div role="alert">
+        <div className="page-header">
+          <div>
+            <h1 className="page-title">Planes de acción preventiva</h1>
+            <p className="page-subtitle">
+              Formulación, seguimiento y evaluación de efectividad sobre indicadores de equipo.
+            </p>
+          </div>
+        </div>
+        <div
+          className="alert-banner danger"
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap' }}
+        >
+          <span>No se pudieron cargar las intervenciones: {loadError}</span>
+          <button type="button" className="btn btn-secondary btn-sm" onClick={() => setVersion((v) => v + 1)}>
+            Reintentar
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>

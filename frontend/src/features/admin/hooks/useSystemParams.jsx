@@ -239,6 +239,7 @@ export function useSystemParams() {
     handleActivateNlp,
     handleRevertNlp,
     handleApproveRule,
-    rules
+    rules,
+    reload: () => setVersion((v) => v + 1)
   };
 }

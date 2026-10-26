@@ -39,7 +39,8 @@ export function ReportsPage() {
     jsonContent,
     downloadFileBaseName,
     handlePrintPdf,
-    reportHistory
+    reportHistory,
+    reloadHistory
   } = useReports();
 
   return (
@@ -125,7 +126,7 @@ export function ReportsPage() {
       </div>
 
       {/* Historial Modular Abierto de Reportes Generados */}
-      <ReportHistoryTable loading={historyLoading} error={historyError} reportHistory={reportHistory} />
+      <ReportHistoryTable loading={historyLoading} error={historyError} reportHistory={reportHistory} onRetry={reloadHistory} />
     </div>
   );
 }

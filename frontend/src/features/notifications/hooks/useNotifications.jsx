@@ -114,6 +114,7 @@ export function useNotifications() {
     handleNotificationClick,
     handleMarkAllRead,
     formatDate,
-    handleBack
+    handleBack,
+    reload: () => setVersion((v) => v + 1)
   };
 }
