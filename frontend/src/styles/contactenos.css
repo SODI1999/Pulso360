@@ -117,43 +117,6 @@
   margin: 0;
 }
 
-/* Nota de privacidad y separación de flujos */
-.contact-privacy-guarantee {
-  display: flex;
-  gap: 12px;
-  align-items: flex-start;
-  background: rgba(20, 112, 90, 0.04);
-  border: 1px solid rgba(20, 112, 90, 0.15);
-  border-radius: 6px;
-  padding: 14px;
-  margin-top: 8px;
-}
-
-.privacy-badge-icon {
-  color: var(--landing-emerald, #14705A);
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-
-.privacy-text-block {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.privacy-title {
-  font-size: 0.82rem;
-  font-weight: 700;
-  color: var(--landing-ink, #112623);
-}
-
-.privacy-desc {
-  font-size: 0.78rem;
-  line-height: 1.45;
-  color: var(--landing-body, #485B58);
-  margin: 0;
-}
-
 /* Columna Derecha: Panel del Formulario */
 .form-panel {
   background: #ffffff;
@@ -322,27 +285,6 @@
   outline: 2px solid var(--landing-emerald, #14705A);
   outline-offset: 2px;
   border-radius: 2px;
-}
-
-/* Disclaimer reserva médica */
-.contact-health-disclaimer {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  background: rgba(0, 0, 0, 0.02);
-  border-left: 2px solid var(--landing-line, #E5E0D6);
-  padding: 8px 12px;
-  border-radius: 0 4px 4px 0;
-  margin-bottom: 20px;
-  font-size: 0.74rem;
-  line-height: 1.4;
-  color: var(--landing-body, #485B58);
-}
-
-.disclaimer-icon {
-  color: var(--landing-body, #485B58);
-  flex-shrink: 0;
-  margin-top: 1px;
 }
 
 /* Botón de Envío */

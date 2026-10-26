@@ -1,5 +1,5 @@
 // src/features/landing/pages/ContactenosPage.jsx
-// Vista de contacto directo y acompañamiento institucional para centros de contacto (BPO) y áreas de SST
+// Vista de contacto directo y acompañamiento para centros de contacto (BPO) y áreas de SST
 
 import { useEffect } from 'react';
 import { Navbar } from '../components/Navbar';
@@ -60,19 +60,6 @@ export function ContactenosPage() {
                     <span className="channel-static-val">Tecnológico de Antioquia (TdeA)</span>
                     <p className="channel-meta">Facultad de Ingeniería · Semillero de Software · Medellín, Colombia.</p>
                   </div>
-                </div>
-              </div>
-
-              <div className="contact-privacy-guarantee">
-                <div className="privacy-badge-icon" aria-hidden="true">
-                  <Icon name="shieldCheck" size={18} />
-                </div>
-                <div className="privacy-text-block">
-                  <strong className="privacy-title">Separación de flujos y privacidad</strong>
-                  <p className="privacy-desc">
-                    Las solicitudes de contacto se gestionan de forma independiente y no acceden a las bitácoras
-                    personales de los operadores. Tratamiento conforme a la Ley 1581 de 2012.
-                  </p>
                 </div>
               </div>
             </div>

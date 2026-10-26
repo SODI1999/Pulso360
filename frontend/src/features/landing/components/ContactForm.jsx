@@ -228,13 +228,6 @@ export function ContactForm() {
               )}
             </div>
 
-            <div className="contact-health-disclaimer">
-              <Icon name="shieldCheck" size={15} className="disclaimer-icon" />
-              <span>
-                <strong>Reserva médica:</strong> Abstente de incluir diagnósticos, historias clínicas o datos de salud individual en este formulario.
-              </span>
-            </div>
-
             <button className="form-submit" type="submit">
               <Icon name="send" size={16} />
               <span>Enviar mensaje</span>
