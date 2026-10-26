@@ -1,6 +1,8 @@
 // src/features/reports/components/ReportPreviewCard.jsx
 // Tarjeta modular de previsualización en vivo de reportes consolidados (RF-12)
 
+import { Icon } from '../../../core/components/Icon';
+
 export function ReportPreviewCard({
   scopeLabel = '',
   period = '',
@@ -17,13 +19,13 @@ export function ReportPreviewCard({
       <div className="reports-preview-header">
         <div>
           <div className="reports-preview-eyebrow">
-            Snapshot del reporte generado
+            {hasData ? 'Snapshot del reporte generado' : 'Estructura proyectada del reporte'}
           </div>
           <h3 className="reports-preview-title">
             Pulso360 · Reporte consolidado
           </h3>
           <div className="reports-preview-meta">
-            {scopeLabel} · {period}
+            {scopeLabel || 'Ámbito seleccionado'} · {period || 'Periodo activo'}
           </div>
         </div>
         <span className="badge badge-ok">Umbral vigente N &ge; {minThreshold}</span>
@@ -31,8 +33,42 @@ export function ReportPreviewCard({
 
       {/* Grid de Indicadores Previsualizados */}
       {!hasData ? (
-        <div className="reports-meta-footer" style={{ padding: '2rem 1rem', textAlign: 'center', backgroundColor: 'var(--surface-color)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)' }}>
-          <p style={{ color: 'var(--text-secondary)' }}>Genera el reporte para consultar el snapshot guardado por el servidor.</p>
+        <div className="reports-pending-preview">
+          <div className="reports-pending-notice">
+            <Icon name="summarize" size={20} />
+            <div>
+              <p className="reports-pending-title">Estructura preparada para consolidación</p>
+              <p className="reports-pending-desc">
+                Presiona <strong>Generar y exportar reporte</strong> para calcular los indicadores agregados del corte seleccionado.
+              </p>
+            </div>
+          </div>
+          <div className="reports-kpis-container reports-kpis-placeholder">
+            {sections.energia && (
+              <div className="reports-kpi-item is-placeholder">
+                <div className="reports-kpi-label">Energía agregada</div>
+                <div className="reports-kpi-value">— / 5</div>
+              </div>
+            )}
+            {sections.carga && (
+              <div className="reports-kpi-item is-placeholder">
+                <div className="reports-kpi-label">Carga emocional agregada</div>
+                <div className="reports-kpi-value">— / 5</div>
+              </div>
+            )}
+            {sections.recuperacion && (
+              <div className="reports-kpi-item is-placeholder">
+                <div className="reports-kpi-label">Recuperación agregada</div>
+                <div className="reports-kpi-value">— / 5</div>
+              </div>
+            )}
+            {sections.participacion && (
+              <div className="reports-kpi-item is-placeholder">
+                <div className="reports-kpi-label">Participación promedio</div>
+                <div className="reports-kpi-value">— %</div>
+              </div>
+            )}
+          </div>
         </div>
       ) : (
         <div className="reports-kpis-container">

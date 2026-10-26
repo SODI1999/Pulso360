@@ -100,7 +100,7 @@ export function TeamDashboardPage() {
 
         {/* Filtros Contextuales (Límite 2 dimensiones simultáneas - RF-07) */}
         <div className="supervisor-filter-bar">
-          <div className="supervisor-filter-item">
+          <div className="supervisor-filter-item supervisor-filter-scope">
             <label className="form-label" htmlFor="shiftFilter">
               Ámbito de equipo
             </label>
@@ -110,24 +110,47 @@ export function TeamDashboardPage() {
               value={scopeFilter}
               onChange={(e) => setScopeFilter(e.target.value)}
             >
-              {env.useMockStorage ? <><option value="all">Equipo de demostración</option><option value="small">Subgrupo de muestra protegido</option></>
-                : (user?.scopes || []).map(s => <option key={s.id} value={s.id}>{s.campana_nombre} · {s.nombre}</option>)}
+              {env.useMockStorage ? (
+                <>
+                  <option value="all">Equipo de demostración (N = 14 Agentes)</option>
+                  <option value="small">Subgrupo de muestra protegido (N = 3)</option>
+                </>
+              ) : (
+                (user?.scopes || []).map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.campana_nombre} · {s.nombre}
+                  </option>
+                ))
+              )}
             </select>
           </div>
 
-          <div className="supervisor-filter-item">
+          <div className="supervisor-filter-item supervisor-filter-date">
             <label className="form-label" htmlFor="periodFilter">
-              Desde
+              Fecha inicial
             </label>
-            <input type="date" max={periodEnd || undefined}
+            <input
+              type="date"
+              max={periodEnd || undefined}
               className="form-select"
               id="periodFilter"
               value={periodStart}
               onChange={(e) => setPeriodStart(e.target.value)}
             />
-            <label className="form-label" htmlFor="periodEnd">Hasta</label>
-            <input className="form-select" id="periodEnd" type="date" min={periodStart || undefined}
-              value={periodEnd} onChange={e => setPeriodEnd(e.target.value)} />
+          </div>
+
+          <div className="supervisor-filter-item supervisor-filter-date">
+            <label className="form-label" htmlFor="periodEnd">
+              Fecha final
+            </label>
+            <input
+              type="date"
+              min={periodStart || undefined}
+              className="form-select"
+              id="periodEnd"
+              value={periodEnd}
+              onChange={(e) => setPeriodEnd(e.target.value)}
+            />
           </div>
         </div>
       </div>

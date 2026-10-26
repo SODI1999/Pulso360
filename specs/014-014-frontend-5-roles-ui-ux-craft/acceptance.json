@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 2,
+  "criteria": [
+    {
+      "id": "AC-01",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Saludo corregido sin espacio espurio, ilustración 3D cartoon erradicada y banner de desconexión compacto implementado en AgentDashboardPage."
+    },
+    {
+      "id": "AC-02",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Barra de filtros alineada horizontalmente y tarjeta de privacidad rediseñada con iconografía sobria institucional en TeamDashboardPage."
+    },
+    {
+      "id": "AC-03",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Tarjeta vacía de NLP no publicado removida y banner preventivo compactado en SstDashboardPage priorizando métricas reales."
+    },
+    {
+      "id": "AC-04",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Topbar estructurado con chip de campaña, turno formateado y botón de avisos estilizado en AppLayout."
+    },
+    {
+      "id": "AC-05",
+      "kind": "functional",
+      "status": "passed",
+      "method": "automated",
+      "checkIds": ["gate-1", "gate-2"],
+      "evidence": "132 pruebas de backend y 55 pruebas de frontend verifican que la lógica funcional y de privacidad permanece intacta tras los cambios visuales."
+    },
+    {
+      "id": "AC-06",
+      "kind": "functional",
+      "status": "passed",
+      "method": "automated",
+      "checkIds": ["gate-1", "gate-2", "gate-3", "gate-4"],
+      "evidence": "Quality gates 100% aprobados: frontend lint (0 errores, 0 warnings), vite build limpio y pruebas de monorepo superadas."
+    }
+  ]
+}

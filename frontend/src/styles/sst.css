@@ -18,15 +18,15 @@
 }
 
 .alert-card.severity-alta {
-  border-left: 4px solid var(--c-critico);
+  border-color: rgba(220, 38, 38, 0.25);
 }
 
 .alert-card.severity-media {
-  border-left: 4px solid var(--c-alerta);
+  border-color: rgba(217, 119, 6, 0.25);
 }
 
 .alert-card.severity-baja {
-  border-left: 4px solid var(--c-primario);
+  border-color: var(--c-borde-suave);
 }
 
 .alert-card-header {
@@ -240,7 +240,7 @@
   background-color: #fef3c7;
   padding: 4px 8px;
   border-radius: var(--radius-xs);
-  border-left: 3px solid #f59e0b;
+  border: 1px solid rgba(245, 158, 11, 0.3);
 }
 
 .rule-input-hint {

@@ -57,14 +57,18 @@ export function ReportConfiguration({
           </span>
         </div>
 
-        {/* Selector de Periodo */}
-        <div className="form-group" style={{ marginBottom: 'var(--space-3)' }}>
-          <label className="form-label" htmlFor="reportPeriodStart">Desde</label>
-          <input id="reportPeriodStart" className="form-input" type="date" required max={periodEnd || undefined}
-            value={periodStart} onChange={e => { setPeriodStart(e.target.value); setGeneratedReport(null); }} />
-          <label className="form-label" htmlFor="reportPeriodEnd">Hasta</label>
-          <input id="reportPeriodEnd" className="form-input" type="date" required min={periodStart || undefined}
-            value={periodEnd} onChange={e => { setPeriodEnd(e.target.value); setGeneratedReport(null); }} />
+        {/* Selector de Periodo en 2 columnas alineadas */}
+        <div className="reports-period-grid">
+          <div className="form-group">
+            <label className="form-label" htmlFor="reportPeriodStart">Fecha inicial</label>
+            <input id="reportPeriodStart" className="form-input" type="date" required max={periodEnd || undefined}
+              value={periodStart} onChange={e => { setPeriodStart(e.target.value); setGeneratedReport(null); }} />
+          </div>
+          <div className="form-group">
+            <label className="form-label" htmlFor="reportPeriodEnd">Fecha final</label>
+            <input id="reportPeriodEnd" className="form-input" type="date" required min={periodStart || undefined}
+              value={periodEnd} onChange={e => { setPeriodEnd(e.target.value); setGeneratedReport(null); }} />
+          </div>
         </div>
 
         {/* Checkboxes de Dimensiones */}

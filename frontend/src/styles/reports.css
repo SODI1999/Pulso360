@@ -88,34 +88,41 @@
   color: var(--c-texto-suave);
 }
 
+.reports-period-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
 .reports-checkbox-group {
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
-  margin-top: var(--space-2);
+  margin-top: var(--space-1);
 }
 
 .reports-checkbox-item {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 13px;
+  gap: 10px;
+  font-size: 13.5px;
   cursor: pointer;
-  background: var(--c-fondo-subtle, #f8fafc);
-  padding: 8px 12px;
+  padding: 6px 4px;
+  color: var(--c-texto);
   border-radius: var(--radius-xs, 4px);
-  border: 1px solid var(--c-borde-suave);
-  transition: border-color var(--transition-fast), background var(--transition-fast);
+  transition: background var(--transition-fast);
 }
 
 .reports-checkbox-item:hover {
-  border-color: var(--c-rol-supervisor, #2563eb);
-  background: var(--c-superficie);
+  background: var(--c-fondo-alt, rgba(0, 0, 0, 0.02));
 }
 
-.reports-checkbox-item:has(input:checked) {
-  border-color: rgba(37, 99, 235, 0.4);
-  background: var(--c-superficie);
+.reports-checkbox-item input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--c-primario, #14705A);
+  cursor: pointer;
 }
 
 .reports-format-radios {
@@ -350,4 +357,42 @@
   .reports-kpis-container {
     grid-template-columns: 1fr;
   }
+}
+
+/* Previsualización proyectada en estado pendiente */
+.reports-pending-preview {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.reports-pending-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: var(--c-fondo-alt, #f8fafc);
+  border: 1px solid var(--c-borde-suave);
+  border-radius: var(--radius-sm, 4px);
+  color: var(--c-texto-suave);
+}
+
+.reports-pending-title {
+  margin: 0;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--c-texto);
+}
+
+.reports-pending-desc {
+  margin: 2px 0 0;
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: var(--c-texto-suave);
+}
+
+.reports-kpi-item.is-placeholder {
+  opacity: 0.6;
+  border-style: dashed;
 }

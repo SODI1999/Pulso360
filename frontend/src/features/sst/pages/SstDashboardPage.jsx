@@ -182,18 +182,16 @@ export function SstDashboardPage() {
         </div>
       )}
 
-      {/* Banner Preventivo */}
-      <div className="alert-banner info" style={{ marginBottom: 'var(--space-4)' }}>
-        <Icon name="info" size={20} />
-        <div>
-          <strong>Vigilancia epidemiológica preventiva:</strong> La información agregada permite a SST
-          coordinar acciones de apoyo colectivo sin mostrar la identidad ni las respuestas individuales en
-          esta vista.
+      {/* Banner Preventivo Contextual y Compacto */}
+      <div className="alert-banner info" style={{ marginBottom: 'var(--space-4)', display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
+        <Icon name="info" size={18} />
+        <div style={{ fontSize: '13px', lineHeight: '1.4' }}>
+          <strong>Vigilancia epidemiológica preventiva:</strong> Información colectiva agregada protegida por umbral de privacidad ($N \ge 5$) conforme a la Res. 2646 de 2008.
         </div>
       </div>
 
       {/* KPIs Generales de SST */}
-      <div className="kpi-grid" style={{ marginBottom: 'var(--space-4)' }}>
+      <div className="kpi-grid" style={{ marginBottom: 'var(--space-5)' }}>
         <div className="kpi-card">
           <div className="kpi-label">Índice agregado de bienestar</div>
           {loading ? (
@@ -252,20 +250,22 @@ export function SstDashboardPage() {
         </div>
       </div>
 
-      {/* Distribución Agregada de Factores NLP */}
-      <div className="card" style={{ marginBottom: 'var(--space-6)' }}>
-        <div className="card-header">
-          <div>
-            <h2 className="card-title">Distribución agregada de categorías NLP</h2>
-            <p className="card-subtitle">
-              {env.useMockStorage ? 'Ejemplo ilustrativo de distribución por categorías.' : 'Esta distribución no forma parte de los datos agregados disponibles.'}
-            </p>
+      {/* Distribución Agregada de Factores NLP (Sólo si está disponible) */}
+      {(env.useMockStorage || (nlpCategories && nlpCategories.length > 0)) && (
+        <div className="card" style={{ marginBottom: 'var(--space-6)' }}>
+          <div className="card-header">
+            <div>
+              <h2 className="card-title">Distribución agregada de categorías NLP</h2>
+              <p className="card-subtitle">
+                {env.useMockStorage ? 'Ejemplo ilustrativo de distribución por categorías.' : 'Distribución agregada de expresiones por categoría.'}
+              </p>
+            </div>
+            {env.useMockStorage && <span className="privacy-badge">Muestra ilustrativa N = {cohortSize}</span>}
           </div>
-          {env.useMockStorage && <span className="privacy-badge">Muestra ilustrativa N = {cohortSize}</span>}
-        </div>
 
-        {env.useMockStorage ? <HeatmapGrid categories={nlpCategories} minThreshold={minThreshold} /> : <p>El servidor no publica una distribución agregada de NLP en esta versión.</p>}
-      </div>
+          <HeatmapGrid categories={nlpCategories} minThreshold={minThreshold} />
+        </div>
+      )}
 
       {/* Mapa de Calor de Dimensiones Ocupacionales por Campaña */}
       <div className="card">
