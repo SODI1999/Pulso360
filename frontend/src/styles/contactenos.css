@@ -1,27 +1,32 @@
-/* src/styles/contactenos.css */
-/* Estilo Editorial Contemporáneo Humano para la página de Contáctenos / Formulario */
+/* ==========================================================================
+   Pulso360 · Estilo Editorial de Contáctenos & Radicación Institucional
+   Alineado con el Ecosistema Better (better-ui, better-layout, better-typography,
+   better-colors, better-writing, better-accessibility, better-interface).
+   ========================================================================== */
 
 .contact-page-root {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: var(--landing-cream);
+  background: var(--landing-cream, #FAF8F5);
 }
 
 .contact-page-main {
   flex: 1;
-  padding: 60px 0 80px;
+  padding: 56px 0 80px;
 }
 
-/* Layout Editorial en 2 Columnas perfectamente equilibradas */
+/* Layout Editorial en 2 Columnas Simétricas (1fr : 1.18fr) */
 .contact-editorial-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1.25fr);
-  gap: 36px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.18fr);
+  gap: 40px;
   align-items: start;
 }
 
-/* Columna Izquierda: Información Institucional & Canales */
+/* ==========================================================================
+   Columna Izquierda: Información Institucional & Canales BPO
+   ========================================================================== */
 .contact-info-panel {
   display: flex;
   flex-direction: column;
@@ -30,141 +35,153 @@
 
 .contact-badge {
   display: inline-block;
-  font-size: 0.78rem;
-  font-weight: 750;
+  font-size: 0.74rem;
+  font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--landing-emerald, #0d675e);
-  background: none;
-  border: none;
-  padding: 0;
-  margin-bottom: 12px;
+  color: var(--landing-emerald, #14705A);
+  margin-bottom: 2px;
 }
 
-.contact-info-panel h1 {
+.contact-heading {
   font-family: var(--font-family-display, 'Newsreader', Georgia, serif);
-  font-size: clamp(2.15rem, 3.4vw, 2.75rem);
+  font-size: clamp(1.95rem, 3.1vw, 2.5rem);
   font-weight: 700;
-  color: var(--landing-ink);
-  line-height: 1.2;
+  color: var(--landing-green-dark, #082F28);
+  line-height: 1.18;
   letter-spacing: -0.025em;
   margin: 0;
 }
 
 .contact-lead {
-  color: var(--landing-body);
-  font-size: 0.96rem;
-  line-height: 1.65;
+  color: var(--landing-body, #485B58);
+  font-size: 0.94rem;
+  line-height: 1.6;
+  max-width: 60ch;
   margin: 0;
 }
 
+/* Lista de Canales Oficiales Tipográficos (Sin contenedores mint de golosina) */
 .contact-channels-list {
   display: flex;
   flex-direction: column;
-  border-top: 1px solid var(--landing-hairline, rgba(17, 38, 35, 0.08));
-  border-bottom: 1px solid var(--landing-hairline, rgba(17, 38, 35, 0.08));
-  margin-block: 4px 8px;
+  gap: 16px;
+  margin-block: 6px 12px;
+  padding-block: 14px;
+  border-top: 1px solid var(--landing-line, #E5E0D6);
+  border-bottom: 1px solid var(--landing-line, #E5E0D6);
 }
 
 .channel-item {
   display: flex;
-  gap: 16px;
+  gap: 14px;
   align-items: flex-start;
-  padding: 16px 0;
+  padding: 0;
   background: transparent;
   border: none;
-  border-bottom: 1px solid var(--landing-hairline, rgba(17, 38, 35, 0.08));
-  border-radius: 0;
-  box-shadow: none;
 }
 
-.channel-item:last-child {
-  border-bottom: none;
-}
-
-.channel-icon {
+.channel-icon-wrap {
   display: grid;
   place-items: center;
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   border-radius: 6px;
-  background: var(--landing-mint);
-  color: var(--landing-green, #0F766E);
-  flex: 0 0 auto;
-  margin-top: 2px;
-}
-
-.channel-item strong {
-  display: block;
-  font-size: 0.88rem;
-  font-weight: 750;
-  color: var(--landing-ink);
-}
-
-.channel-item a {
-  display: inline-block;
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: var(--landing-green, #0F766E);
-  text-decoration: none;
-  margin-top: 3px;
-}
-
-.channel-item a:hover {
-  text-decoration: underline;
-}
-
-.channel-item span {
-  display: block;
-  font-size: 0.83rem;
-  color: var(--landing-ink);
-  font-weight: 600;
-  margin-top: 2px;
-}
-
-.channel-item small {
-  display: block;
-  font-size: 0.74rem;
-  color: var(--landing-muted, #485B58);
-  margin-top: 2px;
-  line-height: 1.4;
-}
-
-/* Nota editorial de privacidad y separación de flujos */
-.contact-privacy-guarantee {
-  display: flex;
-  gap: 12px;
-  align-items: flex-start;
-  background: transparent;
-  border: none;
-  border-radius: 0;
-  padding: 0;
-  box-shadow: none;
-  color: var(--landing-body);
-}
-
-.contact-privacy-guarantee svg {
-  color: var(--landing-green, #0F766E);
+  background: rgba(8, 47, 40, 0.05);
+  border: 1px solid rgba(8, 47, 40, 0.12);
+  color: var(--landing-green-dark, #082F28);
   flex-shrink: 0;
   margin-top: 2px;
 }
 
-.contact-privacy-guarantee strong {
-  display: block;
-  font-size: 0.84rem;
-  color: var(--landing-ink);
-  margin-bottom: 4px;
+.channel-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.channel-title {
+  font-size: 0.88rem;
   font-weight: 750;
+  color: var(--landing-ink, #112623);
+  line-height: 1.3;
 }
 
-.contact-privacy-guarantee p {
-  margin: 0;
-  font-size: 0.78rem;
+.channel-link {
+  display: inline-block;
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: var(--landing-emerald, #14705A);
+  text-decoration: none;
+  margin-top: 2px;
+  transition: color 150ms ease;
+}
+
+.channel-link:hover {
+  color: var(--landing-green-dark, #082F28);
+  text-decoration: underline;
+}
+
+.channel-link:focus-visible {
+  outline: 2px solid var(--landing-green-dark, #082F28);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.channel-static-val {
+  display: inline-block;
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: var(--landing-ink, #112623);
+  margin-top: 2px;
+}
+
+.channel-meta {
+  font-size: 0.76rem;
   color: var(--landing-body, #485B58);
-  line-height: 1.5;
+  line-height: 1.4;
+  margin: 2px 0 0;
 }
 
-/* Columna Derecha: Formulario Funcional */
+/* Protocolo de Aislamiento y Confidencialidad Técnica */
+.contact-privacy-guarantee {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  background: rgba(8, 47, 40, 0.03);
+  border: 1px solid rgba(8, 47, 40, 0.12);
+  border-left: 3px solid var(--landing-emerald, #14705A);
+  border-radius: 6px;
+  padding: 12px 14px;
+}
+
+.privacy-badge-icon {
+  color: var(--landing-emerald, #14705A);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.privacy-text-block {
+  display: flex;
+  flex-direction: column;
+}
+
+.privacy-title {
+  font-size: 0.82rem;
+  font-weight: 750;
+  color: var(--landing-green-dark, #082F28);
+  margin-bottom: 2px;
+}
+
+.privacy-desc {
+  font-size: 0.76rem;
+  color: var(--landing-body, #485B58);
+  line-height: 1.45;
+  margin: 0;
+}
+
+/* ==========================================================================
+   Columna Derecha: Panel del Formulario & Ficha de Radicación (Anti Card-itis)
+   ========================================================================== */
 .contact-form-column {
   display: flex;
   flex-direction: column;
@@ -172,22 +189,22 @@
 
 .form-panel {
   background: #ffffff;
-  border: 1px solid var(--landing-line);
+  border: 1px solid var(--landing-line, #E5E0D6);
   border-radius: 8px;
-  box-shadow: 0 8px 30px rgba(17, 38, 35, 0.04), 0 2px 6px rgba(17, 38, 35, 0.02);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
   overflow: hidden;
   display: flex;
   flex-direction: column;
 }
 
 .form-panel-header {
-  padding: 20px 24px 16px;
-  border-bottom: 1px solid var(--landing-hairline);
+  padding: 22px 24px 16px;
+  border-bottom: 1px solid var(--landing-line, #E5E0D6);
   background: #ffffff;
 }
 
 .panel-kicker {
-  color: var(--landing-emerald);
+  color: var(--landing-emerald, #14705A);
   font-size: 0.7rem;
   font-weight: 800;
   letter-spacing: 0.06em;
@@ -198,14 +215,14 @@
   font-family: var(--font-family-display, 'Newsreader', Georgia, serif);
   font-size: 1.35rem;
   font-weight: 700;
-  color: var(--landing-ink);
+  color: var(--landing-green-dark, #082F28);
   letter-spacing: -0.015em;
   margin: 4px 0 0;
 }
 
 .panel-sub {
-  font-size: 0.84rem;
-  color: var(--landing-body);
+  font-size: 0.82rem;
+  color: var(--landing-body, #485B58);
   margin: 4px 0 0;
   line-height: 1.45;
 }
@@ -213,48 +230,45 @@
 .landing-form {
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  padding: 20px 24px 24px;
+  gap: 16px;
+  padding: 22px 24px 24px;
 }
 
-/* Banner de Alerta Callout Moderno y Sutil */
+/* Banner de Validación Guiada Sutil (Ámbar suave / No punitivo) */
 .contact-alert-banner {
   display: flex;
-  gap: 11px;
+  gap: 10px;
   align-items: flex-start;
   padding: 10px 14px;
-  border-radius: 4px;
-  background: #FEF2F2;
-  border: 1px solid rgba(239, 68, 68, 0.2);
-  color: #991B1B;
-  font-size: 0.8rem;
-  line-height: 1.45;
+  border-radius: 6px;
+  background: #FEFCE8;
+  border: 1px solid #FDE047;
+  color: #854D0E;
+  font-size: 0.78rem;
+  line-height: 1.4;
 }
 
 .contact-alert-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 22px;
-  height: 22px;
-  border-radius: 4px;
-  background: rgba(239, 68, 68, 0.12);
-  color: #DC2626;
+  color: #CA8A04;
   flex-shrink: 0;
   margin-top: 1px;
 }
 
 .contact-alert-text {
   flex: 1;
-  font-size: 0.8rem;
-  color: #991B1B;
-  line-height: 1.45;
+  font-size: 0.78rem;
+  color: #854D0E;
+  line-height: 1.4;
 }
 
 .contact-alert-text strong {
-  font-weight: 700;
+  font-weight: 750;
 }
 
+/* Campos de Formulario */
 .form-grid-two {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -269,20 +283,21 @@
 }
 
 .form-field label {
-  color: var(--landing-ink);
-  font-size: 0.77rem;
+  color: var(--landing-ink, #112623);
+  font-size: 0.78rem;
   font-weight: 700;
   line-height: 1.25;
 }
 
-.form-field label > span:not(.optional) {
+.required-star {
   color: #DC2626;
+  margin-left: 2px;
 }
 
 .optional {
   float: right;
-  color: #7A8B89;
-  font-size: 0.7rem;
+  color: var(--landing-body, #485B58);
+  font-size: 0.72rem;
   font-weight: 500;
 }
 
@@ -290,15 +305,15 @@
 .form-field select,
 .form-field textarea {
   width: 100%;
-  border: 1px solid var(--landing-line);
-  border-radius: 5px;
+  border: 1px solid var(--landing-line, #E5E0D6);
+  border-radius: 6px;
   background: #ffffff;
-  color: var(--landing-ink);
+  color: var(--landing-ink, #112623);
   font-family: inherit;
   outline: none;
-  font-size: 0.87rem;
+  font-size: 0.86rem;
   box-sizing: border-box;
-  transition: border-color 180ms ease, box-shadow 180ms ease;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
 }
 
 .form-field input:not([type="checkbox"]),
@@ -310,7 +325,7 @@
 
 .form-field textarea {
   padding: 10px 12px;
-  min-height: 84px;
+  min-height: 88px;
   resize: vertical;
   line-height: 1.5;
 }
@@ -318,70 +333,31 @@
 .form-field input:not([type="checkbox"]):focus,
 .form-field select:focus,
 .form-field textarea:focus {
-  border-color: var(--landing-emerald);
-  box-shadow: 0 0 0 3px rgba(20, 112, 90, 0.12);
+  border-color: var(--landing-emerald, #14705A);
+  outline: 2px solid var(--landing-green-dark, #082F28);
+  outline-offset: 1px;
 }
 
 .form-field input:not([type="checkbox"]).has-error,
 .form-field select.has-error,
 .form-field textarea.has-error {
-  border-color: #EF4444;
-  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.08);
-  background: #FFFFFF;
+  border-color: #DC2626;
+  background: #ffffff;
 }
 
 .field-error {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  color: #DC2626;
+  color: #991B1B;
   font-size: 0.74rem;
-  font-weight: 500;
+  font-weight: 600;
   margin-top: 3px;
 }
 
-.form-submit {
-  width: 100%;
-  height: 44px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  border-radius: 5px;
-  background: var(--landing-green);
-  color: #ffffff;
-  border: none;
-  font-size: 0.88rem;
-  font-weight: 650;
-  letter-spacing: -0.01em;
-  cursor: pointer;
-  box-shadow: 0 4px 14px rgba(8, 47, 40, 0.18);
-  transition: all 180ms ease;
-  margin-top: 4px;
-}
-
-.form-submit:hover:not(:disabled) {
-  background: var(--landing-green-dark);
-  transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(8, 47, 40, 0.24);
-}
-
-.form-submit:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-
-.spin-animation {
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
+/* Checkbox de Habeas Data */
 .form-field-checkbox {
-  margin-top: 4px;
+  margin-top: 2px;
 }
 
 .checkbox-label {
@@ -390,14 +366,10 @@
   gap: 10px;
   cursor: pointer;
   font-size: 0.78rem;
-  color: var(--landing-ink);
+  color: var(--landing-ink, #112623);
   line-height: 1.45;
   min-height: 44px;
   padding-block: 4px;
-}
-
-.form-field-checkbox .checkbox-label {
-  color: var(--landing-ink);
 }
 
 .checkbox-label input[type="checkbox"] {
@@ -407,73 +379,309 @@
   max-height: 18px;
   padding: 0;
   margin: 0;
-  box-shadow: none !important;
-  border: 1px solid var(--landing-line);
+  border: 1px solid var(--landing-line, #E5E0D6);
   border-radius: 4px;
-  accent-color: var(--landing-green);
+  accent-color: var(--landing-green-dark, #082F28);
   cursor: pointer;
   flex-shrink: 0;
   margin-top: 2px;
 }
 
-.checkbox-label input[type="checkbox"]:focus {
-  outline: 2px solid var(--landing-emerald);
+.checkbox-label input[type="checkbox"]:focus-visible {
+  outline: 2px solid var(--landing-green-dark, #082F28);
   outline-offset: 2px;
-  box-shadow: none !important;
 }
 
 .checkbox-text {
   font-size: 0.78rem;
-  color: var(--landing-body);
-}
-
-.form-field-checkbox .checkbox-label > span.checkbox-text {
-  color: var(--landing-ink) !important;
-}
-
-.form-field-checkbox .checkbox-text span.required-star {
-  color: #DC2626 !important;
+  color: var(--landing-body, #485B58);
 }
 
 .checkbox-link {
-  color: var(--landing-emerald);
+  color: var(--landing-emerald, #14705A);
   text-decoration: underline;
   font-weight: 600;
 }
 
 .checkbox-link:hover {
-  color: var(--landing-green-dark);
+  color: var(--landing-green-dark, #082F28);
 }
 
 .contact-health-disclaimer {
   display: flex;
   align-items: flex-start;
   gap: 8px;
-  background: var(--landing-cream, #FAF8F5);
-  border: 1px solid var(--landing-line);
+  background: #FAF8F5;
+  border: 1px solid var(--landing-line, #E5E0D6);
   border-radius: 6px;
   padding: 10px 12px;
   font-size: 0.74rem;
-  color: var(--landing-body);
+  color: var(--landing-body, #485B58);
   line-height: 1.45;
 }
 
 .contact-health-disclaimer .disclaimer-icon {
-  color: var(--landing-emerald);
+  color: var(--landing-emerald, #14705A);
   flex-shrink: 0;
   margin-top: 2px;
 }
 
-/* Responsividad: Jerarquía natural (H1 y contexto institucional arriba, formulario abajo) */
+/* Botón de Envío Primario */
+.form-submit {
+  width: 100%;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 6px;
+  background: var(--landing-green-dark, #082F28);
+  color: #ffffff;
+  border: none;
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  transition: background-color 150ms ease, transform 150ms ease;
+  margin-top: 4px;
+}
+
+.form-submit:hover:not(:disabled) {
+  background: #051F1A;
+  transform: translateY(-1px);
+}
+
+.form-submit:not(:disabled):active {
+  transform: scale(0.98);
+}
+
+.form-submit:disabled {
+  opacity: 0.75;
+  cursor: not-allowed;
+}
+
+.spin-animation {
+  animation: spin 900ms linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ==========================================================================
+   Estado Éxito: Ficha Técnica Oficial de Radicación (Sin Card-itis)
+   ========================================================================== */
+.radication-dossier-panel {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.radication-header {
+  border-bottom: 2px solid var(--landing-green-dark, #082F28);
+  padding-bottom: 14px;
+  margin-bottom: 18px;
+}
+
+.radication-meta-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.radication-brand-mark {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.radication-shield-icon {
+  color: var(--landing-emerald, #14705A);
+  flex-shrink: 0;
+}
+
+.radication-inst-tag {
+  font-size: 0.72rem;
+  font-weight: 750;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--landing-green-dark, #082F28);
+  display: block;
+}
+
+.radication-title {
+  font-family: var(--font-family-display, 'Newsreader', Georgia, serif);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--landing-ink, #112623);
+  margin: 2px 0 0;
+}
+
+.radication-code-pill {
+  background: rgba(8, 47, 40, 0.06);
+  border: 1px solid rgba(8, 47, 40, 0.16);
+  border-radius: 6px;
+  padding: 6px 12px;
+  text-align: right;
+}
+
+.code-label {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--landing-body, #485B58);
+}
+
+.code-value {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--landing-green-dark, #082F28);
+  font-variant-numeric: tabular-nums;
+}
+
+.radication-stamp-date {
+  font-size: 0.74rem;
+  color: var(--landing-body, #485B58);
+  margin: 8px 0 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.radication-intro-note {
+  font-size: 0.85rem;
+  color: var(--landing-body, #485B58);
+  line-height: 1.5;
+  margin: 0 0 16px;
+}
+
+.radication-parameters-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 16px;
+  margin: 0 0 16px;
+  background: #FAF8F5;
+  border: 1px solid var(--landing-line, #E5E0D6);
+  border-radius: 6px;
+  padding: 14px 16px;
+}
+
+.param-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.param-item-full {
+  grid-column: 1 / -1;
+}
+
+.param-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--landing-body, #485B58);
+  margin: 0;
+}
+
+.param-val {
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--landing-ink, #112623);
+  margin: 0;
+  word-break: break-word;
+}
+
+.param-message-box {
+  font-style: italic;
+  background: #ffffff;
+  border: 1px solid var(--landing-line, #E5E0D6);
+  border-radius: 4px;
+  padding: 8px 12px;
+  margin-top: 3px;
+  font-weight: 500;
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.radication-custody-clause {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  background: rgba(8, 47, 40, 0.03);
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 0.73rem;
+  color: var(--landing-body, #485B58);
+  line-height: 1.4;
+  border-left: 3px solid var(--landing-emerald, #14705A);
+}
+
+.custody-icon {
+  color: var(--landing-emerald, #14705A);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.radication-actions-bar {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.btn-print-radication {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  background: var(--landing-green-dark, #082F28);
+  color: #ffffff;
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-size: 0.84rem;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: background-color 150ms ease, transform 150ms ease;
+}
+
+.btn-print-radication:hover {
+  background: #051F1A;
+  transform: translateY(-1px);
+}
+
+.btn-reset-radication {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  background: #ffffff;
+  color: var(--landing-ink, #112623);
+  border: 1px solid var(--landing-line, #E5E0D6);
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-size: 0.84rem;
+  font-weight: 650;
+  cursor: pointer;
+  transition: background-color 150ms ease;
+}
+
+.btn-reset-radication:hover {
+  background: #FAF8F5;
+  border-color: var(--landing-emerald, #14705A);
+}
+
+/* ==========================================================================
+   Responsividad & Accesibilidad en Terminales Móviles
+   ========================================================================== */
 @media (max-width: 960px) {
   .contact-editorial-layout {
     grid-template-columns: 1fr;
-    gap: 28px;
-  }
-
-  .contact-info-panel {
-    padding-top: 0;
-    border-top: none;
+    gap: 32px;
   }
 
   .form-grid-two {
@@ -482,119 +690,51 @@
 }
 
 @media (max-width: 640px) {
+  .contact-page-main {
+    padding: 36px 0 60px;
+  }
+
   .contact-editorial-layout {
-    gap: 20px;
+    gap: 24px;
   }
 
-  .channel-item {
-    padding: 10px 14px;
+  .form-panel-header,
+  .landing-form,
+  .radication-dossier-panel {
+    padding: 18px 16px;
   }
 
-  .channel-icon {
-    width: 32px;
-    height: 32px;
+  .radication-parameters-grid {
+    grid-template-columns: 1fr;
+    padding: 12px;
+  }
+
+  .radication-actions-bar {
+    flex-direction: column;
+  }
+
+  .btn-print-radication,
+  .btn-reset-radication {
+    width: 100%;
   }
 }
 
-/* Estado de Confirmación Exitosa */
-.contact-success-wrap {
-  padding: 24px;
-}
+/* Soporte de Impresión Formal de la Ficha */
+@media print {
+  .contact-info-panel,
+  .landing-header,
+  .landing-footer,
+  .radication-actions-bar,
+  .no-print {
+    display: none !important;
+  }
 
-.contact-success-card {
-  background: var(--landing-white, #ffffff);
-  border: 1px solid var(--landing-line);
-  border-radius: 8px;
-  padding: 22px;
-  margin-bottom: 18px;
-  box-shadow: 0 6px 24px rgba(17, 38, 35, 0.04);
-}
+  .contact-editorial-layout {
+    display: block !important;
+  }
 
-.contact-success-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 14px;
-}
-
-.contact-success-badge {
-  background: var(--landing-mint);
-  color: var(--landing-emerald);
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.contact-success-title {
-  font-family: var(--font-family-display, 'Newsreader', Georgia, serif);
-  font-size: 1.28rem;
-  font-weight: 700;
-  color: var(--landing-ink, #112623);
-  letter-spacing: -0.015em;
-  display: block;
-}
-
-.contact-success-date {
-  font-size: 0.8rem;
-  color: var(--landing-body, #3D5A54);
-}
-
-.contact-success-message {
-  font-size: 0.9rem;
-  color: var(--landing-ink, #112623);
-  margin: 0 0 16px;
-  line-height: 1.55;
-}
-
-.contact-success-details {
-  background: var(--landing-cream, #F5F2EB);
-  border: 1px solid var(--landing-hairline, rgba(17, 38, 35, 0.08));
-  border-radius: 8px;
-  padding: 16px;
-  display: grid;
-  gap: 8px;
-  font-size: 0.84rem;
-}
-
-.detail-label {
-  color: var(--landing-body, #3D5A54);
-  font-weight: 600;
-}
-
-.detail-value {
-  color: var(--landing-ink, #112623);
-}
-
-.detail-message-body {
-  color: var(--landing-ink, #112623);
-  font-style: italic;
-  margin: 4px 0 0;
-  white-space: pre-wrap;
-}
-
-.contact-success-reset-btn {
-  width: 100%;
-  height: 44px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  border-radius: 5px;
-  font-size: 0.88rem;
-  font-weight: 700;
-  cursor: pointer;
-  background: var(--landing-white, #ffffff);
-  border: 1px solid rgba(17, 38, 35, 0.2);
-  color: var(--landing-ink, #112623);
-  transition: all 180ms ease;
-}
-
-.contact-success-reset-btn:hover {
-  background: var(--landing-cream, #F5F2EB);
-  border-color: var(--landing-emerald, #14705A);
-  color: var(--landing-emerald, #14705A);
+  .form-panel {
+    border: 1pt solid #082F28 !important;
+    box-shadow: none !important;
+  }
 }

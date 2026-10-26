@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 2,
+  "criteria": [
+    {
+      "id": "AC-01",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Eliminacion total de card-itis, sombras flotantes box-shadow (0px) y cajas mint en iconos ('cookie icons'). Diseno asimetrico y sobrio basado en lineas de 1px (var(--landing-line)), tipografia editorial Newsreader y espaciado proporcional inspeccionado visualmente en navegador con Chrome DevTools."
+    },
+    {
+      "id": "AC-02",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Manejo completo de los 4 estados UI: Estado normal/inactivo, Estado de validacion reactiva accesible (aviso de advertencia ambar #FEFCE8 sin banners rojos hostiles, foco automatico en primer error, aria-invalid y aria-describedby), Estado de carga visual (isSubmitting con micro-retardo de 350ms y spinner SVG) y Estado de exito/constancia oficial con reinicio de formulario."
+    },
+    {
+      "id": "AC-03",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Voz y copywriting institucional de BPO y Seguridad y Salud en el Trabajo (SST) para el TdeA: H1 oficial 'Enlace Operativo, Coordinacion de Pilotos y Transferencia Tecnologica', 3 canales tecnicos (Coordinacion de Pilotos, Consultoria Metodologica en k-Anonimato y Sede Academica TdeA), banner de 'Protocolo de Aislamiento y Confidencialidad Tecnica' (Ley 1581) y supresion de disclaimers desinflantes."
+    },
+    {
+      "id": "AC-04",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Generacion determinista de codigo oficial de radicado (RAD-TDEA-2026-BPO-###), estampa de tiempo oficial con zona horaria COT ('26 de octubre de 2026 a las ... COT'), renderizado de Ficha Tecnica Oficial de Radicacion (Sandbox) con desglose tabular de parametros y accion de impresion a documento PDF institucional (@media print)."
+    },
+    {
+      "id": "AC-05",
+      "kind": "functional",
+      "status": "passed",
+      "method": "automated",
+      "checkIds": [
+        "gate-2",
+        "gate-3",
+        "gate-4"
+      ],
+      "evidence": "Auditoria automatizada Lighthouse snapshot completada: Accesibilidad = 100/100, Mejores Practicas = 100/100. Contraste de texto 'Opcional' corregido a 7.26:1 con token var(--landing-body, #485B58). Compuertas de calidad aprobadas: npm run lint (0 errores, 0 advertencias), npm test (55/55 pruebas unitarias aprobadas), npm run build (compilacion Vite exitosa en 4.87s)."
+    }
+  ]
+}

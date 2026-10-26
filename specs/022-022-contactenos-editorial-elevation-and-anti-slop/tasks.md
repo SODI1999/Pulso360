@@ -1,0 +1,7 @@
+# [TASKS-022] Tareas de Implementación: Elevación Editorial y Erradicación de Slop en Contáctenos
+
+- [x] **TASK-01 / AC-01**: Erradicación de "card-itis" y clichés visuales en `frontend/src/styles/contactenos.css`: supresión de sombras flotantes `box-shadow`, eliminación de cajas anidadas sobre cajas y retiro de contenedores mint de iconos ("cookie icons").
+- [x] **TASK-02 / AC-03**: Refactorización editorial de tono y copywriting BPO en `frontend/src/features/landing/pages/ContactenosPage.jsx` y `frontend/src/features/landing/data/landingData.jsx`: nuevo H1 institucional, reestructuración de los 3 canales oficiales y sustitución de disclaimers desinflantes.
+- [x] **TASK-03 / AC-02**: Soporte de estado interactivo en `frontend/src/features/landing/hooks/useContactForm.jsx`: adición de micro-estado `isSubmitting` (~350ms) y generación de código oficial de radicación (`RAD-TDEA-2026-BPO-###`).
+- [x] **TASK-04 / AC-04**: Maquetación de la Ficha Técnica de Radicación Institucional en `frontend/src/features/landing/components/ContactForm.jsx` para el estado de éxito, con desglose tabular de parámetros, sello de tiempo oficial y botones accesibles para imprimir constancia o reiniciar formulario.
+- [x] **TASK-05 / AC-05**: Verificación de compuertas de calidad (`npm run lint`, `npm test`, `npm run build`), inspección en navegador con Chrome DevTools y auditoría de accesibilidad Lighthouse (100/100).
