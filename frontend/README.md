@@ -128,12 +128,9 @@ npm run preview
 
 Pulso360 implementa un desacoplamiento estricto entre la interfaz de usuario y los mecanismos de persistencia, administrado por la variable de entorno `VITE_USE_MOCK_STORAGE`:
 
-* **Modo Producción Conectada (`VITE_USE_MOCK_STORAGE=false`):**
-  Arquitectura de cliente ligero (*Thin Client*). Todas las operaciones de dominio (check-ins diarios, bitácoras privadas de desahogo, consentimientos informados C1–C5, alertas psicosociales, intervenciones y reportes) se gestionan directamente contra el backend REST (Node.js, Express y PostgreSQL 18) a través de `apiClient`.
+* **Modo Producción Conectada:**
+  Arquitectura de cliente ligero (*Thin Client*). Todas las operaciones de dominio (check-ins diarios, bitácoras privadas de desahogo, consentimientos informados C1–C5, alertas psicosociales, intervenciones y reportes) se gestionan directamente contra el backend REST (Node.js, Express y PostgreSQL) a través de `apiClient`.
   - **Principio Anti-Dual-Persistence:** La aplicación cliente nunca persiste microdatos personales ni registros sensibles de bienestar en el navegador (ni en `localStorage` ni en `sessionStorage`), garantizando que la única fuente de verdad sea la base de datos relacional y protegiendo la confidencialidad en puestos de trabajo compartidos de Contact Center.
-
-* **Modo Demostración Offline (`VITE_USE_MOCK_STORAGE=true`):**
-  Almacenamiento simulado en `src/core/storage/pulsoStore.jsx` (`localStorage` con fallback resiliente en memoria en caso de bloqueo por políticas del navegador) para demostraciones portables, pruebas unitarias o entornos aislados sin backend.
 
 ### Motor NLP Determinista
 

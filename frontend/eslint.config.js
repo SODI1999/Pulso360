@@ -16,7 +16,6 @@ const architectureRules = {
           dependency:
             'Dependencia no permitida: core no depende de features y las features no importan hermanas.',
           storage: 'El acceso al almacenamiento del navegador pertenece a core/storage.',
-          mutation: 'Consultar o modificar pulsoStore corresponde a un servicio de la funcionalidad.',
           environment: 'Leer variables de entorno únicamente desde core/config/env.jsx.'
         }
       },
@@ -25,7 +24,6 @@ const architectureRules = {
         const feature = filename.match(/\/src\/features\/([^/]+)\//)?.[1];
         const isCore = filename.includes('/src/core/');
         const isStorage = filename.includes('/src/core/storage/');
-        const isFeatureService = filename.includes('/services/');
         return {
           ImportDeclaration(node) {
             if (!node.source.value.startsWith('.')) return;
@@ -41,14 +39,6 @@ const architectureRules = {
             const property = node.computed ? node.property.value : node.property.name;
             if (!isStorage && ['localStorage', 'sessionStorage', 'indexedDB'].includes(property)) {
               context.report({ node, messageId: 'storage' });
-            }
-            if (
-              feature &&
-              !isFeatureService &&
-              node.object.name === 'pulsoStore' &&
-              ['get', 'save', 'reset'].includes(property)
-            ) {
-              context.report({ node, messageId: 'mutation' });
             }
             if (
               node.object.type === 'MetaProperty' &&
