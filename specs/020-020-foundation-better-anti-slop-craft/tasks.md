@@ -1,0 +1,7 @@
+# [TASKS-020] Desglose de Tareas de Implementación
+
+- [x] **TASK-01 [UI/Colors]**: Des-slopificar el rail lateral TOC en [evidence.css](../../frontend/src/styles/academic/evidence.css) y [AcademicSidebarToc.jsx](../../frontend/src/features/landing/components/AcademicSidebarToc.jsx), eliminando sombras, cajas blancas anidadas y bordes curvos verdes en `.toc-sidebar-link.is-active` (AC-01).
+- [x] **TASK-02 [Layout/Grid]**: Reestructurar `.surveillance-pillars-grid` en [ethics.css](../../frontend/src/styles/academic/ethics.css) a 2 columnas balanceadas (`repeat(2, 1fr)` con `gap: 18px`), otorgando ancho amplio a los 4 pilares anti-vigilancia (AC-02).
+- [x] **TASK-03 [Writing/DataViz]**: Desduplicar el título y tag en la tarjeta de prevalencia en [academicFoundationData.jsx](../../frontend/src/features/landing/data/academicFoundationData.jsx) y sincronizar la alineación de la leyenda en [evidence.css](../../frontend/src/styles/academic/evidence.css) (AC-03).
+- [x] **TASK-04 [Polish/Legal]**: Armonizar bordes y jerarquías en [legal.css](../../frontend/src/styles/academic/legal.css) y [transfer.css](../../frontend/src/styles/academic/transfer.css), eliminando la franja superior descolgada (AC-04).
+- [x] **TASK-05 [Verification/QA]**: Validar en vivo con Chrome DevTools (inspección de render y capturas), ejecutar suite completa de calidad (`npm run lint`, `npm test`, `npm run build`) y ratificar Lighthouse Accesibilidad = 100/100 (AC-05).

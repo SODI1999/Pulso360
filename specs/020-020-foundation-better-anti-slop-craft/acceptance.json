@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 2,
+  "criteria": [
+    {
+      "id": "AC-01",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Rail lateral TOC depurado en evidence.css: eliminada la caja anidada blanca con drop-shadow y el borde izquierdo curvo verde esmeralda. El enlace activo .is-active renderiza con tipografia tinta profunda (rgb(5, 31, 26)), fondo neutro plano (rgba(8, 47, 40, 0.08)), cero sombras y cero bordes deformados. Encabezado 'ÍNDICE DEL DOSSIER' atenuado a color slate sobrio."
+    },
+    {
+      "id": "AC-02",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Cuadricula .surveillance-pillars-grid reestructurada en ethics.css a 2 columnas (repeat(2, 1fr) gap 18px), expandiendo el ancho de cada tarjeta a 325px. Titulos extensos como 'Separacion de bienestar y evaluacion de desempeno' fluyen limpiamente en 2 lineas sin quiebres forzados, y los iconos estan enmarcados en cajas sutiles con borde armonico."
+    },
+    {
+      "id": "AC-03",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Tarjeta de prevalencia desduplicada en academicFoundationData.jsx: tag superior actualizado a 'Indicador Psicométrico Central' y titulo descriptivo inferior mantenido como 'Prevalencia de Agotamiento Emocional en Muestra de Referencia', erradicando la repeticion literal identica antes y despues del 84.3%."
+    },
+    {
+      "id": "AC-04",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Marco juridico armonizado en legal.css: suprimido el borde superior verde grueso de 4px que desentonaba con el dossier, unificando el borde neutro fino 1px solid var(--landing-line). Cuadricula interna optimizada a 220px 1fr para mayor holgura en los bloques de prosa legal."
+    },
+    {
+      "id": "AC-05",
+      "kind": "functional",
+      "status": "passed",
+      "method": "automated",
+      "checkIds": [
+        "gate-2",
+        "gate-3",
+        "gate-4"
+      ],
+      "evidence": "Lighthouse Accessibility score 100/100 (0 fallos). Quality gates aprobados con exito: npm run lint (0 errores/warnings), npm test (55/55 pruebas unitarias exitosas), npm run build (compilacion de produccion Vite limpia sin errores en 5.17s)."
+    }
+  ]
+}

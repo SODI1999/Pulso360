@@ -4,7 +4,6 @@
 .legal-dossier-shell {
   background: #ffffff;
   border: 1px solid var(--landing-line, #E5E0D6);
-  border-top: 4px solid var(--landing-green, #082F28);
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 4px 18px rgba(17, 38, 35, 0.02);
@@ -12,7 +11,7 @@
 
 .legal-dossier-row {
   display: grid;
-  grid-template-columns: 260px 1fr;
+  grid-template-columns: 220px 1fr;
   gap: 24px;
   padding: 22px 26px;
   border-bottom: 1px solid var(--landing-hairline, #E7E2D7);

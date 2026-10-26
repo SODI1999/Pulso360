@@ -62,7 +62,7 @@ export const EMPIRICAL_DATA = {
   ],
   mainMetric: {
     percentage: '84.3%',
-    tag: 'Prevalencia de Agotamiento Emocional en Muestra de Referencia',
+    tag: 'Indicador Psicométrico Central',
     label: 'Prevalencia de Agotamiento Emocional en Muestra de Referencia',
     description:
       'Estudio de caso formativo de referencia con 185 operadores de centros de contacto en Medellín (TdeA). En la muestra evaluada, más de 8 de cada 10 participantes reportaron manifestaciones significativas de fatiga acumulada, vaciamiento energético y sobrecarga por atención continuada.'
