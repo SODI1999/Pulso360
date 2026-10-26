@@ -1,8 +1,3 @@
-import { AcademicLegalFramework } from '../components/AcademicLegalFramework';
-import { AcademicCitation } from '../components/AcademicCitation';
-import { AcademicTransfer } from '../components/AcademicTransfer';
-import { AcademicEvidence } from '../components/AcademicEvidence';
-import { AcademicHeader } from '../components/AcademicHeader';
 // src/features/landing/pages/AcademicFoundationPage.jsx
 // Pagina publica institucional: Fundamentación Cientifica, Evidencia Empírica y Transferencia Tecnologica
 
@@ -13,9 +8,16 @@ import { Footer } from '../components/Footer';
 import { ScrollToTopButton } from '../components/ScrollToTopButton';
 import { Icon } from '../../../core/components/Icon';
 import { CITATION_DATA, ANTI_SURVEILLANCE_PILLARS } from '../data/academicFoundationData';
+import { AcademicHeader } from '../components/AcademicHeader';
+import { AcademicSidebarToc } from '../components/AcademicSidebarToc';
+import { AcademicAuthors } from '../components/AcademicAuthors';
+import { AcademicEvidence } from '../components/AcademicEvidence';
+import { AcademicTransfer } from '../components/AcademicTransfer';
+import { AcademicCitation } from '../components/AcademicCitation';
+import { AcademicLegalFramework } from '../components/AcademicLegalFramework';
 
 export function AcademicFoundationPage() {
-    const [citationFormat, setCitationFormat] = useState('apa7');
+  const [citationFormat, setCitationFormat] = useState('apa7');
   const [copied, setCopied] = useState(false);
   const [copyFailed, setCopyFailed] = useState(false);
   const [activeSection, setActiveSection] = useState('autores');
@@ -24,7 +26,7 @@ export function AcademicFoundationPage() {
     window.scrollTo({ top: 0, behavior: 'instant' });
   }, []);
 
-  // ScrollSpy reactivo para el índice temático del dossier
+  // ScrollSpy reactivo para el rail lateral de navegación
   useEffect(() => {
     const sectionIds = [
       'autores',
@@ -98,64 +100,76 @@ export function AcademicFoundationPage() {
 
           <article className="academic-article-shell">
             {/* HERO EDITORIAL */}
-            <AcademicHeader handlePrint={handlePrint} activeSection={activeSection} />
+            <AcademicHeader handlePrint={handlePrint} />
 
-            {/* SECCION 1: EVIDENCIA EMPIRICA */}
-            <AcademicEvidence />
+            {/* LAYOUT EDITORIAL EN 2 COLUMNAS (RAIL TOC LATERAL + CONTENIDO) */}
+            <div className="academic-body-layout">
+              {/* COLUMNA IZQUIERDA: RAIL TOC STICKY */}
+              <AcademicSidebarToc activeSection={activeSection} handlePrint={handlePrint} />
 
-            {/* SECCION 2: MATRIZ DE TRANSFERENCIA METODOLOGICA */}
-            <AcademicTransfer />
+              {/* COLUMNA DERECHA: FLUJO EDITORIAL DE SECCIONES */}
+              <div className="academic-content-flow">
+                {/* SECCION AUTORES Y EQUIPO */}
+                <AcademicAuthors />
 
-            {/* SECCION 3: PRINCIPIOS ETICOS & NO-VIGILANCIA */}
-            <section
-              className="academic-editorial-section anti-surveillance-section"
-              id="antivigilancia"
-              aria-labelledby="sec-privacidad-titulo"
-            >
-              <div className="anti-surveillance-card">
-                <div className="anti-surveillance-header">
-                  <div className="shield-icon-badge">
-                    <Icon name="shieldCheck" size={24} />
-                  </div>
-                  <div className="anti-surveillance-titles">
-                    <span className="section-tag-light">Salvaguardas de Seguridad Psicológica</span>
-                    <h2 id="sec-privacidad-titulo" className="anti-surveillance-heading">
-                      Principios de diseño anti-vigilancia
-                    </h2>
-                    <p className="anti-surveillance-sub">
-                      El bienestar laboral no debe convertirse en vigilancia, control disciplinario ni
-                      persecución. Esta sección documenta salvaguardas y límites de diseño; su alcance depende
-                      de los controles activos en cada despliegue:
-                    </p>
-                  </div>
-                </div>
-                <div className="surveillance-pillars-grid">
-                  {ANTI_SURVEILLANCE_PILLARS.map((pillar) => (
-                    <div key={pillar.title} className="pillar-item">
-                      <div className="pillar-icon-box">
-                        <Icon name={pillar.icon} size={16} />
+                {/* SECCION 1: EVIDENCIA EMPIRICA */}
+                <AcademicEvidence />
+
+                {/* SECCION 2: MATRIZ DE TRANSFERENCIA METODOLOGICA */}
+                <AcademicTransfer />
+
+                {/* SECCION 3: PRINCIPIOS ETICOS & NO-VIGILANCIA */}
+                <section
+                  className="academic-editorial-section anti-surveillance-section"
+                  id="antivigilancia"
+                  aria-labelledby="sec-privacidad-titulo"
+                >
+                  <div className="anti-surveillance-card">
+                    <div className="anti-surveillance-header">
+                      <div className="shield-icon-badge">
+                        <Icon name="shieldCheck" size={24} />
                       </div>
-                      <div className="pillar-content">
-                        <strong className="pillar-title">{pillar.title}</strong>
-                        <p className="pillar-desc">{pillar.description}</p>
+                      <div className="anti-surveillance-titles">
+                        <span className="section-tag-light">Salvaguardas de Seguridad Psicológica</span>
+                        <h2 id="sec-privacidad-titulo" className="anti-surveillance-heading">
+                          Principios de diseño anti-vigilancia
+                        </h2>
+                        <p className="anti-surveillance-sub">
+                          El bienestar laboral no debe convertirse en vigilancia, control disciplinario ni
+                          persecución. Esta sección documenta salvaguardas y límites de diseño; su alcance depende
+                          de los controles activos en cada despliegue:
+                        </p>
                       </div>
                     </div>
-                  ))}
-                </div>
+                    <div className="surveillance-pillars-grid">
+                      {ANTI_SURVEILLANCE_PILLARS.map((pillar) => (
+                        <div key={pillar.title} className="pillar-item">
+                          <div className="pillar-icon-box">
+                            <Icon name={pillar.icon} size={16} />
+                          </div>
+                          <div className="pillar-content">
+                            <strong className="pillar-title">{pillar.title}</strong>
+                            <p className="pillar-desc">{pillar.description}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </section>
+
+                {/* SECCION 4: CITACION ACADEMICA FORMAL */}
+                <AcademicCitation
+                  citationFormat={citationFormat}
+                  setCitationFormat={setCitationFormat}
+                  copied={copied}
+                  handleCopyCitation={handleCopyCitation}
+                  copyFailed={copyFailed}
+                />
+
+                {/* SECCION 5: MARCO JURIDICO COLOMBIANO */}
+                <AcademicLegalFramework />
               </div>
-            </section>
-
-            {/* SECCION 4: CITACION ACADEMICA FORMAL */}
-            <AcademicCitation
-              citationFormat={citationFormat}
-              setCitationFormat={setCitationFormat}
-              copied={copied}
-              handleCopyCitation={handleCopyCitation}
-              copyFailed={copyFailed}
-            />
-
-            {/* SECCION 5: MARCO JURIDICO COLOMBIANO */}
-            <AcademicLegalFramework />
+            </div>
           </article>
         </div>
       </main>

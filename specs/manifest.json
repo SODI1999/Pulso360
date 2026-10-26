@@ -765,6 +765,85 @@
           "automatedChecksPassed": true
         }
       }
+    },
+    {
+      "id": "019",
+      "type": "feature",
+      "slug": "019-019-foundation-sidebar-toc-rail",
+      "title": "019 Foundation Sidebar Toc Rail",
+      "status": "COMPLETED",
+      "created_at": "2026-10-26",
+      "branch": "feat/019-019-foundation-sidebar-toc-rail",
+      "updated_at": "2026-10-26T16:30:06.102Z",
+      "completed_at": "2026-10-26T16:30:06.102Z",
+      "verification": {
+        "mode": "automated",
+        "verifiedAt": "2026-10-26T16:29:53.090Z",
+        "fingerprint": "ab833e894332a20adeff68e234011c2943f78c0f15a91bee099e946bf6206285",
+        "acceptance": {
+          "criteria": [
+            {
+              "id": "AC-01",
+              "status": "passed",
+              "method": "inspection",
+              "kind": "functional"
+            },
+            {
+              "id": "AC-02",
+              "status": "passed",
+              "method": "inspection",
+              "kind": "functional"
+            },
+            {
+              "id": "AC-03",
+              "status": "passed",
+              "method": "inspection",
+              "kind": "functional"
+            },
+            {
+              "id": "AC-04",
+              "status": "passed",
+              "method": "inspection",
+              "kind": "functional"
+            },
+            {
+              "id": "AC-05",
+              "status": "passed",
+              "method": "automated",
+              "kind": "functional",
+              "checkIds": [
+                "gate-2",
+                "gate-3",
+                "gate-4"
+              ],
+              "checks": [
+                {
+                  "checkId": "gate-2",
+                  "command": "cd \"frontend\" && npm test",
+                  "cwd": ".",
+                  "status": "PASSED"
+                },
+                {
+                  "checkId": "gate-3",
+                  "command": "cd \"frontend\" && npm run lint",
+                  "cwd": ".",
+                  "status": "PASSED"
+                },
+                {
+                  "checkId": "gate-4",
+                  "command": "cd \"frontend\" && npm run build",
+                  "cwd": ".",
+                  "status": "PASSED"
+                }
+              ],
+              "execution": "PASSED"
+            }
+          ],
+          "scope": "DECLARED_EVIDENCE_WITH_EXECUTED_CHECK_BINDINGS",
+          "truthOfEvidence": "AGENT_OR_HUMAN_REVIEW_REQUIRED",
+          "automatedChecksPassed": true
+        }
+      }
     }
   ]
 }

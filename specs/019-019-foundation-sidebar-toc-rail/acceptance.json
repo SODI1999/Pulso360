@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 2,
+  "criteria": [
+    {
+      "id": "AC-01",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Cuadricula editorial de dos columnas .academic-body-layout implementada en AcademicFoundationPage.jsx, organizando el rail lateral .academic-sidebar-rail a la izquierda y el contenedor .academic-content-flow a la derecha, con componentes desacoplados AcademicHeader, AcademicSidebarToc y AcademicAuthors."
+    },
+    {
+      "id": "AC-02",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Rail lateral <aside class='academic-sidebar-rail'> fijado con position: sticky; top: 84px; verificado en runtime via Chrome DevTools MCP permaneciendo anclado a 84px desde el inicio del documento hasta la seccion final (#marco-legal). ScrollSpy reactivo sincronizado iluminando .is-active y aria-current='true' al 100% en todas las 6 secciones."
+    },
+    {
+      "id": "AC-03",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Reglas @media (max-width: 959px) declaradas en footer-responsive.css colapsando el layout a 1 columna (grid-template-columns: 1fr) y desactivando el comportamiento sticky (position: static), distribuyendo los enlaces en grid adaptable sin invadir la lectura en pantallas intermedias y moviles."
+    },
+    {
+      "id": "AC-04",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Reglas @media print y clase .no-print asignadas a .academic-sidebar-rail y .btn-toc-print; .academic-body-layout configurado en display: block !important, asegurando que el contenido fluya al 100% del ancho del papel membretado sin desperdicio de espacio ni elementos de navegacion web."
+    },
+    {
+      "id": "AC-05",
+      "kind": "functional",
+      "status": "passed",
+      "method": "automated",
+      "checkIds": [
+        "gate-2",
+        "gate-3",
+        "gate-4"
+      ],
+      "evidence": "Lighthouse Accessibility score 100/100 (0 fallos). Quality gates aprobados con exito: npm run lint (0 errores/warnings), npm test (55/55 pruebas unitarias exitosas), npm run build (compilacion de produccion Vite limpia sin errores en 5.48s)."
+    }
+  ]
+}

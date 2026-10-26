@@ -1,7 +1,7 @@
 import { Icon } from '../../../core/components/Icon';
-import { FOUNDATION_META, AUTHORS_MATRIX } from '../data/academicFoundationData';
+import { FOUNDATION_META } from '../data/academicFoundationData';
 
-export function AcademicHeader({ handlePrint, activeSection }) {
+export function AcademicHeader({ handlePrint }) {
   return (
     <header className="academic-hero-header">
       {/* Membrete formal exclusivo para impresión / guardado PDF */}
@@ -39,139 +39,6 @@ export function AcademicHeader({ handlePrint, activeSection }) {
       <h1 className="academic-hero-title">{FOUNDATION_META.title}</h1>
 
       <p className="academic-hero-lead">{FOUNDATION_META.lead}</p>
-
-      {/* ÍNDICE EDITORIAL DE SECCIONES (JUMP LINKS / TOC ACCESIBLE A15) */}
-      <nav className="academic-toc-strip" aria-label="Índice temático del dossier">
-        <div className="toc-header-label">
-          <Icon name="bookmark" size={14} />
-          <span>Secciones del documento:</span>
-        </div>
-        <div className="toc-links-row">
-          <a
-            href="#autores"
-            className={'toc-pill-link ' + (activeSection === 'autores' ? 'is-active' : '')}
-            aria-current={activeSection === 'autores' ? 'true' : undefined}
-          >
-            <Icon name="users" size={13} />
-            <span>Autores</span>
-          </a>
-          <a
-            href="#evidencia-empirica"
-            className={'toc-pill-link ' + (activeSection === 'evidencia-empirica' ? 'is-active' : '')}
-            aria-current={activeSection === 'evidencia-empirica' ? 'true' : undefined}
-          >
-            <Icon name="Activity" size={13} />
-            <span>1. Evidencia</span>
-          </a>
-          <a
-            href="#transferencia"
-            className={'toc-pill-link ' + (activeSection === 'transferencia' ? 'is-active' : '')}
-            aria-current={activeSection === 'transferencia' ? 'true' : undefined}
-          >
-            <Icon name="FileText" size={13} />
-            <span>2. Transferencia</span>
-          </a>
-          <a
-            href="#antivigilancia"
-            className={'toc-pill-link ' + (activeSection === 'antivigilancia' ? 'is-active' : '')}
-            aria-current={activeSection === 'antivigilancia' ? 'true' : undefined}
-          >
-            <Icon name="ShieldCheck" size={13} />
-            <span>3. Anti-vigilancia</span>
-          </a>
-          <a
-            href="#citacion"
-            className={'toc-pill-link ' + (activeSection === 'citacion' ? 'is-active' : '')}
-            aria-current={activeSection === 'citacion' ? 'true' : undefined}
-          >
-            <Icon name="Bookmark" size={13} />
-            <span>4. Citación</span>
-          </a>
-          <a
-            href="#marco-legal"
-            className={'toc-pill-link ' + (activeSection === 'marco-legal' ? 'is-active' : '')}
-            aria-current={activeSection === 'marco-legal' ? 'true' : undefined}
-          >
-            <Icon name="Scale" size={13} />
-            <span>5. Marco Legal</span>
-          </a>
-        </div>
-      </nav>
-
-      {/* MATRIZ DE AUTORIA INTERDISCIPLINARIA */}
-      <div className="academic-authorship-showcase" id="autores" aria-label="Autoría interdisciplinaria">
-        {/* Trabajo Social */}
-        <article className="authorship-card authorship-social">
-          <div className="authorship-card-top">
-            <div className="authorship-icon-wrap social-accent">
-              <Icon name="users" size={20} />
-            </div>
-            <div className="authorship-meta-headings">
-              <span className="authorship-kicker">{AUTHORS_MATRIX.socialResearch.badge}</span>
-              <h2 className="authorship-faculty">{AUTHORS_MATRIX.socialResearch.faculty}</h2>
-              <span className="authorship-inst">{AUTHORS_MATRIX.socialResearch.institution}</span>
-            </div>
-          </div>
-          <div className="authorship-body">
-            <div className="author-lead-item">
-              <span className="author-role-label">Asesoría & Docencia Líder:</span>
-              <p className="author-principal-name">{AUTHORS_MATRIX.socialResearch.leadAuthor}</p>
-            </div>
-            <div className="author-coauthors-wrap">
-              <span className="author-role-label">Semillero de Investigación en Trabajo Social:</span>
-              <div className="coauthors-chips">
-                {AUTHORS_MATRIX.socialResearch.coauthors.map((author) => (
-                  <span key={author} className="coauthor-chip">
-                    {author}
-                  </span>
-                ))}
-              </div>
-            </div>
-            <div className="authorship-footer-note">
-              <span className="note-dot" aria-hidden="true">
-                •
-              </span>
-              <p className="note-text">{AUTHORS_MATRIX.socialResearch.focus}</p>
-            </div>
-          </div>
-        </article>
-
-        {/* Ingeniería de Software */}
-        <article className="authorship-card authorship-tech">
-          <div className="authorship-card-top">
-            <div className="authorship-icon-wrap tech-accent">
-              <Icon name="fileShield" size={20} />
-            </div>
-            <div className="authorship-meta-headings">
-              <span className="authorship-kicker">{AUTHORS_MATRIX.softwareEngineering.badge}</span>
-              <h2 className="authorship-faculty">{AUTHORS_MATRIX.softwareEngineering.faculty}</h2>
-              <span className="authorship-inst">{AUTHORS_MATRIX.softwareEngineering.institution}</span>
-            </div>
-          </div>
-          <div className="authorship-body">
-            <div className="author-lead-item">
-              <span className="author-role-label">{AUTHORS_MATRIX.softwareEngineering.leadAuthorRole}:</span>
-              <p className="author-principal-name">{AUTHORS_MATRIX.softwareEngineering.leadAuthor}</p>
-            </div>
-            <div className="author-coauthors-wrap">
-              <span className="author-role-label">Naturaleza Jurídica & Adscripción:</span>
-              <div className="coauthors-chips">
-                {AUTHORS_MATRIX.softwareEngineering.coauthors.map((dev) => (
-                  <span key={dev} className="coauthor-chip tech-chip">
-                    {dev}
-                  </span>
-                ))}
-              </div>
-            </div>
-            <div className="authorship-footer-note">
-              <span className="note-dot" aria-hidden="true">
-                •
-              </span>
-              <p className="note-text">{AUTHORS_MATRIX.softwareEngineering.focus}</p>
-            </div>
-          </div>
-        </article>
-      </div>
     </header>
   );
 }

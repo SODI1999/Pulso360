@@ -1,0 +1,7 @@
+# [TASKS-019] Desglose de Tareas de Implementación
+
+- [x] **TASK-01 [Refactor/Header]**: Desacoplar el TOC y la matriz de autoría de [AcademicHeader.jsx](../../frontend/src/features/landing/components/AcademicHeader.jsx), preservando el membrete de impresión, kicker, título y lead editorial (AC-01).
+- [x] **TASK-02 [Layout/Grid]**: Implementar la cuadrícula de 2 columnas `.academic-body-layout` y el rail lateral `<aside className="academic-sidebar-rail">` con la lista vertical accesible y atajo de PDF en [AcademicFoundationPage.jsx](../../frontend/src/features/landing/pages/AcademicFoundationPage.jsx) (AC-01, AC-02).
+- [x] **TASK-03 [Styles/Sticky]**: Declarar estilos en [evidence.css](../../frontend/src/styles/academic/evidence.css) para el rail sticky (`top: 84px`), el contenedor con scroll independiente y los enlaces verticales interactivos con `.is-active` y borde izquierdo distintivo (AC-02).
+- [x] **TASK-04 [Responsive/Print]**: Configurar reglas responsive (`@media (max-width: 959px)`) y reglas de impresión (`@media print`) en [footer-responsive.css](../../frontend/src/styles/academic/footer-responsive.css) y [evidence.css](../../frontend/src/styles/academic/evidence.css) para garantizar legibilidad y cero desbordamientos (AC-03, AC-04).
+- [x] **TASK-05 [Validation/QA]**: Validar en vivo con Chrome DevTools (ScrollSpy continuo de `#autores` a `#marco-legal`), ejecutar suite completa (`npm run lint`, `npm test`, `npm run build`) y ratificar Lighthouse Accesibilidad = 100/100 (AC-05).

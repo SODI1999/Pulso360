@@ -211,7 +211,8 @@
   .landing-header,
   .landing-footer,
   .academic-breadcrumb,
-  .academic-toc-strip,
+  .academic-sidebar-rail,
+  .btn-toc-print,
   .btn-print-dossier,
   .citation-tabs,
   .btn-copy-citation,
@@ -300,5 +301,36 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
+  }
+}
+
+/* Layout Editorial Responsive (Rail Lateral < 960px) */
+@media (max-width: 959px) {
+  .academic-body-layout {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .academic-sidebar-rail {
+    position: static;
+    max-height: none;
+    overflow-y: visible;
+  }
+
+  .toc-sidebar-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 6px;
+  }
+}
+
+@media print {
+  .academic-body-layout {
+    display: block !important;
+  }
+
+  .academic-content-flow {
+    display: block !important;
+    gap: 0 !important;
   }
 }
