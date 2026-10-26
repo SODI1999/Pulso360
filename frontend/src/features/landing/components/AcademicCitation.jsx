@@ -74,10 +74,25 @@ export function AcademicCitation({
             </pre>
           )}
         </div>
-        <p className="citation-note">
-          <Icon name="info" size={13} className="note-icon" />
-          <span>{CITATION_DATA.academicNote}</span>
-        </p>
+        <div className="citation-footer-row">
+          <p className="citation-note">
+            <Icon name="info" size={13} className="note-icon" />
+            <span>{CITATION_DATA.academicNote}</span>
+          </p>
+          {CITATION_DATA.repositoryUrl && (
+            <a
+              href={CITATION_DATA.repositoryUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-repository-link"
+              title="Abrir Repositorio Institucional Digital DSpace TdeA en nueva pestaña"
+            >
+              <Icon name="BookOpen" size={14} />
+              <span>Consultar en Repositorio DSpace TdeA</span>
+              <Icon name="ArrowRight" size={12} className="ext-icon" />
+            </a>
+          )}
+        </div>
       </div>
     </section>
   );

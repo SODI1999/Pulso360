@@ -159,10 +159,15 @@
 
 /* Índice Temático Editorial (TOC Accesible A15) */
 .academic-toc-strip {
-  background: #FAF8F5;
+  position: sticky;
+  top: 64px;
+  z-index: 30;
+  background: rgba(250, 248, 245, 0.94);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border: 1px solid var(--landing-line, #E5E0D6);
   border-radius: 8px;
-  padding: 12px 16px;
+  padding: 10px 16px;
   margin-bottom: 36px;
   display: flex;
   flex-direction: row;
@@ -171,6 +176,8 @@
   overflow-x: auto;
   flex-wrap: nowrap;
   -webkit-overflow-scrolling: touch;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+  transition: all 180ms ease;
 }
 
 .toc-header-label {
@@ -472,4 +479,90 @@
   padding-top: 8px;
   border-top: 1px dashed var(--landing-line, #E5E0D6);
   font-style: normal;
+}
+
+
+/* ==========================================================================
+   Elevación Editorial: Repositorio DSpace, Cifras Tabulares & Ergonomía (A18)
+   ========================================================================== */
+
+/* Fila de pie de citación y botón de Repositorio Digital TdeA */
+.citation-footer-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 14px;
+  padding-top: 10px;
+  border-top: 1px solid var(--landing-line, #E5E0D6);
+  flex-wrap: wrap;
+}
+
+.btn-repository-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  border-radius: 6px;
+  background: #ffffff;
+  border: 1px solid #C9E4DB;
+  color: var(--landing-emerald, #14705A);
+  font-size: 0.8rem;
+  font-weight: 650;
+  text-decoration: none;
+  transition: all 160ms ease;
+  white-space: nowrap;
+}
+
+.btn-repository-link:hover {
+  background: var(--landing-mint, #E8F3EE);
+  border-color: var(--landing-emerald, #14705A);
+  color: var(--landing-green-dark, #051F1A);
+  transform: translateY(-1px);
+}
+
+.btn-repository-link:focus-visible {
+  outline: 2px solid var(--landing-emerald, #14705A);
+  outline-offset: 2px;
+}
+
+.btn-repository-link .ext-icon {
+  margin-left: 2px;
+  color: var(--landing-emerald, #14705A);
+}
+
+/* Cifras Tabulares para Alineación Cuantitativa Rigurosa */
+.number-val,
+.dist-bar-text,
+.aside-metric,
+.correlation-sig-badge,
+.legend-title {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Ergonomía y Medida de Lectura Continua (max-width: 68ch) */
+.section-prose,
+.dossier-context,
+.pillar-desc,
+.legal-item-body {
+  max-width: 68ch;
+  line-height: 1.65;
+}
+
+.academic-hero-lead {
+  max-width: 72ch;
+  line-height: 1.6;
+}
+
+/* Refinamiento del Vector Psicométrico Protector */
+.correlation-vector-box {
+  border-radius: 8px;
+  padding: 10px 14px;
+  background: #F8FAF9;
+  border: 1px solid #E2E8F0;
+  transition: border-color 160ms ease;
+}
+
+.correlation-vector-box:hover {
+  border-color: var(--landing-emerald, #14705A);
 }

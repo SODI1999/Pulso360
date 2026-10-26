@@ -1,9 +1,21 @@
 import { Icon } from '../../../core/components/Icon';
 import { FOUNDATION_META, AUTHORS_MATRIX } from '../data/academicFoundationData';
 
-export function AcademicHeader({ handlePrint }) {
+export function AcademicHeader({ handlePrint, activeSection }) {
   return (
     <header className="academic-hero-header">
+      {/* Membrete formal exclusivo para impresión / guardado PDF */}
+      <div className="print-editorial-header only-print" aria-hidden="true">
+        <div className="print-header-top">
+          <span className="print-header-institution">Tecnológico de Antioquia · Institución Universitaria</span>
+          <span className="print-header-date">
+            Ficha metodológica emitida el {new Date().toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' })}
+          </span>
+        </div>
+        <div className="print-header-doc">
+          Dossier Científico & Metodológico · Plataforma Pulso360 (Investigación Formativa)
+        </div>
+      </div>
       <div className="academic-kicker-row">
         <div className="kicker-badges-group">
           <span className="academic-editorial-kicker">{FOUNDATION_META.badge}</span>
@@ -35,27 +47,51 @@ export function AcademicHeader({ handlePrint }) {
           <span>Secciones del documento:</span>
         </div>
         <div className="toc-links-row">
-          <a href="#autores" className="toc-pill-link">
+          <a
+            href="#autores"
+            className={'toc-pill-link ' + (activeSection === 'autores' ? 'is-active' : '')}
+            aria-current={activeSection === 'autores' ? 'true' : undefined}
+          >
             <Icon name="users" size={13} />
             <span>Autores</span>
           </a>
-          <a href="#evidencia-empirica" className="toc-pill-link">
+          <a
+            href="#evidencia-empirica"
+            className={'toc-pill-link ' + (activeSection === 'evidencia-empirica' ? 'is-active' : '')}
+            aria-current={activeSection === 'evidencia-empirica' ? 'true' : undefined}
+          >
             <Icon name="Activity" size={13} />
             <span>1. Evidencia</span>
           </a>
-          <a href="#transferencia" className="toc-pill-link">
+          <a
+            href="#transferencia"
+            className={'toc-pill-link ' + (activeSection === 'transferencia' ? 'is-active' : '')}
+            aria-current={activeSection === 'transferencia' ? 'true' : undefined}
+          >
             <Icon name="FileText" size={13} />
             <span>2. Transferencia</span>
           </a>
-          <a href="#antivigilancia" className="toc-pill-link">
+          <a
+            href="#antivigilancia"
+            className={'toc-pill-link ' + (activeSection === 'antivigilancia' ? 'is-active' : '')}
+            aria-current={activeSection === 'antivigilancia' ? 'true' : undefined}
+          >
             <Icon name="ShieldCheck" size={13} />
             <span>3. Anti-vigilancia</span>
           </a>
-          <a href="#citacion" className="toc-pill-link">
+          <a
+            href="#citacion"
+            className={'toc-pill-link ' + (activeSection === 'citacion' ? 'is-active' : '')}
+            aria-current={activeSection === 'citacion' ? 'true' : undefined}
+          >
             <Icon name="Bookmark" size={13} />
             <span>4. Citación</span>
           </a>
-          <a href="#marco-legal" className="toc-pill-link">
+          <a
+            href="#marco-legal"
+            className={'toc-pill-link ' + (activeSection === 'marco-legal' ? 'is-active' : '')}
+            aria-current={activeSection === 'marco-legal' ? 'true' : undefined}
+          >
             <Icon name="Scale" size={13} />
             <span>5. Marco Legal</span>
           </a>

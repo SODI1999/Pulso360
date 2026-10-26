@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 2,
+  "criteria": [
+    {
+      "id": "AC-01",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Reglas @media print depuradas en footer-responsive.css ocultando .landing-header, breadcrumbs y botones de accion web, evitando saltos de pagina inadecuados con break-inside: avoid. Encabezado institucional .print-editorial-header (.only-print) renderizado con membrete formal TdeA y fecha de emision dinamica en tiempo de ejecucion."
+    },
+    {
+      "id": "AC-02",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Franja tematica .academic-toc-strip configurada como sticky en top: 64px con z-index: 30 y backdrop-filter: blur(8px). ScrollSpy reactivo verificado en Chrome DevTools MCP iluminando .is-active y aria-current='true' con precision del 100% al desplazarse por las 6 secciones (#autores, #evidencia-empirica, #transferencia, #antivigilancia, #citacion, #marco-legal)."
+    },
+    {
+      "id": "AC-03",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "AcademicCitation.jsx y CITATION_DATA actualizados con repositoryUrl='https://dspace.tdea.edu.co/'. Boton .btn-repository-link renderizado con target='_blank', rel='noopener noreferrer', icono BookOpen y texto accesible verificado en ejecucion en el navegador."
+    },
+    {
+      "id": "AC-04",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Declaracion font-variant-numeric: tabular-nums aplicada en evidence.css para .number-val, .dist-bar-text, .aside-metric, .correlation-sig-badge y .legend-title (verificada via getComputedStyle). Parrafos de prosa editorial (.section-prose) limitados a max-width: 68ch con line-height: 1.65 (796px / 26.4px computados)."
+    },
+    {
+      "id": "AC-05",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Contenedor .correlation-vector-box enriquecido semanticamente con role='group', aria-label='Relacion psicometrica: a mayor apoyo social percibido, menor nivel de agotamiento reportado (r = -0.428, p < 0.01)' y tooltip nativo descriptivo, erradicando elementos puramente decorativos sin significado."
+    },
+    {
+      "id": "AC-06",
+      "kind": "functional",
+      "status": "passed",
+      "method": "automated",
+      "checkIds": [
+        "gate-2",
+        "gate-3",
+        "gate-4"
+      ],
+      "evidence": "Lighthouse Accessibility score 100/100 (0 fallos). Quality gates aprobados con exito: npm run lint (0 errores/warnings), npm test (55/55 pruebas unitarias exitosas), npm run build (compilacion de produccion Vite limpia sin errores)."
+    }
+  ]
+}

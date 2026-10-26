@@ -88,7 +88,12 @@ export function AcademicEvidence() {
               <h3 className="aside-title">{sec.title}</h3>
               <p className="aside-desc">{sec.description}</p>
               {sec.id === 'protective' && (
-                <div className="correlation-vector-box" aria-label="Relación de amortiguación psicométrica">
+                <div
+                  className="correlation-vector-box"
+                  role="group"
+                  aria-label="Relación psicométrica: a mayor apoyo social percibido, menor nivel de agotamiento reportado (r = -0.428, p < 0.01)"
+                  title="Correlación inversa estadísticamente significativa de Pearson (p < 0.01): el apoyo social actúa como factor protector amortiguador."
+                >
                   <div className="correlation-node node-support">
                     <span className="node-label">Apoyo Social</span>
                     <span className="node-arrow" aria-hidden="true">

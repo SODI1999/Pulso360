@@ -15,12 +15,49 @@ import { Icon } from '../../../core/components/Icon';
 import { CITATION_DATA, ANTI_SURVEILLANCE_PILLARS } from '../data/academicFoundationData';
 
 export function AcademicFoundationPage() {
-  const [citationFormat, setCitationFormat] = useState('apa7');
+    const [citationFormat, setCitationFormat] = useState('apa7');
   const [copied, setCopied] = useState(false);
   const [copyFailed, setCopyFailed] = useState(false);
+  const [activeSection, setActiveSection] = useState('autores');
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
+  }, []);
+
+  // ScrollSpy reactivo para el índice temático del dossier
+  useEffect(() => {
+    const sectionIds = [
+      'autores',
+      'evidencia-empirica',
+      'transferencia',
+      'antivigilancia',
+      'citacion',
+      'marco-legal'
+    ];
+
+    const handleScrollSpy = () => {
+      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 50) {
+        setActiveSection(sectionIds[sectionIds.length - 1]);
+        return;
+      }
+
+      const offsetMargin = 220;
+      let currentSection = sectionIds[0];
+      for (let i = 0; i < sectionIds.length; i++) {
+        const el = document.getElementById(sectionIds[i]);
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          if (rect.top <= offsetMargin) {
+            currentSection = sectionIds[i];
+          }
+        }
+      }
+      setActiveSection(currentSection);
+    };
+
+    window.addEventListener('scroll', handleScrollSpy, { passive: true });
+    handleScrollSpy();
+    return () => window.removeEventListener('scroll', handleScrollSpy);
   }, []);
 
   const handleCopyCitation = async () => {
@@ -61,7 +98,7 @@ export function AcademicFoundationPage() {
 
           <article className="academic-article-shell">
             {/* HERO EDITORIAL */}
-            <AcademicHeader handlePrint={handlePrint} />
+            <AcademicHeader handlePrint={handlePrint} activeSection={activeSection} />
 
             {/* SECCION 1: EVIDENCIA EMPIRICA */}
             <AcademicEvidence />
