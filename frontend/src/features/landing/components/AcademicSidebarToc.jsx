@@ -9,7 +9,7 @@ const SECTIONS = [
   { id: 'marco-legal', label: '5. Marco Legal', icon: 'Scale' }
 ];
 
-export function AcademicSidebarToc({ activeSection, handlePrint }) {
+export function AcademicSidebarToc({ activeSection }) {
   return (
     <aside className="academic-sidebar-rail no-print" aria-label="Navegación del dossier">
       <nav className="academic-toc-sidebar" aria-label="Índice temático del dossier">
@@ -33,19 +33,6 @@ export function AcademicSidebarToc({ activeSection, handlePrint }) {
               </a>
             );
           })}
-        </div>
-
-        <div className="toc-sidebar-footer">
-          <button
-            type="button"
-            onClick={handlePrint}
-            className="btn-toc-print"
-            title="Guardar o imprimir ficha metodológica en PDF"
-            aria-label="Imprimir Ficha PDF del dossier metodológico"
-          >
-            <Icon name="Printer" size={13} />
-            <span>Imprimir Ficha PDF</span>
-          </button>
         </div>
       </nav>
     </aside>

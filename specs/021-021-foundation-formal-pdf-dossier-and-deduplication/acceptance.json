@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 2,
+  "criteria": [
+    {
+      "id": "AC-01",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Eliminado .btn-toc-print de AcademicSidebarToc.jsx y evidence.css. Verificado con Chrome DevTools evaluate_script: tocPrintButtons: 0, tocFooter: 0, unico boton activo en cabecera con etiqueta 'Imprimir Ficha PDF'."
+    },
+    {
+      "id": "AC-02",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Configurado @media print en footer-responsive.css con membrete oficial institucional del TdeA (.print-editorial-header) y supresion de elementos de interfaz interactiva web."
+    },
+    {
+      "id": "AC-03",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Ocultamiento de .distribution-bar-track en print y reformateo de la distribucion muestral en tabla analitica de 3 columnas en escala de grises con tipografia tabular."
+    },
+    {
+      "id": "AC-04",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Reglas de paginacion documental @page { size: letter portrait; margin: 1.8cm 1.5cm; } y page-break-inside: avoid en todas las secciones, tarjetas, tablas y bloques analiticos."
+    },
+    {
+      "id": "AC-05",
+      "kind": "functional",
+      "status": "passed",
+      "method": "automated",
+      "checkIds": [
+        "gate-2",
+        "gate-3",
+        "gate-4"
+      ],
+      "evidence": "Lighthouse Accessibility score 100/100 (0 fallos). Quality gates aprobados con exito: npm run lint (0 errores/warnings), npm test (55/55 pruebas unitarias exitosas), npm run build (compilacion de produccion Vite limpia sin errores en 5.70s)."
+    }
+  ]
+}

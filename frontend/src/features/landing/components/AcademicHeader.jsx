@@ -4,16 +4,22 @@ import { FOUNDATION_META } from '../data/academicFoundationData';
 export function AcademicHeader({ handlePrint }) {
   return (
     <header className="academic-hero-header">
-      {/* Membrete formal exclusivo para impresión / guardado PDF */}
+      {/* Membrete formal exclusivo para impresión / exportación a PDF */}
       <div className="print-editorial-header only-print" aria-hidden="true">
         <div className="print-header-top">
-          <span className="print-header-institution">Tecnológico de Antioquia · Institución Universitaria</span>
-          <span className="print-header-date">
-            Ficha metodológica emitida el {new Date().toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' })}
-          </span>
+          <div className="print-institution-block">
+            <span className="print-header-institution">TECNOLÓGICO DE ANTIOQUIA · INSTITUCIÓN UNIVERSITARIA</span>
+            <span className="print-header-faculty">Facultad de Educación y Ciencias Sociales · Grupo de Investigación</span>
+          </div>
+          <div className="print-meta-block">
+            <span className="print-header-code">Radicado: TDEA-SST-P360-2024</span>
+            <span className="print-header-date">
+              Emisión: {new Date().toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' })}
+            </span>
+          </div>
         </div>
         <div className="print-header-doc">
-          Dossier Científico & Metodológico · Plataforma Pulso360 (Investigación Formativa)
+          DOSSIER TÉCNICO DE INVESTIGACIÓN: MODELO CIENTÍFICO DE PREVENCIÓN DEL BURNOUT EN BPO
         </div>
       </div>
       <div className="academic-kicker-row">
@@ -28,11 +34,11 @@ export function AcademicHeader({ handlePrint }) {
           type="button"
           onClick={handlePrint}
           className="btn-print-dossier no-print"
-          title="Imprimir o guardar ficha en PDF"
-          aria-label="Guardar / Imprimir Ficha metodológica en PDF"
+          title="Imprimir o exportar ficha metodológica en PDF"
+          aria-label="Imprimir Ficha PDF y Resumen Metodológico del Dossier"
         >
           <Icon name="Printer" size={14} />
-          <span>Guardar / Imprimir Ficha</span>
+          <span>Imprimir Ficha PDF</span>
         </button>
       </div>
 

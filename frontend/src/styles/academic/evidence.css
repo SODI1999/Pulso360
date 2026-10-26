@@ -252,40 +252,6 @@
   color: var(--landing-green-dark, #082F28);
 }
 
-.toc-sidebar-footer {
-  margin-top: 4px;
-  padding-top: 10px;
-  border-top: 1px dashed var(--landing-line, #E5E0D6);
-}
-
-.btn-toc-print {
-  width: 100%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  padding: 7px 10px;
-  border-radius: 6px;
-  background: #ffffff;
-  border: 1px solid var(--landing-line, #E5E0D6);
-  color: var(--landing-body, #485B58);
-  font-size: 0.75rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 140ms ease;
-}
-
-.btn-toc-print:hover {
-  background: #ffffff;
-  color: var(--landing-green-dark, #082F28);
-  border-color: var(--landing-green-dark, #082F28);
-}
-
-.btn-toc-print:focus-visible {
-  outline: 2px solid var(--landing-green-dark, #082F28);
-  outline-offset: 2px;
-}
-
 .academic-content-flow {
   min-width: 0;
   display: flex;

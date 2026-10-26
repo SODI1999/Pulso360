@@ -194,7 +194,9 @@
   }
 }
 
-/* Soporte de Impresión Editorial Formal (Clean Paper / PDF Layout) */
+/* ==========================================================================
+   Soporte de Impresión Editorial Formal: Dossier Universitario & Ficha Técnica PDF
+   ========================================================================== */
 @media screen {
   .only-print {
     display: none !important;
@@ -203,10 +205,11 @@
 
 @media print {
   @page {
-    margin: 1.5cm;
     size: letter portrait;
+    margin: 1.8cm 1.5cm;
   }
 
+  /* Ocultamiento estricto de artefactos de navegación interactiva y widgets de pantalla */
   .no-print,
   .landing-header,
   .landing-footer,
@@ -218,7 +221,9 @@
   .btn-copy-citation,
   .btn-repository-link,
   .btn-scroll-top,
-  .mobile-toggle {
+  .mobile-toggle,
+  .distribution-bar-track,
+  .academic-article-footer {
     display: none !important;
   }
 
@@ -226,37 +231,90 @@
     display: block !important;
   }
 
+  /* Membrete universitario institucional formal */
   .print-editorial-header {
-    border-bottom: 2px solid #082F28;
+    display: block !important;
+    border-bottom: 2pt solid #082F28;
     padding-bottom: 12px;
-    margin-bottom: 20px;
+    margin-bottom: 22px;
   }
 
   .print-header-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    font-size: 0.8rem;
-    color: #475569;
-    letter-spacing: 0.03em;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: flex-start !important;
+    gap: 16px !important;
+    margin-bottom: 8px !important;
+  }
+
+  .print-institution-block {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 2px !important;
   }
 
   .print-header-institution {
-    font-weight: 750;
-    color: #082F28;
+    font-size: 0.88rem !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.04em !important;
+    color: #082F28 !important;
+    text-transform: uppercase !important;
+  }
+
+  .print-header-faculty {
+    font-size: 0.76rem !important;
+    color: #475569 !important;
+    font-weight: 600 !important;
+  }
+
+  .print-meta-block {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-end !important;
+    gap: 2px !important;
+    font-size: 0.72rem !important;
+    color: #64748B !important;
+  }
+
+  .print-header-code {
+    font-weight: 750 !important;
+    color: #082F28 !important;
+  }
+
+  .print-header-date {
+    font-size: 0.72rem !important;
+    color: #64748B !important;
   }
 
   .print-header-doc {
-    font-size: 0.74rem;
-    color: #64748B;
-    margin-top: 4px;
-    font-weight: 500;
+    font-size: 0.78rem !important;
+    font-weight: 750 !important;
+    letter-spacing: 0.02em !important;
+    color: #0f172a !important;
+    border-top: 1px solid #e2e8f0 !important;
+    padding-top: 6px !important;
+    margin-top: 4px !important;
+    text-transform: uppercase !important;
   }
 
+  /* Ajustes globales del documento */
+  body,
+  .landing-page-root,
   .academic-page-root {
     background: #ffffff !important;
+    color: #0f172a !important;
+    font-size: 9pt !important;
+    line-height: 1.45 !important;
     padding: 0 !important;
-    color: #111827 !important;
+  }
+
+  .academic-page-main {
+    padding: 0 !important;
+  }
+
+  .landing-container {
+    max-width: 100% !important;
+    padding: 0 !important;
   }
 
   .academic-article-shell {
@@ -264,34 +322,476 @@
     box-shadow: none !important;
     padding: 0 !important;
     max-width: 100% !important;
+    margin: 0 !important;
   }
 
+  .academic-body-layout {
+    display: block !important;
+  }
+
+  .academic-content-flow {
+    display: block !important;
+    gap: 0 !important;
+  }
+
+  /* Tipografía y encabezados del paper */
+  .academic-hero-title {
+    font-size: 1.55rem !important;
+    font-weight: 800 !important;
+    color: #082F28 !important;
+    line-height: 1.25 !important;
+    margin-bottom: 8px !important;
+  }
+
+  .academic-hero-lead {
+    font-size: 8.8pt !important;
+    line-height: 1.5 !important;
+    color: #334155 !important;
+    margin-bottom: 20px !important;
+    max-width: 100% !important;
+  }
+
+  .academic-kicker-row {
+    margin-bottom: 8px !important;
+  }
+
+  .academic-editorial-kicker {
+    font-size: 7.5pt !important;
+    font-weight: 750 !important;
+    color: #082F28 !important;
+  }
+
+  .academic-meta-date {
+    font-size: 7.5pt !important;
+    color: #64748B !important;
+  }
+
+  .academic-editorial-section {
+    margin-bottom: 22px !important;
+    padding-bottom: 16px !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .section-tag {
+    font-size: 7pt !important;
+    font-weight: 750 !important;
+    color: #082F28 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    display: block !important;
+    margin-bottom: 3px !important;
+  }
+
+  .academic-editorial-section h2 {
+    font-size: 11.5pt !important;
+    font-weight: 800 !important;
+    color: #082F28 !important;
+    margin: 0 0 8px 0 !important;
+    page-break-after: avoid !important;
+    break-after: avoid !important;
+  }
+
+  .section-prose {
+    font-size: 8.5pt !important;
+    line-height: 1.45 !important;
+    color: #334155 !important;
+    max-width: 100% !important;
+    margin-bottom: 12px !important;
+  }
+
+  /* Sección Autores y Equipo */
+  .academic-authorship-showcase {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 12px !important;
+    margin-bottom: 18px !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .authorship-card {
+    background: #ffffff !important;
+    border: 1pt solid #cbd5e1 !important;
+    border-radius: 4px !important;
+    padding: 10px 12px !important;
+    box-shadow: none !important;
+  }
+
+  .authorship-faculty {
+    font-size: 9pt !important;
+    font-weight: 750 !important;
+    color: #082F28 !important;
+  }
+
+  .authorship-inst {
+    font-size: 7.5pt !important;
+    color: #64748B !important;
+  }
+
+  .author-principal-name {
+    font-size: 8.5pt !important;
+    font-weight: 700 !important;
+    color: #0f172a !important;
+  }
+
+  .coauthor-chip {
+    background: #f1f5f9 !important;
+    border: 1px solid #e2e8f0 !important;
+    color: #1e293b !important;
+    font-size: 7pt !important;
+    padding: 2px 5px !important;
+  }
+
+  /* Sección Evidencia Empírica de Campo */
+  .instruments-row {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+    margin-bottom: 14px !important;
+  }
+
+  .instrument-pill {
+    background: #ffffff !important;
+    border: 1pt solid #cbd5e1 !important;
+    border-radius: 4px !important;
+    padding: 8px 10px !important;
+  }
+
+  .inst-acronym {
+    background: #082F28 !important;
+    color: #ffffff !important;
+    font-size: 7pt !important;
+    padding: 2px 5px !important;
+  }
+
+  .inst-name {
+    font-size: 8pt !important;
+    color: #0f172a !important;
+  }
+
+  .inst-desc {
+    font-size: 7pt !important;
+    color: #475569 !important;
+    line-height: 1.35 !important;
+  }
+
+  .empirical-dossier-grid {
+    display: grid !important;
+    grid-template-columns: 1.35fr 1fr !important;
+    gap: 12px !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .empirical-dossier-main {
+    background: #ffffff !important;
+    border: 1pt solid #cbd5e1 !important;
+    border-radius: 4px !important;
+    padding: 12px !important;
+    box-shadow: none !important;
+  }
+
+  .number-val {
+    font-size: 2.2rem !important;
+    color: #082F28 !important;
+    font-weight: 800 !important;
+    line-height: 1 !important;
+  }
+
+  .number-label {
+    font-size: 8pt !important;
+    color: #1e293b !important;
+    font-weight: 650 !important;
+    max-width: 100% !important;
+  }
+
+  /* Tabla formal de niveles en escala de grises en lugar de barra web */
+  .distribution-visual-container {
+    margin-block: 10px 14px !important;
+  }
+
+  .distribution-legend-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 6px !important;
+    border-top: 1pt solid #e2e8f0 !important;
+    padding-top: 8px !important;
+    margin-top: 8px !important;
+  }
+
+  .legend-item {
+    border: 1pt solid #e2e8f0 !important;
+    padding: 6px 8px !important;
+    border-radius: 3px !important;
+    background: #f8fafc !important;
+  }
+
+  .legend-dot {
+    display: none !important;
+  }
+
+  .legend-title {
+    font-size: 7.5pt !important;
+    font-weight: 750 !important;
+    color: #0f172a !important;
+    display: block !important;
+  }
+
+  .legend-sub {
+    font-size: 6.8pt !important;
+    color: #475569 !important;
+    line-height: 1.3 !important;
+  }
+
+  .dossier-context {
+    font-size: 7.5pt !important;
+    color: #475569 !important;
+    line-height: 1.4 !important;
+  }
+
+  .dossier-aside-card {
+    background: #ffffff !important;
+    border: 1pt solid #cbd5e1 !important;
+    border-radius: 4px !important;
+    padding: 10px 12px !important;
+    box-shadow: none !important;
+    margin-bottom: 8px !important;
+  }
+
+  .aside-title {
+    font-size: 8pt !important;
+    color: #0f172a !important;
+  }
+
+  .aside-desc {
+    font-size: 7pt !important;
+    color: #475569 !important;
+    line-height: 1.35 !important;
+  }
+
+  .correlation-vector-box {
+    background: #f8fafc !important;
+    border: 1pt solid #cbd5e1 !important;
+    padding: 6px 8px !important;
+  }
+
+  /* Sección Transferencia Metodológica */
+  .transfer-cards-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .transfer-flow-card {
+    background: #ffffff !important;
+    border: 1pt solid #cbd5e1 !important;
+    border-radius: 4px !important;
+    padding: 10px !important;
+    box-shadow: none !important;
+  }
+
+  .card-flow-title {
+    font-size: 8.5pt !important;
+    font-weight: 750 !important;
+    color: #082F28 !important;
+  }
+
+  .flow-step {
+    margin-bottom: 6px !important;
+  }
+
+  .step-text-wrap p {
+    font-size: 7.2pt !important;
+    line-height: 1.35 !important;
+  }
+
+  /* Sección Salvaguardas Anti-Vigilancia (Fondo blanco, sin desperdicio de tinta) */
+  .anti-surveillance-card {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    border: 1.5pt solid #082F28 !important;
+    border-radius: 4px !important;
+    padding: 14px !important;
+    box-shadow: none !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .shield-icon-badge {
+    background: #f8fafc !important;
+    border: 1pt solid #cbd5e1 !important;
+    color: #082F28 !important;
+  }
+
+  .section-tag-light {
+    font-size: 7pt !important;
+    font-weight: 750 !important;
+    color: #082F28 !important;
+    text-transform: uppercase !important;
+  }
+
+  .anti-surveillance-heading {
+    color: #082F28 !important;
+    font-size: 11pt !important;
+    font-weight: 800 !important;
+    margin: 4px 0 6px 0 !important;
+  }
+
+  .anti-surveillance-sub {
+    color: #334155 !important;
+    font-size: 8pt !important;
+    line-height: 1.4 !important;
+  }
+
+  .surveillance-pillars-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+    margin-top: 10px !important;
+  }
+
+  .pillar-item {
+    background: #f8fafc !important;
+    border: 1pt solid #e2e8f0 !important;
+    border-left: 2.5pt solid #082F28 !important;
+    border-radius: 3px !important;
+    padding: 8px 10px !important;
+  }
+
+  .pillar-title {
+    color: #0f172a !important;
+    font-size: 7.8pt !important;
+    font-weight: 750 !important;
+  }
+
+  .pillar-desc {
+    color: #475569 !important;
+    font-size: 7pt !important;
+    line-height: 1.35 !important;
+  }
+
+  /* Sección Citación Formal */
+  .citation-card {
+    background: #ffffff !important;
+    border: 1pt solid #cbd5e1 !important;
+    border-radius: 4px !important;
+    padding: 12px !important;
+    box-shadow: none !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .citation-card-title {
+    font-size: 10pt !important;
+    color: #082F28 !important;
+    margin: 2px 0 8px 0 !important;
+  }
+
+  .citation-body-box {
+    background: #f8fafc !important;
+    border: 1pt solid #e2e8f0 !important;
+    border-left: 3pt solid #082F28 !important;
+    border-radius: 3px !important;
+    padding: 8px 12px !important;
+  }
+
+  .apa-citation-text {
+    font-size: 8pt !important;
+    line-height: 1.5 !important;
+    color: #0f172a !important;
+    font-style: normal !important;
+  }
+
+  .citation-footer-row {
+    border-top: 1pt solid #e2e8f0 !important;
+    padding-top: 6px !important;
+    margin-top: 8px !important;
+  }
+
+  .citation-note {
+    font-size: 7pt !important;
+    color: #64748B !important;
+  }
+
+  /* Sección Marco Jurídico */
+  .legal-dossier-shell {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .legal-dossier-row {
+    background: #ffffff !important;
+    border: 1pt solid #cbd5e1 !important;
+    border-left: 2.5pt solid #082F28 !important;
+    border-radius: 3px !important;
+    padding: 8px 10px !important;
+    box-shadow: none !important;
+  }
+
+  .legal-code-pill {
+    font-size: 7pt !important;
+    color: #082F28 !important;
+    background: #e8f3ee !important;
+    border: 1px solid #c9e4db !important;
+    padding: 2px 5px !important;
+  }
+
+  .legal-item-title {
+    font-size: 8pt !important;
+    font-weight: 750 !important;
+    color: #0f172a !important;
+    margin-bottom: 2px !important;
+  }
+
+  .legal-item-body {
+    font-size: 7pt !important;
+    color: #475569 !important;
+    line-height: 1.35 !important;
+  }
+
+  /* Pie institucional del documento impreso */
+  .print-document-footer {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    border-top: 1pt solid #082F28 !important;
+    padding-top: 8px !important;
+    margin-top: 20px !important;
+    font-size: 6.8pt !important;
+    color: #64748B !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .print-footer-inst {
+    font-weight: 750 !important;
+    color: #082F28 !important;
+  }
+
+  /* Reglas universales de prevención de saltos de página huérfanos */
+  .academic-editorial-section,
   .authorship-card,
   .empirical-dossier-main,
   .dossier-aside-card,
   .transfer-flow-card,
   .legal-dossier-row,
   .citation-card,
-  .anti-surveillance-card {
+  .anti-surveillance-card,
+  .instrument-pill {
     page-break-inside: avoid !important;
     break-inside: avoid !important;
   }
 
-  .anti-surveillance-card {
-    background: #ffffff !important;
-    color: #000000 !important;
-    border: 1px solid #CBD5E1 !important;
-    box-shadow: none !important;
-  }
-
-  .anti-surveillance-heading,
-  .pillar-title {
-    color: #000000 !important;
-  }
-
-  .anti-surveillance-sub,
-  .pillar-desc {
-    color: #333333 !important;
+  h1, h2, h3, .section-title-wrap {
+    page-break-after: avoid !important;
+    break-after: avoid !important;
   }
 }
 
@@ -321,16 +821,5 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
     gap: 6px;
-  }
-}
-
-@media print {
-  .academic-body-layout {
-    display: block !important;
-  }
-
-  .academic-content-flow {
-    display: block !important;
-    gap: 0 !important;
   }
 }

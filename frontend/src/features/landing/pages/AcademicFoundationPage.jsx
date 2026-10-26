@@ -105,7 +105,7 @@ export function AcademicFoundationPage() {
             {/* LAYOUT EDITORIAL EN 2 COLUMNAS (RAIL TOC LATERAL + CONTENIDO) */}
             <div className="academic-body-layout">
               {/* COLUMNA IZQUIERDA: RAIL TOC STICKY */}
-              <AcademicSidebarToc activeSection={activeSection} handlePrint={handlePrint} />
+              <AcademicSidebarToc activeSection={activeSection} />
 
               {/* COLUMNA DERECHA: FLUJO EDITORIAL DE SECCIONES */}
               <div className="academic-content-flow">
@@ -170,6 +170,13 @@ export function AcademicFoundationPage() {
                 <AcademicLegalFramework />
               </div>
             </div>
+
+            {/* Pie formal exclusivo para exportación a PDF / impresión institucional */}
+            <footer className="print-document-footer only-print" aria-hidden="true">
+              <span className="print-footer-inst">Tecnológico de Antioquia · Institución Universitaria</span>
+              <span className="print-footer-doc">Dossier de Fundamentación Científica y Transferencia Tecnológica</span>
+              <span className="print-footer-audit">Ficha Técnica Oficial para Inspección y Auditoría SG-SST</span>
+            </footer>
           </article>
         </div>
       </main>
