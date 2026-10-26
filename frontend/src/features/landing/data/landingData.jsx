@@ -342,9 +342,9 @@ export const ROLES_PERMISSIONS_MATRIX = [
  */
 export const CONTACT_SUBJECTS = [
   { value: '', label: 'Selecciona el motivo de tu consulta...' },
-  { value: 'piloto', label: 'Proyecto Piloto en Operaciones BPO' },
-  { value: 'demostracion', label: 'Demostración Técnica para Coordinación de SST' },
-  { value: 'privacidad', label: 'Consultoría Metodológica en k-Anonimato' },
-  { value: 'academico', label: 'Vinculación Académica e Investigación TdeA' },
-  { value: 'otro', label: 'Otro requerimiento institucional' }
+  { value: 'piloto', label: 'Proyecto piloto para BPO' },
+  { value: 'demostracion', label: 'Demostración técnica SST' },
+  { value: 'privacidad', label: 'Consultoría en k-anonimato' },
+  { value: 'academico', label: 'Vinculación académica TdeA' },
+  { value: 'otro', label: 'Otro requerimiento' }
 ];

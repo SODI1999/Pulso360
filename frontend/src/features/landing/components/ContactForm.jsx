@@ -1,6 +1,5 @@
 // src/features/landing/components/ContactForm.jsx
-// Formulario funcional e institucional de Contáctenos con campos controlados (useState),
-// validaciones en tiempo real, foco accesible WCAG AA y autorización expresa de Habeas Data (Ley 1581)
+// Formulario de contacto directo con validación accesible WCAG AA y confirmación de recepción
 
 import { useContactForm } from '../hooks/useContactForm';
 import { Link } from 'react-router-dom';
@@ -14,7 +13,6 @@ export function ContactForm() {
     formRef,
     formErrors,
     hasSubmittedOnce,
-    isSubmitting,
     submittedData,
     handleChange,
     handleSubmit,
@@ -26,24 +24,21 @@ export function ContactForm() {
       {!submittedData ? (
         <>
           <div className="form-panel-header">
-            <span className="panel-kicker">Radicación Institucional & SST</span>
-            <h2 className="panel-title">Ficha de Solicitud de Coordinación</h2>
+            <h2 className="panel-title">Envíanos un mensaje</h2>
             <p className="panel-sub">
-              Diligencia los parámetros de tu operación para generar una ficha formal de enlace técnico en
-              entorno controlado (Sandbox institucional).
+              Completa el formulario y nos comunicaremos con tu equipo para coordinar una reunión o demostración.
             </p>
           </div>
 
           <form id="contactForm" className="landing-form" ref={formRef} onSubmit={handleSubmit} noValidate>
-            {/* Banner de Validación Guiada Sutil (no punitivo) */}
+            {/* Aviso accesible en caso de campos incompletos */}
             {hasSubmittedOnce && Object.keys(formErrors).length > 0 && (
               <div className="contact-alert-banner" role="status" aria-live="polite">
                 <span className="contact-alert-icon" aria-hidden="true">
                   <Icon name="alertTriangle" size={14} />
                 </span>
                 <div className="contact-alert-text">
-                  <strong>Revisa los campos requeridos:</strong> Hay información pendiente o incompleta en el
-                  formulario para poder emitir el radicado.
+                  <strong>Por favor revisa los campos requeridos:</strong> Completa los datos marcados para enviar tu mensaje.
                 </div>
               </div>
             )}
@@ -59,7 +54,7 @@ export function ContactForm() {
                   type="text"
                   autoComplete="name"
                   className={formErrors.name ? 'has-error' : ''}
-                  placeholder="Ej. Laura Marcela Gómez"
+                  placeholder="Ej. Laura Gómez"
                   value={formData.name}
                   onChange={handleChange}
                   aria-required="true"
@@ -84,7 +79,7 @@ export function ContactForm() {
                   type="email"
                   autoComplete="email"
                   className={formErrors.email ? 'has-error' : ''}
-                  placeholder="laura.gomez@contactcenter.com"
+                  placeholder="laura.gomez@empresa.com"
                   value={formData.email}
                   onChange={handleChange}
                   aria-required="true"
@@ -111,7 +106,7 @@ export function ContactForm() {
                   type="text"
                   autoComplete="organization"
                   className={formErrors.company ? 'has-error' : ''}
-                  placeholder="Ej. BPO Contact Center Medellín"
+                  placeholder="Ej. Operación Medellín"
                   value={formData.company}
                   onChange={handleChange}
                   aria-required="true"
@@ -145,7 +140,7 @@ export function ContactForm() {
 
             <div className="form-field">
               <label htmlFor="contactSubject">
-                Motivo de la Coordinación <span aria-hidden="true" className="required-star">*</span>
+                Motivo de Consulta <span aria-hidden="true" className="required-star">*</span>
               </label>
               <select
                 id="contactSubject"
@@ -173,7 +168,7 @@ export function ContactForm() {
 
             <div className="form-field">
               <label htmlFor="contactMessage">
-                Mensaje o Requerimiento Técnico <span aria-hidden="true" className="required-star">*</span>
+                Mensaje <span aria-hidden="true" className="required-star">*</span>
               </label>
               <textarea
                 id="contactMessage"
@@ -181,7 +176,7 @@ export function ContactForm() {
                 className={formErrors.message ? 'has-error' : ''}
                 rows={4}
                 maxLength={600}
-                placeholder="Describe la operación: número de operadores, turnos rotativos, tipología de colas o aspectos específicos que deseas coordinar con nuestro equipo técnico..."
+                placeholder="Cuéntanos sobre tu operación: número de operadores, turnos o dudas específicas..."
                 value={formData.message}
                 onChange={handleChange}
                 aria-required="true"
@@ -218,8 +213,8 @@ export function ContactForm() {
                     rel="noopener noreferrer"
                   >
                     Política de Tratamiento de Datos Institucional
-                  </Link>{' '}
-                  para coordinar esta solicitud técnica.{' '}
+                  </Link>
+                  .{' '}
                   <span className="required-star" aria-hidden="true">
                     *
                   </span>
@@ -233,121 +228,57 @@ export function ContactForm() {
               )}
             </div>
 
-            {/* Advertencia preventiva: no incluir datos de salud sensible */}
             <div className="contact-health-disclaimer">
               <Icon name="shieldCheck" size={15} className="disclaimer-icon" />
               <span>
-                <strong>Reserva médica y datos sensibles:</strong> Abstente de incluir diagnósticos, historias
-                clínicas o datos de salud individual en este canal institucional.
+                <strong>Reserva médica:</strong> Abstente de incluir diagnósticos, historias clínicas o datos de salud individual en este formulario.
               </span>
             </div>
 
-            <button
-              className="form-submit"
-              type="submit"
-              disabled={isSubmitting}
-              aria-busy={isSubmitting}
-            >
-              {isSubmitting ? (
-                <>
-                  <Icon name="refresh" size={16} className="spin-animation" />
-                  <span>Generando radicado institucional...</span>
-                </>
-              ) : (
-                <>
-                  <Icon name="fileText" size={16} />
-                  <span>Radicar Solicitud Institucional</span>
-                </>
-              )}
+            <button className="form-submit" type="submit">
+              <Icon name="send" size={16} />
+              <span>Enviar mensaje</span>
             </button>
           </form>
         </>
       ) : (
-        /* Estado Ficha Técnica Oficial de Radicación (Éxito sin Card-itis) */
-        <div className="radication-dossier-panel" role="region" aria-label="Constancia oficial de radicación">
-          <div className="radication-header">
-            <div className="radication-meta-top">
-              <div className="radication-brand-mark">
-                <Icon name="shieldCheck" size={22} className="radication-shield-icon" />
-                <div>
-                  <span className="radication-inst-tag">Tecnológico de Antioquia · Institución Universitaria</span>
-                  <h2 className="radication-title">Constancia Oficial de Radicación (Sandbox)</h2>
-                </div>
-              </div>
-              <div className="radication-code-pill">
-                <span className="code-label">Radicado Oficial</span>
-                <strong className="code-value">{submittedData.radCode}</strong>
-              </div>
-            </div>
-            <p className="radication-stamp-date">
-              Sello de Recepción: <time>{submittedData.date}</time>
-            </p>
+        /* Estado de Éxito / Confirmación de Recepción */
+        <div className="contact-success-state" role="status" aria-live="polite">
+          <div className="success-icon-wrap" aria-hidden="true">
+            <Icon name="CheckCircle2" size={32} />
           </div>
+          <h2 className="success-title">Mensaje enviado</h2>
+          <p className="success-intro">
+            Gracias por comunicarte, <strong>{submittedData.name}</strong>. Hemos recibido tu consulta para{' '}
+            <strong>{submittedData.company}</strong> y nos pondremos en contacto a través de{' '}
+            <strong>{submittedData.email}</strong>.
+          </p>
 
-          <div className="radication-body">
-            <p className="radication-intro-note">
-              Se ha emitido la presente ficha técnica de enlace para la operación{' '}
-              <strong>{submittedData.company}</strong>, coordinada por <strong>{submittedData.name}</strong>.
-            </p>
-
-            <dl className="radication-parameters-grid">
-              <div className="param-item">
-                <dt className="param-label">Empresa u Operación BPO:</dt>
-                <dd className="param-val">{submittedData.company}</dd>
+          <div className="success-summary-box">
+            <div className="summary-row">
+              <span className="summary-label">Motivo:</span>
+              <span className="summary-val">{submittedData.subject}</span>
+            </div>
+            {submittedData.phone && submittedData.phone !== 'No especificado' && (
+              <div className="summary-row">
+                <span className="summary-label">Teléfono:</span>
+                <span className="summary-val">{submittedData.phone}</span>
               </div>
-              <div className="param-item">
-                <dt className="param-label">Responsable / Enlace:</dt>
-                <dd className="param-val">{submittedData.name}</dd>
-              </div>
-              <div className="param-item">
-                <dt className="param-label">Correo Electrónico:</dt>
-                <dd className="param-val">{submittedData.email}</dd>
-              </div>
-              <div className="param-item">
-                <dt className="param-label">Teléfono de Contacto:</dt>
-                <dd className="param-val">{submittedData.phone}</dd>
-              </div>
-              <div className="param-item param-item-full">
-                <dt className="param-label">Motivo de Coordinación:</dt>
-                <dd className="param-val">{submittedData.subject}</dd>
-              </div>
-              <div className="param-item param-item-full">
-                <dt className="param-label">Detalle y Alcance del Requerimiento:</dt>
-                <dd className="param-val param-message-box">&ldquo;{submittedData.message}&rdquo;</dd>
-              </div>
-            </dl>
-
-            <div className="radication-custody-clause">
-              <Icon name="Scale" size={15} className="custody-icon" />
-              <span>
-                <strong>Garantía de Custodia & Ley 1581:</strong> Ficha generada en memoria de sesión local.
-                Para preservar la reserva del SG-SST, los datos no son transferidos a servidores externos ni
-                cruzados con bitácoras de operadores.
-              </span>
+            )}
+            <div className="summary-row summary-message">
+              <span className="summary-label">Mensaje:</span>
+              <p className="summary-text">&ldquo;{submittedData.message}&rdquo;</p>
             </div>
           </div>
 
-          <div className="radication-actions-bar no-print">
-            <button
-              type="button"
-              onClick={() => window.print()}
-              className="btn-print-radication"
-              aria-label="Imprimir Ficha Oficial de Radicación en PDF"
-            >
-              <Icon name="Printer" size={15} />
-              <span>Imprimir Ficha en PDF</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={handleReset}
-              className="btn-reset-radication"
-              aria-label="Iniciar una nueva solicitud de radicación"
-            >
-              <Icon name="edit" size={15} />
-              <span>Radicar Nueva Solicitud</span>
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={handleReset}
+            className="btn-reset-form"
+          >
+            <Icon name="edit" size={15} />
+            <span>Enviar otro mensaje</span>
+          </button>
         </div>
       )}
     </div>

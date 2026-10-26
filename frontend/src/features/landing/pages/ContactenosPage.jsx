@@ -1,5 +1,5 @@
 // src/features/landing/pages/ContactenosPage.jsx
-// Vista dedicada para la ruta de Contáctenos con barra de navegación completa, columnas editoriales y pie de página institucional
+// Vista de contacto directo y acompañamiento institucional para centros de contacto (BPO) y áreas de SST
 
 import { useEffect } from 'react';
 import { Navbar } from '../components/Navbar';
@@ -8,84 +8,76 @@ import { ContactForm } from '../components/ContactForm';
 import { Icon } from '../../../core/components/Icon';
 
 export function ContactenosPage() {
-  // A08: Resetear scroll al tope para evitar aterrizar en el footer
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
   }, []);
 
   return (
     <div className="landing-page-root contact-page-root">
-      {/* Barra de navegación institucional completa */}
       <Navbar />
 
-      {/* Contenido Principal en 2 Columnas Editoriales */}
       <main id="contenido" className="contact-page-main">
         <div className="landing-container">
           <div className="contact-editorial-layout">
-            {/* Columna Izquierda: Información Institucional & Canales de Enlace */}
+            {/* Columna Izquierda: Información de contacto y canales */}
             <div className="contact-info-panel">
-              <span className="contact-badge">Atención Institucional & SST</span>
-
-              <h1 className="contact-heading">Enlace Operativo, Coordinación de Pilotos y Transferencia Tecnológica</h1>
+              <h1 className="contact-heading">Hablemos sobre el cuidado de tu operación</h1>
               <p className="contact-lead">
-                Canal institucional de articulación entre centros de contacto (BPO), áreas de Seguridad y Salud en
-                el Trabajo (SST) y el equipo de investigación del Tecnológico de Antioquia. Acompañamos el
-                dimensionamiento de pilotos preventivos y la adopción de modelos de k-anonimato para proteger el
-                bienestar de tus equipos sin fines de vigilancia laboral.
+                Pulso360 apoya a centros de contacto y áreas de Seguridad y Salud en el Trabajo (SST)
+                a identificar señales tempranas de desgaste laboral mediante check-ins breves y tendencias
+                colectivas protegidas con k-anonimato.
               </p>
 
-              <div className="contact-channels-list" role="region" aria-label="Canales de atención institucional">
-                <article className="channel-item">
+              <div className="contact-channels-list" role="region" aria-label="Canales de atención">
+                <div className="channel-item">
                   <div className="channel-icon-wrap" aria-hidden="true">
-                    <Icon name="fileShield" size={18} />
+                    <Icon name="mail" size={18} />
                   </div>
                   <div className="channel-details">
-                    <strong className="channel-title">Coordinación de Pilotos en Centros de Contacto</strong>
-                    <a href="mailto:pilotos@pulso360.co" className="channel-link">pilotos@pulso360.co</a>
-                    <p className="channel-meta">Atención a operaciones BPO para turnos rotativos, colas de llamadas y pilotos técnicos.</p>
+                    <strong className="channel-title">Coordinación de Pilotos y Demostraciones</strong>
+                    <a href="mailto:contacto@pulso360.co" className="channel-link">contacto@pulso360.co</a>
+                    <p className="channel-meta">Acompañamiento para operaciones BPO, colas de atención y turnos rotativos.</p>
                   </div>
-                </article>
+                </div>
 
-                <article className="channel-item">
+                <div className="channel-item">
                   <div className="channel-icon-wrap" aria-hidden="true">
                     <Icon name="Scale" size={18} />
                   </div>
                   <div className="channel-details">
-                    <strong className="channel-title">Consultoría Metodológica en k-Anonimato & SST</strong>
-                    <a href="mailto:metodologia@pulso360.co" className="channel-link">metodologia@pulso360.co</a>
-                    <p className="channel-meta">Asesoría en reglas de agregación colectiva (k &ge; 5) y alineación con la Res. 2764 de 2022.</p>
+                    <strong className="channel-title">Consultoría Metodológica & SST</strong>
+                    <a href="mailto:sst@pulso360.co" className="channel-link">sst@pulso360.co</a>
+                    <p className="channel-meta">Orientación en agregación de datos (k &ge; 5) y articulación con el SG-SST.</p>
                   </div>
-                </article>
+                </div>
 
-                <article className="channel-item">
+                <div className="channel-item">
                   <div className="channel-icon-wrap" aria-hidden="true">
-                    <Icon name="bookmark" size={18} />
+                    <Icon name="building" size={18} />
                   </div>
                   <div className="channel-details">
-                    <strong className="channel-title">Sede Académica & Investigación Formativa</strong>
+                    <strong className="channel-title">Sede Académica & Investigación</strong>
                     <span className="channel-static-val">Tecnológico de Antioquia (TdeA)</span>
                     <p className="channel-meta">Facultad de Ingeniería · Semillero de Software · Medellín, Colombia.</p>
                   </div>
-                </article>
+                </div>
               </div>
 
-              {/* Protocolo de Aislamiento y Confidencialidad Técnica */}
-              <aside className="contact-privacy-guarantee" aria-label="Garantía de confidencialidad">
+              <div className="contact-privacy-guarantee">
                 <div className="privacy-badge-icon" aria-hidden="true">
-                  <Icon name="shieldCheck" size={20} />
+                  <Icon name="shieldCheck" size={18} />
                 </div>
                 <div className="privacy-text-block">
-                  <strong className="privacy-title">Protocolo de Aislamiento y Confidencialidad Técnica</strong>
+                  <strong className="privacy-title">Separación de flujos y privacidad</strong>
                   <p className="privacy-desc">
-                    Las solicitudes institucionales se gestionan en un canal técnico independiente. No acceden,
-                    vinculan ni correlacionan las bitácoras privadas de los operadores ni los registros individuales
-                    de bienestar, garantizando reserva estricta conforme a la Ley 1581 de 2012 y el SG-SST.
+                    Las solicitudes de contacto se gestionan de forma independiente y no acceden a las bitácoras
+                    personales de los operadores. Tratamiento conforme a la Ley 1581 de 2012.
                   </p>
                 </div>
-              </aside>
+              </div>
             </div>
 
-            {/* Columna Derecha: Formulario Funcional & Ficha de Radicación */}
+            {/* Columna Derecha: Formulario de Contacto */}
             <div className="contact-form-column">
               <ContactForm />
             </div>
@@ -93,7 +85,6 @@ export function ContactenosPage() {
         </div>
       </main>
 
-      {/* Pie de página institucional */}
       <Footer />
     </div>
   );
