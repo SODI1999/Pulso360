@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 2,
+  "criteria": [
+    {
+      "id": "AC-01",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Lighthouse audit snapshot en http://localhost:5173/#inicio confirmó score de accesibilidad 100 y superación del ratio de contraste en .factor-chip.selected .chip-hint con color: #ffffff (4.88:1 vs umbral 4.5:1)."
+    },
+    {
+      "id": "AC-02",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Evaluación en viewport móvil 320x640 confirmó scrollWidth === clientWidth === 320px, con 0 elementos desbordando tras aplicar media query de 1 columna."
+    },
+    {
+      "id": "AC-03",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Evaluación de todos los interactivos visibles en tiempo de ejecución arrojó missingFocusCount: 0 con outline de 2px sólido en :focus-visible."
+    },
+    {
+      "id": "AC-04",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Auditoría Lighthouse axe-core confirmó 0 fallos de label-content-name-mismatch en el enlace de marca tras alinear nombre accesible al texto visible."
+    },
+    {
+      "id": "AC-05",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Botones nativos de palanca con aria-pressed integrados en AgentDemoPanel.jsx, eliminando roles de pestaña sin tabpanel asociado."
+    },
+    {
+      "id": "AC-06",
+      "kind": "functional",
+      "status": "passed",
+      "method": "automated",
+      "checkIds": [
+        "gate-2",
+        "gate-3",
+        "gate-4"
+      ],
+      "evidence": "Quality gates de frontend aprobados con 0 errores de ESLint, 55/55 pruebas unitarias exitosas y compilación de producción limpia."
+    }
+  ]
+}

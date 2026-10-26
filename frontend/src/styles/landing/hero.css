@@ -477,6 +477,12 @@
   padding: 12px;
 }
 
+@media (max-width: 420px) {
+  .disconnection-safeguards-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .safeguard-item {
   display: flex;
   align-items: flex-start;

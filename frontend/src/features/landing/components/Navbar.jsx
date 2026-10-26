@@ -90,9 +90,9 @@ export function Navbar() {
             event.preventDefault();
             handleNavClick('#inicio');
           }}
-          aria-label="Pulso360, volver al inicio"
+          
         >
-          <img className="brand-logo" src="/assets/marca/symbol.svg" alt="Pulso360" />
+          <img className="brand-logo" src="/assets/marca/symbol.svg" alt="" aria-hidden="true" />
           <span className="brand-name">Pulso360</span>
           <span className="brand-context">Bienestar laboral</span>
         </Link>

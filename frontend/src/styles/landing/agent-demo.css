@@ -1,39 +1,6 @@
 /* =========================================================================
    ACTO I: ESTILOS AGENTE
    ========================================================================= */
-.demo-context-notice {
-  width: 100%;
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  background: #FAF8F5;
-  border: 1px solid var(--landing-line, #E5E0D6);
-  border-left: 3px solid var(--landing-emerald, #14705A);
-  border-radius: 6px;
-  padding: 12px 16px;
-  font-size: 0.78rem;
-  line-height: 1.55;
-  color: var(--landing-body, #485B58);
-  margin-top: 10px;
-  box-sizing: border-box;
-}
-
-.demo-context-notice .notice-icon {
-  flex-shrink: 0;
-  color: var(--landing-emerald, #14705A);
-  margin-top: 2px;
-}
-
-.demo-context-notice strong {
-  color: var(--landing-ink, #112623);
-  font-weight: 700;
-}
-
-.demo-context-notice em {
-  font-style: normal;
-  font-weight: 600;
-  color: var(--landing-ink, #112623);
-}
 
 .agent-eval-prompt h3 {
   font-family: var(--font-family-display, 'Newsreader', Georgia, serif);
@@ -208,7 +175,7 @@
 }
 
 .factor-chip.selected .chip-hint {
-  color: rgba(255, 255, 255, 0.88);
+  color: #ffffff;
 }
 
 .situation-row-header {

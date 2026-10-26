@@ -424,6 +424,177 @@
           "automatedChecksPassed": true
         }
       }
+    },
+    {
+      "id": "015",
+      "type": "feature",
+      "slug": "015-015-auditor-audit-log-ux-craft",
+      "title": "015 Auditor Audit Log Ux Craft",
+      "status": "COMPLETED",
+      "created_at": "2026-10-26",
+      "branch": "feat/015-015-auditor-audit-log-ux-craft",
+      "updated_at": "2026-10-26T12:36:41.715Z",
+      "completed_at": "2026-10-26T12:36:41.715Z",
+      "verification": {
+        "mode": "automated",
+        "verifiedAt": "2026-10-26T12:36:13.204Z",
+        "fingerprint": "6de60831f8ceae865d81b9ccb2aaf826a5bf507853433b0da61b8be9fd88c79b",
+        "acceptance": {
+          "criteria": [
+            {
+              "id": "AC-01",
+              "status": "passed",
+              "method": "inspection",
+              "kind": "functional"
+            },
+            {
+              "id": "AC-02",
+              "status": "passed",
+              "method": "inspection",
+              "kind": "functional"
+            },
+            {
+              "id": "AC-03",
+              "status": "passed",
+              "method": "inspection",
+              "kind": "functional"
+            },
+            {
+              "id": "AC-04",
+              "status": "passed",
+              "method": "inspection",
+              "kind": "functional"
+            },
+            {
+              "id": "AC-05",
+              "status": "passed",
+              "method": "automated",
+              "kind": "functional",
+              "checkIds": [
+                "gate-1",
+                "gate-2",
+                "gate-3",
+                "gate-4"
+              ],
+              "checks": [
+                {
+                  "checkId": "gate-1",
+                  "command": "cd \"backend\" && npm test",
+                  "cwd": ".",
+                  "status": "PASSED"
+                },
+                {
+                  "checkId": "gate-2",
+                  "command": "cd \"frontend\" && npm test",
+                  "cwd": ".",
+                  "status": "PASSED"
+                },
+                {
+                  "checkId": "gate-3",
+                  "command": "cd \"frontend\" && npm run lint",
+                  "cwd": ".",
+                  "status": "PASSED"
+                },
+                {
+                  "checkId": "gate-4",
+                  "command": "cd \"frontend\" && npm run build",
+                  "cwd": ".",
+                  "status": "PASSED"
+                }
+              ],
+              "execution": "PASSED"
+            }
+          ],
+          "scope": "DECLARED_EVIDENCE_WITH_EXECUTED_CHECK_BINDINGS",
+          "truthOfEvidence": "AGENT_OR_HUMAN_REVIEW_REQUIRED",
+          "automatedChecksPassed": true
+        }
+      }
+    },
+    {
+      "id": "016",
+      "type": "bugfix",
+      "slug": "016-landing-a11y-and-reflow-fixes",
+      "title": "Landing A11y And Reflow Fixes",
+      "status": "COMPLETED",
+      "created_at": "2026-10-26",
+      "branch": "fix/016-landing-a11y-and-reflow-fixes",
+      "updated_at": "2026-10-26T12:38:47.986Z",
+      "completed_at": "2026-10-26T12:38:47.986Z",
+      "verification": {
+        "mode": "automated",
+        "verifiedAt": "2026-10-26T12:38:22.179Z",
+        "fingerprint": "2a3af9349df8c19b3c7dea6eb3d0a612a695c9066c7f9eb36d1cc1bc3c0eefd1",
+        "acceptance": {
+          "criteria": [
+            {
+              "id": "AC-01",
+              "status": "passed",
+              "method": "inspection",
+              "kind": "functional"
+            },
+            {
+              "id": "AC-02",
+              "status": "passed",
+              "method": "inspection",
+              "kind": "functional"
+            },
+            {
+              "id": "AC-03",
+              "status": "passed",
+              "method": "inspection",
+              "kind": "functional"
+            },
+            {
+              "id": "AC-04",
+              "status": "passed",
+              "method": "inspection",
+              "kind": "functional"
+            },
+            {
+              "id": "AC-05",
+              "status": "passed",
+              "method": "inspection",
+              "kind": "functional"
+            },
+            {
+              "id": "AC-06",
+              "status": "passed",
+              "method": "automated",
+              "kind": "functional",
+              "checkIds": [
+                "gate-2",
+                "gate-3",
+                "gate-4"
+              ],
+              "checks": [
+                {
+                  "checkId": "gate-2",
+                  "command": "cd \"frontend\" && npm test",
+                  "cwd": ".",
+                  "status": "PASSED"
+                },
+                {
+                  "checkId": "gate-3",
+                  "command": "cd \"frontend\" && npm run lint",
+                  "cwd": ".",
+                  "status": "PASSED"
+                },
+                {
+                  "checkId": "gate-4",
+                  "command": "cd \"frontend\" && npm run build",
+                  "cwd": ".",
+                  "status": "PASSED"
+                }
+              ],
+              "execution": "PASSED"
+            }
+          ],
+          "scope": "DECLARED_EVIDENCE_WITH_EXECUTED_CHECK_BINDINGS",
+          "truthOfEvidence": "AGENT_OR_HUMAN_REVIEW_REQUIRED",
+          "automatedChecksPassed": true
+        }
+      }
     }
   ]
 }

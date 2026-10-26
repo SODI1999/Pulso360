@@ -227,6 +227,11 @@ img {
   background: var(--landing-green);
   color: var(--landing-white);
   box-shadow: 0 6px 16px rgba(8, 76, 70, 0.18);
+}
+
+.header-login:focus-visible {
+  outline: 2px solid var(--landing-emerald);
+  outline-offset: 2px;
   transform: translateY(-1px);
 }
 
