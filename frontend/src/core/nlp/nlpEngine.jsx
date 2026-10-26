@@ -1,8 +1,6 @@
 // src/core/nlp/nlpEngine.jsx
 // Motor léxico determinista de Procesamiento de Lenguaje Natural (NLP) para detección de riesgos psicosociales
 
-import { pulsoStore } from '../storage/pulsoStore';
-import { env } from '../config/env';
 import { apiClient } from '../api/apiClient';
 import { sanitizeInputText, stripDiacritics } from './nlpSanitizer';
 import { stemSpanish } from './spanishStemmer';
@@ -200,7 +198,7 @@ export const CRISIS_PHRASES = [
 ];
 
 // Disparadores de negación (patrón NegEx en español) e intensificadores gramaticales
-const NEGATORS = [
+export const NEGATORS = [
   'no',
   'nunca',
   'jamás',
@@ -214,7 +212,7 @@ const NEGATORS = [
   'para nada'
 ];
 
-const INTENSIFIERS = [
+export const INTENSIFIERS = [
   'muy',
   'demasiado',
   'demasiada',
@@ -228,35 +226,36 @@ const INTENSIFIERS = [
 let activeLexicon = null;
 
 function dictionary() {
-  if (env.useMockStorage) {
-    return {
-      categories: NLP_CATEGORIES,
-      crisis: CRISIS_PHRASES,
-      negators: NEGATORS,
-      intensifiers: INTENSIFIERS
-    };
-  }
   if (!activeLexicon) throw new Error('Carga el léxico autorizado antes de analizar.');
-  return { ...activeLexicon.dictionary, crisis: activeLexicon.dictionary.crisisPhrases };
+  return {
+    ...activeLexicon.dictionary,
+    crisis: activeLexicon.dictionary.crisisPhrases || activeLexicon.dictionary.crisis || CRISIS_PHRASES,
+    negators: activeLexicon.dictionary.negators || NEGATORS,
+    intensifiers: activeLexicon.dictionary.intensifiers || INTENSIFIERS
+  };
 }
 
 export const nlpEngine = {
+  setLexicon: (lexicon) => {
+    activeLexicon = lexicon;
+  },
+
+  resetLexicon: () => {
+    activeLexicon = null;
+  },
+
   loadActiveLexicon: async () => {
-    if (env.useMockStorage) return;
     activeLexicon = null;
     const response = await apiClient.get('/nlp/lexicon/active');
     activeLexicon = response.data;
   },
 
   // Versión activa del clasificador léxico configurada en el sistema
-  getVersion: () =>
-    env.useMockStorage
-      ? pulsoStore.get().settings?.nlpVersion || 'lexico-v1.2'
-      : activeLexicon?.version,
+  getVersion: () => activeLexicon?.version,
 
   // Lista de nombres de categorías soportadas
   getCategoryNames: () =>
-    Object.keys(env.useMockStorage ? NLP_CATEGORIES : activeLexicon?.dictionary?.categories || {}),
+    Object.keys(activeLexicon?.dictionary?.categories || {}),
 
   // Análisis de texto determinista y explicable de 4 capas
   analyze: (rawText = '') => {

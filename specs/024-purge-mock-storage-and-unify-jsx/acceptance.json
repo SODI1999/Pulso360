@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 2,
+  "criteria": [
+    {
+      "id": "AC-01",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Verificado con Get-ChildItem -Path frontend/src -Recurse -Filter *.js: retorna 0 archivos. El 100% de los módulos bajo frontend/src/ poseen extensión .jsx."
+    },
+    {
+      "id": "AC-02",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Verificada la eliminación física mediante git rm -f de seed.js, pulsoStore.js, migrations.js y normalizeStoredData.js. Get-ChildItem frontend/src/core/storage confirma que únicamente residen browserStorage.jsx y preferences.jsx."
+    },
+    {
+      "id": "AC-03",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "authService.jsx y los servicios en features/ fueron refactorizados para eliminar todas las bifurcaciones useMockStorage y conectarse directamente mediante apiClient con JWT a los endpoints /api/v1/ de Express 5 y PostgreSQL."
+    },
+    {
+      "id": "AC-04",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Comprobada la integridad de los contratos de k-anonimato (k >= 5), aislamiento RBAC (5 roles), hora legal Bogotá (America/Bogota) y análisis léxico determinista Snowball + Damerau-Levenshtein en frontend/tests/nlpEngine.test.mjs y backend/test/."
+    },
+    {
+      "id": "AC-05",
+      "kind": "functional",
+      "status": "passed",
+      "method": "automated",
+      "checkIds": [
+        "gate-1",
+        "gate-2",
+        "gate-3",
+        "gate-4"
+      ],
+      "evidence": "Compuertas de calidad superadas exitosamente: backend npm test (132/132 passed), frontend npm test (41/41 passed), frontend npm run lint (0 errores), frontend npm run build (Vite build exitoso)."
+    }
+  ]
+}

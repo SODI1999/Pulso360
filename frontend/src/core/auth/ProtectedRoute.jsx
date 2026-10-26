@@ -3,7 +3,6 @@
 
 import { Navigate, useLocation } from 'react-router-dom';
 import { authService, roleLabels } from './authService';
-import { pulsoStore } from '../storage/pulsoStore';
 import { AccessDenied } from './AccessDenied';
 import { useEffect, useRef, useState } from 'react';
 import { env } from '../config/env';
@@ -90,7 +89,7 @@ export function ProtectedRoute({ allowedRoles, children }) {
   // 3. Barrera de Autorización (RBAC): ¿Tiene el rol requerido para esta ruta?
   if (allowedRoles && !allowedRoles.includes(user.role)) {
     // Registro inmutable de intento no autorizado en la auditoría del sistema
-    if (env.useMockStorage) pulsoStore.audit({
+    authService.recordSecurityAudit({
       actor: `${user.id} (${roleLabels[user.role] || user.role})`,
       action: 'ACCESO_DENEGADO_RBAC',
       target: location.pathname,

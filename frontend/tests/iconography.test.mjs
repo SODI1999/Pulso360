@@ -35,7 +35,7 @@ async function collectIconUsages(directory, usages = []) {
   for (const entry of await readdir(directory, { withFileTypes: true })) {
     const file = path.join(directory, entry.name);
     if (entry.isDirectory()) await collectIconUsages(file, usages);
-    else if (file.endsWith('.jsx') && entry.name !== 'Icon.jsx') {
+    else if ((file.endsWith('.jsx') || file.endsWith('.js')) && entry.name !== 'Icon.jsx') {
       const source = await readFile(file, 'utf8');
       const ast = parse(source, { sourceType: 'module', plugins: ['jsx'] });
       walk(ast, (node) => {

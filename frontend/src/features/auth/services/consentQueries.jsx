@@ -1,10 +1,9 @@
-import { pulsoStore } from '../../../core/storage/pulsoStore';
+// src/features/auth/services/consentQueries.jsx
 
-export function getConsentData(userId) {
-  const data = pulsoStore.get();
+export function getConsentData() {
   return {
-    settings: data.settings,
-    consents: { [userId]: data.consents?.[userId] },
-    consentHistory: (data.consentHistory || []).filter((row) => row.userId === userId)
+    settings: {},
+    consents: {},
+    consentHistory: []
   };
 }

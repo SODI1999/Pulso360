@@ -218,7 +218,7 @@ export function UserProfileModal({ isOpen, onClose, user, onProfileUpdated }) {
   const handleSave = () => {
     setIsSaving(true);
     try {
-      // 1. Guardar avatar en authService (actualiza sessionData, localData y pulsoStore)
+      // 1. Guardar avatar en authService (actualiza sessionData y localData)
       const updatedUser = authService.updateProfile({
         avatar: selectedAvatar,
         avatarType: selectedAvatar.startsWith('data:') ? 'custom' : 'preset'

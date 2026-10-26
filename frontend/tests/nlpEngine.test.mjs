@@ -1,10 +1,29 @@
-import { test } from 'node:test';
+import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { createServer } from 'vite';
 
-import { sanitizeInputText, stripDiacritics, collapseElongations } from '../src/core/nlp/nlpSanitizer.js';
-import { damerauLevenshtein, matchWithTolerance } from '../src/core/nlp/damerauLevenshtein.js';
-import { stemSpanish } from '../src/core/nlp/spanishStemmer.js';
+let sharedServer;
+let sanitizeInputText, stripDiacritics, collapseElongations;
+let damerauLevenshtein, matchWithTolerance;
+let stemSpanish;
+
+before(async () => {
+  sharedServer = await createServer({
+    configFile: false,
+    root: process.cwd(),
+    logLevel: 'silent',
+    appType: 'custom',
+    server: { middlewareMode: true, hmr: false, watch: null },
+    optimizeDeps: { noDiscovery: true, include: [] }
+  });
+  ({ sanitizeInputText, stripDiacritics, collapseElongations } = await sharedServer.ssrLoadModule('/src/core/nlp/nlpSanitizer.jsx'));
+  ({ damerauLevenshtein, matchWithTolerance } = await sharedServer.ssrLoadModule('/src/core/nlp/damerauLevenshtein.jsx'));
+  ({ stemSpanish } = await sharedServer.ssrLoadModule('/src/core/nlp/spanishStemmer.jsx'));
+});
+
+after(async () => {
+  await sharedServer?.close();
+});
 
 // Test 1: Sanitización ortopédica y elongaciones (AC-02)
 test('nlpSanitizer: colapsa elongaciones y limpia parásitos de teclado sin alterar la letra ñ', () => {
@@ -80,9 +99,16 @@ async function withViteApp(run) {
     optimizeDeps: { noDiscovery: true, include: [] }
   });
   try {
-    const { nlpEngine } = await server.ssrLoadModule('/src/core/nlp/nlpEngine.jsx');
-    const { env } = await server.ssrLoadModule('/src/core/config/env.jsx');
-    env.useMockStorage = true;
+    const { nlpEngine, NLP_CATEGORIES, CRISIS_PHRASES, NEGATORS, INTENSIFIERS } = await server.ssrLoadModule('/src/core/nlp/nlpEngine.jsx');
+    nlpEngine.setLexicon({
+      version: 'lexico-v1.2',
+      dictionary: {
+        categories: NLP_CATEGORIES,
+        crisisPhrases: CRISIS_PHRASES,
+        negators: NEGATORS,
+        intensifiers: INTENSIFIERS
+      }
+    });
     await run({ nlpEngine });
   } finally {
     await server.close();
@@ -172,4 +198,3 @@ test('nlpEngine (Ronda 3 - Desempeño y Cero LLM): latencia local determinista <
     assert.ok(avgDuration < 50, `El análisis debe tomar menos de 50ms en promedio, tomó ${avgDuration.toFixed(2)}ms`);
   });
 });
-

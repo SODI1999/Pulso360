@@ -3,7 +3,6 @@ import { getReportData, fetchReports, getCachedReports } from '../services/repor
 import { generateReport } from '../services/reportsService';
 import { useState, useMemo, useEffect } from 'react';
 import { authService } from '../../../core/auth/authService';
-import { pulsoStore } from '../../../core/storage/pulsoStore';
 import { apiClient } from '../../../core/api/apiClient';
 import { env } from '../../../core/config/env';
 
@@ -186,15 +185,6 @@ export function useReports() {
       finalReport.scope = res.reportPayload.parametrosFiltro.scope_label || currentScope.label;
       finalReport.sections = res.reportPayload.parametrosFiltro.sections;
       finalReport.period = res.reportPayload.parametrosFiltro.desde+' — '+res.reportPayload.parametrosFiltro.hasta;
-    }
-
-    // Auditoría inmutable (RF-12 / RF-13)
-    if (env.useMockStorage) {
-      pulsoStore.audit({
-        actor: `${meta.solicitante} (${meta.rol})`,
-        action: 'EXPORTACION_REPORTE',
-        target: `${format} · ${meta.alcance} · Hash: ${finalHash}`
-      });
     }
 
     setGeneratedReport({ ...finalReport, meta });

@@ -8,7 +8,6 @@ import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { env } from '../../../core/config/env';
 
 import { authService, roleLabels } from '../../../core/auth/authService';
-import { pulsoStore } from '../../../core/storage/pulsoStore';
 import { nlpEngine } from '../../../core/nlp/nlpEngine';
 
 /**
@@ -205,13 +204,11 @@ export function useJournal() {
         };
 
         if (analysisResult.isCrisisAlert) {
-          if (env.useMockStorage) {
-            pulsoStore.audit({
-              actor: `${currentUser.id} (${roleLabels[currentUser.role] || currentUser.role})`,
-              action: 'RUTA_APOYO_MOSTRADA',
-              target: 'Ruta de apoyo prioritario'
-            });
-          }
+          authService.recordSecurityAudit({
+            actor: `${currentUser.id} (${roleLabels[currentUser.role] || currentUser.role})`,
+            action: 'RUTA_APOYO_MOSTRADA',
+            target: 'Ruta de apoyo prioritario'
+          });
           pendingAnalysisRef.current = finishProcessing;
           setShowCrisisModal(true);
           setCrisisPriorityStep(false);

@@ -6,7 +6,6 @@ import { saveRule, fetchRules } from '../services/alertRulesService';
 
 import { useState, useEffect } from 'react';
 import { authService } from '../../../core/auth/authService';
-import { pulsoStore } from '../../../core/storage/pulsoStore';
 import { Icon } from '../../../core/components/Icon';
 import { RuleFormCard } from '../components/RuleFormCard';
 
@@ -31,7 +30,6 @@ export function AlertRulesPage() {
   const handleSaveRule = async newRule => {
     const result = await saveRule(newRule);
     if (!result.success) { setError(result.error); return result; }
-    if (env.useMockStorage) pulsoStore.audit({ actor:user?.name,action:'PROPUESTA_REGLA_ALERTA',target:newRule.sentence });
     setError('');
     setFeedback('Propuesta guardada, pendiente de aprobación administrativa.');
     setVersion(v => v + 1);

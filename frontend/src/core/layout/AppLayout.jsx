@@ -4,7 +4,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { authService, roleLabels, roleHomePaths } from '../auth/authService';
-import { pulsoStore } from '../storage/pulsoStore';
 import { preferences } from '../storage/preferences';
 import { Icon } from '../components/Icon';
 import { InactivityModal } from '../components/InactivityModal';
@@ -107,17 +106,7 @@ export function AppLayout() {
   }
 
   // Badges discretos en ítems de menú (pastel suave) según datos reales de la operación
-  const storeData = env.useMockStorage ? pulsoStore.get() : {};
-  const navigationCounts = countsError ? {} : user.navigationCounts || {};
-  const pendingAlerts = env.useMockStorage ? (storeData.alerts || []).filter(
-    (a) => a.status === 'GENERADA' || a.status === 'EN_REVISION'
-  ).length : navigationCounts.alerts;
-  const pendingSupport = env.useMockStorage ? (storeData.supportRequests || []).filter(
-    (s) => s.status !== 'Cerrada' && s.status !== 'Resuelta'
-  ).length : navigationCounts.support;
-  const pendingHabeas = env.useMockStorage ? (storeData.habeasRequests || []).filter(
-    (h) => h.status === 'En trámite'
-  ).length : navigationCounts.habeas;
+  const { pendingAlerts, pendingSupport, pendingHabeas, unreadCount } = authService.getBadgeCounts(user, countsError);
 
   const getItemBadge = (href) => {
     if (href === '/sst/alertas' && pendingAlerts > 0) {
@@ -145,12 +134,6 @@ export function AppLayout() {
           hours: `${formatShiftHour(shiftStart)}–${formatShiftHour(shiftStart + 8)}`
         }
       : null;
-
-  // Calcular notificaciones no leídas para el usuario o su rol
-  const notifications = storeData.notifications || [];
-  const unreadCount = env.useMockStorage ? notifications.filter(
-    (n) => !n.read && (n.role === user.role || n.userId === user.id)
-  ).length : navigationCounts.unread;
 
   // Foto de perfil del avatar institucional para roles operativos y de salud ocupacional
   const roleAvatarImg =

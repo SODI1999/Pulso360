@@ -3,7 +3,6 @@ import { getAgentRecords } from '../services/agentQueries';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authService, roleLabels } from '../../../core/auth/authService';
-import { pulsoStore } from '../../../core/storage/pulsoStore';
 import { env } from '../../../core/config/env';
 import { GROUNDING_STEPS, STEP_INTRO_SPEECH, ANCHOR_FEEDBACK_SPEECH } from '../data/crisisSupportData';
 
@@ -82,8 +81,8 @@ export function useCrisisSupport() {
 
   // Registro de auditoría al acceder a la ruta de apoyo prioritario
   useEffect(() => {
-    if (!currentUserId || !env.useMockStorage) return;
-    pulsoStore.audit({
+    if (!currentUserId) return;
+    authService.recordSecurityAudit({
       actor: `${currentUserId} (${roleLabels[currentUserRole] || currentUserRole})`,
       action: 'RUTA_APOYO_MOSTRADA',
       target: 'Ruta de apoyo prioritario y primeros auxilios psicológicos'

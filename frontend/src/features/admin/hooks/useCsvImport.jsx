@@ -1,8 +1,7 @@
 import { useState, useRef } from 'react';
 import { authService } from '../../../core/auth/authService';
-import { pulsoStore } from '../../../core/storage/pulsoStore';
-import { env } from '../../../core/config/env';
 import { validateCsvContent } from '../services/csvValidation';
+import { recordAdminAudit } from '../services/adminQueries';
 
 export function useCsvImport() {
   const currentUser = authService.getCurrentUser();
@@ -41,9 +40,10 @@ export function useCsvImport() {
   const handleProcessImport = () => {
     if (!validationResult?.valid || !parsedRows.length) return;
     setIsProcessing(true);
-    if (env.useMockStorage) pulsoStore.audit({
-      actor:currentUser?.name || 'Administrador de demostración',
-      action:'IMPORTACION_CSV_VALIDADA', target:`Simulación local: ${parsedRows.length} filas de estructura validada`
+    recordAdminAudit({
+      actor: currentUser?.name || 'Administrador de demostración',
+      action: 'IMPORTACION_CSV_VALIDADA',
+      target: `Simulación local: ${parsedRows.length} filas de estructura validada`
     });
     setFeedback(`Comprobación finalizada: ${parsedRows.length} filas compatibles con la plantilla. No se guardaron indicadores en el servidor.`);
     setIsProcessing(false);

@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 2,
+  "criteria": [
+    {
+      "id": "AC-01",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "17 modulos en core/ y 29 servicios en features/*/services/ normalizados a .js. Regla architecture/module-boundaries en eslint.config.js actualizada para core/config/env.js."
+    },
+    {
+      "id": "AC-02",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Eliminacion total de importaciones de pulsoStore en componentes, paginas y hooks UI. Registro de auditoria encapsulado en authService y servicios de dominio."
+    },
+    {
+      "id": "AC-03",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Servicios consumen apiClient.js con inyeccion de token Bearer JWT y tipado JSDoc de respuestas hacia la API REST de backend."
+    },
+    {
+      "id": "AC-04",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Preservacion estricta de k-anonimato (k >= 5) en backend y PrivacyBlockedCard en frontend. Motor lexico determinista NLP local sin dependencias de LLMs externos."
+    },
+    {
+      "id": "AC-05",
+      "kind": "functional",
+      "status": "passed",
+      "method": "automated",
+      "checkIds": [
+        "gate-1",
+        "gate-2",
+        "gate-3",
+        "gate-4"
+      ],
+      "evidence": "Compuertas de calidad superadas exitosamente: backend npm test (132/132 passed), frontend npm test (55/55 passed), frontend npm run lint (0 errores), frontend npm run build (Vite build exitoso)."
+    }
+  ]
+}

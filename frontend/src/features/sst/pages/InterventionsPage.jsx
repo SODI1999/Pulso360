@@ -5,8 +5,6 @@ import { saveIntervention } from '../services/interventionsService';
 
 import { useState, useEffect } from 'react';
 import { authService } from '../../../core/auth/authService';
-import { pulsoStore } from '../../../core/storage/pulsoStore';
-import { env } from '../../../core/config/env';
 import { Icon } from '../../../core/components/Icon';
 import { NewInterventionForm } from '../components/NewInterventionForm';
 
@@ -33,19 +31,15 @@ export function InterventionsPage() {
   const handleSaveIntervention = async (newIntervention) => {
     setFeedback('');
     setErrorMessage('');
-    const result = await saveIntervention(newIntervention);
+    const result = await saveIntervention({
+      ...newIntervention,
+      actor: `${user?.name || 'Profesional SST'} (${user?.role || 'sst'})`
+    });
 
     if (result?.success !== true) {
       setErrorMessage(result.error);
       return { success: false, error: result.error };
     }
-
-    // Registro inmutable de auditoría (RF-09)
-    if (env.useMockStorage) pulsoStore.audit({
-      actor: `${user?.name || 'Profesional SST'} (${user?.role || 'sst'})`,
-      action: 'CREACION_INTERVENCION',
-      target: `${newIntervention.title} · ${newIntervention.campaign}${newIntervention.team ? ' / ' + newIntervention.team : ''} · línea base ${newIntervention.baseline}`
-    });
 
     setFeedback(
       `Intervención "${newIntervention.title}" registrada exitosamente y sincronizada con el módulo de supervisión operativa.`

@@ -1,7 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { authService } from '../../../core/auth/authService';
-import { pulsoStore } from '../../../core/storage/pulsoStore';
 import { env } from '../../../core/config/env';
 import { Icon } from '../../../core/components/Icon';
 import { TrendLineChart } from '../../../core/components/TrendLineChart';
@@ -9,7 +8,7 @@ import { TeamKpiGrid } from '../components/TeamKpiGrid';
 import { TeamFactorsTable } from '../components/TeamFactorsTable';
 import { PrivacyBlockedCard } from '../../../core/components/PrivacyBlockedCard';
 import { useSupervisorMetrics, toScore100 } from '../hooks/useSupervisorMetrics';
-import { getSupervisorData } from '../services/supervisorQueries';
+import { getSupervisorData, recordSupervisorAudit } from '../services/supervisorQueries';
 import { bogotaCalendarDate } from '../../../core/time/calendarDate';
 
 import '../../../styles/supervisor.css';
@@ -45,13 +44,10 @@ export function TeamDashboardPage() {
   // Registro de auditoría cada vez que se filtran métricas agregadas (RF-07)
   useEffect(() => {
     if (!user) return;
-    if (env.useMockStorage) {
-      pulsoStore.audit({
-        actor: `${user.name} (${user.role})`,
-        action: 'CONSULTA_AGREGADA',
-        target: `ámbito=${scopeFilter}; período=${periodFilter}`
-      });
-    }
+    recordSupervisorAudit({
+      actor: `${user.name} (${user.role})`,
+      target: `ámbito=${scopeFilter}; período=${periodFilter}`
+    });
   }, [scopeFilter, periodFilter, user]);
 
   // Factores derivados de las métricas agregadas del equipo

@@ -1,9 +1,8 @@
-import { getSstData, fetchSstAlerts, fetchSstSupportRequests, fetchSstMetrics } from '../services/sstQueries';
+import { getSstData, fetchSstAlerts, fetchSstSupportRequests, fetchSstMetrics, recordSstAudit } from '../services/sstQueries';
 import { useEffect, useMemo, useState } from 'react';
 
 import { authService } from '../../../core/auth/authService';
 import { env } from '../../../core/config/env';
-import { pulsoStore } from '../../../core/storage/pulsoStore';
 
 export function useSstDashboard({ campanaId, equipoId, desde, hasta } = {}) {
   const user = authService.getCurrentUser();
@@ -79,9 +78,8 @@ export function useSstDashboard({ campanaId, equipoId, desde, hasta } = {}) {
   // Registro de auditoría preventiva (RF-07 / RF-11)
   useEffect(() => {
     if (!user) return;
-    if (env.useMockStorage) pulsoStore.audit({
+    recordSstAudit({
       actor: `${user.name} (${user.role})`,
-      action: 'CONSULTA_AGREGADA',
       target: 'SST · Vigilancia epidemiológica y distribución agregada NLP'
     });
   }, [user]);

@@ -5,7 +5,6 @@ import { createHabeasRequest as registerHabeasRequest } from '../services/myData
 import { useState, useMemo, useEffect, useCallback } from 'react';
 
 import { authService, roleLabels } from '../../../core/auth/authService';
-import { pulsoStore } from '../../../core/storage/pulsoStore';
 
 /**
  * Hook para la gestión del Centro de Privacidad, Salvaguardas y Habeas Data del Agente.
@@ -233,13 +232,11 @@ export function useMyDataPrivacy() {
   }, [currentUserId, currentUserEmail, currentUserName, summary]);
 
   const handleDownloadPortability = (format) => {
-    if (env.useMockStorage) {
-      pulsoStore.audit({
-        actor: `${currentUser.id} (${roleLabels[currentUser.role] || currentUser.role})`,
-        action: 'PORTABILIDAD_DATOS',
-        target: format.toUpperCase()
-      });
-    }
+    authService.recordSecurityAudit({
+      actor: `${currentUser.id} (${roleLabels[currentUser.role] || currentUser.role})`,
+      action: 'PORTABILIDAD_DATOS',
+      target: format.toUpperCase()
+    });
   };
 
   // Solicitar rectificación

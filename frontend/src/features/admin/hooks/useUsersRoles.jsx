@@ -1,9 +1,8 @@
-import { getUserManagementData, fetchAdminUsers, fetchAdminOrganization } from '../services/adminQueries';
+import { getUserManagementData, fetchAdminUsers, fetchAdminOrganization, recordAdminAudit } from '../services/adminQueries';
 import { manageUser, saveCreateUser } from '../services/usersRolesService';
 import { useState, useMemo, useEffect } from 'react';
 import { env } from '../../../core/config/env';
 import { authService } from '../../../core/auth/authService';
-import { pulsoStore } from '../../../core/storage/pulsoStore';
 
 import { ROLE_LABELS } from '../data/usersRolesData';
 
@@ -142,7 +141,7 @@ export function useUsersRoles() {
     const { newUser } = operationResult;
 
     // Auditoría inmutable
-    if (env.useMockStorage) pulsoStore.audit({
+    recordAdminAudit({
       actor: actorLabel,
       action: 'CREACION_USUARIO',
       target: `${newUser.id} (${newUser.email}) · Rol: ${ROLE_LABELS[newUser.role] || newUser.role} · Ámbito: ${newUser.teamName} · Estado: ${newUser.status}`
