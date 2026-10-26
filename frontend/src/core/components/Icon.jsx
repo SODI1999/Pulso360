@@ -260,6 +260,7 @@ const lucideComponents = {
   phone: Phone,
   refresh: RefreshCw,
   download: Download,
+  search: Search,
   fileText: FileText,
   fileShield: FileLock,
   clock: Clock,

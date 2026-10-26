@@ -1,13 +1,17 @@
-import { useAuditLog } from '../hooks/useAuditLog';
 // src/features/auditor/pages/AuditLogPage.jsx
 // Módulo de Auditoría y Trazabilidad Inmutable (RF-13)
 
+import { useAuditLog } from '../hooks/useAuditLog';
 import { Icon } from '../../../core/components/Icon';
-import { DownloadLink } from '../../../core/components/DownloadLink';
 import { AuditLogTable } from '../components/AuditLogTable';
 
 import '../../../styles/auditor.css';
 
+/**
+ * Página principal de auditoría y cumplimiento para consulta de logs criptográficos.
+ *
+ * @returns {JSX.Element} Vista de auditoría.
+ */
 export function AuditLogPage() {
   const {
     searchTerm,
@@ -15,15 +19,21 @@ export function AuditLogPage() {
     statusFilter,
     setStatusFilter,
     integrityStatus,
-    feedback,
+    notification,
+    clearNotification,
+    error,
+    loading,
+    busy,
+    pagination,
     filteredLogs,
-    exportContent,
     handleVerifyIntegrity,
-    handleExportCrypto, error, loading, busy, pagination, loadMore, reload
+    handleExportCrypto,
+    loadMore,
+    reload
   } = useAuditLog();
 
   return (
-    <div>
+    <div className="audit-page-container">
       {/* Cabecera */}
       <div className="page-header">
         <div>
@@ -33,38 +43,67 @@ export function AuditLogPage() {
           </p>
         </div>
         <div className="audit-header-actions">
-          <button type="button" className="btn btn-secondary" onClick={handleVerifyIntegrity} disabled={busy}>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={handleVerifyIntegrity}
+            disabled={busy}
+            title="Comprobar encadenamiento SHA-256 de todos los registros"
+          >
             <Icon name="shieldCheck" size={16} />
             <span>Verificar integridad</span>
           </button>
-          <button type="button" className="btn btn-primary" onClick={handleExportCrypto} disabled={busy}>Preparar exportación (máx. 10 000)</button>
-          {exportContent && <DownloadLink
+
+          <button
+            type="button"
             className="btn btn-primary"
-            content={exportContent}
-            mimeType="application/json"
-            fileName={`pulso360-auditoria-${new Date().toISOString().substring(0, 10)}.json`}
+            onClick={handleExportCrypto}
+            disabled={busy}
+            title="Descargar archivo JSON con registros auditados y sellado criptográfico"
           >
-            <Icon name="download" size={16} />
-            <span>Exportar registro auditado</span>
-          </DownloadLink>}
+            <Icon
+              name={busy ? 'refresh' : 'download'}
+              size={16}
+              className={busy ? 'icon-spin' : ''}
+            />
+            <span>{busy ? 'Exportando auditoría…' : 'Exportar auditoría'}</span>
+          </button>
         </div>
       </div>
 
-      {/* Feedback Alert */}
-      {feedback && (
+      {/* Banner de Notificaciones Tipadas */}
+      {notification && (
         <div
-          className={`alert-banner ${integrityStatus.checked && !integrityStatus.valid ? 'danger' : 'ok'}`}
+          className={`alert-banner ${notification.type === 'danger' ? 'danger' : 'ok'}`}
           role="status"
-          style={{ marginBottom: 'var(--space-4)' }}
+          style={{
+            marginBottom: 'var(--space-4)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '12px'
+          }}
         >
-          <Icon
-            name={integrityStatus.checked && !integrityStatus.valid ? 'alertTriangle' : 'checkCircle'}
-            size={18}
-          />
-          <span>{feedback}</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Icon
+              name={notification.type === 'danger' ? 'alertTriangle' : 'checkCircle'}
+              size={18}
+            />
+            <span>{notification.message}</span>
+          </div>
+          <button
+            type="button"
+            className="btn-close"
+            onClick={clearNotification}
+            aria-label="Cerrar notificación"
+            style={{ cursor: 'pointer', background: 'transparent', border: 'none', fontSize: '18px', color: 'inherit' }}
+          >
+            &times;
+          </button>
         </div>
       )}
 
+      {/* Banner de Error de Servidor */}
       {error && (
         <div
           className="alert-banner danger"
@@ -87,6 +126,8 @@ export function AuditLogPage() {
           </button>
         </div>
       )}
+
+      {/* Estado de Carga Inicial */}
       {loading && filteredLogs.length === 0 && (
         <div
           className="supervisor-loading"
@@ -98,7 +139,8 @@ export function AuditLogPage() {
           <p style={{ marginTop: 'var(--space-2)' }}>Cargando registros de auditoría del servidor…</p>
         </div>
       )}
-      {/* Tabla Modular de Registros */}
+
+      {/* Tabla Modular de Registros con Inspector Drawer */}
       <AuditLogTable
         logs={filteredLogs}
         integrityStatus={integrityStatus}
@@ -107,6 +149,8 @@ export function AuditLogPage() {
         statusFilter={statusFilter}
         onStatusFilterChange={setStatusFilter}
       />
+
+      {/* Barra de Paginación */}
       <div className="audit-footer-bar">
         <span>{filteredLogs.length} registros visibles de {pagination.total} consultados.</span>
         {pagination.hasMore && (

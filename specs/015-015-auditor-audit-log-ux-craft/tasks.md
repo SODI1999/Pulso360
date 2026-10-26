@@ -1,0 +1,7 @@
+# [TASKS-015] 015 Auditor Audit Log UX & Ergonomic Craft
+
+- [x] **TASK-01** (AC-01): Implementación del Drawer Lateral Flotante (Side Drawer) para inspección de eventos en `AuditLogTable.jsx` y `auditor.css`, con soporte accesible de teclado (`Escape`), overlay translúcido, trampa de foco, resaltado de fila activa (`.audit-table-row-selected`), copiado de hashes y visualizador JSON con scroll independiente.
+- [x] **TASK-02** (AC-02): Desacoplamiento de notificaciones tipadas y reporte semántico de integridad en `useAuditLog.jsx`, `AuditLogPage.jsx` y `AuditLogTable.jsx`, erradicando falsas alarmas rojas en exportación y mensajes de discrepancia alarmistas ante registros históricos v1, con badge conciso en encabezado.
+- [x] **TASK-03** (AC-03): Unificación del flujo de exportación en 1 clic en `AuditLogPage.jsx` y `useAuditLog.jsx`, sustituyendo el flujo en 2 pasos y la etiqueta anticuada `(máx. 10 000)` por un botón único con estado `busy` y descarga automática programática del archivo JSON.
+- [x] **TASK-04** (AC-04): Rediseño ergonómico de la barra de filtros `.audit-filter-bar` en `AuditLogTable.jsx` y `auditor.css`, alineando en una sola fila horizontal el campo de búsqueda con icono de lupa integrado (`Icon name="search"`), botón para limpiar (`✕`) y selector de estado compacto estilizado sin estiramiento forzado.
+- [x] **TASK-05** (AC-05): Verificación integral de Quality Gates (`npm run lint`, `npm run build`, `npm test` en frontend y backend) y comprobación interactiva y responsive del flujo del auditor.

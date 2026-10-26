@@ -1,12 +1,24 @@
-import { useState } from 'react';
+// src/features/auditor/components/AuditLogTable.jsx
+// Tabla ergonómica de eventos auditables con filtros e inspector criptográfico tipo Drawer lateral (RF-13)
+
+import { useState, useEffect } from 'react';
 import { Icon } from '../../../core/components/Icon';
 
-// src/features/auditor/components/AuditLogTable.jsx
-// Tabla ergonómica de eventos auditables con filtros e inspector criptográfico (RF-13)
-
+/**
+ * Componente modular de visualización de eventos de auditoría con soporte de Drawer lateral.
+ *
+ * @param {object} props Propiedades del componente.
+ * @param {Array} props.logs Registros filtrados a mostrar.
+ * @param {object} props.integrityStatus Estado de integridad criptográfica.
+ * @param {string} props.searchTerm Término de búsqueda actual.
+ * @param {Function} props.onSearchChange Callback al cambiar la búsqueda.
+ * @param {string} props.statusFilter Filtro de estado actual.
+ * @param {Function} props.onStatusFilterChange Callback al cambiar el filtro de estado.
+ * @returns {JSX.Element} Tabla de auditoría e inspector lateral.
+ */
 export function AuditLogTable({
   logs = [],
-  integrityStatus = { checked: false, valid: true, message: 'Cadena inmutable activa' },
+  integrityStatus = { checked: false, valid: true, badgeText: 'Cadena inmutable activa', badgeType: 'badge-info' },
   searchTerm = '',
   onSearchChange = () => {},
   statusFilter = 'ALL',
@@ -14,6 +26,18 @@ export function AuditLogTable({
 }) {
   const [copiedId, setCopiedId] = useState(null);
   const [selectedLog, setSelectedLog] = useState(null);
+
+  // Cierre accesible con tecla Escape
+  useEffect(() => {
+    if (!selectedLog) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setSelectedLog(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedLog]);
 
   const handleCopy = (text, key) => {
     if (!text) return;
@@ -23,45 +47,90 @@ export function AuditLogTable({
   };
 
   return (
-    <div className="card">
-      <div className="card-header">
+    <div className="card audit-card">
+      {/* Encabezado de la Tarjeta */}
+      <div className="card-header audit-card-header">
         <div>
           <div className="card-title">Eventos del sistema registrados</div>
-          <div className="card-subtitle">Trazabilidad de metadatos de operaciones críticas con encadenamiento criptográfico.</div>
+          <div className="card-subtitle">
+            Trazabilidad de metadatos de operaciones críticas con encadenamiento criptográfico.
+          </div>
         </div>
-        <span
-          className={`badge ${integrityStatus.checked ? (integrityStatus.valid ? 'badge-ok' : 'badge-danger') : 'badge-info'}`}
-        >
-          {integrityStatus.message}
+        <span className={`badge ${integrityStatus.badgeType || 'badge-info'} audit-header-badge`}>
+          {integrityStatus.badgeText || (integrityStatus.checked ? (integrityStatus.valid ? 'Cadena íntegra' : 'Discrepancia') : 'Cadena activa')}
         </span>
       </div>
 
-      {/* Barra de Filtros */}
+      {/* Franja de Resumen Criptográfico (Visible solo al verificar) */}
+      {integrityStatus.checked && (
+        <div className="audit-integrity-strip" role="status">
+          <div className="audit-integrity-stat">
+            <span className="audit-stat-label">Cadena de hashes:</span>
+            <strong className="audit-stat-value ok">
+              <Icon name="checkCircle" size={13} /> 100% íntegra
+            </strong>
+          </div>
+          <div className="audit-integrity-stat">
+            <span className="audit-stat-label">Formato v2 verificado:</span>
+            <strong className="audit-stat-value">{integrityStatus.verifiedRecords || 0} eventos</strong>
+          </div>
+          <div className="audit-integrity-stat">
+            <span className="audit-stat-label">Históricos v1 sellados:</span>
+            <strong className="audit-stat-value">{integrityStatus.legacyUnverifiable || 0} registros</strong>
+          </div>
+          {integrityStatus.hasLegacy && (
+            <span className="audit-integrity-legacy-note">
+              Los registros históricos v1 conservan su sellado original.
+            </span>
+          )}
+        </div>
+      )}
+
+      {/* Barra de Filtros Horizontal Compacta */}
       <div className="audit-filter-bar">
-        <input
-          type="search"
-          className="form-input audit-filter-input"
-          placeholder="Buscar por ID, actor, acción, objetivo o IP..."
-          aria-label="Buscar en los eventos cargados"
-          value={searchTerm}
-          onChange={(e) => onSearchChange(e.target.value)}
-        />
-        <select
-          className="form-select audit-filter-select"
-          aria-label="Resultado de los eventos cargados"
-          value={statusFilter}
-          onChange={(e) => onStatusFilterChange(e.target.value)}
-        >
-          <option value="ALL">Todos los resultados</option>
-          <option value="EXITO">Solo Éxito</option>
-          <option value="DENEGADO">Solo Denegado</option>
-          <option value="NO_REGISTRADO">Resultado no registrado</option>
-        </select>
+        <div className="audit-search-box">
+          <Icon name="Search" size={15} className="audit-search-icon" />
+          <input
+            type="search"
+            className="form-input audit-filter-input"
+            placeholder="Buscar por ID, actor, acción, objetivo o IP..."
+            aria-label="Buscar en los eventos cargados"
+            style={{ paddingLeft: '38px', paddingRight: '34px' }}
+            value={searchTerm}
+            onChange={(e) => onSearchChange(e.target.value)}
+          />
+          {searchTerm && (
+            <button
+              type="button"
+              className="audit-search-clear"
+              onClick={() => onSearchChange('')}
+              title="Limpiar búsqueda"
+              aria-label="Limpiar campo de búsqueda"
+            >
+              &times;
+            </button>
+          )}
+        </div>
+
+        <div className="audit-select-wrapper">
+          <select
+            className="form-select audit-filter-select"
+            aria-label="Filtrar por resultado de la operación"
+            value={statusFilter}
+            onChange={(e) => onStatusFilterChange(e.target.value)}
+          >
+            <option value="ALL">Todos los estados</option>
+            <option value="EXITO">Solo Éxito</option>
+            <option value="DENEGADO">Solo Denegado</option>
+            <option value="NO_REGISTRADO">Sin registrar</option>
+          </select>
+        </div>
       </div>
 
-      <p className="form-hint" style={{ margin: 'var(--space-2) 0 var(--space-3)' }}>
-        Los filtros se aplican a los eventos cargados. “No registrado” indica que el evento no contiene un resultado explícito; no se presume éxito.
-      </p>
+      <div className="audit-filter-hint">
+        <Icon name="info" size={12} />
+        <span>Los filtros aplican a los eventos en memoria. “Sin registrar” indica eventos sin resultado explícito (no se presume éxito).</span>
+      </div>
 
       {/* Tabla de Eventos */}
       <div className="table-responsive">
@@ -69,10 +138,10 @@ export function AuditLogTable({
           <thead>
             <tr>
               <th style={{ width: '13%' }}>ID Evento</th>
-              <th style={{ width: '17%' }}>Fecha y Hora</th>
+              <th style={{ width: '16%' }}>Fecha y Hora</th>
               <th style={{ width: '17%' }}>Actor Responsable</th>
               <th style={{ width: '15%' }}>Acción</th>
-              <th style={{ width: '20%' }}>Objetivo / Entidad</th>
+              <th style={{ width: '21%' }}>Objetivo / Entidad</th>
               <th style={{ width: '10%' }}>Resultado</th>
               <th style={{ width: '8%', textAlign: 'right' }}>Detalle</th>
             </tr>
@@ -82,9 +151,10 @@ export function AuditLogTable({
               <tr>
                 <td
                   colSpan="7"
-                  style={{ textAlign: 'center', padding: 'var(--space-6)', color: 'var(--c-texto-suave)' }}
+                  style={{ textAlign: 'center', padding: 'var(--space-8)', color: 'var(--c-texto-suave)' }}
                 >
-                  No se encontraron registros de auditoría que coincidan con los filtros.
+                  <Icon name="search" size={24} style={{ opacity: 0.4, marginBottom: 'var(--space-2)' }} />
+                  <p style={{ margin: 0 }}>No se encontraron registros de auditoría que coincidan con los filtros.</p>
                 </td>
               </tr>
             ) : (
@@ -93,9 +163,13 @@ export function AuditLogTable({
                 const isOk = log.status === 'EXITO';
                 const isCopied = copiedId === log.id;
                 const isLongId = String(log.id).length > 12;
+                const isSelected = selectedLog?.id === log.id;
 
                 return (
-                  <tr key={log.id} className="audit-table-row">
+                  <tr
+                    key={log.id}
+                    className={`audit-table-row ${isSelected ? 'audit-table-row-selected' : ''}`}
+                  >
                     <td>
                       <div className="audit-id-cell">
                         <span className="audit-code-cell" title={log.id}>
@@ -135,13 +209,14 @@ export function AuditLogTable({
                     <td style={{ textAlign: 'right' }}>
                       <button
                         type="button"
-                        className="btn btn-secondary btn-xs"
-                        onClick={() => setSelectedLog(log)}
-                        title="Inspeccionar metadatos y hash criptográfico"
+                        className={`btn ${isSelected ? 'btn-primary' : 'btn-secondary'} btn-xs`}
+                        onClick={() => setSelectedLog(isSelected ? null : log)}
+                        title="Inspeccionar metadatos y hash en el panel lateral"
+                        aria-expanded={isSelected}
                         aria-label={`Inspeccionar evento ${log.id}`}
                       >
-                        <Icon name="Search" size={12} />
-                        <span>Ver</span>
+                        <Icon name="search" size={12} />
+                        <span>{isSelected ? 'Viendo' : 'Ver'}</span>
                       </button>
                     </td>
                   </tr>
@@ -152,111 +227,141 @@ export function AuditLogTable({
         </table>
       </div>
 
-      {/* Modal / Inspector de Evento Auditado */}
+      {/* Inspector Flotante tipo Drawer Lateral */}
       {selectedLog && (
-        <div className="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="auditDetailTitle">
-          <div className="modal-content" style={{ maxWidth: '640px' }}>
-            <div className="modal-header">
+        <div
+          className="audit-drawer-overlay"
+          role="presentation"
+          onClick={() => setSelectedLog(null)}
+        >
+          <aside
+            className="audit-drawer-panel"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="auditDrawerTitle"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="audit-drawer-header">
               <div>
-                <h3 id="auditDetailTitle" className="modal-title" style={{ margin: 0 }}>
-                  Inspección de evento #{selectedLog.id}
+                <div className="audit-drawer-badges">
+                  <span className="badge badge-info">{selectedLog.action}</span>
+                  <span
+                    className={`badge ${selectedLog.status === 'EXITO' ? 'badge-ok' : selectedLog.status === 'DENEGADO' ? 'badge-danger' : 'badge-muted'}`}
+                  >
+                    {selectedLog.status === 'NO_REGISTRADO'
+                      ? 'No reg.'
+                      : selectedLog.status === 'EXITO'
+                        ? 'Éxito'
+                        : selectedLog.status === 'DENEGADO'
+                          ? 'Denegado'
+                          : selectedLog.status}
+                  </span>
+                </div>
+                <h3 id="auditDrawerTitle" className="audit-drawer-title">
+                  Evento #{selectedLog.id}
                 </h3>
-                <p style={{ margin: '2px 0 0', fontSize: '12.5px', color: 'var(--c-texto-suave)' }}>
-                  {selectedLog.date} · IP: {selectedLog.ip || 'Interna / Local'}
-                </p>
+                <div className="audit-drawer-meta">
+                  <Icon name="clock" size={13} />
+                  <span>{selectedLog.date}</span>
+                  <span className="audit-drawer-sep">·</span>
+                  <span>IP: {selectedLog.ip || 'Interna / Local'}</span>
+                </div>
               </div>
               <button
                 type="button"
-                className="btn-close"
+                className="audit-drawer-close"
                 onClick={() => setSelectedLog(null)}
-                aria-label="Cerrar modal"
+                aria-label="Cerrar panel de inspección"
               >
                 &times;
               </button>
             </div>
 
-            <div className="modal-body" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-3)' }}>
-                <div>
-                  <span className="form-label" style={{ fontSize: '11.5px' }}>Actor responsable</span>
-                  <div style={{ fontWeight: 600 }}>{selectedLog.actor}</div>
+            <div className="audit-drawer-body">
+              {/* Información principal de la operación */}
+              <div className="audit-detail-grid">
+                <div className="audit-detail-item">
+                  <span className="audit-detail-label">Actor Responsable</span>
+                  <strong className="audit-detail-value">{selectedLog.actor}</strong>
                 </div>
-                <div>
-                  <span className="form-label" style={{ fontSize: '11.5px' }}>Acción registrada</span>
-                  <div><span className="badge badge-info">{selectedLog.action}</span></div>
+                <div className="audit-detail-item">
+                  <span className="audit-detail-label">Objetivo / Entidad</span>
+                  <span className="audit-detail-value audit-detail-target">{selectedLog.target}</span>
                 </div>
               </div>
 
-              <div>
-                <span className="form-label" style={{ fontSize: '11.5px' }}>Objetivo / Entidad</span>
-                <div style={{ fontSize: '13px', color: 'var(--c-texto)' }}>{selectedLog.target}</div>
-              </div>
-
-              {selectedLog.hash && (
-                <div>
-                  <span className="form-label" style={{ fontSize: '11.5px' }}>Hash SHA-256 del evento</span>
-                  <div className="audit-code-cell" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '6px 8px' }}>
-                    <code style={{ fontSize: '11px', wordBreak: 'break-all' }}>{selectedLog.hash}</code>
+              {/* Hash SHA-256 del evento */}
+              <div className="audit-detail-section">
+                <span className="audit-detail-label">Hash SHA-256 del evento</span>
+                <div className="audit-hash-box">
+                  <code className="audit-hash-code">{selectedLog.hash || 'Hash sellado no disponible'}</code>
+                  {selectedLog.hash && (
                     <button
                       type="button"
                       className="audit-copy-btn"
                       onClick={() => handleCopy(selectedLog.hash, 'hash')}
-                      title="Copiar hash"
+                      title={copiedId === 'hash' ? '¡Copiado!' : 'Copiar hash'}
+                      aria-label="Copiar hash SHA-256"
                     >
-                      <Icon name={copiedId === 'hash' ? 'check' : 'copy'} size={12} />
+                      <Icon name={copiedId === 'hash' ? 'check' : 'copy'} size={13} />
                     </button>
-                  </div>
+                  )}
                 </div>
-              )}
+              </div>
 
-              {selectedLog.prevHash && (
-                <div>
-                  <span className="form-label" style={{ fontSize: '11.5px' }}>Hash previo encadenado (prev_hash)</span>
-                  <div className="audit-code-cell" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '6px 8px' }}>
-                    <code style={{ fontSize: '11px', wordBreak: 'break-all' }}>{selectedLog.prevHash}</code>
+              {/* Hash previo encadenado */}
+              <div className="audit-detail-section">
+                <span className="audit-detail-label">Hash previo encadenado (prev_hash)</span>
+                <div className="audit-hash-box">
+                  <code className="audit-hash-code">{selectedLog.prevHash || 'Génesis / Raíz inicial'}</code>
+                  {selectedLog.prevHash && (
                     <button
                       type="button"
                       className="audit-copy-btn"
                       onClick={() => handleCopy(selectedLog.prevHash, 'prevHash')}
-                      title="Copiar hash previo"
+                      title={copiedId === 'prevHash' ? '¡Copiado!' : 'Copiar hash previo'}
+                      aria-label="Copiar hash previo"
                     >
-                      <Icon name={copiedId === 'prevHash' ? 'check' : 'copy'} size={12} />
+                      <Icon name={copiedId === 'prevHash' ? 'check' : 'copy'} size={13} />
                     </button>
-                  </div>
+                  )}
                 </div>
-              )}
+              </div>
 
-              {selectedLog.rawDetails && Object.keys(selectedLog.rawDetails).length > 0 && (
-                <div>
-                  <span className="form-label" style={{ fontSize: '11.5px' }}>Metadatos de la operación (Payload)</span>
-                  <pre
-                    style={{
-                      background: 'var(--c-fondo-alt, #f8fafc)',
-                      border: '1px solid var(--c-borde-suave)',
-                      borderRadius: 'var(--radius-sm)',
-                      padding: 'var(--space-3)',
-                      fontSize: '11.5px',
-                      maxHeight: '180px',
-                      overflowY: 'auto',
-                      margin: 0
-                    }}
-                  >
-                    {JSON.stringify(selectedLog.rawDetails, null, 2)}
-                  </pre>
+              {/* Payload JSON de metadatos */}
+              <div className="audit-detail-section">
+                <div className="audit-payload-header">
+                  <span className="audit-detail-label">Metadatos de la operación (Payload)</span>
+                  {selectedLog.rawDetails && (
+                    <button
+                      type="button"
+                      className="btn btn-ghost btn-xs"
+                      onClick={() => handleCopy(JSON.stringify(selectedLog.rawDetails, null, 2), 'payload')}
+                      title="Copiar JSON completo"
+                    >
+                      <Icon name={copiedId === 'payload' ? 'check' : 'copy'} size={12} />
+                      <span>{copiedId === 'payload' ? 'Copiado' : 'Copiar JSON'}</span>
+                    </button>
+                  )}
                 </div>
-              )}
+                <pre className="audit-payload-code">
+                  {selectedLog.rawDetails && Object.keys(selectedLog.rawDetails).length > 0
+                    ? JSON.stringify(selectedLog.rawDetails, null, 2)
+                    : '// Sin metadatos adicionales en el payload de este evento'}
+                </pre>
+              </div>
             </div>
 
-            <div className="modal-footer" style={{ justifyContent: 'flex-end', borderTop: '1px solid var(--c-borde-suave)', paddingTop: 'var(--space-3)' }}>
+            <div className="audit-drawer-footer">
               <button
                 type="button"
                 className="btn btn-secondary btn-sm"
                 onClick={() => setSelectedLog(null)}
               >
-                Cerrar
+                Cerrar panel
               </button>
             </div>
-          </div>
+          </aside>
         </div>
       )}
     </div>

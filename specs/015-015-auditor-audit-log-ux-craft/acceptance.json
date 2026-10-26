@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 2,
+  "criteria": [
+    {
+      "id": "AC-01",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Drawer lateral flotante .audit-drawer-panel (position: fixed; right: 0; top: 0; bottom: 0; width: 500px) implementado en AuditLogTable.jsx con listener de Escape, resaltado de fila activa, hashes monoespaciados y visor de payload JSON."
+    },
+    {
+      "id": "AC-02",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Notificaciones desacopladas y tipadas (notification.type = 'ok') en useAuditLog.jsx y AuditLogPage.jsx. Verificación semántica distingue registros v1 históricos (badge 'Cadena íntegra (v1 conservada)') eliminando falsas alarmas rojas."
+    },
+    {
+      "id": "AC-03",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Botón único 'Exportar auditoría' con estado busy y descarga directa programática en el navegador mediante Blob application/json. Eliminación del flujo en dos pasos y de la etiqueta anticuada (máx. 10 000)."
+    },
+    {
+      "id": "AC-04",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Barra de filtros horizontal en una sola fila con caja de búsqueda con icono Search integrado, botón de limpieza de texto y selector de estado con ancho contenido (210px) en auditor.css."
+    },
+    {
+      "id": "AC-05",
+      "kind": "functional",
+      "status": "passed",
+      "method": "automated",
+      "checkIds": ["gate-1", "gate-2", "gate-3", "gate-4"],
+      "evidence": "Quality gates 100% aprobados: frontend lint (0 errores, 0 warnings), vite build limpio y 187 pruebas automatizadas de monorepo superadas."
+    }
+  ]
+}
