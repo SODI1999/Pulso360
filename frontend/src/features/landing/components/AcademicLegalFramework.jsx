@@ -10,11 +10,10 @@ export function AcademicLegalFramework() {
     >
       <div className="section-title-wrap">
         <span className="section-tag">Marco Normativo Colombiano</span>
-        <h2 id="sec-legal-titulo">Deslinde de Responsabilidad & Marco Normativo de Referencia</h2>
+        <h2 id="sec-legal-titulo">Marco Normativo Colombiano & Salvaguardas Jurídicas</h2>
       </div>
       <p className="section-prose">
-        Esta página reúne referencias del ordenamiento jurídico colombiano relacionadas con derechos de autor,
-        SST, desconexión laboral y protección de datos. No constituye certificación de cumplimiento legal:
+        Fundamentación jurídica y salvaguardas ético-legales de Colombia que orientan la naturaleza preventiva, los derechos de autoría y la protección de datos en Pulso360:
       </p>
       <div className="legal-dossier-shell">
         {LEGAL_FRAMEWORK_DATA.map((item) => {

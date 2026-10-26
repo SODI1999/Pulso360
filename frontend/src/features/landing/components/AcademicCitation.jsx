@@ -27,6 +27,8 @@ export function AcademicCitation({
               <button
                 type="button"
                 role="tab"
+                id="tab-format-apa"
+                aria-controls="panel-citation-format"
                 aria-selected={citationFormat === 'apa7'}
                 className={'tab-btn ' + (citationFormat === 'apa7' ? 'is-active' : '')}
                 onClick={() => setCitationFormat('apa7')}
@@ -36,6 +38,8 @@ export function AcademicCitation({
               <button
                 type="button"
                 role="tab"
+                id="tab-format-bibtex"
+                aria-controls="panel-citation-format"
                 aria-selected={citationFormat === 'bibtex'}
                 className={'tab-btn ' + (citationFormat === 'bibtex' ? 'is-active' : '')}
                 onClick={() => setCitationFormat('bibtex')}
@@ -47,7 +51,7 @@ export function AcademicCitation({
               type="button"
               className={'btn-copy-citation ' + (copied ? 'is-copied' : '')}
               onClick={handleCopyCitation}
-              aria-label="Copiar referencia bibliográfica al portapapeles"
+              aria-label="Copiar cita bibliográfica al portapapeles"
             >
               <Icon name={copied ? 'check' : 'copy'} size={15} />
               <span aria-live="polite">
@@ -56,7 +60,12 @@ export function AcademicCitation({
             </button>
           </div>
         </div>
-        <div className="citation-body-box">
+        <div
+          className="citation-body-box"
+          id="panel-citation-format"
+          role="tabpanel"
+          aria-labelledby={citationFormat === 'apa7' ? 'tab-format-apa' : 'tab-format-bibtex'}
+        >
           {citationFormat === 'apa7' ? (
             <blockquote className="apa-citation-text">{CITATION_DATA.apa7}</blockquote>
           ) : (

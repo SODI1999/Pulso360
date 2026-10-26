@@ -43,6 +43,9 @@ export function AcademicEvidence() {
               role="progressbar"
               aria-label="Distribución de niveles de fatiga emocional"
               aria-valuenow="84.3"
+              aria-valuemin="0"
+              aria-valuemax="100"
+              aria-valuetext="84.3% de prevalencia de agotamiento emocional"
             >
               {EMPIRICAL_DATA.distribution.map((dist) => (
                 <div

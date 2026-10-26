@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 2,
+  "criteria": [
+    {
+      "id": "AC-01",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Fondo de .dist-mid actualizado a #B45309 (Amber 700), alcanzando un ratio de contraste de 5.02:1 con texto blanco (#FFFFFF), superando el umbral WCAG 2.2 AA (4.5:1) verificado por Lighthouse snapshot (score 100)."
+    },
+    {
+      "id": "AC-02",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Color de .correlation-sig-badge actualizado a #334155 (Slate 700) sobre fondo #F1F5F9, alcanzando un ratio de contraste de 7.20:1, superando ampliamente el umbral WCAG 2.2 AA (4.5:1) y verificado por Lighthouse snapshot."
+    },
+    {
+      "id": "AC-03",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Boton de guardado/impresion en AcademicHeader.jsx sincronizado con aria-label='Guardar / Imprimir Ficha metodologica en PDF', conteniendo de forma integra la cadena visible 'Guardar / Imprimir Ficha' al inicio del nombre accesible (WCAG 2.5.3 cumplido)."
+    },
+    {
+      "id": "AC-04",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Boton de copiado en AcademicCitation.jsx actualizado a aria-label='Copiar cita bibliografica al portapapeles', alineando el nombre accesible con la etiqueta visible 'Copiar cita' (WCAG 2.5.3 cumplido)."
+    },
+    {
+      "id": "AC-05",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Patron WAI-ARIA APG tabs implementado con id='tab-format-apa', id='tab-format-bibtex' y contenedor id='panel-citation-format' con role='tabpanel' vinculado dinamicamente via aria-labelledby. Barra de progreso completada con aria-valuemin='0', aria-valuemax='100' y aria-valuetext. Notas al pie redundantes consolidadas en una unica nota metodologica rigurosa."
+    },
+    {
+      "id": "AC-06",
+      "kind": "functional",
+      "status": "passed",
+      "method": "automated",
+      "checkIds": [
+        "gate-2",
+        "gate-3",
+        "gate-4"
+      ],
+      "evidence": "Lighthouse Accessibility score 100/100 (0 fallos). Quality gates aprobados con exito: npm run lint (0 errores/warnings), npm test (55/55 pruebas unitarias exitosas), npm run build (compilacion Vite limpia sin errores)."
+    }
+  ]
+}

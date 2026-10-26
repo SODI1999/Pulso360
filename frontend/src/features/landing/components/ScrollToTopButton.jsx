@@ -25,8 +25,8 @@ export function ScrollToTopButton() {
       type="button"
       className={`btn-scroll-top ${isVisible ? 'visible' : ''}`}
       onClick={scrollToTop}
-      aria-label="Volver al inicio de la página"
-      title="Volver al inicio"
+      aria-label="Subir al inicio del documento"
+      title="Subir al inicio del documento"
       tabIndex={isVisible ? 0 : -1}
       aria-hidden={!isVisible}
     >

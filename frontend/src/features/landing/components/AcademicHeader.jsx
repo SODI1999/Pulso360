@@ -17,7 +17,7 @@ export function AcademicHeader({ handlePrint }) {
           onClick={handlePrint}
           className="btn-print-dossier no-print"
           title="Imprimir o guardar ficha en PDF"
-          aria-label="Imprimir ficha metodológica"
+          aria-label="Guardar / Imprimir Ficha metodológica en PDF"
         >
           <Icon name="Printer" size={14} />
           <span>Guardar / Imprimir Ficha</span>
@@ -37,10 +37,10 @@ export function AcademicHeader({ handlePrint }) {
         <div className="toc-links-row">
           <a href="#autores" className="toc-pill-link">
             <Icon name="users" size={13} />
-            <span>Equipo</span>
+            <span>Autores</span>
           </a>
           <a href="#evidencia-empirica" className="toc-pill-link">
-            <Icon name="Search" size={13} />
+            <Icon name="Activity" size={13} />
             <span>1. Evidencia</span>
           </a>
           <a href="#transferencia" className="toc-pill-link">
@@ -48,11 +48,11 @@ export function AcademicHeader({ handlePrint }) {
             <span>2. Transferencia</span>
           </a>
           <a href="#antivigilancia" className="toc-pill-link">
-            <Icon name="shieldCheck" size={13} />
-            <span>3. Principios de diseño</span>
+            <Icon name="ShieldCheck" size={13} />
+            <span>3. Anti-vigilancia</span>
           </a>
           <a href="#citacion" className="toc-pill-link">
-            <Icon name="fileText" size={13} />
+            <Icon name="Bookmark" size={13} />
             <span>4. Citación</span>
           </a>
           <a href="#marco-legal" className="toc-pill-link">

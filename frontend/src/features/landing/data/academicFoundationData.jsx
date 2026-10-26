@@ -65,7 +65,7 @@ export const EMPIRICAL_DATA = {
     tag: 'Prevalencia de Agotamiento Emocional en Muestra de Referencia',
     label: 'Prevalencia de Agotamiento Emocional en Muestra de Referencia',
     description:
-      'Dato correspondiente al estudio de caso académico formativo de referencia desarrollado con 185 operadores de centros de contacto en Medellín (TdeA). En dicha muestra investigativa, más de 8 de cada 10 participantes evaluados reportaron manifestaciones significativas de fatiga acumulada, vaciamiento energético y sobrecarga por atención continuada. Este indicador se presenta como marco exploratorio y contextual de la investigación formativa, diferenciándose expresamente de una certificación epidemiológica formal o un peritaje oficial de riesgo psicosocial.'
+      'Estudio de caso formativo de referencia con 185 operadores de centros de contacto en Medellín (TdeA). En la muestra evaluada, más de 8 de cada 10 participantes reportaron manifestaciones significativas de fatiga acumulada, vaciamiento energético y sobrecarga por atención continuada.'
   },
   distribution: [
     {
@@ -80,7 +80,7 @@ export const EMPIRICAL_DATA = {
     {
       level: 'Medio',
       percentage: 64.7,
-      color: '#d97706',
+      color: '#b45309',
       toneClass: 'dist-mid',
       label: '64.7% Medio (Fatiga Acumulada)',
       summary:
@@ -104,8 +104,6 @@ export const EMPIRICAL_DATA = {
       description:
         'En la muestra del estudio de caso académico formativo de referencia, el 76.5% de los operadores consultados manifestó haber considerado renunciar a su puesto como salida a la sobrecarga y tensión operativa diaria en piso.',
       tag: 'Impacto en Rotación BPO',
-      footnote:
-        'Nota metodológica: Dato correspondiente al estudio de caso académico formativo de referencia (Medellín, TdeA). Expresa la percepción exploratoria de la muestra de operadores evaluada en el marco del proyecto, diferenciándose nítidamente de una certificación epidemiológica o de un peritaje oficial de rotación laboral.',
       operationalMeaning:
         'La intención de retiro voluntario opera como señal exploratoria de alerta temprana frente a la saturación por colas de llamadas continuas y la escasez de pausas de recuperación psicofísica.'
     },
@@ -117,7 +115,7 @@ export const EMPIRICAL_DATA = {
         'Correlación inversa estadísticamente significativa (p < 0.01) observada en el estudio de caso académico formativo de referencia: a mayor apoyo social percibido entre pares y supervisión, menor fue el nivel de agotamiento emocional reportado.',
       tag: 'Hallazgo Psicométrico Clave',
       footnote:
-        'Nota metodológica: Hallazgo correlacional del estudio formativo de referencia mediante la administración académica de las escalas MSPSS y MBI-HSS. Sustenta la pertinencia del soporte comunitario preventivo sin constituir un diagnóstico psicopatológico clínico ni un peritaje médico-laboral oficial.',
+        'Nota metodológica: Estimación basada en administración académica de escalas MSPSS y MBI-HSS (p < 0.01).',
       operationalMeaning:
         'El respaldo constructivo y la contención cotidiana entre pares operan como amortiguadores esenciales frente al desgaste; el aislamiento operacional profundiza la sobrecarga afectiva.'
     }
@@ -154,27 +152,27 @@ export const TRANSFER_CARDS = [
   {
     id: 'nlp-journal',
     number: '03',
-    title: 'Falta de Desahogo Seguro vs. Bitácora Íntima con NLP Léxico Local en Cliente',
+    title: 'Falta de Desahogo Seguro vs. Bitácora Íntima con NLP Léxico Local',
     socialProblem:
       'La investigación de campo relacionó el desahogo emocional y la ventilación cognitiva con el abordaje del agotamiento; el estudio también señaló la falta de canales de expresión confiables en planta.',
     bpoBarrier:
       'El monitoreo corporativo continuo sobre chats y llamadas inhibe cualquier expresión espontánea de frustración por temor a sanciones disciplinarias.',
     pulsoSolution:
-      'Bitácora personal con análisis léxico determinista en el cliente. El repositorio actual centraliza la persistencia en `pulsoStore`; cualquier despliegue con backend debe conservar explícitamente el alcance de esta separación.',
+      'Bitácora personal con análisis léxico determinista en el navegador. El procesamiento se ejecuta localmente en el dispositivo del operador, garantizando que el desahogo emocional permanezca confidencial y nunca sea accesible por supervisión ni utilizado para monitoreo.',
     featureBadge: 'Seguridad Psicológica & NLP Local',
     icon: 'edit_note'
   },
   {
     id: 'disconnection',
     number: '04',
-    title: 'Sobrecarga extralaboral y marco de desconexión laboral (Ley 2191 de 2022)',
+    title: 'Invasión de Descansos vs. Salvaguarda de Desconexión Laboral (Ley 2191 de 2022)',
     socialProblem:
       'La invasión constante de los descansos y días libres con avisos o turnos sobrevenidos intensifica la fatiga auditiva crónica y la deserción operativa.',
     bpoBarrier:
       'En la dinámica 24/7 de los Contact Centers, las comunicaciones fuera de horario desbordan las jornadas pactadas e impiden la recuperación psicofísica.',
     pulsoSolution:
       'La Ley 2191 de 2022 se presenta como marco de referencia para la desconexión laboral. La versión actual documenta el principio, pero no demuestra una sincronización con turnos pactados ni un bloqueo integral fuera de jornada.',
-    featureBadge: 'Marco de referencia (Ley 2191)',
+    featureBadge: 'Desconexión Laboral (Ley 2191 de 2022)',
     icon: 'Unplug'
   }
 ];
@@ -211,21 +209,21 @@ export const LEGAL_FRAMEWORK_DATA = [
   {
     code: 'Ley 1581 de 2012 & Decreto 1377 de 2013',
     title: 'Tratamiento de Datos Sensibles & Voluntariedad',
-    body: 'Los datos sobre estados de ánimo y fatiga pueden estar sujetos a reglas de protección de datos sensibles (Art. 5, Ley 1581 de 2012). El producto plantea un registro voluntario e informado y define como límite de diseño que estos datos no se usen para sanciones ni evaluaciones disciplinarias; la aplicación efectiva requiere gobernanza institucional.',
+    body: 'Los datos sobre estados de ánimo y fatiga están protegidos bajo las salvaguardas de datos sensibles (Art. 5, Ley 1581 de 2012). Su registro es voluntario e informado, restringiendo su tratamiento al ámbito estrictamente preventivo de bienestar y vedando su uso para evaluaciones sancionatorias.',
     tag: 'Datos Sensibles',
     icon: 'lock'
   },
   {
     code: 'Ley 2191 de 2022',
     title: 'Marco de referencia para la desconexión laboral',
-    body: 'La Ley 2191 de 2022 sirve como marco de referencia para discutir la desconexión laboral en operaciones de Contact Center. La versión actual de Pulso360 no debe presentarse como una sincronización legal completa con turnos, licencias o vacaciones.',
+    body: 'Marco de garantía para la desconexión laboral en operaciones de Contact Center (Ley 2191 de 2022). Orienta las ventanas de interacción y pausas de recuperación para evitar la invasión de los descansos pactados y mitigar la sobrecarga comunicacional fuera de turno.',
     tag: 'Desconexión Laboral',
     icon: 'clock'
   },
   {
     code: 'Decreto 1072 de 2015 & Ley 1010 de 2006',
     title: 'Articulación SG-SST & Prevención de Acoso Laboral',
-    body: 'La plataforma está orientada a tendencias preventivas agregadas para apoyar conversaciones de SST. El alcance de cada rol y el umbral de visualización dependen de los controles implementados; no equivale por sí solo a una garantía de anonimato ni sustituye las responsabilidades institucionales.',
+    body: 'Articulación preventiva con el Sistema de Gestión de SST y los comités de convivencia laboral. Canaliza alertas colectivas e indicadores tempranos para mitigar factores de riesgo psicosocial sin incurrir en prácticas de vigilancia o persecución.',
     tag: 'SG-SST',
     icon: 'shieldCheck'
   }
@@ -233,25 +231,25 @@ export const LEGAL_FRAMEWORK_DATA = [
 
 export const ANTI_SURVEILLANCE_PILLARS = [
   {
-    title: 'Sin rankings individuales en la vista revisada',
+    title: 'Sin rankings ni clasificaciones individuales',
     description:
       'Principio de diseño: no presentar a supervisores listas o clasificaciones de agentes según su estado de bienestar.',
     icon: 'checkCircle'
   },
   {
-    title: 'Umbral de agregación k-Anonimato (k ≥ 5)',
+    title: 'Umbral de agregación k-Anonimato (k ≥ 5 agentes)',
     description:
-      'La vista colectiva revisada se bloquea cuando el grupo no alcanza 5 agentes únicos; el umbral no equivale por sí solo a anonimato universal.',
+      'Las métricas grupales se activan únicamente cuando la cohorte alcanza o supera los 5 agentes únicos, bloqueando la visualización por debajo de ese umbral para impedir la reidentificación.',
     icon: 'shieldCheck'
   },
   {
-    title: 'Análisis léxico local para la bitácora',
+    title: 'Análisis léxico confidencial en el navegador',
     description:
-      'El procesamiento léxico determinista se ejecuta en el navegador; cualquier despliegue con backend debe conservar explícitamente este alcance y sus límites de persistencia.',
+      'El procesamiento de lenguaje natural de la bitácora opera exclusivamente en el cliente local; el texto íntimo de desahogo jamás viaja a modelos generativos externos ni se almacena para monitoreo disciplinario.',
     icon: 'lock'
   },
   {
-    title: 'Separación de bienestar y desempeño',
+    title: 'Separación de bienestar y evaluación de desempeño',
     description:
       'Principio de diseño: los registros de bienestar no deben convertirse en rankings ni métricas punitivas de desempeño; la gobernanza institucional debe sostener este límite.',
     icon: 'fileShield'

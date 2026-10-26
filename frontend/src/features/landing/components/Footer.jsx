@@ -53,7 +53,13 @@ export function Footer() {
           <button type="button" onClick={() => handleNavClick('#transparencia-roles')}>
             Roles
           </button>
-          <Link to="/fundamentacion">Fundamentación</Link>
+          {location.pathname === '/fundamentacion' ? (
+            <span className="footer-current-page" aria-current="page">
+              Fundamentación
+            </span>
+          ) : (
+            <Link to="/fundamentacion">Fundamentación</Link>
+          )}
           <Link to="/contactenos">Contáctenos</Link>
         </div>
 
@@ -73,9 +79,11 @@ export function Footer() {
           <p className="footer-credits-authors">
             Semillero de Trabajo Social · Asesora: I. J. Saldarriaga Roa
           </p>
-          <Link to="/fundamentacion" className="footer-credits-link">
-            Ver fundamentación y marco legal
-          </Link>
+          {location.pathname !== '/fundamentacion' && (
+            <Link to="/fundamentacion" className="footer-credits-link">
+              Ver fundamentación y marco legal
+            </Link>
+          )}
         </div>
       </div>
 

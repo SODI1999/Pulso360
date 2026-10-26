@@ -119,20 +119,6 @@ export function AcademicFoundationPage() {
 
             {/* SECCION 5: MARCO JURIDICO COLOMBIANO */}
             <AcademicLegalFramework />
-
-            {/* CIERRE Y RETORNO */}
-            <footer className="academic-article-footer no-print">
-              <div className="footer-actions-left">
-                <Link to="/" className="btn-return-primary">
-                  <Icon name="arrowLeft" size={16} />
-                  <span>Volver al inicio</span>
-                </Link>
-                <Link to="/login" className="btn-action-secondary">
-                  <Icon name="lock" size={15} />
-                  <span>Iniciar sesión</span>
-                </Link>
-              </div>
-            </footer>
           </article>
         </div>
       </main>
