@@ -1,181 +1,25 @@
 {
   "info": {
-    "_postman_id": "c8d9e0f1-a2b3-4c5d-6e7f-pulso360fullproject",
-    "name": "Pulso360 - Suite Completa (Todos los CREATE y PUT/PATCH del Proyecto)",
-    "description": "Colección exhaustiva con TODOS los endpoints de creación (POST) y modificación (PUT / PATCH) del backend de Pulso360. Incluye evaluación automática de respuestas a nivel de proyecto completo (contrato SDD, códigos HTTP, seguridad y cero fuga de credenciales).",
+    "_postman_id": "pulso360-full-suite-2026",
+    "name": "Pulso360 — Suite de Pruebas API (CRUD Completo, Roles, Seguridad & Ley 1581)",
+    "description": "Colección integral de pruebas para la API REST de Pulso360 (Express 5 + PostgreSQL 18).\n\nIncluye:\n1. Flujo CRUD completo de demostración en vivo (Create, Read, Update, Delete con verificación post-borrado).\n2. CRUD de gestión de usuarios para administración.\n3. Flujos multi-rol para Agente, Supervisor, SST, Administrador y Auditor.\n4. Pruebas negativas y de seguridad para middlewares de autenticación, RBAC y validadores Fail-Fast.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
-  "variable": [
-    {
-      "key": "baseUrl",
-      "value": "http://localhost:3000/api/v1",
-      "type": "string"
-    },
-    {
-      "key": "token_agente",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "token_supervisor",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "token_sst",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "token_admin",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "journal_id",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "campaign_id",
-      "value": "camp-1",
-      "type": "string"
-    },
-    {
-      "key": "team_id",
-      "value": "team-alpha-1",
-      "type": "string"
-    },
-    {
-      "key": "user_id",
-      "value": "usr-1",
-      "type": "string"
-    },
-    {
-      "key": "support_request_id",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "intervention_id",
-      "value": "",
-      "type": "string"
-    }
-  ],
-  "event": [
-    {
-      "listen": "test",
-      "script": {
-        "type": "text/javascript",
-        "exec": [
-          "// ==============================================================================",
-          "// SCRIPT GLOBAL DE EVALUACIÓN DE RESPUESTAS PARA CREATE Y UPDATE",
-          "// Audita automáticamente TODOS los endpoints POST, PUT y PATCH del proyecto",
-          "// ==============================================================================",
-          "const method = pm.request.method;",
-          "const isCreate = method === 'POST';",
-          "const isUpdate = method === 'PUT' || method === 'PATCH';",
-          "",
-          "if (isCreate || isUpdate) {",
-          "    const op = isCreate ? 'CREATE (POST)' : 'UPDATE (' + method + ')';",
-          "    const statusCode = pm.response.code;",
-          "    let res;",
-          "",
-          "    // 1. Cabecera Content-Type estándar",
-          "    pm.test(`[${op}] Cabecera Content-Type contiene application/json`, function () {",
-          "        pm.expect(pm.response.headers.get('content-type')).to.include('application/json');",
-          "    });",
-          "",
-          "    // 2. Control de Latencia (RNF-02)",
-          "    pm.test(`[${op}] Tiempo de respuesta menor a 2000ms`, function () {",
-          "        pm.expect(pm.response.responseTime).to.be.below(2000);",
-          "    });",
-          "",
-          "    // 3. Integridad de Parseo JSON",
-          "    try {",
-          "        res = pm.response.json();",
-          "    } catch (err) {",
-          "        pm.test(`[${op}] El servidor debe retornar JSON parseable`, function () {",
-          "            pm.expect.fail('Respuesta no JSON: ' + pm.response.text());",
-          "        });",
-          "        return;",
-          "    }",
-          "",
-          "    // 4. Auditoría de Respuestas Exitosas (2xx)",
-          "    if (statusCode >= 200 && statusCode < 300) {",
-          "        pm.test(`[${op}] Sobre canónico SDD de éxito: success=true y data válida`, function () {",
-          "            pm.expect(res.success).to.be.true;",
-          "            pm.expect(res).to.have.property('data');",
-          "            pm.expect(res.data).to.not.be.null;",
-          "        });",
-          "",
-          "        pm.test(`[${op}] Seguridad y Privacidad: Cero fuga de contrasena_hash`, function () {",
-          "            const raw = JSON.stringify(res);",
-          "            pm.expect(raw).to.not.include('contrasena_hash');",
-          "            pm.expect(raw).to.not.include('password_hash');",
-          "        });",
-          "",
-          "        if (isCreate) {",
-          "            pm.test(`[CREATE] Código HTTP válido (200 o 201)`, function () {",
-          "                pm.expect(statusCode).to.be.oneOf([200, 201]);",
-          "            });",
-          "        }",
-          "",
-          "        if (isUpdate) {",
-          "            pm.test(`[UPDATE] Código 200 OK y confirmación de mutación`, function () {",
-          "                pm.expect(statusCode).to.equal(200);",
-          "                pm.expect(res.data).to.not.be.null;",
-          "            });",
-          "        }",
-          "    }",
-          "    // 5. Auditoría de Respuestas de Error Controladas (4xx / 5xx)",
-          "    else {",
-          "        pm.test(`[${op}] Sobre canónico SDD de error: success=false con error.code y error.message`, function () {",
-          "            pm.expect(res.success).to.be.false;",
-          "            pm.expect(res.error).to.be.an('object');",
-          "            pm.expect(res.error.code).to.be.a('string').and.not.empty;",
-          "            pm.expect(res.error.message).to.be.a('string').and.not.empty;",
-          "        });",
-          "    }",
-          "}"
-        ]
-      }
-    }
-  ],
   "item": [
     {
-      "name": "0. Setup de Autenticación (Tokens por Rol)",
-      "description": "Genera y guarda automáticamente los tokens JWT para cada rol del sistema.",
+      "name": "⭐ 1. DEMO RÁPIDA CRUD COMPLETO (Demostración al Docente)",
       "item": [
         {
-          "name": "0.1 [POST] Login Agente (Guarda token_agente)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "var res = pm.response.json();",
-                  "if (res.data && res.data.token) {",
-                  "    pm.collectionVariables.set('token_agente', res.data.token);",
-                  "    console.log('token_agente capturado');",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
+          "name": "1.1 [POST] Iniciar Sesión (Login Agente)",
           "request": {
             "method": "POST",
             "header": [
               {
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "type": "text"
               }
             ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"correo\": \"agente@pulso360.co\",\n  \"contrasena\": \"Pulso360#2026\"\n}"
-            },
             "url": {
               "raw": "{{baseUrl}}/auth/login",
               "host": [
@@ -185,231 +29,56 @@
                 "auth",
                 "login"
               ]
+            },
+            "description": "Paso 1: Autenticación del Agente. Al presionar Send, el script captura el token JWT y lo inyecta en {{token}} para las siguientes peticiones.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"correo\": \"agente@pulso360.co\",\n  \"contrasena\": \"Pulso360#2026\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             }
-          }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Token JWT generado exitosamente\", function () {",
+                  "    var res = pm.response.json();",
+                  "    pm.expect(res.success).to.be.true;",
+                  "    pm.expect(res.data.token).to.be.a(\"string\");",
+                  "    pm.environment.set(\"token_agente\", res.data.token);",
+                  "    pm.environment.set(\"token\", res.data.token);",
+                  "});"
+                ]
+              }
+            }
+          ]
         },
         {
-          "name": "0.2 [POST] Login Supervisor (Guarda token_supervisor)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "var res = pm.response.json();",
-                  "if (res.data && res.data.token) {",
-                  "    pm.collectionVariables.set('token_supervisor', res.data.token);",
-                  "    console.log('token_supervisor capturado');",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
+          "name": "1.2 [POST] [C]REATE — Crear Bitácora Personal",
           "request": {
             "method": "POST",
             "header": [
               {
                 "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"correo\": \"supervisor@pulso360.co\",\n  \"contrasena\": \"Pulso360#2026\"\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/auth/login",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "auth",
-                "login"
-              ]
-            }
-          }
-        },
-        {
-          "name": "0.3 [POST] Login SST (Guarda token_sst)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "var res = pm.response.json();",
-                  "if (res.data && res.data.token) {",
-                  "    pm.collectionVariables.set('token_sst', res.data.token);",
-                  "    console.log('token_sst capturado');",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"correo\": \"sst@pulso360.co\",\n  \"contrasena\": \"Pulso360#2026\"\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/auth/login",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "auth",
-                "login"
-              ]
-            }
-          }
-        },
-        {
-          "name": "0.4 [POST] Login Administrador (Guarda token_admin)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "var res = pm.response.json();",
-                  "if (res.data && res.data.token) {",
-                  "    pm.collectionVariables.set('token_admin', res.data.token);",
-                  "    console.log('token_admin capturado');",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"correo\": \"admin@pulso360.co\",\n  \"contrasena\": \"Pulso360#2026\"\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/auth/login",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "auth",
-                "login"
-              ]
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "1. Módulo Agente (CREATE & PUT)",
-      "description": "Operaciones de mutación ejecutadas por el operador (Check-in, Bitácora, Consentimiento, Apoyo y Habeas Data).",
-      "item": [
-        {
-          "name": "1.1 [PUT] Actualizar Consentimiento Granular (C1..C5)",
-          "request": {
-            "method": "PUT",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "type": "text"
               },
               {
                 "key": "Authorization",
-                "value": "Bearer {{token_agente}}"
+                "value": "Bearer {{token}}",
+                "type": "text"
               }
             ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"c1_checkin\": true,\n  \"c2_bitacora\": true,\n  \"c3_apoyo\": true,\n  \"c4_analitica\": true,\n  \"c5_contacto\": true\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/agent/consent",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "agent",
-                "consent"
-              ]
-            }
-          }
-        },
-        {
-          "name": "1.2 [POST] Registrar Check-in Diario (6 Dimensiones)",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Authorization",
-                "value": "Bearer {{token_agente}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"energia\": 4,\n  \"carga_emocional\": 3,\n  \"recuperacion\": 4,\n  \"apoyo\": 5,\n  \"distanciamiento\": 1,\n  \"ineficacia\": 2\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/agent/checkin",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "agent",
-                "checkin"
-              ]
-            }
-          }
-        },
-        {
-          "name": "1.3 [POST] Crear Entrada de Bitácora Personal (CREATE)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "var res = pm.response.json();",
-                  "if (res.data && res.data.id) {",
-                  "    pm.collectionVariables.set('journal_id', res.data.id);",
-                  "    console.log('journal_id creado: ' + res.data.id);",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Authorization",
-                "value": "Bearer {{token_agente}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"context\": \"Cierre de Turno\",\n  \"content\": \"Jornada completada con alto volumen de llamadas pero buen soporte del equipo.\"\n}"
-            },
             "url": {
               "raw": "{{baseUrl}}/agent/journal",
               "host": [
@@ -419,27 +88,104 @@
                 "agent",
                 "journal"
               ]
+            },
+            "description": "Paso 2 [CREATE]: Envía una nueva bitácora a la API. Guarda automáticamente el ID único generado en {{journal_id}}.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"context\": \"Sustentación Docente CRUD\",\n  \"content\": \"Entrada de bitácora creada en vivo para demostrar el ciclo completo Create, Read, Update, Delete.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             }
-          }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 201 Created\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "pm.test(\"Registro creado con ID único\", function () {",
+                  "    var res = pm.response.json();",
+                  "    pm.expect(res.success).to.be.true;",
+                  "    pm.expect(res.data.id).to.be.a(\"string\");",
+                  "    pm.environment.set(\"journal_id\", res.data.id);",
+                  "});"
+                ]
+              }
+            }
+          ]
         },
         {
-          "name": "1.4 [PUT] Modificar Entrada de Bitácora Personal (UPDATE)",
+          "name": "1.3 [GET] [R]EAD — Listar Bitácoras y Verificar Creación",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/agent/journal",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "agent",
+                "journal"
+              ]
+            },
+            "description": "Paso 3 [READ]: Consulta todas las bitácoras del usuario autenticado y verifica que el registro {{journal_id}} está presente."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"El registro recién creado aparece en el listado\", function () {",
+                  "    var res = pm.response.json();",
+                  "    var createdId = pm.environment.get(\"journal_id\");",
+                  "    var found = res.data.some(function(item) { return item.id === createdId; });",
+                  "    pm.expect(found).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "1.4 [PUT] [U]PDATE — Modificar Contenido de la Bitácora",
           "request": {
             "method": "PUT",
             "header": [
               {
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "type": "text"
               },
               {
                 "key": "Authorization",
-                "value": "Bearer {{token_agente}}"
+                "value": "Bearer {{token}}",
+                "type": "text"
               }
             ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"context\": \"Cierre de Turno Actualizado\",\n  \"content\": \"EDICIÓN: Se realizó pausa activa de 10 minutos y disminuyó la fatiga cervical.\"\n}"
-            },
             "url": {
               "raw": "{{baseUrl}}/agent/journal/{{journal_id}}",
               "host": [
@@ -450,41 +196,1010 @@
                 "journal",
                 "{{journal_id}}"
               ]
+            },
+            "description": "Paso 4 [UPDATE]: Envía PUT con nuevos datos sobre el ID {{journal_id}} y verifica que se reflejen los cambios.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"context\": \"Sustentación Docente (Actualizado)\",\n  \"content\": \"EDICIÓN EN VIVO: Se verificó la actualización del registro mediante petición PUT exitosa.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             }
-          }
-        },
-        {
-          "name": "1.5 [POST] Solicitar Apoyo Psicosocial Preventivo (CREATE)",
+          },
+          "response": [],
           "event": [
             {
               "listen": "test",
               "script": {
+                "type": "text/javascript",
                 "exec": [
-                  "var res = pm.response.json();",
-                  "if (res.data && res.data.id) {",
-                  "    pm.collectionVariables.set('support_request_id', res.data.id);",
-                  "}"
-                ],
-                "type": "text/javascript"
+                  "pm.test(\"Status code is 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Campos actualizados correctamente en base de datos\", function () {",
+                  "    var res = pm.response.json();",
+                  "    pm.expect(res.success).to.be.true;",
+                  "    pm.expect(res.data.context).to.eql(\"Sustentación Docente (Actualizado)\");",
+                  "    pm.expect(res.data.content).to.include(\"EDICIÓN EN VIVO\");",
+                  "});"
+                ]
               }
             }
-          ],
+          ]
+        },
+        {
+          "name": "1.5 [DELETE] [D]ELETE — Eliminar la Bitácora Creada",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/agent/journal/{{journal_id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "agent",
+                "journal",
+                "{{journal_id}}"
+              ]
+            },
+            "description": "Paso 5 [DELETE]: Elimina permanentemente la bitácora {{journal_id}} de la base de datos."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Confirmación de borrado físico en base de datos\", function () {",
+                  "    var res = pm.response.json();",
+                  "    pm.expect(res.success).to.be.true;",
+                  "    pm.expect(res.data.deleted).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "1.6 [GET] [R]EAD Post-Borrado — Verificar que ya NO existe",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/agent/journal",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "agent",
+                "journal"
+              ]
+            },
+            "description": "Paso 6 [VERIFICACIÓN POST-BORRADO]: Reconsulta las bitácoras y confirma que el ID eliminado ya no aparece."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"El registro eliminado ya NO existe en la base de datos\", function () {",
+                  "    var res = pm.response.json();",
+                  "    var deletedId = pm.environment.get(\"journal_id\");",
+                  "    var found = res.data.some(function(item) { return item.id === deletedId; });",
+                  "    pm.expect(found).to.be.false;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "⭐ 2. DEMO CRUD ADMINISTRACIÓN (Gestión de Usuarios)",
+      "item": [
+        {
+          "name": "2.1 [POST] Iniciar Sesión (Login Administrador)",
           "request": {
             "method": "POST",
             "header": [
               {
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Autenticación como Administrador del sistema. Guarda token en {{token_admin}} y {{token}}.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"correo\": \"admin@pulso360.co\",\n  \"contrasena\": \"Pulso360#2026\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Token Admin generado\", function () {",
+                  "    var res = pm.response.json();",
+                  "    pm.expect(res.success).to.be.true;",
+                  "    pm.environment.set(\"token_admin\", res.data.token);",
+                  "    pm.environment.set(\"token\", res.data.token);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "2.2 [GET] [R]EAD — Listar Usuarios del Sistema",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
               },
               {
                 "key": "Authorization",
-                "value": "Bearer {{token_agente}}"
+                "value": "Bearer {{token}}",
+                "type": "text"
               }
             ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "users"
+              ]
+            },
+            "description": "READ: Consulta el directorio completo de usuarios del centro de operaciones."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Listado de usuarios obtenido correctamente\", function () {",
+                  "    var res = pm.response.json();",
+                  "    pm.expect(res.success).to.be.true;",
+                  "    pm.expect(res.data).to.be.an(\"array\");",
+                  "    pm.expect(res.data.length).to.be.above(0);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "2.3 [POST] [C]REATE — Crear Nuevo Usuario Agente",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "users"
+              ]
+            },
+            "description": "CREATE: Registra un nuevo usuario en la base de datos y guarda su ID en {{new_user_id}}.",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"mode\": \"identificado\",\n  \"urgency\": \"media\",\n  \"reason\": \"Fatiga emocional por llamadas difíciles\",\n  \"description\": \"Solicitud preventiva de orientación con especialista SST.\",\n  \"contactPreference\": \"app\",\n  \"timeWindow\": \"Tarde\"\n}"
+              "raw": "{\n  \"rolCodigo\": \"AGENTE\",\n  \"correo\": \"{{dynamic_user_email}}\",\n  \"nombres\": \"Operador\",\n  \"apellidos\": \"Prueba Postman\",\n  \"contrasena\": \"Pulso360#2026\",\n  \"status\": \"Activo\",\n  \"shiftStartHour\": 8\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "var rnd = Math.floor(Math.random() * 9000 + 1000);",
+                  "pm.environment.set(\"dynamic_user_email\", \"agente_postman_\" + rnd + \"@pulso360.co\");"
+                ]
+              }
             },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 201 Created\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "pm.test(\"Usuario creado y guardado en {{new_user_id}}\", function () {",
+                  "    var res = pm.response.json();",
+                  "    pm.expect(res.success).to.be.true;",
+                  "    pm.expect(res.data.id).to.be.a(\"string\");",
+                  "    pm.environment.set(\"new_user_id\", res.data.id);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "2.4 [PATCH] [U]PDATE — Modificar Estado de Usuario (Suspendido)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/users/{{new_user_id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "users",
+                "{{new_user_id}}"
+              ]
+            },
+            "description": "UPDATE: Modifica atributos del usuario recién creado.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Suspendido\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Usuario modificado exitosamente\", function () {",
+                  "    var res = pm.response.json();",
+                  "    pm.expect(res.success).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "2.5 [PATCH] [U]PDATE Status — Cambiar Estado a Inactivo",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/users/{{new_user_id}}/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "users",
+                "{{new_user_id}}",
+                "status"
+              ]
+            },
+            "description": "UPDATE STATUS: Actualiza el estado administrativo del usuario en el sistema.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Inactivo\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Estado de usuario actualizado\", function () {",
+                  "    var res = pm.response.json();",
+                  "    pm.expect(res.success).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "3. Autenticación y Control de Acceso (5 Roles)",
+      "item": [
+        {
+          "name": "3.1 [POST] Login Agente (agente@pulso360.co)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Inicio de sesión para el rol AGENTE.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"correo\": \"agente@pulso360.co\",\n  \"contrasena\": \"Pulso360#2026\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () { pm.response.to.have.status(200); });",
+                  "var res = pm.response.json();",
+                  "pm.environment.set(\"token_agente\", res.data.token);",
+                  "pm.environment.set(\"token\", res.data.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "3.2 [POST] Login Supervisor (supervisor@pulso360.co)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Inicio de sesión para el rol SUPERVISOR.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"correo\": \"supervisor@pulso360.co\",\n  \"contrasena\": \"Pulso360#2026\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () { pm.response.to.have.status(200); });",
+                  "var res = pm.response.json();",
+                  "pm.environment.set(\"token_supervisor\", res.data.token);",
+                  "pm.environment.set(\"token\", res.data.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "3.3 [POST] Login SST (sst@pulso360.co)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Inicio de sesión para el rol SST (Salud y Seguridad en el Trabajo).",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"correo\": \"sst@pulso360.co\",\n  \"contrasena\": \"Pulso360#2026\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () { pm.response.to.have.status(200); });",
+                  "var res = pm.response.json();",
+                  "pm.environment.set(\"token_sst\", res.data.token);",
+                  "pm.environment.set(\"token\", res.data.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "3.4 [POST] Login Administrador (admin@pulso360.co)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Inicio de sesión para el rol ADMIN.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"correo\": \"admin@pulso360.co\",\n  \"contrasena\": \"Pulso360#2026\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () { pm.response.to.have.status(200); });",
+                  "var res = pm.response.json();",
+                  "pm.environment.set(\"token_admin\", res.data.token);",
+                  "pm.environment.set(\"token\", res.data.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "3.5 [POST] Login Auditor (auditor@pulso360.co)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Inicio de sesión para el rol AUDITOR (Ley 1581 e integridad).",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"correo\": \"auditor@pulso360.co\",\n  \"contrasena\": \"Pulso360#2026\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () { pm.response.to.have.status(200); });",
+                  "var res = pm.response.json();",
+                  "pm.environment.set(\"token_auditor\", res.data.token);",
+                  "pm.environment.set(\"token\", res.data.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "3.6 [GET] Consultar Perfil del Usuario Autenticado (/auth/me)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "me"
+              ]
+            },
+            "description": "Verifica la identidad y claims decodificados desde el JWT."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () { pm.response.to.have.status(200); });",
+                  "var res = pm.response.json();",
+                  "pm.expect(res.success).to.be.true;",
+                  "pm.expect(res.data.usuario).to.have.property(\"correo\");"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "3.7 [POST] Solicitar Reseteo de Contraseña",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/password-reset/request",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "password-reset",
+                "request"
+              ]
+            },
+            "description": "Genera el token temporal de recuperación de contraseña.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"correo\": \"agente@pulso360.co\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "4. Módulo Agente (Bienestar & Privacidad)",
+      "item": [
+        {
+          "name": "4.1 [POST] Registrar Check-in Diario (6 Dimensiones)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_agente}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/agent/checkin",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "agent",
+                "checkin"
+              ]
+            },
+            "description": "Envío del check-in multidimensional del operador.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dimensiones\": {\n    \"animo\": 4,\n    \"energia\": 3,\n    \"estres\": 2,\n    \"claridad\": 4,\n    \"carga\": 3,\n    \"sueno\": 4\n  },\n  \"sintomas\": [\n    \"fatiga_visual\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 201 Created o 200 OK\", function () {",
+                  "    pm.expect([200, 201]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "4.2 [GET] Consultar Check-in de Hoy",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_agente}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/agent/checkin/today",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "agent",
+                "checkin",
+                "today"
+              ]
+            },
+            "description": "Verifica si el agente ya completó su pulso en el turno actual."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "4.3 [GET] Consultar Historial de Check-ins",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_agente}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/agent/checkin/history",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "agent",
+                "checkin",
+                "history"
+              ]
+            },
+            "description": "Historial privado de evaluaciones del operador."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "4.4 [GET] Consultar Consentimiento Granular Activo",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_agente}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/agent/consent",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "agent",
+                "consent"
+              ]
+            },
+            "description": "Consulta las cláusulas de consentimiento C1..C5."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "4.5 [PUT] Actualizar Consentimiento Granular (C1..C5)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_agente}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/agent/consent",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "agent",
+                "consent"
+              ]
+            },
+            "description": "Actualiza los consentimientos informados del trabajador bajo Ley 1581.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"c1_metricas_agregadas\": true,\n  \"c2_nlp_desahogo\": true,\n  \"c3_alertas_preventivas\": true,\n  \"c4_analisis_predictivo\": false,\n  \"c5_compartir_estadisticas_sst\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "4.6 [POST] Solicitar Apoyo Psicosocial Preventivo",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_agente}}",
+                "type": "text"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/sst/support-requests",
               "host": [
@@ -494,27 +1209,92 @@
                 "sst",
                 "support-requests"
               ]
+            },
+            "description": "Radica una solicitud privada de apoyo y guarda {{support_request_id}}.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tipo\": \"EMOCIONAL\",\n  \"motivo\": \"Sobrecarga de llamadas consecutivas en turno matutino.\",\n  \"prioridad\": \"MEDIA\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             }
-          }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 201 Created\", function () { pm.response.to.have.status(201); });",
+                  "var res = pm.response.json();",
+                  "if (res.data && res.data.id) {",
+                  "    pm.environment.set(\"support_request_id\", res.data.id);",
+                  "}"
+                ]
+              }
+            }
+          ]
         },
         {
-          "name": "1.6 [POST] Radicar Solicitud Habeas Data (CREATE)",
+          "name": "4.7 [GET] Consultar Mis Solicitudes de Apoyo",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_agente}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/agent/support-requests",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "agent",
+                "support-requests"
+              ]
+            },
+            "description": "Consulta el estado de las solicitudes radicadas por el agente."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "4.8 [POST] Radicar Solicitud Habeas Data (Ley 1581)",
           "request": {
             "method": "POST",
             "header": [
               {
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "type": "text"
               },
               {
                 "key": "Authorization",
-                "value": "Bearer {{token_agente}}"
+                "value": "Bearer {{token_agente}}",
+                "type": "text"
               }
             ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"tipo_solicitud\": \"CONSULTA\",\n  \"motivo\": \"Solicito reporte de mis datos personales y bitácoras almacenadas según Ley 1581.\"\n}"
-            },
             "url": {
               "raw": "{{baseUrl}}/agent/habeas-data",
               "host": [
@@ -524,107 +1304,271 @@
                 "agent",
                 "habeas-data"
               ]
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "2. Módulo SST & Salud Ocupacional (CREATE & PATCH)",
-      "description": "Operaciones estratégicas ejecutadas por el especialista de Seguridad y Salud en el Trabajo.",
-      "item": [
-        {
-          "name": "2.1 [POST] Proponer Regla de Alerta Preventiva (CREATE)",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Authorization",
-                "value": "Bearer {{token_sst}}"
-              }
-            ],
+            },
+            "description": "Canal formal de ejercicio de derechos ARCO / Habeas Data.",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"codigo\": \"ALERTA_SOBRECARGA_DEMO\",\n  \"dimension\": \"carga_emocional\",\n  \"operador\": \">=\",\n  \"umbral\": 3.8,\n  \"severidad\": \"ALTA\",\n  \"descripcion\": \"Alerta cuando la carga promedio supera 3.8 en la campaña.\"\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/sst/rules",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "sst",
-                "rules"
-              ]
+              "raw": "{\n  \"tipo\": \"ACCESO\",\n  \"detalles\": \"Solicitud formal de acceso a historial de check-ins bajo Ley 1581.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             }
-          }
-        },
-        {
-          "name": "2.2 [POST] Crear Plan de Intervención Estratégico (CREATE)",
+          },
+          "response": [],
           "event": [
             {
               "listen": "test",
               "script": {
+                "type": "text/javascript",
                 "exec": [
-                  "var res = pm.response.json();",
-                  "if (res.data && res.data.id) {",
-                  "    pm.collectionVariables.set('intervention_id', res.data.id);",
-                  "}"
-                ],
-                "type": "text/javascript"
+                  "pm.test(\"Status code is 201 Created\", function () { pm.response.to.have.status(201); });"
+                ]
               }
             }
-          ],
+          ]
+        },
+        {
+          "name": "4.9 [GET] Consultar Mis Solicitudes Habeas Data",
           "request": {
-            "method": "POST",
+            "method": "GET",
             "header": [
               {
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "type": "text"
               },
               {
                 "key": "Authorization",
-                "value": "Bearer {{token_sst}}"
+                "value": "Bearer {{token_agente}}",
+                "type": "text"
               }
             ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"title\": \"Taller de Respiración y Manejo de Clientes Críticos\",\n  \"type\": \"Taller\",\n  \"campana_id\": \"camp-1\",\n  \"start_date\": \"2026-10-15\",\n  \"end_date\": \"2026-10-30\",\n  \"indicator\": \"Recuperacion agregada\",\n  \"target_desc\": \"Elevar la recuperación grupal en 15%\",\n  \"assigned_to\": \"Carlos Mendoza\"\n}"
-            },
             "url": {
-              "raw": "{{baseUrl}}/sst/interventions",
+              "raw": "{{baseUrl}}/agent/habeas-data",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "agent",
+                "habeas-data"
+              ]
+            },
+            "description": "Listado de derechos de petición Habeas Data del agente."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "5. Módulo SST & Salud Ocupacional",
+      "item": [
+        {
+          "name": "5.1 [GET] Consultar Métricas Psicosociales Agregadas (k-anonimato)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_sst}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/sst/metrics",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "sst",
-                "interventions"
+                "metrics"
               ]
+            },
+            "description": "Indicadores agregados y anónimos (k>=5) para análisis epidemiológico."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
             }
-          }
+          ]
         },
         {
-          "name": "2.3 [PATCH] Cambiar Estado de Solicitud de Apoyo (UPDATE)",
+          "name": "5.2 [GET] Consultar Alertas Psicosociales Activas",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_sst}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/sst/alerts",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sst",
+                "alerts"
+              ]
+            },
+            "description": "Listado de alertas preventivas. Guarda la primera alerta en {{alert_id}}."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () { pm.response.to.have.status(200); });",
+                  "var res = pm.response.json();",
+                  "if (res.data && res.data.length > 0) {",
+                  "    pm.environment.set(\"alert_id\", res.data[0].id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "5.3 [PATCH] Cambiar Estado de Alerta (En Revisión)",
           "request": {
             "method": "PATCH",
             "header": [
               {
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "type": "text"
               },
               {
                 "key": "Authorization",
-                "value": "Bearer {{token_sst}}"
+                "value": "Bearer {{token_sst}}",
+                "type": "text"
               }
             ],
+            "url": {
+              "raw": "{{baseUrl}}/sst/alerts/{{alert_id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sst",
+                "alerts",
+                "{{alert_id}}"
+              ]
+            },
+            "description": "Actualiza el ciclo de vida de una alerta en {{alert_id}}.",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"status\": \"En gestion\"\n}"
+              "raw": "{\n  \"status\": \"EnRevision\",\n  \"notas\": \"Revisión preventiva iniciada por especialista SST.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "5.4 [GET] Consultar Solicitudes de Apoyo Recibidas",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_sst}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/sst/support-requests",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sst",
+                "support-requests"
+              ]
             },
+            "description": "Bandeja de solicitudes de apoyo de trabajadores para el equipo SST."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "5.5 [PATCH] Cambiar Estado de Solicitud de Apoyo (Asignada)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_sst}}",
+                "type": "text"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/sst/support-requests/{{support_request_id}}/status",
               "host": [
@@ -636,33 +1580,283 @@
                 "{{support_request_id}}",
                 "status"
               ]
+            },
+            "description": "Pasa la solicitud {{support_request_id}} a estado asignada.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estado\": \"ASIGNADA\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             }
-          }
-        }
-      ]
-    },
-    {
-      "name": "3. Módulo Supervisor (CREATE & UPDATE)",
-      "description": "Seguimiento operativo ejecutado por el líder de equipo.",
-      "item": [
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
         {
-          "name": "3.1 [POST] Registrar Avance y Seguimiento de Intervención (CREATE)",
+          "name": "5.6 [GET] Consultar Planes de Intervención",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_sst}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/sst/interventions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sst",
+                "interventions"
+              ]
+            },
+            "description": "Planes de intervención en desarrollo. Guarda {{intervention_id}}."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () { pm.response.to.have.status(200); });",
+                  "var res = pm.response.json();",
+                  "if (res.data && res.data.length > 0) {",
+                  "    pm.environment.set(\"intervention_id\", res.data[0].id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "5.7 [POST] Crear Plan de Intervención Estratégico",
           "request": {
             "method": "POST",
             "header": [
               {
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "type": "text"
               },
               {
                 "key": "Authorization",
-                "value": "Bearer {{token_supervisor}}"
+                "value": "Bearer {{token_sst}}",
+                "type": "text"
               }
             ],
+            "url": {
+              "raw": "{{baseUrl}}/sst/interventions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sst",
+                "interventions"
+              ]
+            },
+            "description": "Crea un plan de intervención institucional y guarda su ID en {{intervention_id}}.",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"progress\": 40,\n  \"note\": \"Se realizó la primera sesión de pausas activas con el 85% del equipo presente.\",\n  \"actionType\": \"TALLER_PAUSAS\"\n}"
+              "raw": "{\n  \"titulo\": \"Programa de Pausas Activas Asistidas Postman\",\n  \"descripcion\": \"Intervención de ergonomía y pausas activas para mitigar sobrecarga.\",\n  \"tipo\": \"ERGONOMICA\",\n  \"nivelRiesgo\": \"MEDIO\",\n  \"idCampana\": null,\n  \"idEquipo\": null\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 201 Created\", function () { pm.response.to.have.status(201); });",
+                  "var res = pm.response.json();",
+                  "if (res.data && res.data.id) {",
+                  "    pm.environment.set(\"intervention_id\", res.data.id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "5.8 [GET] Consultar Reglas de Alerta Activas",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_sst}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/sst/rules",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sst",
+                "rules"
+              ]
             },
+            "description": "Reglas y umbrales configurados para disparar alertas automáticas."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "5.9 [POST] Proponer Nueva Regla de Alerta Preventiva",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_sst}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/sst/rules",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sst",
+                "rules"
+              ]
+            },
+            "description": "Propone una regla que entrará a validación o aprobación.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Regla Fatiga Acumulada Postman\",\n  \"tipo\": \"ESTRES_ELEVADO\",\n  \"umbral\": 4.0,\n  \"diasConsecutivos\": 2,\n  \"descripcion\": \"Alerta disparada al superar 4.0 de estrés en 2 turnos consecutivos.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 201 Created\", function () { pm.response.to.have.status(201); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "6. Módulo Supervisor (Operación BPO)",
+      "item": [
+        {
+          "name": "6.1 [GET] Consultar Acciones e Intervenciones Asignadas",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_supervisor}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/supervisor/actions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "supervisor",
+                "actions"
+              ]
+            },
+            "description": "Acciones e intervenciones asignadas al equipo del supervisor."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "6.2 [POST] Registrar Avance y Seguimiento de Intervención",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_supervisor}}",
+                "type": "text"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/supervisor/actions/{{intervention_id}}/followup",
               "host": [
@@ -674,47 +1868,95 @@
                 "{{intervention_id}}",
                 "followup"
               ]
+            },
+            "description": "Registra el porcentaje de avance operativo sobre la intervención {{intervention_id}}.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"progreso\": 65,\n  \"comentarios\": \"Se realizaron 2 sesiones asistidas con 85% de asistencia de operadores.\",\n  \"estado\": \"EnProgreso\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             }
-          }
-        }
-      ]
-    },
-    {
-      "name": "4. Módulo Administración (CREATE, PUT & PATCH)",
-      "description": "Gestión de infraestructura organizacional, campañas, equipos, parámetros y usuarios.",
-      "item": [
-        {
-          "name": "4.1 [POST] Crear Campaña Operativa (CREATE)",
+          },
+          "response": [],
           "event": [
             {
               "listen": "test",
               "script": {
+                "type": "text/javascript",
                 "exec": [
-                  "var res = pm.response.json();",
-                  "if (res.data && res.data.id) {",
-                  "    pm.collectionVariables.set('campaign_id', res.data.id);",
-                  "}"
-                ],
-                "type": "text/javascript"
+                  "pm.test(\"Status code is 200 OK o 201 Created\", function () {",
+                  "    pm.expect([200, 201]).to.include(pm.response.code);",
+                  "});"
+                ]
               }
             }
-          ],
+          ]
+        }
+      ]
+    },
+    {
+      "name": "7. Módulo Administración (Empresa, Campañas, Parámetros)",
+      "item": [
+        {
+          "name": "7.1 [GET] Consultar Estructura Organizacional",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_admin}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/organization",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "organization"
+              ]
+            },
+            "description": "Árbol institucional de campañas, equipos y líderes operativos."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "7.2 [POST] Crear Campaña Operativa",
           "request": {
             "method": "POST",
             "header": [
               {
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "type": "text"
               },
               {
                 "key": "Authorization",
-                "value": "Bearer {{token_admin}}"
+                "value": "Bearer {{token_admin}}",
+                "type": "text"
               }
             ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"codigo\": \"CAM_POSTMAN_2003\",\n  \"nombre\": \"Campaña Fidelización Postman\",\n  \"descripcion\": \"Operación de contingencia para pruebas automatizadas\",\n  \"activa\": true\n}"
-            },
             "url": {
               "raw": "{{baseUrl}}/admin/campaigns",
               "host": [
@@ -724,27 +1966,51 @@
                 "admin",
                 "campaigns"
               ]
+            },
+            "description": "Crea una campaña y guarda su ID en {{campaign_id}}.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Campaña Soporte Postman\",\n  \"descripcion\": \"Campaña de operaciones de prueba\",\n  \"cliente\": \"Liberty BPO\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             }
-          }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 201 Created\", function () { pm.response.to.have.status(201); });",
+                  "var res = pm.response.json();",
+                  "if (res.data && res.data.id) {",
+                  "    pm.environment.set(\"campaign_id\", res.data.id);",
+                  "}"
+                ]
+              }
+            }
+          ]
         },
         {
-          "name": "4.2 [PATCH] Modificar Campaña Operativa (UPDATE)",
+          "name": "7.3 [PATCH] Modificar Campaña Operativa",
           "request": {
             "method": "PATCH",
             "header": [
               {
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "type": "text"
               },
               {
                 "key": "Authorization",
-                "value": "Bearer {{token_admin}}"
+                "value": "Bearer {{token_admin}}",
+                "type": "text"
               }
             ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"nombre\": \"Campaña Fidelización Postman (Editada)\",\n  \"activa\": true\n}"
-            },
             "url": {
               "raw": "{{baseUrl}}/admin/campaigns/{{campaign_id}}",
               "host": [
@@ -755,41 +2021,47 @@
                 "campaigns",
                 "{{campaign_id}}"
               ]
+            },
+            "description": "Actualiza la información de la campaña {{campaign_id}}.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"descripcion\": \"Descripción actualizada desde suite Postman\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             }
-          }
-        },
-        {
-          "name": "4.3 [POST] Crear Equipo de Trabajo (CREATE)",
+          },
+          "response": [],
           "event": [
             {
               "listen": "test",
               "script": {
+                "type": "text/javascript",
                 "exec": [
-                  "var res = pm.response.json();",
-                  "if (res.data && res.data.id) {",
-                  "    pm.collectionVariables.set('team_id', res.data.id);",
-                  "}"
-                ],
-                "type": "text/javascript"
+                  "pm.test(\"Status code is 200 OK\", function () { pm.response.to.have.status(200); });"
+                ]
               }
             }
-          ],
+          ]
+        },
+        {
+          "name": "7.4 [POST] Crear Equipo de Trabajo",
           "request": {
             "method": "POST",
             "header": [
               {
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "type": "text"
               },
               {
                 "key": "Authorization",
-                "value": "Bearer {{token_admin}}"
+                "value": "Bearer {{token_admin}}",
+                "type": "text"
               }
             ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"campanaId\": \"camp-1\",\n  \"codigo\": \"TEAM_PST_2003\",\n  \"nombre\": \"Equipo Soporte Postman\",\n  \"supervisorId\": \"usr-2\",\n  \"activo\": true\n}"
-            },
             "url": {
               "raw": "{{baseUrl}}/admin/teams",
               "host": [
@@ -799,27 +2071,51 @@
                 "admin",
                 "teams"
               ]
+            },
+            "description": "Crea un equipo en la campaña y guarda {{team_id}}.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Equipo Gamma Postman\",\n  \"id_campana\": \"{{campaign_id}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             }
-          }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 201 Created\", function () { pm.response.to.have.status(201); });",
+                  "var res = pm.response.json();",
+                  "if (res.data && res.data.id) {",
+                  "    pm.environment.set(\"team_id\", res.data.id);",
+                  "}"
+                ]
+              }
+            }
+          ]
         },
         {
-          "name": "4.4 [PATCH] Modificar Equipo de Trabajo (UPDATE)",
+          "name": "7.5 [PATCH] Modificar Equipo de Trabajo",
           "request": {
             "method": "PATCH",
             "header": [
               {
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "type": "text"
               },
               {
                 "key": "Authorization",
-                "value": "Bearer {{token_admin}}"
+                "value": "Bearer {{token_admin}}",
+                "type": "text"
               }
             ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"nombre\": \"Equipo Soporte Postman (Renombrado)\",\n  \"activo\": true\n}"
-            },
             "url": {
               "raw": "{{baseUrl}}/admin/teams/{{team_id}}",
               "host": [
@@ -830,134 +2126,139 @@
                 "teams",
                 "{{team_id}}"
               ]
+            },
+            "description": "Modifica el nombre del equipo {{team_id}}.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Equipo Gamma Postman (Actualizado)\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             }
-          }
-        },
-        {
-          "name": "4.5 [POST] Crear Usuario del Sistema (CREATE)",
+          },
+          "response": [],
           "event": [
             {
               "listen": "test",
               "script": {
+                "type": "text/javascript",
                 "exec": [
-                  "var res = pm.response.json();",
-                  "if (res.data && res.data.id) {",
-                  "    pm.collectionVariables.set('user_id', res.data.id);",
-                  "}"
-                ],
-                "type": "text/javascript"
+                  "pm.test(\"Status code is 200 OK\", function () { pm.response.to.have.status(200); });"
+                ]
               }
             }
-          ],
+          ]
+        },
+        {
+          "name": "7.6 [GET] Consultar Parámetros de Sistema",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_admin}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/params",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "params"
+              ]
+            },
+            "description": "Parámetros de configuración global del sistema."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "7.7 [PUT] Modificar Parámetro de Sistema",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_admin}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/params/alert_threshold_score",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "params",
+                "alert_threshold_score"
+              ]
+            },
+            "description": "Modifica el umbral global de score de alerta.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"valor\": \"75\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "7.8 [POST] Crear y Publicar Política de Privacidad",
           "request": {
             "method": "POST",
             "header": [
               {
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "type": "text"
               },
               {
                 "key": "Authorization",
-                "value": "Bearer {{token_admin}}"
+                "value": "Bearer {{token_admin}}",
+                "type": "text"
               }
             ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"rolCodigo\": \"AGENTE\",\n  \"correo\": \"agente.test.1792030632003@pulso360.co\",\n  \"nombres\": \"Mariana\",\n  \"apellidos\": \"Duarte\",\n  \"contrasena\": \"Pulso360#2026\",\n  \"status\": \"Activo\"\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/admin/users",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "admin",
-                "users"
-              ]
-            }
-          }
-        },
-        {
-          "name": "4.6 [PATCH] Modificar Datos de Usuario (UPDATE)",
-          "request": {
-            "method": "PATCH",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Authorization",
-                "value": "Bearer {{token_admin}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"status\": \"Activo\",\n  \"rolCodigo\": \"AGENTE\"\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/admin/users/{{user_id}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "admin",
-                "users",
-                "{{user_id}}"
-              ]
-            }
-          }
-        },
-        {
-          "name": "4.7 [PATCH] Actualizar Estado de Usuario (UPDATE)",
-          "request": {
-            "method": "PATCH",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Authorization",
-                "value": "Bearer {{token_admin}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"status\": \"Inactivo\"\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/admin/users/{{user_id}}/status",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "admin",
-                "users",
-                "{{user_id}}",
-                "status"
-              ]
-            }
-          }
-        },
-        {
-          "name": "4.8 [POST] Crear y Publicar Política de Privacidad (CREATE)",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Authorization",
-                "value": "Bearer {{token_admin}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"version\": \"v3.003\",\n  \"titulo\": \"Política de Tratamiento y Bienestar Actualizada\",\n  \"textoPolitica\": \"Reglas de tratamiento preventivo de datos para Contact Center según Resolución 2764.\",\n  \"textoAviso\": \"Aviso de privacidad y voluntariedad para check-ins de agentes.\"\n}"
-            },
             "url": {
               "raw": "{{baseUrl}}/admin/policies",
               "host": [
@@ -967,71 +2268,466 @@
                 "admin",
                 "policies"
               ]
+            },
+            "description": "Publica una nueva versión de política de datos.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titulo\": \"Política de Privacidad y Tratamiento de Datos v2.1\",\n  \"contenido\": \"Reglamento de privacidad y confidencialidad bajo Ley 1581 de 2012.\",\n  \"version\": \"2.1.0\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             }
-          }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 201 Created\", function () { pm.response.to.have.status(201); });"
+                ]
+              }
+            }
+          ]
         }
       ]
     },
     {
-      "name": "5. Módulos Transversales & Notificaciones (CREATE & PATCH)",
-      "description": "Operaciones de mutación transversales del sistema.",
+      "name": "8. Módulo Auditoría & Ley 1581 (Trazabilidad Inmutable)",
       "item": [
         {
-          "name": "5.1 [PATCH] Marcar Todas las Notificaciones como Leídas (UPDATE)",
+          "name": "8.1 [GET] Consultar Logs de Auditoría Inmutables",
           "request": {
-            "method": "PATCH",
+            "method": "GET",
             "header": [
               {
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "type": "text"
               },
               {
                 "key": "Authorization",
-                "value": "Bearer {{token_agente}}"
+                "value": "Bearer {{token_auditor}}",
+                "type": "text"
               }
             ],
-            "body": {
-              "mode": "raw",
-              "raw": "{}"
-            },
             "url": {
-              "raw": "{{baseUrl}}/notifications/read-all",
+              "raw": "{{baseUrl}}/auditor/logs",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
-                "notifications",
-                "read-all"
+                "auditor",
+                "logs"
               ]
+            },
+            "description": "Consulta el registro inmutable de auditoría con huellas criptográficas."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () { pm.response.to.have.status(200); });",
+                  "var res = pm.response.json();",
+                  "pm.expect(res.data).to.be.an(\"array\");"
+                ]
+              }
             }
-          }
+          ]
         },
         {
-          "name": "5.2 [POST] Solicitar Reseteo de Contraseña (CREATE)",
+          "name": "8.2 [GET] Verificar Integridad Criptográfica de Registros",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_auditor}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auditor/integrity",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auditor",
+                "integrity"
+              ]
+            },
+            "description": "Verifica la validez y consistencia del encadenamiento criptográfico."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () { pm.response.to.have.status(200); });",
+                  "var res = pm.response.json();",
+                  "pm.expect(res.data.status).to.eql(\"INTEGRO\");"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "8.3 [POST] Exportar Reporte de Cumplimiento Normativo",
           "request": {
             "method": "POST",
             "header": [
               {
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_auditor}}",
+                "type": "text"
               }
             ],
+            "url": {
+              "raw": "{{baseUrl}}/auditor/export",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auditor",
+                "export"
+              ]
+            },
+            "description": "Exporta el paquete de auditoría forense para organismos de control.",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"correo\": \"agente@pulso360.co\"\n}"
-            },
+              "raw": "{\n  \"formato\": \"JSON\",\n  \"tipo\": \"AUDITORIA_COMPLETA\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "9. Middlewares, Seguridad y Validación (Pruebas Negativas)",
+      "item": [
+        {
+          "name": "9.1 [GET] Token Ausente (Espera 401 Unauthorized)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
             "url": {
-              "raw": "{{baseUrl}}/auth/password-reset/request",
+              "raw": "{{baseUrl}}/agent/journal",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "agent",
+                "journal"
+              ]
+            },
+            "description": "Verifica que authMiddleware bloquea peticiones sin header Authorization."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 401 Unauthorized\", function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});",
+                  "pm.test(\"Código de error AUTH_TOKEN_MISSING\", function () {",
+                  "    var res = pm.response.json();",
+                  "    pm.expect(res.success).to.be.false;",
+                  "    pm.expect(res.error.code).to.eql(\"AUTH_TOKEN_MISSING\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "9.2 [GET] Token Falso o Corrupto (Espera 401 Unauthorized)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer token_falso_y_corrupto_123",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/agent/journal",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "agent",
+                "journal"
+              ]
+            },
+            "description": "Verifica que el middleware valida criptográficamente la firma del JWT."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 401 Unauthorized\", function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});",
+                  "pm.test(\"Código de error AUTH_TOKEN_INVALID\", function () {",
+                  "    var res = pm.response.json();",
+                  "    pm.expect(res.success).to.be.false;",
+                  "    pm.expect(res.error.code).to.eql(\"AUTH_TOKEN_INVALID\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "9.3 [GET] Violación RBAC - Supervisor accede a Bitácora Privada (Espera 403 Forbidden)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_supervisor}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/agent/journal",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "agent",
+                "journal"
+              ]
+            },
+            "description": "Verifica el aislamiento de privacidad: un supervisor no puede leer bitácoras privadas de agentes."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 403 Forbidden\", function () {",
+                  "    pm.response.to.have.status(403);",
+                  "});",
+                  "pm.test(\"Código de error AUTH_FORBIDDEN_ROLE\", function () {",
+                  "    var res = pm.response.json();",
+                  "    pm.expect(res.success).to.be.false;",
+                  "    pm.expect(res.error.code).to.eql(\"AUTH_FORBIDDEN_ROLE\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "9.4 [POST] Body Vacío en Login (Espera 400 Bad Request)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "auth",
-                "password-reset",
-                "request"
+                "login"
               ]
+            },
+            "description": "Verifica la validación inmediata (Fail-Fast) ante cuerpos vacíos.",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             }
-          }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 400 Bad Request\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "pm.test(\"Código de error AUTH_MISSING_FIELDS\", function () {",
+                  "    var res = pm.response.json();",
+                  "    pm.expect(res.success).to.be.false;",
+                  "    pm.expect(res.error.code).to.eql(\"AUTH_MISSING_FIELDS\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "9.5 [POST] Longitud Mínima Insuficiente en Bitácora (Espera 400 Bad Request)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_agente}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/agent/journal",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "agent",
+                "journal"
+              ]
+            },
+            "description": "Verifica la regla de dominio que restringe entradas menores a 5 caracteres.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"context\": \"Prueba\",\n  \"content\": \"abc\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 400 Bad Request\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "pm.test(\"Código de error JOURNAL_CONTENT_EMPTY\", function () {",
+                  "    var res = pm.response.json();",
+                  "    pm.expect(res.success).to.be.false;",
+                  "    pm.expect(res.error.code).to.eql(\"JOURNAL_CONTENT_EMPTY\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "9.6 [GET] Ruta Inexistente (Espera 404 Not Found)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/esta-ruta-no-existe-en-el-backend-pulso360",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "esta-ruta-no-existe-en-el-backend-pulso360"
+              ]
+            },
+            "description": "Verifica que notFoundHandler responde con el sobre de error canónico."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 404 Not Found\", function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});",
+                  "pm.test(\"Código de error RESOURCE_NOT_FOUND\", function () {",
+                  "    var res = pm.response.json();",
+                  "    pm.expect(res.success).to.be.false;",
+                  "    pm.expect(res.error.code).to.eql(\"RESOURCE_NOT_FOUND\");",
+                  "});"
+                ]
+              }
+            }
+          ]
         }
       ]
     }
