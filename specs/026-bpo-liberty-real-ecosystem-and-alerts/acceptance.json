@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 2,
+  "criteria": [
+    {
+      "id": "AC-01",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Ejecutado 'npm --prefix backend run db:seed:bpo': sembradas 5 campañas reales BPO (camp-retencion, camp-cobranzas, camp-sac, camp-tech, camp-ventas), 5 equipos, roles maestros y 100 agentes con contraseña Pulso360#2026."
+    },
+    {
+      "id": "AC-02",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "2.000 check-ins insertados en daily_checkins distribuidos en 4 semanas (L-V) con perfiles diferenciados y consentimientos C1-C5 vinculados a la política activa v3.003."
+    },
+    {
+      "id": "AC-03",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "weeklyAlertService ejecutó los 4 cortes semanales y generó 7 alertas orgánicas en sst_alertas (4 en team-cobranzas-mora y 3 en team-retencion-vip incluyendo 1 de severidad Alta con intervención activa int-retencion-01)."
+    },
+    {
+      "id": "AC-04",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Consulta a analyticsService sobre team-ventas-portabilidad (N=3) retornó { protected: true, cohort_count: 3, k_threshold: 5, metrics: null } suprimiendo métricas por k-anonimato."
+    },
+    {
+      "id": "AC-05",
+      "kind": "functional",
+      "status": "passed",
+      "method": "automated",
+      "checkIds": [
+        "gate-1",
+        "gate-2",
+        "gate-3",
+        "gate-4"
+      ],
+      "evidence": "Ejecutados los 4 quality gates con exit code 0: backend test (132/132 pass), frontend test (41/41 pass), frontend lint (0 err), frontend build (vite build exit 0)."
+    }
+  ]
+}
