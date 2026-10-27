@@ -24,6 +24,8 @@
 
 ## 3. Diagrama Entidad-Relación (Mermaid ERD)
 
+> **Modelo Físico Detallado:** Para consultar el diagrama relacional físico completo con tipos de datos PostgreSQL, claves primarias (PK), foráneas (FK) y restricciones de integridad sobre las 31 tablas, consulta la [Sección 8 del Compendio Maestro de Diagramas](../../docs/DIAGRAMAS.md#8-diagrama-relacional-modelo-físico-postgresql).
+
 ```mermaid
 erDiagram
     ROLES ||--o{ USUARIOS : "clasifica"

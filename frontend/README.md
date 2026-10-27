@@ -8,10 +8,11 @@ Cliente web de Pulso360, una plataforma de bienestar laboral para operaciones BP
 
 * Framework: React 18
 * Enrutamiento: React Router 7
-* Empaquetador y Dev Server: Vite 5
+* Empaquetador y Dev Server: Vite 6 (`^6.4.4`)
 * Iconografía: Lucide React
 * Estilos: Vanilla CSS modular con sistema de diseño por tokens (`src/styles/tokens.css`)
 * Linter y Calidad: ESLint 9 + Node Test Runner (`tests/regressions.test.mjs`)
+* Diagramas y Arquitectura: [Compendio Maestro de Diagramas (UI, Flujo, Componentes, C4)](../docs/DIAGRAMAS.md)
 
 ---
 
@@ -124,13 +125,14 @@ npm run preview
 
 ## Privacidad y Almacenamiento
 
-### Arquitectura de Persistencia y Modos de Ejecución
+### Arquitectura de Persistencia Conectada
 
-Pulso360 implementa un desacoplamiento estricto entre la interfaz de usuario y los mecanismos de persistencia, administrado por la variable de entorno `VITE_USE_MOCK_STORAGE`:
+Pulso360 implementa una arquitectura de cliente ligero (*Thin Client*) conectada directamente contra el backend REST (Node.js Express 5 y PostgreSQL 18) a través de `src/core/api/apiClient.jsx`:
 
-* **Modo Producción Conectada:**
-  Arquitectura de cliente ligero (*Thin Client*). Todas las operaciones de dominio (check-ins diarios, bitácoras privadas de desahogo, consentimientos informados C1–C5, alertas psicosociales, intervenciones y reportes) se gestionan directamente contra el backend REST (Node.js, Express y PostgreSQL) a través de `apiClient`.
-  - **Principio Anti-Dual-Persistence:** La aplicación cliente nunca persiste microdatos personales ni registros sensibles de bienestar en el navegador (ni en `localStorage` ni en `sessionStorage`), garantizando que la única fuente de verdad sea la base de datos relacional y protegiendo la confidencialidad en puestos de trabajo compartidos de Contact Center.
+* **Fuente Única de Verdad en PostgreSQL:**
+  Todas las operaciones de dominio (check-ins diarios, bitácoras privadas de desahogo, consentimientos informados C1–C5, alertas psicosociales, intervenciones y reportes) se persisten exclusivamente en la base de datos relacional.
+* **Principio Anti-Dual-Persistence:**
+  La aplicación cliente nunca persiste microdatos personales ni registros sensibles de bienestar en el navegador (ni en `localStorage` ni en `sessionStorage`), garantizando la confidencialidad en puestos de trabajo compartidos de Contact Center y cumpliendo los requisitos éticos y normativos de la Ley 1581 de 2012.
 
 ### Motor NLP Determinista
 

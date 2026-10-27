@@ -55,8 +55,7 @@ archive/
 # Auditoras internas locales de UI/UX
 docs/auditoria-ui-ux-2026-09-13/
 docs/auditoria_ia/
-**docs
-**docs/**
+docs/audits/
 **/anti-slop
 
 # Documentación y configuración local

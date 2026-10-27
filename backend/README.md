@@ -1,6 +1,8 @@
 # Pulso360 — Backend (API REST & Persistencia PostgreSQL)
 
-Servicio de backend para la plataforma Pulso360, desarrollado en **Node.js, Express y PostgreSQL 18**. Implementa una arquitectura en capas limpia alineada con los requisitos funcionales del **Proyecto Pedagógico Integrador (PPI)** y los diagramas C4/Paquetes de la materia de **Diseño de Sistemas**.
+Servicio de backend para la plataforma Pulso360, desarrollado en **Node.js (v20 LTS / v22), Express 5 y PostgreSQL 17/18**. Implementa una arquitectura en capas limpia alineada con los requisitos funcionales del **Proyecto Pedagógico Integrador (PPI)** y los diagramas C4/Paquetes de la materia de **Diseño de Sistemas**.
+
+> **Diagramas de Ingeniería:** Para consultar los diagramas de Arquitectura C4, Clases, Componentes, Flujos, Casos de Uso y Modelo Relacional Físico, consulta el [Compendio Maestro de Diagramas](../docs/DIAGRAMAS.md).
 
 > **Metodología**: Spec-Driven Development (SDD). Cada paquete y capa cuenta con su contrato `.md` predefinido antes de su implementación en código.
 
@@ -18,9 +20,9 @@ En una instalación local ya migrada que todavía utiliza un usuario privilegiad
 
 El 2026-10-06 esta operación se ejecutó sobre `pulso360_db` local como parte de las correcciones autorizadas. No aplica a otros destinos. Las credenciales de mantenimiento siguen siendo sensibles y no deben distribuirse con el frontend ni copiarse en informes.
 
-* **Entorno de Ejecución**: Node.js 22.19 o posterior de la rama 22, con Módulos ECMAScript (`"type": "module"`). Las pruebas utilizan `--test-force-exit` y desarrollo usa `node --watch`.
+* **Entorno de Ejecución**: Node.js 20 LTS o Node.js 22 (probado y compatible con Módulos ECMAScript, `"type": "module"`). Las pruebas utilizan `--test-force-exit` y desarrollo usa `node --watch`.
 * **Framework Web**: Express.js 5 (`express.Router()`).
-* **Base de Datos**: PostgreSQL 18 (Relacional con consultas SQL nativas parametrizadas).
+* **Base de Datos**: PostgreSQL 17 / 18 (PostgreSQL 17 en Docker Compose y soporte verificado en PostgreSQL 18 con consultas SQL nativas parametrizadas).
 * **Driver de BD**: `pg` (node-postgres) con Pool de conexiones persistente.
 * **Seguridad y Criptografía**:
   * Autenticación basada en JSON Web Tokens (`jsonwebtoken`).

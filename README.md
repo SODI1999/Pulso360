@@ -19,9 +19,12 @@ Pulso360/
 └── README.md                 # Este documento (Visión general)
 ```
 
-Para consultar la documentación técnica específica de cada módulo, revisa sus respectivos archivos:
+Para consultar la documentación técnica específica de cada módulo y los diagramas de ingeniería de software, revisa sus respectivos archivos:
+* [Compendio Maestro de Diagramas (C4, Casos de Uso, UI, Flujos, Componentes, Clases, ER, Relacional)](docs/DIAGRAMAS.md)
+* [Libro Técnico de Pulso360 (12 Capítulos Modulares)](docs/libro-pulso360/INDICE_MAESTRO.md)
 * [Documentación del Frontend](frontend/README.md)
 * [Documentación del Backend](backend/README.md)
+* [Especificación del Modelo de Datos (31 Tablas)](backend/database/README.md)
 
 ---
 
@@ -51,13 +54,13 @@ docker compose down
 ### Opción B: Ejecución Local Nativa (Entorno de Desarrollo)
 
 #### Prerrequisitos
-* Node.js: v20.0 o superior (exigido por React Router 7 y runtime ESM moderno)
+* Node.js: v20.0 LTS o superior (compatible con Node 20 y Node 22 ESM)
 * npm: v10.0 o superior
-* PostgreSQL: 16 o superior con base de datos `pulso360_db` creada
+* PostgreSQL: 17 o 18 (PostgreSQL 17 en Docker Compose y soporte en PostgreSQL 18 nativo) con base de datos `pulso360_db` creada
 * Git
 
 #### 1. Levantar el Frontend (Cliente Web)
-La interfaz de usuario está desarrollada en React 18 con Vite:
+La interfaz de usuario está desarrollada en React 18 con Vite 6:
 
 ```bash
 # 1. Entrar al directorio del frontend
@@ -102,35 +105,34 @@ npm run dev
 
 ## Pruebas y Auditoría Integral de Calidad
 
-### 1. Gates automáticos de entrega
-Ejecuta tests de frontend dos veces, lint/build, conexión PostgreSQL, tests de backend y parseo JSON de OpenAPI. El runner guarda un resumen y logs locales; su resultado acredita esos controles, no sustituye la auditoría de integración, permisos y recuperación ni aprueba un despliegue:
+### 1. Quality Gates Oficiales de Entrega
+De acuerdo con la [CONSTITUTION.md](CONSTITUTION.md), los siguientes comandos constituyen los gates oficiales de verificación obligatorios antes de considerar cualquier cambio o Pull Request como completado:
 
 ```bash
-node .agents/skills/pre-flight-audit/scripts/run-all-gates.mjs
+# 1. Pruebas de integración de backend (110 pruebas de contratos HTTP, RBAC y k-anonimato)
+cd backend && npm test
+
+# 2. Pruebas unitarias y de regresión de frontend
+cd frontend && npm test
+
+# 3. Análisis estático de código con ESLint 9
+cd frontend && npm run lint
+
+# 4. Verificación de compilación de producción con Vite 6
+cd frontend && npm run build
 ```
 
-La skill `pre-flight-audit` completa las comprobaciones aplicables y entrega GO/NO-GO para un alcance declarado. Las skills locales están excluidas de Git; el comando requiere que esa carpeta esté disponible en el equipo.
-
-### 2. Pruebas por Módulo
-
-#### Frontend:
-```bash
-cd frontend
-npm test          # 31 pruebas unitarias y de regresión
-npm test          # Segunda ejecución exigida por el contrato de calidad
-npm run lint      # Análisis estático con ESLint
-npm run build     # Verificación de compilación de producción (Vite)
-```
+### 2. Comandos Operativos Adicionales
 
 #### Backend:
 ```bash
 cd backend
-npm run test:db   # Verifica conectividad con PostgreSQL
-npm test          # Ejecuta 110 pruebas de contratos HTTP, RBAC y k-anonimato
+npm run test:db   # Verifica conectividad y credenciales con PostgreSQL
+npm test          # Ejecuta las 110 pruebas de contratos HTTP, RBAC y k-anonimato
 ```
 
-### 3. Migraciones de Base de Datos (PostgreSQL)
-Para aplicar las migraciones incrementales en una base de datos específica:
+#### Migraciones de Base de Datos (PostgreSQL):
+Para aplicar las migraciones incrementales sobre las 31 tablas canónicas:
 
 ```bash
 cd backend

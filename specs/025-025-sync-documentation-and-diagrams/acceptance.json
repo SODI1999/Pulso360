@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 2,
+  "criteria": [
+    {
+      "id": "AC-01",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "README.md, frontend/README.md y backend/README.md fueron homologados: Node.js 20/22 LTS, PostgreSQL 17/18, Vite 6 (^6.4.4). Se retiró la sección obsoleta de VITE_USE_MOCK_STORAGE y se documentaron los 4 quality gates oficiales de CONSTITUTION.md."
+    },
+    {
+      "id": "AC-02",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Creado docs/DIAGRAMAS.md con 11 diagramas Mermaid válidos: C4 Nivel 2 Arquitectura, Casos de Uso UML, Sitemap UI, 3 Flujos de Proceso (Checkin, Alertas, Chat), Componentes UML, Clases de Dominio, ER Conceptual, Relacional Físico PostgreSQL (26 tablas), Despliegue Docker Compose, Secuencia RBAC/JWT y Estados Alertas SST."
+    },
+    {
+      "id": "AC-03",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Enlaces relativos y portables verificados e integrados bidireccionalmente en README.md, frontend/README.md, backend/README.md, backend/database/README.md y docs/libro-pulso360/INDICE_MAESTRO.md apuntando a docs/DIAGRAMAS.md."
+    },
+    {
+      "id": "AC-04",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "Actualizado docs/libro-pulso360/INDICE_MAESTRO.md incorporando la arquitectura monorepo real de cliente conectado contra Express 5 y PostgreSQL 18 (31 tablas), explicitando el principio anti-dual-persistence."
+    },
+    {
+      "id": "AC-05",
+      "kind": "functional",
+      "status": "passed",
+      "method": "automated",
+      "checkIds": [
+        "gate-1",
+        "gate-2",
+        "gate-3",
+        "gate-4"
+      ],
+      "evidence": "Compuertas canónicas superadas exitosamente: backend npm test (132/132 tests en 44 suites passed), frontend npm test (41/41 tests passed), frontend npm run lint (0 errores, 0 warnings), frontend npm run build (Vite v6.4.4 build exitoso)."
+    }
+  ]
+}
