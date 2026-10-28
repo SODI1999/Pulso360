@@ -39,10 +39,10 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// Limitador de tasa contra ataques de fuerza bruta en inicio de sesión (exento en test)
+// Limitador de tasa contra ataques de fuerza bruta en inicio de sesión (exento en test y amplio en desarrollo)
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 30,
+  max: process.env.NODE_ENV === 'production' ? 30 : 300,
   standardHeaders: true,
   legacyHeaders: false,
   message: {

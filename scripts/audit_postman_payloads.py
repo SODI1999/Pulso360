@@ -24,6 +24,8 @@ env = {
     'intervention_id': '',
     'alert_id': '',
     'support_request_id': '',
+    'chat_request_id': '',
+    'chat_session_id': '',
     'dynamic_user_email': 'audit_test_user@pulso360.co',
     'dynamic_camp_code': 'CAMP-AUDIT-999',
     'dynamic_team_code': 'TM-AUDIT-999',
@@ -128,19 +130,23 @@ for folder, it in requests_to_audit:
 
     if resp.get('data'):
         d = resp['data']
-        if isinstance(d, dict) and 'id' in d:
-            if 'journal' in url:
-                env['journal_id'] = d['id']
-            elif 'admin/users' in url and method == 'POST':
-                env['new_user_id'] = d['id']
-            elif 'admin/campaigns' in url and method == 'POST':
-                env['campaign_id'] = d['id']
-            elif 'admin/teams' in url and method == 'POST':
-                env['team_id'] = d['id']
-            elif 'sst/interventions' in url and method == 'POST':
-                env['intervention_id'] = d['id']
-            elif 'sst/support-requests' in url and method == 'POST':
-                env['support_request_id'] = d['id']
+        if isinstance(d, dict):
+            if 'id' in d:
+                if 'journal' in url:
+                    env['journal_id'] = d['id']
+                elif 'admin/users' in url and method == 'POST':
+                    env['new_user_id'] = d['id']
+                elif 'admin/campaigns' in url and method == 'POST':
+                    env['campaign_id'] = d['id']
+                elif 'admin/teams' in url and method == 'POST':
+                    env['team_id'] = d['id']
+                elif 'sst/interventions' in url and method == 'POST':
+                    env['intervention_id'] = d['id']
+                elif 'sst/support-requests' in url and method == 'POST':
+                    env['support_request_id'] = d['id']
+                    env['chat_request_id'] = d['id']
+            if 'session' in d and isinstance(d['session'], dict) and 'id' in d['session']:
+                env['chat_session_id'] = d['session']['id']
         elif isinstance(d, list) and len(d) > 0 and isinstance(d[0], dict) and 'id' in d[0]:
             if 'sst/alerts' in url and not env['alert_id']:
                 env['alert_id'] = d[0]['id']
@@ -154,6 +160,12 @@ for folder, it in requests_to_audit:
     if '3.7' in name:
         if code in [200, 503]:
             print(f"✔ [{code}] {name} (Esperado 200 o 503 sin SMTP)")
+        else:
+            print(f"❌ [ERROR {code}] {name} -> {resp}")
+            issues.append((name, f"Código {code}: {resp}"))
+    elif 'Registrar Check-in Diario' in name:
+        if code in [201, 409]:
+            print(f"✔ [{code}] {name} (Registrado 201 o ya registrado hoy 409)")
         else:
             print(f"❌ [ERROR {code}] {name} -> {resp}")
             issues.append((name, f"Código {code}: {resp}"))

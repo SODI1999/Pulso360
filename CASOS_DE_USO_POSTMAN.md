@@ -113,9 +113,9 @@ Si el profesor pide: *"Muéstrame el CRUD de administración o gestión de usuar
 
 ---
 
-## 6. Estructura Completa de la Colección (9 Módulos)
+## 6. Estructura Completa de la Colección (10 Módulos — 64 Peticiones)
 
-La colección `Pulso360_Postman_Collection.json` está dividida en 9 carpetas que cubren el 100% de la API:
+La colección `Pulso360_Postman_Collection.json` está dividida en 10 carpetas que cubren el 100% de la API REST:
 
 ```text
 📦 Pulso360 — Suite de Pruebas API
@@ -127,7 +127,8 @@ La colección `Pulso360_Postman_Collection.json` está dividida en 9 carpetas qu
  ┣ 📂 6. Módulo Supervisor (Operación BPO)
  ┣ 📂 7. Módulo Administración (Empresa, Campañas, Parámetros)
  ┣ 📂 8. Módulo Auditoría & Ley 1581 (Trazabilidad Inmutable)
- ┗ 📂 9. Middlewares, Seguridad y Validación (Pruebas Negativas)
+ ┣ 📂 9. Middlewares, Seguridad y Validación (Pruebas Negativas)
+ ┗ 📂 10. Módulo Chat de Apoyo Psicosocial (SST & Agente)
 ```
 
 ### 9. Pruebas Negativas y Manejo de Errores (Middlewares Fail-Fast)
@@ -141,6 +142,24 @@ Si el docente pregunta: *"¿Qué pasa si mandan un token falso, no mandan nada o
 | **9.4 Body Vacío** | POST a `/auth/login` con body `{}` | `400 Bad Request` | `AUTH_MISSING_FIELDS` |
 | **9.5 Longitud Mínima** | POST a `/agent/journal` con texto menor a 5 caracteres | `400 Bad Request` | `JOURNAL_CONTENT_EMPTY` |
 | **9.6 Ruta Inexistente** | GET a `/esta-ruta-no-existe...` | `404 Not Found` | `RESOURCE_NOT_FOUND` |
+
+---
+
+### 10. Módulo Chat de Apoyo Psicosocial (Ciclo de Vida REST & Privacidad)
+Si el docente pregunta: *"¿Cómo se vincula el chat con los radicados y cómo se protege la privacidad de la conversación?"*:
+
+> **Nota de Arquitectura:** El intercambio de mensajes en tiempo real ocurre por **WebSockets (Socket.IO)** en el frontend. Los endpoints de esta carpeta gestionan el **ciclo de vida transaccional**, la validación previa de consentimiento (Ley 1581) y la auditoría inmutable del canal.
+
+| Petición | Rol Actuante | Acción y Validación de Dominio | Código Esperado |
+| :--- | :--- | :--- | :--- |
+| **10.1 Consentimiento Vigente** | `AGENTE` | Actualiza y acepta la política vigente con la cláusula **C3 (Apoyo Psicosocial)** activa | `200 OK` |
+| **10.2 Radicar Solicitud** | `AGENTE` | Genera el radicado formal de apoyo (identificado o confidencial) | `201 Created` |
+| **10.3 Activar Sala Chat** | `SST` | Especialista activa la sala. Verifica consentimiento C3 activo y emite mensaje formal | `200 OK` |
+| **10.4 Consultar Sesión** | `AGENTE` | Consulta estado activo de la conversación y vinculación al radicado | `200 OK` |
+| **10.5 Mapa Activo** | `AGENTE` | Consulta todas las salas abiertas del agente para navegación rápida | `200 OK` |
+| **10.6 Historial Auditado** | `AGENTE / SST` | Obtiene la traza cronológica de mensajes persistidos para lectura | `200 OK` |
+| **10.7 Cerrar Sesión** | `SST` | Concluye la atención con notas de cierre; pasa el chat a solo lectura | `200 OK` |
+| **10.8 Violación RBAC (Espía)** | `SUPERVISOR` | **Privacidad por Diseño:** Supervisor intenta leer el chat y es bloqueado | `403 Forbidden` |
 
 ---
 

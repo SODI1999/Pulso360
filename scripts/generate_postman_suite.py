@@ -74,7 +74,29 @@ pm.test("Token JWT generado exitosamente", function () {
             desc='Paso 1: Autenticación del Agente. Al presionar Send, el script captura el token JWT y lo inyecta en {{token}} para las siguientes peticiones.'
         ),
         req(
-            '1.2 [POST] [C]REATE — Crear Bitácora Personal',
+            '1.2 [PUT] Asegurar Consentimiento Activo (Ley 1581)',
+            'PUT',
+            'agent/consent',
+            headers={'Authorization': 'Bearer {{token}}'},
+            body={
+                'acepta_politica': True,
+                'acepta_aviso_privacidad': True,
+                'c1_checkin': True,
+                'c2_bitacora': True,
+                'c3_apoyo': True,
+                'c4_analitica': True,
+                'c5_contacto': True
+            },
+            test='''pm.test("Status code is 200 OK", function () {
+    pm.response.to.have.status(200);
+});
+var res = pm.response.json();
+pm.expect(res.success).to.be.true;
+pm.expect(res.data.c2_bitacora).to.be.true;''',
+            desc='Paso 2 [GOBERNANZA]: Garantiza que el agente acepte la política vigente con la cláusula C2 activa antes de manipular desahogo privado.'
+        ),
+        req(
+            '1.3 [POST] [C]REATE — Crear Bitácora Personal',
             'POST',
             'agent/journal',
             headers={'Authorization': 'Bearer {{token}}'},
@@ -91,10 +113,10 @@ pm.test("Registro creado con ID único", function () {
     pm.expect(res.data.id).to.be.a("string");
     pm.environment.set("journal_id", res.data.id);
 });''',
-            desc='Paso 2 [CREATE]: Envía una nueva bitácora a la API. Guarda automáticamente el ID único generado en {{journal_id}}.'
+            desc='Paso 3 [CREATE]: Envía una nueva bitácora a la API. Guarda automáticamente el ID único generado en {{journal_id}}.'
         ),
         req(
-            '1.3 [GET] [R]EAD — Listar Bitácoras y Verificar Creación',
+            '1.4 [GET] [R]EAD — Listar Bitácoras y Verificar Creación',
             'GET',
             'agent/journal',
             headers={'Authorization': 'Bearer {{token}}'},
@@ -107,10 +129,10 @@ pm.test("El registro recién creado aparece en el listado", function () {
     var found = res.data.some(function(item) { return item.id === createdId; });
     pm.expect(found).to.be.true;
 });''',
-            desc='Paso 3 [READ]: Consulta todas las bitácoras del usuario autenticado y verifica que el registro {{journal_id}} está presente.'
+            desc='Paso 4 [READ]: Consulta todas las bitácoras del usuario autenticado y verifica que el registro {{journal_id}} está presente.'
         ),
         req(
-            '1.4 [PUT] [U]PDATE — Modificar Contenido de la Bitácora',
+            '1.5 [PUT] [U]PDATE — Modificar Contenido de la Bitácora',
             'PUT',
             'agent/journal/{{journal_id}}',
             headers={'Authorization': 'Bearer {{token}}'},
@@ -127,10 +149,10 @@ pm.test("Campos actualizados correctamente en base de datos", function () {
     pm.expect(res.data.context).to.eql("Sustentación Docente (Actualizado)");
     pm.expect(res.data.content).to.include("EDICIÓN EN VIVO");
 });''',
-            desc='Paso 4 [UPDATE]: Envía PUT con nuevos datos sobre el ID {{journal_id}} y verifica que se reflejen los cambios.'
+            desc='Paso 5 [UPDATE]: Envía PUT con nuevos datos sobre el ID {{journal_id}} y verifica que se reflejen los cambios.'
         ),
         req(
-            '1.5 [DELETE] [D]ELETE — Eliminar la Bitácora Creada',
+            '1.6 [DELETE] [D]ELETE — Eliminar la Bitácora Creada',
             'DELETE',
             'agent/journal/{{journal_id}}',
             headers={'Authorization': 'Bearer {{token}}'},
@@ -142,10 +164,10 @@ pm.test("Confirmación de borrado físico en base de datos", function () {
     pm.expect(res.success).to.be.true;
     pm.expect(res.data.deleted).to.be.true;
 });''',
-            desc='Paso 5 [DELETE]: Elimina permanentemente la bitácora {{journal_id}} de la base de datos.'
+            desc='Paso 6 [DELETE]: Elimina permanentemente la bitácora {{journal_id}} de la base de datos.'
         ),
         req(
-            '1.6 [GET] [R]EAD Post-Borrado — Verificar que ya NO existe',
+            '1.7 [GET] [R]EAD Post-Borrado — Verificar que ya NO existe',
             'GET',
             'agent/journal',
             headers={'Authorization': 'Bearer {{token}}'},
@@ -158,7 +180,7 @@ pm.test("El registro eliminado ya NO existe en la base de datos", function () {
     var found = res.data.some(function(item) { return item.id === deletedId; });
     pm.expect(found).to.be.false;
 });''',
-            desc='Paso 6 [VERIFICACIÓN POST-BORRADO]: Reconsulta las bitácoras y confirma que el ID eliminado ya no aparece.'
+            desc='Paso 7 [VERIFICACIÓN POST-BORRADO]: Reconsulta las bitácoras y confirma que el ID eliminado ya no aparece.'
         )
     ]
 })
@@ -353,7 +375,37 @@ folders.append({
     'name': '4. Módulo Agente (Bienestar & Privacidad)',
     'item': [
         req(
-            '4.1 [POST] Registrar Check-in Diario (6 Dimensiones BPO)',
+            '4.1 [GET] Consultar Consentimiento Granular Activo',
+            'GET',
+            'agent/consent',
+            headers={'Authorization': 'Bearer {{token_agente}}'},
+            test='''pm.test("Status code is 200 OK", function () { pm.response.to.have.status(200); });''',
+            desc='Consulta las cláusulas de consentimiento C1..C5 bajo la política vigente.'
+        ),
+        req(
+            '4.2 [PUT] Actualizar Consentimiento Granular (C1..C5)',
+            'PUT',
+            'agent/consent',
+            headers={'Authorization': 'Bearer {{token_agente}}'},
+            body={
+                'c1_checkin': True,
+                'c2_bitacora': True,
+                'c3_apoyo': True,
+                'c4_analitica': True,
+                'c5_contacto': True,
+                'acepta_politica': True,
+                'acepta_aviso_privacidad': True
+            },
+            test='''pm.test("Status code is 200 OK", function () { pm.response.to.have.status(200); });
+pm.test("Consentimiento actualizado exitosamente", function () {
+    var res = pm.response.json();
+    pm.expect(res.success).to.be.true;
+    pm.expect(res.data.flags.c1_checkin).to.be.true;
+});''',
+            desc='Actualiza los consentimientos informados del trabajador con las columnas oficiales de la base de datos (Ley 1581).'
+        ),
+        req(
+            '4.3 [POST] Registrar Check-in Diario (6 Dimensiones BPO)',
             'POST',
             'agent/checkin',
             headers={'Authorization': 'Bearer {{token_agente}}'},
@@ -377,7 +429,7 @@ pm.test("Check-in registrado exitosamente", function () {
             desc='Envío del check-in con las 6 dimensiones psicosociales normativas del modelo BPO en la raíz del payload.'
         ),
         req(
-            '4.2 [GET] Consultar Check-in de Hoy',
+            '4.4 [GET] Consultar Check-in de Hoy',
             'GET',
             'agent/checkin/today',
             headers={'Authorization': 'Bearer {{token_agente}}'},
@@ -385,41 +437,12 @@ pm.test("Check-in registrado exitosamente", function () {
             desc='Verifica si el agente ya completó su pulso en el turno actual.'
         ),
         req(
-            '4.3 [GET] Consultar Historial de Check-ins',
+            '4.5 [GET] Consultar Historial de Check-ins',
             'GET',
             'agent/checkin/history',
             headers={'Authorization': 'Bearer {{token_agente}}'},
             test='''pm.test("Status code is 200 OK", function () { pm.response.to.have.status(200); });''',
             desc='Historial privado de evaluaciones del operador.'
-        ),
-        req(
-            '4.4 [GET] Consultar Consentimiento Granular Activo',
-            'GET',
-            'agent/consent',
-            headers={'Authorization': 'Bearer {{token_agente}}'},
-            test='''pm.test("Status code is 200 OK", function () { pm.response.to.have.status(200); });''',
-            desc='Consulta las cláusulas de consentimiento C1..C5 bajo la política vigente.'
-        ),
-        req(
-            '4.5 [PUT] Actualizar Consentimiento Granular (C1..C5)',
-            'PUT',
-            'agent/consent',
-            headers={'Authorization': 'Bearer {{token_agente}}'},
-            body={
-                'c1_checkin': True,
-                'c2_bitacora': True,
-                'c3_apoyo': True,
-                'c4_analitica': True,
-                'c5_contacto': True,
-                'acepta_politica': True
-            },
-            test='''pm.test("Status code is 200 OK", function () { pm.response.to.have.status(200); });
-pm.test("Consentimiento actualizado exitosamente", function () {
-    var res = pm.response.json();
-    pm.expect(res.success).to.be.true;
-    pm.expect(res.data.flags.c1_checkin).to.be.true;
-});''',
-            desc='Actualiza los consentimientos informados del trabajador con las columnas oficiales de la base de datos (Ley 1581).'
         ),
         req(
             '4.6 [POST] Solicitar Apoyo Psicosocial Preventivo',
@@ -885,6 +908,152 @@ pm.test("Código de error RESOURCE_NOT_FOUND", function () {
     pm.expect(res.error.code).to.eql("RESOURCE_NOT_FOUND");
 });''',
             desc='Verifica que notFoundHandler responde con el sobre de error canónico.'
+        )
+    ]
+})
+
+# ==============================================================================
+# FOLDER 10: MODULO CHAT DE APOYO PSICOSOCIAL (SST & AGENTE)
+# ==============================================================================
+folders.append({
+    'name': '📁 10. Módulo Chat de Apoyo Psicosocial (SST & Agente)',
+    'item': [
+        req(
+            '10.1 [PUT] Asegurar Consentimiento Vigente (Agente C3 Apoyo)',
+            'PUT',
+            'agent/consent',
+            headers={'Authorization': 'Bearer {{token_agente}}'},
+            body={
+                'acepta_politica': True,
+                'acepta_aviso_privacidad': True,
+                'c1_checkin': True,
+                'c2_bitacora': True,
+                'c3_apoyo': True,
+                'c4_analitica': True,
+                'c5_contacto': True
+            },
+            test='''pm.test("Status code is 200 OK", function () {
+    pm.response.to.have.status(200);
+});
+var res = pm.response.json();
+pm.expect(res.success).to.be.true;
+pm.expect(res.data.c3_apoyo).to.be.true;
+pm.expect(res.data.politica_vigente).to.be.true;''',
+            desc='Garantiza que el agente acepte la política vigente con la cláusula C3 (Acompañamiento Psicosocial) habilitada según Ley 1581 de 2012 antes de radicar el apoyo.'
+        ),
+        req(
+            '10.2 [POST] Radicar Solicitud de Apoyo para Chat (Agente)',
+            'POST',
+            'sst/support-requests',
+            headers={'Authorization': 'Bearer {{token_agente}}'},
+            body={
+                'mode': 'identificado',
+                'reason': 'Fatiga emocional acumulada y saturacion de llamadas',
+                'description': 'Solicito espacio de orientacion preventiva con el equipo de Salud Ocupacional.',
+                'urgency': 'media',
+                'contact_preference': 'app'
+            },
+            test='''pm.test("Status code is 201 Created", function () {
+    pm.response.to.have.status(201);
+});
+var res = pm.response.json();
+pm.expect(res.success).to.be.true;
+if (res.data && res.data.id) {
+    pm.environment.set("chat_request_id", res.data.id);
+}''',
+            desc='Radica la solicitud formal de apoyo del agente (necesaria para vincular la sesión de chat preventivo).'
+        ),
+        req(
+            '10.3 [POST] Activar Sesión de Chat Preventivo (SST)',
+            'POST',
+            'chat/requests/{{chat_request_id}}/activate',
+            headers={'Authorization': 'Bearer {{token_sst}}'},
+            body={},
+            test='''pm.test("Status code is 200 OK", function () {
+    pm.response.to.have.status(200);
+});
+var res = pm.response.json();
+pm.expect(res.success).to.be.true;
+pm.expect(res.data).to.have.property("session");
+if (res.data.session && res.data.session.id) {
+    pm.environment.set("chat_session_id", res.data.session.id);
+}
+pm.expect(res.data.session.status).to.eql("activa");
+pm.expect(res.data.messages).to.be.an("array");''',
+            desc='Especialista SST activa el canal de chat. Valida consentimiento C3 activo del titular e inicializa la sala con mensaje formal.'
+        ),
+        req(
+            '10.4 [GET] Consultar Sesión de Chat del Radicado (Agente)',
+            'GET',
+            'chat/requests/{{chat_request_id}}',
+            headers={'Authorization': 'Bearer {{token_agente}}'},
+            test='''pm.test("Status code is 200 OK", function () {
+    pm.response.to.have.status(200);
+});
+var res = pm.response.json();
+pm.expect(res.success).to.be.true;
+pm.expect(res.data.session.status).to.eql("activa");
+pm.expect(res.data.messages).to.be.an("array");''',
+            desc='El agente consulta el estado de la conversación y los datos sincronizados del radicado.'
+        ),
+        req(
+            '10.5 [GET] Consultar Mapa de Chats Activos del Agente',
+            'GET',
+            'chat/agent-active-map',
+            headers={'Authorization': 'Bearer {{token_agente}}'},
+            test='''pm.test("Status code is 200 OK", function () {
+    pm.response.to.have.status(200);
+});
+var res = pm.response.json();
+pm.expect(res.success).to.be.true;
+pm.expect(res.data).to.be.an("array");''',
+            desc='Devuelve todos los radicados con sala de chat abierta del agente para navegación rápida en el panel.'
+        ),
+        req(
+            '10.6 [GET] Consultar Historial Auditado de Mensajes (Agente / SST)',
+            'GET',
+            'chat/sessions/{{chat_session_id}}/messages',
+            headers={'Authorization': 'Bearer {{token_agente}}'},
+            test='''pm.test("Status code is 200 OK", function () {
+    pm.response.to.have.status(200);
+});
+var res = pm.response.json();
+pm.expect(res.success).to.be.true;
+pm.expect(res.data).to.have.property("messages");
+pm.expect(res.data.messages).to.be.an("array");''',
+            desc='Recupera la traza cronológica completa de mensajes persistidos y auditados de la sesión.'
+        ),
+        req(
+            '10.7 [POST] Concluir y Cerrar Sesión de Chat (SST)',
+            'POST',
+            'chat/sessions/{{chat_session_id}}/close',
+            headers={'Authorization': 'Bearer {{token_sst}}'},
+            body={
+                'reason': 'Orientacion preventiva completada',
+                'notes': 'Se brindaron pautas de descompresión y pausas activas asistidas.',
+                'targetRequestStatus': 'Cerrada'
+            },
+            test='''pm.test("Status code is 200 OK", function () {
+    pm.response.to.have.status(200);
+});
+var res = pm.response.json();
+pm.expect(res.success).to.be.true;
+pm.expect(res.data.estado).to.eql("cerrada");
+pm.expect(res.data.finalRequestStatus).to.eql("Cerrada");''',
+            desc='Concluye la orientación formalmente, persiste notas confidenciales en auditoría y pasa la sala a modo solo lectura.'
+        ),
+        req(
+            '10.8 [GET] Violación RBAC - Supervisor intenta espiar Chat (Espera 403 Forbidden)',
+            'GET',
+            'chat/requests/{{chat_request_id}}',
+            headers={'Authorization': 'Bearer {{token_supervisor}}'},
+            test='''pm.test("Status code is 403 Forbidden", function () {
+    pm.response.to.have.status(403);
+});
+var res = pm.response.json();
+pm.expect(res.success).to.be.false;
+pm.expect(res.error.code).to.eql("AUTH_FORBIDDEN_ROLE");''',
+            desc='Verifica la garantía de Privacidad por Diseño (Ley 1581 / Res. 2646): Supervisores y jefaturas tienen estrictamente prohibido el acceso a conversaciones de apoyo psicosocial.'
         )
     ]
 })

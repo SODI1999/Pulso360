@@ -64,7 +64,62 @@
           ]
         },
         {
-          "name": "1.2 [POST] [C]REATE — Crear Bitácora Personal",
+          "name": "1.2 [PUT] Asegurar Consentimiento Activo (Ley 1581)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/agent/consent",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "agent",
+                "consent"
+              ]
+            },
+            "description": "Paso 2 [GOBERNANZA]: Garantiza que el agente acepte la política vigente con la cláusula C2 activa antes de manipular desahogo privado.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"acepta_politica\": true,\n  \"acepta_aviso_privacidad\": true,\n  \"c1_checkin\": true,\n  \"c2_bitacora\": true,\n  \"c3_apoyo\": true,\n  \"c4_analitica\": true,\n  \"c5_contacto\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var res = pm.response.json();",
+                  "pm.expect(res.success).to.be.true;",
+                  "pm.expect(res.data.c2_bitacora).to.be.true;"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "1.3 [POST] [C]REATE — Crear Bitácora Personal",
           "request": {
             "method": "POST",
             "header": [
@@ -89,7 +144,7 @@
                 "journal"
               ]
             },
-            "description": "Paso 2 [CREATE]: Envía una nueva bitácora a la API. Guarda automáticamente el ID único generado en {{journal_id}}.",
+            "description": "Paso 3 [CREATE]: Envía una nueva bitácora a la API. Guarda automáticamente el ID único generado en {{journal_id}}.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"context\": \"Sustentación Docente CRUD\",\n  \"content\": \"Entrada de bitácora creada en vivo para demostrar el ciclo completo Create, Read, Update, Delete.\"\n}",
@@ -122,7 +177,7 @@
           ]
         },
         {
-          "name": "1.3 [GET] [R]EAD — Listar Bitácoras y Verificar Creación",
+          "name": "1.4 [GET] [R]EAD — Listar Bitácoras y Verificar Creación",
           "request": {
             "method": "GET",
             "header": [
@@ -147,7 +202,7 @@
                 "journal"
               ]
             },
-            "description": "Paso 3 [READ]: Consulta todas las bitácoras del usuario autenticado y verifica que el registro {{journal_id}} está presente."
+            "description": "Paso 4 [READ]: Consulta todas las bitácoras del usuario autenticado y verifica que el registro {{journal_id}} está presente."
           },
           "response": [],
           "event": [
@@ -171,7 +226,7 @@
           ]
         },
         {
-          "name": "1.4 [PUT] [U]PDATE — Modificar Contenido de la Bitácora",
+          "name": "1.5 [PUT] [U]PDATE — Modificar Contenido de la Bitácora",
           "request": {
             "method": "PUT",
             "header": [
@@ -197,7 +252,7 @@
                 "{{journal_id}}"
               ]
             },
-            "description": "Paso 4 [UPDATE]: Envía PUT con nuevos datos sobre el ID {{journal_id}} y verifica que se reflejen los cambios.",
+            "description": "Paso 5 [UPDATE]: Envía PUT con nuevos datos sobre el ID {{journal_id}} y verifica que se reflejen los cambios.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"context\": \"Sustentación Docente (Actualizado)\",\n  \"content\": \"EDICIÓN EN VIVO: Se verificó la actualización del registro mediante petición PUT exitosa.\"\n}",
@@ -230,7 +285,7 @@
           ]
         },
         {
-          "name": "1.5 [DELETE] [D]ELETE — Eliminar la Bitácora Creada",
+          "name": "1.6 [DELETE] [D]ELETE — Eliminar la Bitácora Creada",
           "request": {
             "method": "DELETE",
             "header": [
@@ -256,7 +311,7 @@
                 "{{journal_id}}"
               ]
             },
-            "description": "Paso 5 [DELETE]: Elimina permanentemente la bitácora {{journal_id}} de la base de datos."
+            "description": "Paso 6 [DELETE]: Elimina permanentemente la bitácora {{journal_id}} de la base de datos."
           },
           "response": [],
           "event": [
@@ -279,7 +334,7 @@
           ]
         },
         {
-          "name": "1.6 [GET] [R]EAD Post-Borrado — Verificar que ya NO existe",
+          "name": "1.7 [GET] [R]EAD Post-Borrado — Verificar que ya NO existe",
           "request": {
             "method": "GET",
             "header": [
@@ -304,7 +359,7 @@
                 "journal"
               ]
             },
-            "description": "Paso 6 [VERIFICACIÓN POST-BORRADO]: Reconsulta las bitácoras y confirma que el ID eliminado ya no aparece."
+            "description": "Paso 7 [VERIFICACIÓN POST-BORRADO]: Reconsulta las bitácoras y confirma que el ID eliminado ya no aparece."
           },
           "response": [],
           "event": [
@@ -960,7 +1015,103 @@
       "name": "4. Módulo Agente (Bienestar & Privacidad)",
       "item": [
         {
-          "name": "4.1 [POST] Registrar Check-in Diario (6 Dimensiones BPO)",
+          "name": "4.1 [GET] Consultar Consentimiento Granular Activo",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_agente}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/agent/consent",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "agent",
+                "consent"
+              ]
+            },
+            "description": "Consulta las cláusulas de consentimiento C1..C5 bajo la política vigente."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "4.2 [PUT] Actualizar Consentimiento Granular (C1..C5)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_agente}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/agent/consent",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "agent",
+                "consent"
+              ]
+            },
+            "description": "Actualiza los consentimientos informados del trabajador con las columnas oficiales de la base de datos (Ley 1581).",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"c1_checkin\": true,\n  \"c2_bitacora\": true,\n  \"c3_apoyo\": true,\n  \"c4_analitica\": true,\n  \"c5_contacto\": true,\n  \"acepta_politica\": true,\n  \"acepta_aviso_privacidad\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"Consentimiento actualizado exitosamente\", function () {",
+                  "    var res = pm.response.json();",
+                  "    pm.expect(res.success).to.be.true;",
+                  "    pm.expect(res.data.flags.c1_checkin).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "4.3 [POST] Registrar Check-in Diario (6 Dimensiones BPO)",
           "request": {
             "method": "POST",
             "header": [
@@ -1017,7 +1168,7 @@
           ]
         },
         {
-          "name": "4.2 [GET] Consultar Check-in de Hoy",
+          "name": "4.4 [GET] Consultar Check-in de Hoy",
           "request": {
             "method": "GET",
             "header": [
@@ -1059,7 +1210,7 @@
           ]
         },
         {
-          "name": "4.3 [GET] Consultar Historial de Check-ins",
+          "name": "4.5 [GET] Consultar Historial de Check-ins",
           "request": {
             "method": "GET",
             "header": [
@@ -1095,102 +1246,6 @@
                 "type": "text/javascript",
                 "exec": [
                   "pm.test(\"Status code is 200 OK\", function () { pm.response.to.have.status(200); });"
-                ]
-              }
-            }
-          ]
-        },
-        {
-          "name": "4.4 [GET] Consultar Consentimiento Granular Activo",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "type": "text"
-              },
-              {
-                "key": "Authorization",
-                "value": "Bearer {{token_agente}}",
-                "type": "text"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/agent/consent",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "agent",
-                "consent"
-              ]
-            },
-            "description": "Consulta las cláusulas de consentimiento C1..C5 bajo la política vigente."
-          },
-          "response": [],
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Status code is 200 OK\", function () { pm.response.to.have.status(200); });"
-                ]
-              }
-            }
-          ]
-        },
-        {
-          "name": "4.5 [PUT] Actualizar Consentimiento Granular (C1..C5)",
-          "request": {
-            "method": "PUT",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "type": "text"
-              },
-              {
-                "key": "Authorization",
-                "value": "Bearer {{token_agente}}",
-                "type": "text"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/agent/consent",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "agent",
-                "consent"
-              ]
-            },
-            "description": "Actualiza los consentimientos informados del trabajador con las columnas oficiales de la base de datos (Ley 1581).",
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"c1_checkin\": true,\n  \"c2_bitacora\": true,\n  \"c3_apoyo\": true,\n  \"c4_analitica\": true,\n  \"c5_contacto\": true,\n  \"acepta_politica\": true\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "response": [],
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Status code is 200 OK\", function () { pm.response.to.have.status(200); });",
-                  "pm.test(\"Consentimiento actualizado exitosamente\", function () {",
-                  "    var res = pm.response.json();",
-                  "    pm.expect(res.success).to.be.true;",
-                  "    pm.expect(res.data.flags.c1_checkin).to.be.true;",
-                  "});"
                 ]
               }
             }
@@ -2778,6 +2833,434 @@
                   "    pm.expect(res.success).to.be.false;",
                   "    pm.expect(res.error.code).to.eql(\"RESOURCE_NOT_FOUND\");",
                   "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "📁 10. Módulo Chat de Apoyo Psicosocial (SST & Agente)",
+      "item": [
+        {
+          "name": "10.1 [PUT] Asegurar Consentimiento Vigente (Agente C3 Apoyo)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_agente}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/agent/consent",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "agent",
+                "consent"
+              ]
+            },
+            "description": "Garantiza que el agente acepte la política vigente con la cláusula C3 (Acompañamiento Psicosocial) habilitada según Ley 1581 de 2012 antes de radicar el apoyo.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"acepta_politica\": true,\n  \"acepta_aviso_privacidad\": true,\n  \"c1_checkin\": true,\n  \"c2_bitacora\": true,\n  \"c3_apoyo\": true,\n  \"c4_analitica\": true,\n  \"c5_contacto\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var res = pm.response.json();",
+                  "pm.expect(res.success).to.be.true;",
+                  "pm.expect(res.data.c3_apoyo).to.be.true;",
+                  "pm.expect(res.data.politica_vigente).to.be.true;"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "10.2 [POST] Radicar Solicitud de Apoyo para Chat (Agente)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_agente}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/sst/support-requests",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sst",
+                "support-requests"
+              ]
+            },
+            "description": "Radica la solicitud formal de apoyo del agente (necesaria para vincular la sesión de chat preventivo).",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mode\": \"identificado\",\n  \"reason\": \"Fatiga emocional acumulada y saturacion de llamadas\",\n  \"description\": \"Solicito espacio de orientacion preventiva con el equipo de Salud Ocupacional.\",\n  \"urgency\": \"media\",\n  \"contact_preference\": \"app\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 201 Created\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "var res = pm.response.json();",
+                  "pm.expect(res.success).to.be.true;",
+                  "if (res.data && res.data.id) {",
+                  "    pm.environment.set(\"chat_request_id\", res.data.id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "10.3 [POST] Activar Sesión de Chat Preventivo (SST)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_sst}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/chat/requests/{{chat_request_id}}/activate",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "chat",
+                "requests",
+                "{{chat_request_id}}",
+                "activate"
+              ]
+            },
+            "description": "Especialista SST activa el canal de chat. Valida consentimiento C3 activo del titular e inicializa la sala con mensaje formal.",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var res = pm.response.json();",
+                  "pm.expect(res.success).to.be.true;",
+                  "pm.expect(res.data).to.have.property(\"session\");",
+                  "if (res.data.session && res.data.session.id) {",
+                  "    pm.environment.set(\"chat_session_id\", res.data.session.id);",
+                  "}",
+                  "pm.expect(res.data.session.status).to.eql(\"activa\");",
+                  "pm.expect(res.data.messages).to.be.an(\"array\");"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "10.4 [GET] Consultar Sesión de Chat del Radicado (Agente)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_agente}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/chat/requests/{{chat_request_id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "chat",
+                "requests",
+                "{{chat_request_id}}"
+              ]
+            },
+            "description": "El agente consulta el estado de la conversación y los datos sincronizados del radicado."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var res = pm.response.json();",
+                  "pm.expect(res.success).to.be.true;",
+                  "pm.expect(res.data.session.status).to.eql(\"activa\");",
+                  "pm.expect(res.data.messages).to.be.an(\"array\");"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "10.5 [GET] Consultar Mapa de Chats Activos del Agente",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_agente}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/chat/agent-active-map",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "chat",
+                "agent-active-map"
+              ]
+            },
+            "description": "Devuelve todos los radicados con sala de chat abierta del agente para navegación rápida en el panel."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var res = pm.response.json();",
+                  "pm.expect(res.success).to.be.true;",
+                  "pm.expect(res.data).to.be.an(\"array\");"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "10.6 [GET] Consultar Historial Auditado de Mensajes (Agente / SST)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_agente}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/chat/sessions/{{chat_session_id}}/messages",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "chat",
+                "sessions",
+                "{{chat_session_id}}",
+                "messages"
+              ]
+            },
+            "description": "Recupera la traza cronológica completa de mensajes persistidos y auditados de la sesión."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var res = pm.response.json();",
+                  "pm.expect(res.success).to.be.true;",
+                  "pm.expect(res.data).to.have.property(\"messages\");",
+                  "pm.expect(res.data.messages).to.be.an(\"array\");"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "10.7 [POST] Concluir y Cerrar Sesión de Chat (SST)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_sst}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/chat/sessions/{{chat_session_id}}/close",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "chat",
+                "sessions",
+                "{{chat_session_id}}",
+                "close"
+              ]
+            },
+            "description": "Concluye la orientación formalmente, persiste notas confidenciales en auditoría y pasa la sala a modo solo lectura.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Orientacion preventiva completada\",\n  \"notes\": \"Se brindaron pautas de descompresión y pausas activas asistidas.\",\n  \"targetRequestStatus\": \"Cerrada\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var res = pm.response.json();",
+                  "pm.expect(res.success).to.be.true;",
+                  "pm.expect(res.data.estado).to.eql(\"cerrada\");",
+                  "pm.expect(res.data.finalRequestStatus).to.eql(\"Cerrada\");"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "10.8 [GET] Violación RBAC - Supervisor intenta espiar Chat (Espera 403 Forbidden)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_supervisor}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/chat/requests/{{chat_request_id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "chat",
+                "requests",
+                "{{chat_request_id}}"
+              ]
+            },
+            "description": "Verifica la garantía de Privacidad por Diseño (Ley 1581 / Res. 2646): Supervisores y jefaturas tienen estrictamente prohibido el acceso a conversaciones de apoyo psicosocial."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 403 Forbidden\", function () {",
+                  "    pm.response.to.have.status(403);",
+                  "});",
+                  "var res = pm.response.json();",
+                  "pm.expect(res.success).to.be.false;",
+                  "pm.expect(res.error.code).to.eql(\"AUTH_FORBIDDEN_ROLE\");"
                 ]
               }
             }
