@@ -28,17 +28,24 @@
   - **Retorno**: Lista actualizada de reglas.
   - **Consumidores**: `PendingAlertRules.jsx` y `useSystemParams.jsx`.
 
+- **`apiClient.get(path)` / `post(path, body)` / `put(path, body)` / `delete(path)`**
+  - **Archivo**: `src/core/api/apiClient.jsx`
+  - **Parámetros**: `path` (ruta relativa del endpoint, ej. `'/agent/checkin'`), `body` (objeto opcional con los datos).
+  - **Qué hace**: Pasarela centralizada para llamadas HTTP REST hacia la API de Express 5. Inyecta automáticamente el token JWT en el encabezado `Authorization: Bearer`, desempaqueta la respuesta canónica y maneja errores de red y autorización.
+  - **Retorno**: Promesa que resuelve en `{ success: true, data: { ... } }`.
+  - **Consumidores**: Prácticamente todos los servicios de la aplicación en `src/features/` y `src/core/`.
+
 - **`authService.login(email, password)`**
   - **Archivo**: `src/core/auth/authService.jsx`
-  - **Parámetros**: `email` (string), `password` (string).
-  - **Qué hace**: Valida si el usuario está bloqueado por fuerza bruta (`getRemainingLockMs`). Busca en `pulsoStore.get().users`. Si es correcto, guarda la sesión en `sessionStorage` y emite un log de auditoría inmutable.
+  - **Parámetros**: `email` (string o alias rápido de demo), `password` (string).
+  - **Qué hace**: Valida si el navegador está en bloqueo temporal (`getRemainingLockMs`). Realiza la petición HTTP a `POST /api/v1/auth/login`. Si es exitosa, guarda el token JWT mediante `setAuthToken(token)`, normaliza la información del usuario y consulta su consentimiento en `/agent/consent`.
   - **Retorno**: `{ success: boolean, user?: Object, message?: string, locked?: boolean }`.
   - **Consumidores**: `useLogin.jsx` y `LoginForm.jsx`.
 
 - **`authService.logout()`**
   - **Archivo**: `src/core/auth/authService.jsx`
   - **Parámetros**: Ninguno.
-  - **Qué hace**: Elimina la clave de sesión de `sessionStorage`, audita la salida del usuario en `pulsoStore` y redirige a la pantalla de login.
+  - **Qué hace**: Remueve el token JWT del almacenamiento mediante `removeAuthToken()`, limpia la sesión en `sessionData` y redirige al login.
   - **Retorno**: `void`.
   - **Consumidores**: `AppLayout.jsx` (botón de cerrar sesión).
 
@@ -52,6 +59,20 @@
 ---
 
 ### C
+- **`chatService.activateChat(requestId)`**
+  - **Archivo**: `src/core/api/chatService.jsx`
+  - **Parámetros**: `requestId` (string con el ID del radicado formal).
+  - **Qué hace**: Invoca `POST /api/v1/chat/requests/:requestId/activate` con el token de SST. Valida que el agente tenga el consentimiento C3 activo y abre la sala de chat bidireccional.
+  - **Retorno**: `{ session: Object, messages: Array<Object> }`.
+  - **Consumidores**: `SupportInboxPage.jsx`.
+
+- **`chatService.closeSession(sessionId, payload)`**
+  - **Archivo**: `src/core/api/chatService.jsx`
+  - **Parámetros**: `sessionId` (string), `payload` (objeto con `reason`, `notes` y `targetRequestStatus`).
+  - **Qué hace**: Concluye la orientación formalmente (`POST /api/v1/chat/sessions/:sessionId/close`), pasando la sala y el radicado a estado de solo lectura.
+  - **Retorno**: Datos de la sesión cerrada.
+  - **Consumidores**: Componente de diálogo de chat en `SupportChannelPage.jsx`.
+
 - **`createAmbientSound()`**
   - **Archivo**: `src/features/agent/services/ambientSound.jsx`
   - **Parámetros**: Ninguno.
@@ -62,9 +83,9 @@
 - **`createIntervention(interventionData)`**
   - **Archivo**: `src/features/sst/services/interventionsService.jsx`
   - **Parámetros**: `interventionData` (objeto con título, campaña objetivo, supervisor asignado, tipo y fechas).
-  - **Qué hace**: Registra un nuevo plan de acción preventivo en `pulsoStore` y emite una notificación al supervisor correspondiente.
+  - **Qué hace**: Registra un nuevo plan de acción preventivo en la base de datos mediante `POST /api/v1/sst/interventions` y emite una notificación al supervisor correspondiente.
   - **Retorno**: Objeto de intervención creado con ID único.
-  - **Consumidores**: `NewInterventionForm.jsx` y `InterventionsPage.jsx`.
+  - **Consumidores**: `NewInterventionForm.jsx` e `InterventionsPage.jsx`.
 
 - **`createUser(newUserData)`**
   - **Archivo**: `src/features/admin/services/usersRolesService.jsx`
@@ -178,7 +199,6 @@
 
 ---
 
-🎉 **¡Felicitaciones! Has completado el Libro Técnico Definitivo de Pulso360.**  
-Ahora conoces cada rincón de la arquitectura, sus decisiones éticas, sus componentes, estilos y funciones. Con este conocimiento, tienes todas las herramientas para mantener, auditar o expandir la plataforma con total maestría.
+En el siguiente y último capítulo del libro, analizaremos la arquitectura del backend en Express 5 y la persistencia relacional en PostgreSQL 18.
 
-👉 [Volver al Índice Maestro](./INDICE_MAESTRO.md)
+👉 **Siguiente paso**: [Capítulo 12: Arquitectura de Backend y Base de Datos Relacional](./12_arquitectura_backend_y_persistencia.md)

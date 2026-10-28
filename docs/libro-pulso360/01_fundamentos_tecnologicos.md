@@ -173,7 +173,7 @@ En Pulso360, la carpeta `src/features/<modulo>/hooks/` está repleta de estos ho
 
 En un sitio web tradicional, cada enlace te lleva a una nueva dirección web que descarga un archivo HTML distinto.
 
-Pulso360 es una **SPA (Single Page Application - Aplicación de Página Única)**. Solo existe un único archivo HTML real en todo el proyecto: [index.html](file:///c:/Users/brahi/OneDrive/Escritorio/TdeA/4to%20semestre/Construccion3/Pulso360/index.html).
+Pulso360 es una **SPA (Single Page Application - Aplicación de Página Única)**. Solo existe un único archivo HTML real en el frontend: `frontend/index.html`.
 
 ¿Cómo es posible entonces que tengamos rutas como `/login`, `/agente/panel`, `/supervisor/acciones` o `/sst/alertas`?
 
@@ -185,14 +185,56 @@ Gracias a **React Router (versión 7)**:
 
 ---
 
-## 6. La Herramienta de Construcción: Vite
+## 6. La Herramienta de Construcción Frontend: Vite
 
-Si abres [package.json](file:///c:/Users/brahi/OneDrive/Escritorio/TdeA/4to%20semestre/Construccion3/Pulso360/package.json), verás que en los scripts dice `"dev": "vite"` y `"build": "vite build"`.
+Si abres `frontend/package.json`, verás que en los scripts dice `"dev": "vite"` y `"build": "vite build"`.
 
-**Vite** (palabra francesa que significa "rápido") es el motor de empaquetado del proyecto:
-- Mientras programas (`npm run dev`), levanta un servidor de desarrollo local en tu computador (por ejemplo en `http://localhost:5173`).
+**Vite** (palabra francesa que significa "rápido") es el motor de empaquetado del frontend:
+- Mientras programas (`npm run dev`), levanta un servidor de desarrollo local en tu computador (por defecto en `http://localhost:5173`).
 - Utiliza una tecnología llamada **HMR (Hot Module Replacement)**: cuando cambias una línea de código en un archivo `.jsx` o `.css` y guardas, Vite actualiza únicamente ese módulo en tu navegador al instante, sin necesidad de recargar la página completa ni perder lo que estabas haciendo.
-- Cuando vas a publicar la aplicación a producción (`npm run build`), Vite toma todos los archivos de `src/`, optimiza las imágenes, comprime el código CSS y JavaScript y genera una carpeta llamada `dist/` lista para ser alojada en cualquier servidor web.
+- Cuando vas a publicar la aplicación a producción (`npm run build`), Vite toma todos los archivos de `src/`, optimiza los activos, comprime el código CSS y JavaScript y genera una carpeta llamada `dist/` lista para producción.
+
+---
+
+## 7. El Ecosistema Fullstack: De la SPA al Servidor Backend (Express 5 + PostgreSQL 18 + WebSockets)
+
+Pulso360 no es solo una interfaz visual en el navegador: es una **solución cliente-servidor completa (Fullstack)**:
+
+```mermaid
+graph LR
+    subgraph Frontend [Navegador - Puerto 5173]
+        UI[React 18 + React Router]
+        API_CLIENT[src/core/api/apiClient.jsx]
+        SOCKET_CLIENT[src/core/socket/socketClient.jsx]
+    end
+
+    subgraph Backend [Servidor Node.js - Puerto 3000]
+        EXPRESS[API REST Express 5]
+        WS[Socket.IO Server]
+        AUTH_MW[Middleware RBAC & JWT]
+    end
+
+    subgraph BaseDeDatos [PostgreSQL 18 - Puerto 5432]
+        PG[(31 Tablas Relacionales)]
+    end
+
+    UI -->|Peticiones HTTP Asíncronas| API_CLIENT
+    API_CLIENT -->|JSON + Bearer JWT| EXPRESS
+    EXPRESS --> AUTH_MW
+    AUTH_MW -->|Pool pg Transaccional| PG
+
+    UI -->|Eventos de Chat en Vivo| SOCKET_CLIENT
+    SOCKET_CLIENT <-->|WebSockets Bidireccionales| WS
+```
+
+1. **Frontend (Cliente Ligero React 18 en `http://localhost:5173`)**:
+   Renderiza las pantallas, valida formularios de inmediato en el navegador, ejecuta el análisis léxico NLP privado en local y mantiene la reactividad visual.
+2. **Backend (API REST Express 5 en `http://localhost:3000/api/v1`)**:
+   Valida las credenciales, firma tokens JWT criptográficos, aplica las reglas de negocio (Fail-Fast), comprueba los roles de usuario (RBAC) y ejecuta transacciones SQL atómicas.
+3. **Persistencia Relacional (PostgreSQL 18)**:
+   Alberga 31 tablas relacionales normalizadas que garantizan la integridad referencial, el aislamiento de auditoría inmutable (SHA-256) y el cálculo de métricas k-anónimas ($k \ge 5$).
+4. **Mensajería en Tiempo Real (Socket.IO)**:
+   Canal bidireccional mediante WebSockets que permite al Agente y al Especialista SST chatear en vivo sin necesidad de recargar la página ni hacer peticiones repetitivas al servidor.
 
 ---
 

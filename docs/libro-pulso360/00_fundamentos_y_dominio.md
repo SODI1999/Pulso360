@@ -81,7 +81,7 @@ En Colombia y Latinoamérica, el tratamiento de datos de salud y bienestar labor
 
 ## 4. La "Constitución" del Código: `AGENTS.md` y `DESIGN.md`
 
-En la raíz del proyecto encontrarás dos archivos fundamentales: [AGENTS.md](file:///c:/Users/brahi/OneDrive/Escritorio/TdeA/4to%20semestre/Construccion3/Pulso360/AGENTS.md) y [DESIGN.md](file:///c:/Users/brahi/OneDrive/Escritorio/TdeA/4to%20semestre/Construccion3/Pulso360/DESIGN.md).
+En la raíz del proyecto encontrarás dos archivos fundamentales: [AGENTS.md](../../AGENTS.md) y [DESIGN.md](../../DESIGN.md).
 
 Estos documentos establecen las reglas inquebrantables con las que se construyó este software:
 
@@ -104,7 +104,7 @@ Cuando dos necesidades entren en conflicto en el proyecto, la decisión siempre 
 - **¿Por qué solo JavaScript y JSX sin TypeScript?**  
   Por convención académica y pedagógica del curso, se busca que el código sea directamente interpretable sin fases complejas de compilación de tipos, manteniendo la máxima transparencia en la ejecución.
 - **¿Por qué no hay Redux ni Zustand?**  
-  Para evitar bibliotecas externas innecesarias que agreguen complejidad abstracta. La persistencia y el estado se resuelven de forma elegante y limpia a través de `pulsoStore.jsx` y Hooks nativos de React 18.
+  Para evitar bibliotecas externas innecesarias que agreguen complejidad abstracta y boilerplates pesados. El estado en el frontend se maneja limpiamente con Hooks nativos de React 18 (`useState`, `useEffect`, `useContext`) y la persistencia de datos reside de forma segura en el backend relacional mediante la API REST (`apiClient.jsx`) y la base de datos PostgreSQL 18.
 - **¿Por qué no hay Tailwind CSS?**  
   Porque Tailwind llena el código HTML de cientos de clases utilitarias (`flex p-4 text-xs font-bold`) que dificultan la lectura a un principiante. En su lugar, Pulso360 utiliza **CSS nativo con Custom Properties (Tokens)**, lo que permite separar claramente la estructura de la presentación.
 

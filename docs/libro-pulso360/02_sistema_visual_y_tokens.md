@@ -20,7 +20,7 @@ En el desarrollo web novato, es muy común ver código como este:
 ¿Qué pasa si mañana el equipo de diseño decide cambiar el tono de azul o verde corporativo, o ajustar el espaciado? Tendrías que abrir 80 archivos CSS diferentes y cambiar `#0f766e` en cientos de lugares. Si olvidas uno solo, la aplicación lucirá inconsistente y descuidada.
 
 ### La Solución: Variables CSS (Tokens)
-En Pulso360, **todos los valores visuales provienen de una única fuente de verdad**: el archivo [src/styles/tokens.css](file:///c:/Users/brahi/OneDrive/Escritorio/TdeA/4to%20semestre/Construccion3/Pulso360/src/styles/tokens.css).
+En Pulso360, **todos los valores visuales provienen de una única fuente de verdad**: el archivo `frontend/src/styles/tokens.css`.
 
 Un **Design Token** es una variable centralizada que almacena una decisión de diseño:
 ```css
@@ -153,9 +153,9 @@ Si un empleado tiene condiciones vestibulares o migraña fotosensible y tiene co
 
 En lugar de tener un archivo CSS gigante de 5.000 líneas que nadie pueda entender, el código está dividido en tres entradas ordenadas:
 
-1. **[src/styles/styles.css](file:///c:/Users/brahi/OneDrive/Escritorio/TdeA/4to%20semestre/Construccion3/Pulso360/src/styles/styles.css)**: Importa los tokens y los estilos de la cara pública (`landing/` y `academic/`).
-2. **[src/styles/components.css](file:///c:/Users/brahi/OneDrive/Escritorio/TdeA/4to%20semestre/Construccion3/Pulso360/src/styles/components.css)**: Importa componentes compartidos (`shared/primitives.css`, `shared/feedback.css`) y controles del agente (`agent/checkin.css`).
-3. **[src/styles/layout.css](file:///c:/Users/brahi/OneDrive/Escritorio/TdeA/4to%20semestre/Construccion3/Pulso360/src/styles/layout.css)**: Define el marco maestro de la aplicación (barra lateral, cabecera de usuario y rejilla responsiva para pantallas de 1366px y móviles).
+1. **`frontend/src/styles/styles.css`**: Importa los tokens y los estilos de la cara pública (`landing/` y `academic/`).
+2. **`frontend/src/styles/components.css`**: Importa componentes compartidos (`shared/primitives.css`, `shared/feedback.css`) y controles del agente (`agent/checkin.css`).
+3. **`frontend/src/styles/layout.css`**: Define el marco maestro de la aplicación (barra lateral, cabecera de usuario y rejilla responsiva para pantallas de 1366px y móviles).
 
 ---
 

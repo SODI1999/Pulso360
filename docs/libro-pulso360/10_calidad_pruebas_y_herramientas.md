@@ -1,12 +1,39 @@
 # Capítulo 10: Herramientas, Pruebas y Calidad
 
-> **Objetivo del capítulo**: Comprender cómo se asegura la estabilidad de Pulso360 sin sorpresas ni errores en producción: los scripts de `package.json`, la configuración de Vite y ESLint, la suite de pruebas automatizadas con el ejecutor nativo de Node.js y el protocolo para evitar deuda técnica.
+> **Objetivo del capítulo**: Comprender cómo se asegura la estabilidad de Pulso360 sin sorpresas ni errores en producción: los scripts de `package.json` tanto en frontend como en backend, la suite de 132 pruebas de contratos de API, las 41 pruebas unitarias de resiliencia del cliente y la suite de pruebas de 64 endpoints en Postman Desktop.
 
 ---
 
-## 1. Los Scripts de `package.json`
+## 1. El Doble Quality Gate del Monorepo
 
-En el archivo [package.json](file:///c:/Users/brahi/OneDrive/Escritorio/TdeA/4to%20semestre/Construccion3/Pulso360/package.json) residen los cinco comandos oficiales del ciclo de vida del proyecto:
+Pulso360 divide su arquitectura en dos entornos independientes y coordinados: `frontend/` y `backend/`. Cada uno cuenta con sus propios scripts de control de calidad:
+
+```mermaid
+graph TD
+    subgraph Frontend Quality Gate [Carpeta frontend/]
+        F1[npm test: 41 Tests Unitarios y Resiliencia]
+        F2[npm run lint: Análisis Estático ESLint]
+        F3[npm run build: Empaquetado Vite Producción]
+    end
+
+    subgraph Backend Quality Gate [Carpeta backend/]
+        B1[npm test: 132 Tests de Contratos de API]
+        B2[npm run test:db: Conexión con PostgreSQL 18]
+        B3[npm run db:seed:bpo: Ecosistema BPO Liberty]
+    end
+
+    subgraph Postman Desktop Suite [Raíz del Proyecto]
+        P1[64 Endpoints en 10 Módulos Evaluados al 100%]
+    end
+
+    F1 & F2 & F3 --> OK[Entrega Confiable de Software]
+    B1 & B2 & B3 --> OK
+    P1 --> OK
+```
+
+---
+
+## 2. Scripts del Frontend (`frontend/package.json`)
 
 ```json
 "scripts": {
@@ -18,94 +45,78 @@ En el archivo [package.json](file:///c:/Users/brahi/OneDrive/Escritorio/TdeA/4to
 }
 ```
 
-```mermaid
-graph TD
-    A[Desarrollo Diario: npm run dev] --> B[Servidor Local en puerto 5173 con HMR]
-    C[Antes de Enviar Código] --> D[Puerta de Calidad Oficial]
-    D --> E1[1. npm test: Suite de Regresiones]
-    D --> E2[2. npm run lint: Análisis Estático]
-    D --> E3[3. npm run build: Empaquetado de Producción]
+1. **`npm run dev`**: Inicia el servidor de desarrollo de Vite en `http://localhost:5173` con reemplazo de módulos en caliente (HMR).
+2. **`npm run lint`**: Ejecuta ESLint sobre todos los componentes `.jsx` para validar las reglas de los Hooks de React y erradicar código muerto.
+3. **`npm test`**: Ejecuta **41 pruebas unitarias** que verifican:
+   - Resiliencia del motor NLP en 4 capas (tolerancia a erratas Damerau-Levenshtein y lematización).
+   - Manejo de cuota de disco agotada y modo de memoria temporal.
+   - Normalización de parámetros y estados de error del servidor.
+4. **`npm run build`**: Compila y optimiza el cliente para producción generando la carpeta `dist/`.
+
+---
+
+## 3. Scripts del Backend (`backend/package.json`)
+
+```json
+"scripts": {
+  "start": "node src/index.js",
+  "dev": "node --watch src/index.js",
+  "test": "node test/run-contracts.js",
+  "test:db": "node -e \"import('./src/infrastructure/db.js')...\"",
+  "db:migrate": "node database/migrate.js",
+  "db:seed:bpo": "node database/seed_bpo_ecosystem.js",
+  "job:alerts": "node src/jobs/runAlerts.js"
+}
 ```
 
-### 1. `npm run dev`
-Inicia el servidor de desarrollo de Vite. Gracias a la tecnología de reemplazo de módulos en caliente (HMR), cualquier cambio que guardes en un archivo `.jsx` o `.css` se refleja en tu navegador en milisegundos sin perder el estado del formulario en el que estés trabajando.
-
-### 2. `npm run lint`
-Ejecuta **ESLint** sobre todo el código fuente. Verifica que:
-- No existan variables huérfanas sin usar.
-- Se respeten rigurosamente las reglas de los Hooks de React (`react-hooks/rules-of-hooks` y `react-hooks/exhaustive-deps`), garantizando que un `useEffect` no cause bucles infinitos de renderizado.
-- No se mezclen patrones anticuados de JavaScript.
-
-### 3. `npm test`
-Dispara la suite de pruebas automatizadas de regresión en `tests/regressions.test.mjs`.
-
-### 4. `npm run build`
-Compila y optimiza todo el proyecto: genera HTML, JavaScript minificado y CSS depurado dentro de la carpeta `dist/`. Si hay un error de importación o una etiqueta JSX mal cerrada, el comando fallará de inmediato, evitando subir código roto a producción.
+1. **`npm start` / `npm run dev`**: Levanta el servidor Express 5 y Socket.IO en `http://localhost:3000`.
+2. **`npm test` (Pruebas de Contratos de API)**:
+   - Ejecuta **132 pruebas automatizadas** contra la base de datos real PostgreSQL.
+   - Comprueba cada código de estado HTTP (`200`, `201`, `400`, `401`, `403`, `404`, `409`).
+   - Verifica el aislamiento estricto de roles (RBAC) y la imposibilidad de que un supervisor acceda a chats o bitácoras.
+   - Valida el cálculo de k-anonimato ($k \ge 5$) y las transacciones ACID con rollback ante fallos.
+3. **`npm run db:seed:bpo`**: Puebla la base de datos con el ecosistema hiperrealista BPO Liberty: 100 agentes, campañas, supervisores y alertas históricas.
 
 ---
 
-## 2. Configuración de Herramientas: `vite.config.js` y `eslint.config.js`
+## 4. La Suite de Postman Desktop (Sustentación Académica)
 
-### [vite.config.js](file:///c:/Users/brahi/OneDrive/Escritorio/TdeA/4to%20semestre/Construccion3/Pulso360/vite.config.js)
-```javascript
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
+Para la demostración en vivo ante el jurado docente, la raíz del proyecto contiene dos archivos clave:
+- `Pulso360_Postman_Collection.json`
+- `Pulso360.postman_environment.json`
 
-export default defineConfig({
-  plugins: [react()]
-});
-```
-Es minimalista y veloz. Utiliza `@vitejs/plugin-react` para transformar la sintaxis JSX en llamadas estándar de JavaScript (`React.createElement`) de forma ultrarrápida utilizando el compilador Babel internamente.
-
-### [eslint.config.js](file:///c:/Users/brahi/OneDrive/Escritorio/TdeA/4to%20semestre/Construccion3/Pulso360/eslint.config.js)
-Utiliza el nuevo formato estándar de configuración plana (*Flat Config*) de ESLint 9. Activa las mejores prácticas de la comunidad de React:
-- Reglas recomendadas de JavaScript moderno (`@eslint/js`).
-- Reglas de React JSX y control de versiones de runtime.
-- Prevención de desincronización en dependencias de Hooks.
-
----
-
-## 3. La Suite de Pruebas de Regresión: [tests/regressions.test.mjs](file:///c:/Users/brahi/OneDrive/Escritorio/TdeA/4to%20semestre/Construccion3/Pulso360/tests/regressions.test.mjs)
-
-A diferencia de muchos proyectos que instalan bibliotecas pesadas de pruebas como Jest o Mocha (que añaden cientos de dependencias a `node_modules`), Pulso360 aprovecha el **ejecutor de pruebas nativo de Node.js (`node:test`)** y la biblioteca de aserciones estricta (`node:assert/strict`).
-
-### El Truco de Ingeniería: El Fixture `withApp`
-Dado que `pulsoStore.jsx` y `env.jsx` son módulos JSX que normalmente corren en el navegador, ¿cómo los probamos dentro de Node.js en la terminal?
-
-A través de la función `withApp()` (líneas 15-34):
-1. Crea un almacenamiento en memoria simulado (`memoryStorage()`) usando un `Map()` de JavaScript.
-2. Inyecta este almacenamiento en `globalThis.window.localStorage` y `sessionStorage`.
-3. Levanta una instancia silenciosa de Vite en modo SSR (`middlewareMode: true`).
-4. Carga dinámicamente los módulos de la aplicación (`server.ssrLoadModule('/src/core/storage/pulsoStore.jsx')`).
-5. Ejecuta la prueba con aislamiento absoluto: cada prueba tiene su propio almacenamiento limpio, evitando que una prueba contamine a la siguiente.
-
-### Qué Protegen las Pruebas de Regresión:
-- **Resiliencia ante Almacenamiento Corrupto**: Prueba qué ocurre si `localStorage` contiene `null`, texto inválido (`'not-json'`), un objeto vacío (`'{}'`) o un array (`'[]'`). En todos los casos, el sistema se recupera de forma transparente sin lanzar pantallas blancas de la muerte.
-- **Protección de Bitácoras Históricas**: Verifica que si la aplicación se actualiza o normaliza su esquema, **las notas íntimas de los agentes jamás se borren**.
-- **Integridad de la Cadena de Auditoría**: Comprueba que cada nuevo log genere un hash válido enlazado al `prevHash` del registro anterior.
-- **Migración de Datos**: Valida que si se actualizan estructuras de correos corporativos o parámetros, los datos preexistentes del usuario se conserven intactos.
+Contiene **64 peticiones ordenadas en 10 carpetas** que cubren el 100% de los endpoints REST:
+1. **⭐ 1. DEMO RÁPIDA CRUD COMPLETO**: Demostración de *Create, Read, Update, Delete* en vivo sobre la bitácora con verificación post-borrado.
+2. **⭐ 2. DEMO CRUD ADMINISTRACIÓN**: Creación, consulta, modificación y suspensión de usuarios.
+3. **3. Autenticación y Control de Acceso**: Inicio de sesión de los 5 roles y recuperación de credenciales.
+4. **4. Módulo Agente**: Consentimiento C1 a C5, check-in diario de 6 dimensiones, solicitudes de apoyo y Habeas Data.
+5. **5. Módulo SST**: Métricas k-anónimas, alertas tempranas, planes de intervención y buzón de radicados.
+6. **6. Módulo Supervisor**: Consulta de acciones asignadas y registro de seguimiento operativo BPO.
+7. **7. Módulo Administración**: Creación de campañas, equipos y parámetros con protección de invariantes.
+8. **8. Módulo Auditoría**: Trazabilidad inmutable y verificación criptográfica de registros.
+9. **9. Middlewares y Validación (Pruebas Negativas)**: Verificación de fallas controladas (token ausente, firma inválida, violación de rol, cuerpo vacío).
+10. **10. Módulo Chat de Apoyo Psicosocial**: Ciclo de vida REST completo (activación de sala por SST, consulta de estado, mapa de chats del agente, historial de mensajes y cierre con notas confidenciales).
 
 ---
 
-## 4. El Protocolo Anti-Deuda Técnica ("Cirugía de Código")
+## 5. El Protocolo Anti-Deuda Técnica ("Cirugía de Código")
 
 Para mantener el código legible y limpio para cualquier estudiante o ingeniero que se sume al proyecto, el repositorio sigue tres directrices inquebrantables:
 
 1. **Toque Mínimo (Minimal Touch)**:
-   - Si una tarea consiste en agregar un botón a una pantalla, modifica **únicamente** ese archivo. No aproveches para reescribir tres servicios adyacentes solo porque prefieres otra sintaxis.
+   - Si una tarea consiste en corregir un endpoint o una pantalla, se modifica **únicamente** ese archivo. No se reescriben módulos adyacentes sin justificación.
 2. **Prohibido Alucinar Dependencias**:
-   - No instales paquetes externos (`npm install ...`) para resolver problemas que se pueden solucionar con 5 líneas de JavaScript moderno o un hook nativo.
-3. **El Chequeo Previo a Entrega**:
-   - Antes de considerar cualquier cambio como listo, es obligatorio ejecutar la tríada de validación en la terminal:
-     ```bash
-     npm test
-     npm run lint
-     npm run build
-     ```
-   - Si los tres pasan en verde, tienes la garantía matemática de que no rompiste ningún contrato existente.
+   - No se instalan paquetes externos pesados para resolver necesidades que se satisfacen con JavaScript estándar o utilidades nativas de Node.js.
+3. **La Tríada de Validación Pre-Entrega**:
+   ```bash
+   npm --prefix backend test      # 132 tests pasando
+   npm --prefix frontend test     # 41 tests pasando
+   npm --prefix frontend run lint # 0 errores de ESLint
+   npm --prefix frontend run build# Vite build exit 0
+   ```
 
 ---
 
-En el último capítulo de este libro, accederemos a la herramienta de consulta más potente: el Catálogo A-Z de todas las funciones exportadas de Pulso360 y el Glosario de Términos.
+En el próximo capítulo consultaremos el catálogo de referencia de funciones y el glosario de términos de Pulso360.
 
 👉 **Siguiente paso**: [Capítulo 11: Diccionario Maestro A-Z y Glosario](./11_diccionario_funciones_y_glosario.md)

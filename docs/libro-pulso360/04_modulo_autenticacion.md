@@ -1,12 +1,12 @@
 # Capítulo 04: Módulo de Autenticación y Consentimiento (`src/features/auth/`)
 
-> **Objetivo del capítulo**: Analizar el portal de entrada a Pulso360: cómo se autentican los usuarios, cómo se previene la fuerza bruta, cómo funciona el selector de cuentas de demostración y, muy especialmente, cómo se gestiona el **Consentimiento Informado Granular (C1 a C5)**, la piedra angular ética del sistema.
+> **Objetivo del capítulo**: Analizar el portal de entrada a Pulso360: cómo se autentican los usuarios contra la API REST, cómo se firman y validan los tokens JWT, cómo opera el selector de cuentas institucionales y, muy especialmente, cómo se gestiona el **Consentimiento Informado Granular (C1 a C5)** bajo la Ley 1581 de 2012.
 
 ---
 
 ## 1. El Flujo de Entrada y la Puerta de Consentimiento
 
-El proceso de autenticación en Pulso360 no solo comprueba un correo y una clave: verifica si el usuario es un agente que ingresa por primera vez para exigir la aceptación de la política de tratamiento de datos antes de permitirle ver cualquier pantalla de trabajo.
+El proceso de autenticación en Pulso360 no solo comprueba un correo y una contraseña: verifica si el usuario es un agente que ingresa por primera vez o si la empresa publicó una nueva política de privacidad para exigir su aceptación informada antes de permitirle acceder a las herramientas de trabajo.
 
 ```mermaid
 sequenceDiagram
@@ -15,25 +15,33 @@ sequenceDiagram
     participant V as LoginPage.jsx
     participant H as useLogin.jsx
     participant A as authService.jsx
-    participant S as pulsoStore.jsx
+    participant API as Express 5 API
+    participant DB as PostgreSQL 18
     participant C as ConsentPage.jsx
     participant D as AgentDashboardPage.jsx
 
     U->>V: Ingresa correo y contraseña
     V->>H: Dispara handleLoginSubmit()
     H->>A: Invoca authService.login(email, password)
-    A->>S: Valida credenciales y audita el evento
+    A->>API: POST /api/v1/auth/login { correo, contrasena }
+    API->>DB: Consulta usuario, valida hash bcrypt y estado activo
     alt Credenciales Válidas
-        A-->>H: Retorna { success: true, user }
-        alt Rol es Agente y No ha firmado Consentimiento
+        DB-->>API: Retorna usuario + claims de rol
+        API-->>A: 200 OK { token: JWT, usuario: {...} }
+        A->>API: GET /api/v1/agent/consent (Bearer JWT)
+        API->>DB: Consulta política vigente y consentimiento activo
+        DB-->>API: Retorna { politica_vigente, flags: { c1..c5 } }
+        alt Rol es Agente y No ha firmado Política Vigente
             H->>C: Redirige a /consentimiento
             U->>C: Selecciona preferencias (C1-C5) y Acepta
-            C->>S: Guarda consentimiento con fecha y versión
+            C->>API: PUT /api/v1/agent/consent { c1..c5, acepta_politica: true }
+            API->>DB: Inserta evento inmutable en tabla 'consentimientos'
             C->>D: Redirige al panel del agente (/agente/panel)
-        else Consentimiento ya firmado o Rol Administrativo
+        else Consentimiento Vigente o Rol Administrativo
             H->>D: Redirige directamente al panel del rol
         end
-    else Contraseña Incorrecta
+    else Contraseña Incorrecta o Usuario Bloqueado
+        API-->>A: 401 Unauthorized / 429 Rate Limit
         A-->>H: Retorna error y registra intento fallido
         H->>V: Muestra alerta y actualiza intentos restantes
     end
@@ -43,88 +51,63 @@ sequenceDiagram
 
 ## 2. Anatomía de Páginas (`src/features/auth/pages/`)
 
-### [LoginPage.jsx](file:///c:/Users/brahi/OneDrive/Escritorio/TdeA/4to%20semestre/Construccion3/Pulso360/src/features/auth/pages/LoginPage.jsx)
-Implementa un diseño moderno de **Pantalla Dividida (Split-Screen)**:
-- **Panel Izquierdo**: Muestra el `LoginManifesto.jsx`, una declaración institucional que explica al trabajador que este sistema no es para vigilarlo ni para despedirlo, sino para proteger su salud mental.
+### `LoginPage.jsx`
+Implementa un diseño moderno de **Pantalla Dividida (Split-Screen)** adaptado a centros de contacto:
+- **Panel Izquierdo**: Muestra el `LoginManifesto.jsx`, una declaración institucional que explica al trabajador que este sistema no es para vigilarlo ni para sancionarlo, sino para proteger su salud psicológica y ergonomía.
 - **Panel Derecho**: Contenedor dinámico controlado por el hook `useLogin`. Según el modo activo (`login`, `recovery`, `reset`), intercambia sin recargar la página:
-  1. `LoginForm.jsx`: Formulario estándar de acceso.
-  2. `DemoAccountsCard.jsx`: Selector de perfiles de demostración para pruebas rápidas.
-  3. `ForgotPasswordForm.jsx`: Envío de enlace simulado de recuperación.
-  4. `ResetPasswordForm.jsx`: Formulario con medidor visual de fortaleza de contraseña.
+  1. `LoginForm.jsx`: Formulario estándar de acceso institucional.
+  2. `DemoAccountsCard.jsx`: Selector de perfiles de demostración para evaluación docente rápida.
+  3. `ForgotPasswordForm.jsx`: Solicitud formal de reseteo (`POST /api/v1/auth/password-reset/request`).
+  4. `ResetPasswordForm.jsx`: Formulario con medidor visual de solidez de contraseña y validación en vivo.
 
-### [ConsentPage.jsx](file:///c:/Users/brahi/OneDrive/Escritorio/TdeA/4to%20semestre/Construccion3/Pulso360/src/features/auth/pages/ConsentPage.jsx)
-Es la pantalla de **Consentimiento Informado del Agente**.
-- En lugar de ser un simple botón de *"Acepto términos y condiciones"*, presenta un diseño editorial sobrio donde el agente decide con plena autonomía qué herramientas de bienestar habilita en su terminal.
+### `ConsentPage.jsx`
+Es la pantalla de **Consentimiento Informado del Agente (Ley 1581 de 2012)**.
+- En lugar de ser un simple botón de *"Acepto términos y condiciones"*, presenta un diseño editorial sobrio donde el agente decide con plena autonomía qué tratamientos de bienestar habilita en su puesto de trabajo.
 - Coordina tres subcomponentes:
   - `ConsentPreferences.jsx`: La matriz de selección de las finalidades C1 a C5.
   - `ConsentHistory.jsx`: Registro histórico inmutable de cuándo otorgó o revocó cada permiso.
-  - `ConsentPolicyModal.jsx`: Modal accesible con el texto legal completo de la política de datos.
+  - `ConsentPolicyModal.jsx`: Modal accesible con el texto legal completo de la política de datos publicada en la base de datos.
 
 ### Páginas Secundarias de Soporte
-- **[ForgotPasswordPage.jsx](file:///c:/Users/brahi/OneDrive/Escritorio/TdeA/4to%20semestre/Construccion3/Pulso360/src/features/auth/pages/ForgotPasswordPage.jsx)**: Envuelve a `LoginPage` pasándole `initialMode="recovery"`.
-- **[ResetPasswordPage.jsx](file:///c:/Users/brahi/OneDrive/Escritorio/TdeA/4to%20semestre/Construccion3/Pulso360/src/features/auth/pages/ResetPasswordPage.jsx)**: Envuelve a `LoginPage` pasándole `initialMode="reset"`.
-- **[ForbiddenPage.jsx](file:///c:/Users/brahi/OneDrive/Escritorio/TdeA/4to%20semestre/Construccion3/Pulso360/src/features/auth/pages/ForbiddenPage.jsx)**: Renderiza el componente transversal `AccessDenied.jsx` cuando se intenta violar una barrera RBAC.
+- **`ForgotPasswordPage.jsx`**: Envuelve a `LoginPage` pasándole `initialMode="recovery"`.
+- **`ResetPasswordPage.jsx`**: Envuelve a `LoginPage` pasándole `initialMode="reset"`.
+- **`ForbiddenPage.jsx`**: Renderiza el componente transversal `AccessDenied.jsx` cuando un usuario intenta violar una barrera RBAC (HTTP 403).
 
 ---
 
-## 3. Los Cinco Niveles de Consentimiento Granular (C1 a C5)
+## 3. Las Cinco Cláusulas de Consentimiento Granular (C1 a C5)
 
-Pulso360 aplica el principio de **Minimización de Datos**. El agente puede encender o apagar de forma independiente cinco tratamientos de datos:
+Pulso360 aplica el principio de **Minimización de Datos**. En la base de datos PostgreSQL (`tabla consentimientos`), cada consentimiento se descompone en 5 banderas booleanas independientes:
 
-| Código | Finalidad del Tratamiento | ¿Qué ocurre si el agente lo desactiva? |
-| :--- | :--- | :--- |
-| **C1** | **Registro Emocional y Bitácora** | Puede seguir usando el sistema, pero su bitácora personal se deshabilita para evitar guardar texto íntimo. |
-| **C2** | **Agregación en Estadísticas Grupales** | Sus respuestas de check-in se excluyen de los promedios del equipo que ve el supervisor. |
-| **C3** | **Pausas Activas Guiadas y Respiración** | Oculta los recordatorios automáticos de estiramiento y relajación. |
-| **C4** | **Canal de Apoyo y Contacto con SST** | Desactiva el buzón directo para que el equipo médico no pueda contactarle proactivamente. |
-| **C5** | **Encuestas de Clima y Batería Psicosocial** | Excluye al agente de los cuestionarios institucionales periódicos de riesgo psicosocial. |
+| Cláusula | Columna en BD | Finalidad del Tratamiento | ¿Qué ocurre si el agente lo desactiva? |
+| :---: | :---: | :--- | :--- |
+| **C1** | `c1_checkin` | **Check-in Diario de 6 Dimensiones** | El agente puede usar el sistema, pero el registro somático diario queda bloqueado con error `CONSENT_C1_REQUIRED`. |
+| **C2** | `c2_bitacora` | **Desahogo Emocional en Bitácora Privada** | Deshabilita la creación de entradas de diario para garantizar que no se almacene texto personal íntimo. |
+| **C3** | `c3_apoyo` | **Canal de Apoyo Psicosocial y Chat SST** | Impide radicar solicitudes de acompañamiento y bloquea la activación de salas de chat con SST (`CONSENT_C3_REQUIRED`). |
+| **C4** | `c4_analitica` | **Inclusión en Analítica Grupal k-anónima** | Los datos del agente se excluyen automáticamente de las métricas agregadas del equipo que visualiza el supervisor. |
+| **C5** | `c5_contacto` | **Contacto Preventivo por Salud Ocupacional** | El equipo de SST no puede iniciar comunicaciones proactivas de seguimiento hacia este agente. |
 
 ---
 
 ## 4. Componentes Especializados (`src/features/auth/components/`)
 
-1. **[LoginForm.jsx](file:///c:/Users/brahi/OneDrive/Escritorio/TdeA/4to%20semestre/Construccion3/Pulso360/src/features/auth/components/LoginForm.jsx)**:
+1. **`LoginForm.jsx`**:
    - Controla los campos de correo y contraseña con visibilidad alternable (botón de ver/ocultar contraseña).
-   - Checkbox "Recordar mi correo" que guarda el email en `localStorage` mediante `authService.rememberEmail`.
+   - Checkbox "Recordar mi correo" que guarda el email en almacenamiento local mediante `authService.rememberEmail`.
    - Manejo de estados: botón deshabilitado mientras `loading` es verdadero y aviso de bloqueo temporal si se exceden los intentos.
-2. **[DemoAccountsCard.jsx](file:///c:/Users/brahi/OneDrive/Escritorio/TdeA/4to%20semestre/Construccion3/Pulso360/src/features/auth/components/DemoAccountsCard.jsx)**:
-   - Tarjeta interactiva con 5 botones (uno por rol: Agente, Supervisor, SST, Auditor, Admin).
-   - Al hacer clic en cualquiera, llena automáticamente el formulario de login y permite probar los diferentes permisos del sistema sin tener que memorizar contraseñas.
-3. **[ResetPasswordForm.jsx](file:///c:/Users/brahi/OneDrive/Escritorio/TdeA/4to%20semestre/Construccion3/Pulso360/src/features/auth/components/ResetPasswordForm.jsx)**:
+2. **`DemoAccountsCard.jsx`**:
+   - Tarjeta interactiva con 5 accesos directos (uno por rol: Agente, Supervisor, SST, Auditor, Admin).
+   - Al hacer clic en cualquiera, llena automáticamente el formulario con las credenciales institucionales (`correo` y `contrasena`) para facilitar la sustentación ante el docente.
+3. **`ResetPasswordForm.jsx`**:
    - Evalúa en vivo la solidez de la nueva clave mediante cuatro reglas: longitud mínima de 8 caracteres, mayúsculas y minúsculas combinadas, al menos un número y coincidencia de confirmación.
    - Pinta una barra dinámica de fortaleza (`Débil`, `Aceptable`, `Fuerte`).
-4. **[ConsentPreferences.jsx](file:///c:/Users/brahi/OneDrive/Escritorio/TdeA/4to%20semestre/Construccion3/Pulso360/src/features/auth/components/ConsentPreferences.jsx)**:
-   - Renderiza las 5 casillas de verificación de C1 a C5 con explicaciones comprensibles sin jerga jurídica confusa.
-5. **[ConsentHistory.jsx](file:///c:/Users/brahi/OneDrive/Escritorio/TdeA/4to%20semestre/Construccion3/Pulso360/src/features/auth/components/ConsentHistory.jsx)**:
-   - Tabla cronológica que registra cada cambio de opinión del agente: *"2026-09-23 08:30 · Revocó finalidad C4 (Apoyo SST)"*. Sirve como prueba jurídica de no coacción.
+4. **`ConsentPreferences.jsx`**:
+   - Renderiza las 5 casillas de verificación de C1 a C5 con explicaciones comprensibles sin tecnicismos jurídicos oscuros.
+5. **`ConsentHistory.jsx`**:
+   - Tabla cronológica recuperada del servidor (`GET /api/v1/agent/consent`) que registra cada cambio de opinión del agente con timestamp e IP de origen: *"2026-10-28 08:30 · ACTUALIZACION · Política v3.999.0"*. Sirve como prueba de auditoría ante la Superintendencia de Industria y Comercio (SIC).
 
 ---
 
-## 5. Hooks de Autenticación (`src/features/auth/hooks/`)
-
-### [useLogin.jsx](file:///c:/Users/brahi/OneDrive/Escritorio/TdeA/4to%20semestre/Construccion3/Pulso360/src/features/auth/hooks/useLogin.jsx)
-Es el orquestador maestro de la experiencia de login:
-- Centraliza los estados de modo (`login`, `recovery`, `reset`).
-- Maneja la cuenta regresiva en segundos cuando el usuario es bloqueado por fuerza bruta (`lockedRemainingMs`).
-- Conecta con `authService.login()` y maneja la navegación reactiva según el estado de consentimiento del usuario.
-
-### [useConsent.jsx](file:///c:/Users/brahi/OneDrive/Escritorio/TdeA/4to%20semestre/Construccion3/Pulso360/src/features/auth/hooks/useConsent.jsx)
-Controla la gestión de consentimientos:
-- Lee los consentimientos actuales del usuario conectado desde `pulsoStore`.
-- Si el usuario modifica los checkboxes y hace clic en "Guardar Preferencias", genera un nuevo evento en el historial, actualiza el objeto de usuario y registra la firma con la fecha ISO exacta y la versión vigente de la política.
-
----
-
-## 6. Estilos Visuales del Módulo
-
-- **[src/styles/auth.css](file:///c:/Users/brahi/OneDrive/Escritorio/TdeA/4to%20semestre/Construccion3/Pulso360/src/styles/auth.css)**:
-  - Estructura la rejilla dividida: en pantallas mayores a 1024px divide la pantalla en dos columnas (`50% / 50%`); en pantallas móviles o portátiles pequeños (`1366x768`) apila los elementos verticalmente garantizando que el formulario siempre tenga prioridad visual.
-  - Implementa los estilos de los botones de demo y las alertas semánticas de error.
-- **[src/styles/consentimiento.css](file:///c:/Users/brahi/OneDrive/Escritorio/TdeA/4to%20semestre/Construccion3/Pulso360/src/styles/consentimiento.css)**:
-  - Diseñado bajo una estética editorial limpia: fondos blancos, bordes suaves de 1px y tipografía amplia que facilita la lectura de textos legales extensos sin agotar la vista.
-
----
-
-Una vez autenticado el agente y aceptado su consentimiento, ingresa a su espacio de trabajo diario. En el siguiente capítulo exploraremos en detalle el módulo más extenso y sensible de Pulso360: el Módulo del Agente.
+Comprendido el acceso y la protección ética de los datos, en el siguiente capítulo nos adentraremos en el espacio más humano del software: el módulo del operador de contact center.
 
 👉 **Siguiente paso**: [Capítulo 05: Módulo del Agente de Contact Center](./05_modulo_agente.md)
