@@ -6,9 +6,10 @@ export const getIntegrity = async (req,res,next) => {
 
 export const getLogs = async (req, res, next) => {
   try {
-    const { limit, offset, rol, action, startDate, endDate, entidadAfectada, maxId } = req.query;
+    const { id, limit, offset, rol, action, startDate, endDate, entidadAfectada, maxId } = req.query;
     
     const filters = {
+      id,
       limit,
       offset,
       maxId,

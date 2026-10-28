@@ -14,6 +14,9 @@ function validateFilters(filters, maximum) {
   if (filters.maxId !== undefined && !/^\d+$/.test(String(filters.maxId))) {
     throw new AppError('Referencia de página inválida.', 'AUDIT_FILTER_INVALID', 400);
   }
+  if (filters.id !== undefined && !/^\d+$/.test(String(filters.id))) {
+    throw new AppError('Identificador de log inválido.', 'AUDIT_FILTER_INVALID', 400);
+  }
   return { ...filters, limit, offset };
 }
 

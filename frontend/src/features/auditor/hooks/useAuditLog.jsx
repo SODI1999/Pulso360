@@ -2,7 +2,7 @@
 // Hook para gestión de eventos de auditoría, trazabilidad inmutable y exportación criptográfica (RF-13).
 
 import { useState, useMemo, useEffect, useCallback } from 'react';
-import { fetchAuditPage, verifyAudit, exportAudit, getCachedAuditLogs } from '../services/auditorQueries';
+import { fetchAuditPage, fetchAuditLogById, verifyAudit, exportAudit, getCachedAuditLogs } from '../services/auditorQueries';
 
 /**
  * Hook personalizado para orquestar la consulta paginada, filtrado, verificación criptográfica
@@ -111,7 +111,8 @@ export function useAuditLog() {
         coverage: result.coverage,
         badgeText,
         badgeType,
-        message: summaryText
+        message: summaryText,
+        failures: result.failures || []
       });
 
       setNotification({
@@ -158,6 +159,25 @@ export function useAuditLog() {
     }
   }, []);
 
+  const inspectLogById = useCallback(async (id) => {
+    const stringId = String(id);
+    const inMemory = logs.find((l) => String(l.id) === stringId);
+    if (inMemory) return inMemory;
+    try {
+      setBusy(true);
+      const fetched = await fetchAuditLogById(stringId);
+      if (fetched) {
+        setLogs((prev) => (prev.some((p) => String(p.id) === String(fetched.id)) ? prev : [fetched, ...prev]));
+        return fetched;
+      }
+    } catch (e) {
+      setError(e.response?.data?.error?.message || e.message);
+    } finally {
+      setBusy(false);
+    }
+    return null;
+  }, [logs]);
+
   return {
     searchTerm,
     setSearchTerm,
@@ -172,6 +192,7 @@ export function useAuditLog() {
     exportContent,
     handleVerifyIntegrity,
     handleExportCrypto,
+    inspectLogById,
     loading,
     busy,
     pagination,

@@ -71,6 +71,14 @@ export async function fetchAuditLogs(filters = {}) {
   return (await fetchAuditPage(filters)).logs;
 }
 
+export async function fetchAuditLogById(id) {
+  const response = await apiClient.get('/auditor/logs', { params: { id, limit: 1 } });
+  if (response.data && response.data.length > 0) {
+    return normalizeLog(response.data[0]);
+  }
+  return null;
+}
+
 export async function verifyAudit() {
   return (await apiClient.get('/auditor/integrity')).data;
 }

@@ -28,6 +28,7 @@ export function AuditLogPage() {
     filteredLogs,
     handleVerifyIntegrity,
     handleExportCrypto,
+    inspectLogById,
     loadMore,
     reload
   } = useAuditLog();
@@ -148,6 +149,7 @@ export function AuditLogPage() {
         onSearchChange={setSearchTerm}
         statusFilter={statusFilter}
         onStatusFilterChange={setStatusFilter}
+        onInspectLogById={inspectLogById}
       />
 
       {/* Barra de Paginación */}

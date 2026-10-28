@@ -22,10 +22,12 @@ export function AuditLogTable({
   searchTerm = '',
   onSearchChange = () => {},
   statusFilter = 'ALL',
-  onStatusFilterChange = () => {}
+  onStatusFilterChange = () => {},
+  onInspectLogById
 }) {
   const [copiedId, setCopiedId] = useState(null);
   const [selectedLog, setSelectedLog] = useState(null);
+  const [inspectingFailure, setInspectingFailure] = useState(false);
 
   // Cierre accesible con tecla Escape
   useEffect(() => {
@@ -44,6 +46,23 @@ export function AuditLogTable({
     navigator.clipboard?.writeText(text);
     setCopiedId(key);
     setTimeout(() => setCopiedId(null), 2000);
+  };
+
+  const handleInspectFailure = async (failureId) => {
+    setInspectingFailure(true);
+    try {
+      if (onInspectLogById) {
+        const targetLog = await onInspectLogById(failureId);
+        if (targetLog) {
+          setSelectedLog(targetLog);
+          return;
+        }
+      }
+      const found = logs.find((l) => String(l.id) === String(failureId));
+      if (found) setSelectedLog(found);
+    } finally {
+      setInspectingFailure(false);
+    }
   };
 
   return (
@@ -66,8 +85,9 @@ export function AuditLogTable({
         <div className="audit-integrity-strip" role="status">
           <div className="audit-integrity-stat">
             <span className="audit-stat-label">Cadena de hashes:</span>
-            <strong className="audit-stat-value ok">
-              <Icon name="checkCircle" size={13} /> 100% íntegra
+            <strong className={`audit-stat-value ${integrityStatus.chainValid ? 'ok' : 'danger'}`}>
+              <Icon name={integrityStatus.chainValid ? 'checkCircle' : 'alertTriangle'} size={13} />{' '}
+              {integrityStatus.chainValid ? '100% íntegra' : `${integrityStatus.failures?.length || 1} enlace(s) roto(s)`}
             </strong>
           </div>
           <div className="audit-integrity-stat">
@@ -83,6 +103,36 @@ export function AuditLogTable({
               Los registros históricos v1 conservan su sellado original.
             </span>
           )}
+        </div>
+      )}
+
+      {/* Banner de Acción Rápida para Inspeccionar Registro Comprometido */}
+      {integrityStatus.checked && !integrityStatus.chainValid && integrityStatus.failures?.length > 0 && (
+        <div className="audit-failure-banner" role="alert">
+          <div className="audit-failure-banner-text">
+            <Icon name="alertTriangle" size={16} />
+            <span>
+              Discrepancia localizada en registro{' '}
+              <strong>#{integrityStatus.failures[0].id}</strong> (
+              {integrityStatus.failures[0].kind === 'LINK'
+                ? 'Enlace previo no coincide'
+                : integrityStatus.failures[0].kind === 'CONTENT'
+                  ? 'Contenido alterado'
+                  : 'Génesis inválido'}
+              )
+            </span>
+          </div>
+          <button
+            type="button"
+            className="btn btn-danger btn-xs"
+            onClick={() => handleInspectFailure(integrityStatus.failures[0].id)}
+            disabled={inspectingFailure}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--space-1)' }}
+            title={`Abrir panel de inspección del evento #${integrityStatus.failures[0].id}`}
+          >
+            <Icon name={inspectingFailure ? 'refresh' : 'search'} size={12} className={inspectingFailure ? 'icon-spin' : ''} />
+            <span>{inspectingFailure ? 'Cargando…' : `Inspeccionar Registro #${integrityStatus.failures[0].id}`}</span>
+          </button>
         </div>
       )}
 
@@ -164,17 +214,28 @@ export function AuditLogTable({
                 const isCopied = copiedId === log.id;
                 const isLongId = String(log.id).length > 12;
                 const isSelected = selectedLog?.id === log.id;
+                const failure = integrityStatus.failures?.find(
+                  (f) => String(f.id) === String(log.id)
+                );
 
                 return (
                   <tr
                     key={log.id}
-                    className={`audit-table-row ${isSelected ? 'audit-table-row-selected' : ''}`}
+                    className={`audit-table-row ${isSelected ? 'audit-table-row-selected' : ''} ${failure ? 'audit-table-row-compromised' : ''}`}
                   >
                     <td>
                       <div className="audit-id-cell">
                         <span className="audit-code-cell" title={log.id}>
                           {isLongId ? `${String(log.id).slice(0, 8)}…` : log.id}
                         </span>
+                        {failure && (
+                          <span
+                            className="badge badge-danger audit-compromised-pill"
+                            title={`Fallo de integridad: ${failure.kind === 'LINK' ? 'Enlace roto' : failure.kind}`}
+                          >
+                            <Icon name="alertTriangle" size={10} /> Discrepancia
+                          </span>
+                        )}
                         <button
                           type="button"
                           className="audit-copy-btn"
@@ -278,6 +339,29 @@ export function AuditLogTable({
             </div>
 
             <div className="audit-drawer-body">
+              {/* Alerta de discrepancia criptográfica si el evento inspeccionado está marcado */}
+              {(() => {
+                const failure = integrityStatus.failures?.find(
+                  (f) => String(f.id) === String(selectedLog.id)
+                );
+                if (!failure) return null;
+                return (
+                  <div className="audit-drawer-failure-alert" role="alert">
+                    <div className="audit-drawer-failure-title">
+                      <Icon name="alertTriangle" size={15} />
+                      <span>Falla de integridad criptográfica detectada</span>
+                    </div>
+                    <p className="audit-drawer-failure-desc">
+                      {failure.kind === 'LINK'
+                        ? `Enlace roto: el hash previo encadenado (prev_hash) de este evento no coincide con el hash del evento anterior en la secuencia.`
+                        : failure.kind === 'CONTENT'
+                          ? `Contenido alterado: el hash calculado a partir de los datos actuales no coincide con el hash sellado registrado.`
+                          : `Génesis inválido: el primer registro de la cadena no apunta al bloque Génesis oficial.`}
+                    </p>
+                  </div>
+                );
+              })()}
+
               {/* Información principal de la operación */}
               <div className="audit-detail-grid">
                 <div className="audit-detail-item">

@@ -27,7 +27,7 @@ export const getLatestId = async () => (await query('SELECT COALESCE(MAX(id),0) 
  * @param {number} [filters.maxId] - ID máximo para paginación estable.
  * @returns {Promise<Array<Object>>} Lista de registros de auditoría.
  */
-export const findLogs = async ({ limit = 50, offset = 0, rol, action, startDate, endDate, entidadAfectada, maxId }) => {
+export const findLogs = async ({ id, limit = 50, offset = 0, rol, action, startDate, endDate, entidadAfectada, maxId }) => {
   let baseQuery = `
     SELECT 
       al.id, al.usuario_id, al.rol, al.action, al.resource, al.resource_id, 
@@ -42,6 +42,11 @@ export const findLogs = async ({ limit = 50, offset = 0, rol, action, startDate,
   
   const values = [];
   let paramIndex = 1;
+
+  if (id !== undefined) {
+    baseQuery += ` AND al.id = $${paramIndex++}`;
+    values.push(id);
+  }
 
   if (maxId !== undefined) {
     baseQuery += ` AND al.id <= $${paramIndex++}`;
@@ -91,10 +96,15 @@ export const findLogs = async ({ limit = 50, offset = 0, rol, action, startDate,
  * @param {Object} filters - Filtros de auditoría ({ rol, action, startDate, endDate, entidadAfectada, maxId }).
  * @returns {Promise<number>} Conteo total de filas coincidentes.
  */
-export const countLogs = async ({ rol, action, startDate, endDate, entidadAfectada, maxId }) => {
+export const countLogs = async ({ id, rol, action, startDate, endDate, entidadAfectada, maxId }) => {
   let baseQuery = `SELECT COUNT(*) as total FROM auditoria_logs al WHERE 1=1`;
   const values = [];
   let paramIndex = 1;
+
+  if (id !== undefined) {
+    baseQuery += ` AND al.id = $${paramIndex++}`;
+    values.push(id);
+  }
 
   if (maxId !== undefined) {
     baseQuery += ` AND al.id <= $${paramIndex++}`;
