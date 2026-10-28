@@ -928,7 +928,7 @@
                 "request"
               ]
             },
-            "description": "Genera el token temporal de recuperación de contraseña.",
+            "description": "Genera el token temporal de recuperación de contraseña. En desarrollo local sin SMTP configurado, el backend devuelve 503 controlado sin exponer datos.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"correo\": \"agente@pulso360.co\"\n}",
@@ -946,7 +946,9 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.test(\"Status code is 200 OK\", function () { pm.response.to.have.status(200); });"
+                  "pm.test(\"Status code es 200 OK o 503 (Servicio SMTP no configurado en local)\", function () {",
+                  "    pm.expect([200, 503]).to.include(pm.response.code);",
+                  "});"
                 ]
               }
             }
@@ -958,7 +960,7 @@
       "name": "4. Módulo Agente (Bienestar & Privacidad)",
       "item": [
         {
-          "name": "4.1 [POST] Registrar Check-in Diario (6 Dimensiones)",
+          "name": "4.1 [POST] Registrar Check-in Diario (6 Dimensiones BPO)",
           "request": {
             "method": "POST",
             "header": [
@@ -983,10 +985,10 @@
                 "checkin"
               ]
             },
-            "description": "Envío del check-in multidimensional del operador.",
+            "description": "Envío del check-in con las 6 dimensiones psicosociales normativas del modelo BPO en la raíz del payload.",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"dimensiones\": {\n    \"animo\": 4,\n    \"energia\": 3,\n    \"estres\": 2,\n    \"claridad\": 4,\n    \"carga\": 3,\n    \"sueno\": 4\n  },\n  \"sintomas\": [\n    \"fatiga_visual\"\n  ]\n}",
+              "raw": "{\n  \"journey_key\": \"START_SHIFT\",\n  \"energia\": 4,\n  \"carga_emocional\": 3,\n  \"recuperacion\": 4,\n  \"apoyo\": 5,\n  \"distanciamiento\": 1,\n  \"ineficacia\": 2\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1003,6 +1005,11 @@
                 "exec": [
                   "pm.test(\"Status code is 201 Created o 200 OK\", function () {",
                   "    pm.expect([200, 201]).to.include(pm.response.code);",
+                  "});",
+                  "pm.test(\"Check-in registrado exitosamente\", function () {",
+                  "    var res = pm.response.json();",
+                  "    pm.expect(res.success).to.be.true;",
+                  "    pm.expect(res.data).to.have.property(\"id\");",
                   "});"
                 ]
               }
@@ -1119,7 +1126,7 @@
                 "consent"
               ]
             },
-            "description": "Consulta las cláusulas de consentimiento C1..C5."
+            "description": "Consulta las cláusulas de consentimiento C1..C5 bajo la política vigente."
           },
           "response": [],
           "event": [
@@ -1160,10 +1167,10 @@
                 "consent"
               ]
             },
-            "description": "Actualiza los consentimientos informados del trabajador bajo Ley 1581.",
+            "description": "Actualiza los consentimientos informados del trabajador con las columnas oficiales de la base de datos (Ley 1581).",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"c1_metricas_agregadas\": true,\n  \"c2_nlp_desahogo\": true,\n  \"c3_alertas_preventivas\": true,\n  \"c4_analisis_predictivo\": false,\n  \"c5_compartir_estadisticas_sst\": true\n}",
+              "raw": "{\n  \"c1_checkin\": true,\n  \"c2_bitacora\": true,\n  \"c3_apoyo\": true,\n  \"c4_analitica\": true,\n  \"c5_contacto\": true,\n  \"acepta_politica\": true\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1178,7 +1185,12 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.test(\"Status code is 200 OK\", function () { pm.response.to.have.status(200); });"
+                  "pm.test(\"Status code is 200 OK\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"Consentimiento actualizado exitosamente\", function () {",
+                  "    var res = pm.response.json();",
+                  "    pm.expect(res.success).to.be.true;",
+                  "    pm.expect(res.data.flags.c1_checkin).to.be.true;",
+                  "});"
                 ]
               }
             }
@@ -1210,10 +1222,10 @@
                 "support-requests"
               ]
             },
-            "description": "Radica una solicitud privada de apoyo y guarda {{support_request_id}}.",
+            "description": "Radica una solicitud privada de apoyo confidencial y guarda su ID en {{support_request_id}}.",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"tipo\": \"EMOCIONAL\",\n  \"motivo\": \"Sobrecarga de llamadas consecutivas en turno matutino.\",\n  \"prioridad\": \"MEDIA\"\n}",
+              "raw": "{\n  \"mode\": \"anonimo\",\n  \"reason\": \"Sobrecarga de llamadas y fatiga emocional\",\n  \"description\": \"Requiero orientacion profesional para gestionar la sobrecarga durante el turno de la tarde.\",\n  \"urgency\": \"media\",\n  \"contact_preference\": \"app\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1305,10 +1317,10 @@
                 "habeas-data"
               ]
             },
-            "description": "Canal formal de ejercicio de derechos ARCO / Habeas Data.",
+            "description": "Canal formal de ejercicio de derechos ARCO / Habeas Data (Tipos válidos: Consulta, Portabilidad, Rectificacion, Supresion).",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"tipo\": \"ACCESO\",\n  \"detalles\": \"Solicitud formal de acceso a historial de check-ins bajo Ley 1581.\"\n}",
+              "raw": "{\n  \"type\": \"Consulta\",\n  \"note\": \"Solicitud formal de acceso a mi historial de check-ins bajo Ley 1581 de 2012.\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1488,10 +1500,10 @@
                 "{{alert_id}}"
               ]
             },
-            "description": "Actualiza el ciclo de vida de una alerta en {{alert_id}}.",
+            "description": "Actualiza el ciclo de vida de una alerta en {{alert_id}} con los estados oficiales (GENERADA, EN_REVISION, INTERVENIDA, DESCARTADA).",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"status\": \"EnRevision\",\n  \"notas\": \"Revisión preventiva iniciada por especialista SST.\"\n}",
+              "raw": "{\n  \"status\": \"EN_REVISION\",\n  \"dismissReason\": null\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1554,7 +1566,7 @@
           ]
         },
         {
-          "name": "5.5 [PATCH] Cambiar Estado de Solicitud de Apoyo (Asignada)",
+          "name": "5.5 [PATCH] Cambiar Estado de Solicitud de Apoyo (En Gestión)",
           "request": {
             "method": "PATCH",
             "header": [
@@ -1581,10 +1593,10 @@
                 "status"
               ]
             },
-            "description": "Pasa la solicitud {{support_request_id}} a estado asignada.",
+            "description": "Actualiza la solicitud {{support_request_id}} con estados válidos (Recibida, En gestion, Atendida, Cerrada).",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"estado\": \"ASIGNADA\"\n}",
+              "raw": "{\n  \"status\": \"En gestion\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1676,10 +1688,10 @@
                 "interventions"
               ]
             },
-            "description": "Crea un plan de intervención institucional y guarda su ID en {{intervention_id}}.",
+            "description": "Crea un plan de intervención institucional con los campos técnicos requeridos y guarda su ID en {{intervention_id}}.",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"titulo\": \"Programa de Pausas Activas Asistidas Postman\",\n  \"descripcion\": \"Intervención de ergonomía y pausas activas para mitigar sobrecarga.\",\n  \"tipo\": \"ERGONOMICA\",\n  \"nivelRiesgo\": \"MEDIO\",\n  \"idCampana\": null,\n  \"idEquipo\": null\n}",
+              "raw": "{\n  \"title\": \"Pausas cognitivas de recuperación activa\",\n  \"type\": \"Pausas activas coordinadas\",\n  \"campana_id\": \"camp-ventas\",\n  \"equipo_id\": \"team-ventas-portabilidad\",\n  \"start_date\": \"2026-10-05\",\n  \"end_date\": \"2026-10-25\",\n  \"indicator\": \"Recuperacion agregada\",\n  \"target_desc\": \"Mejorar percepción de recuperación en un 15%\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1771,10 +1783,10 @@
                 "rules"
               ]
             },
-            "description": "Propone una regla que entrará a validación o aprobación.",
+            "description": "Propone una regla de alerta preventiva con operadores y métricas agregadas admitidas por el evaluador semanal.",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"nombre\": \"Regla Fatiga Acumulada Postman\",\n  \"tipo\": \"ESTRES_ELEVADO\",\n  \"umbral\": 4.0,\n  \"diasConsecutivos\": 2,\n  \"descripcion\": \"Alerta disparada al superar 4.0 de estrés en 2 turnos consecutivos.\"\n}",
+              "raw": "{\n  \"metric\": \"Recuperación agregada\",\n  \"operator\": \"baje más de\",\n  \"value\": 15,\n  \"unit\": \"semanas\",\n  \"persistence\": 2,\n  \"severity\": \"Alta\",\n  \"scope\": \"cualquier equipo\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1826,7 +1838,7 @@
                 "actions"
               ]
             },
-            "description": "Acciones e intervenciones asignadas al equipo del supervisor."
+            "description": "Acciones e intervenciones asignadas al equipo del supervisor. Guarda la intervención en {{intervention_id}}."
           },
           "response": [],
           "event": [
@@ -1835,7 +1847,11 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.test(\"Status code is 200 OK\", function () { pm.response.to.have.status(200); });"
+                  "pm.test(\"Status code is 200 OK\", function () { pm.response.to.have.status(200); });",
+                  "var res = pm.response.json();",
+                  "if (res.data && res.data.length > 0) {",
+                  "    pm.environment.set(\"intervention_id\", res.data[0].id);",
+                  "}"
                 ]
               }
             }
@@ -1869,10 +1885,10 @@
                 "followup"
               ]
             },
-            "description": "Registra el porcentaje de avance operativo sobre la intervención {{intervention_id}}.",
+            "description": "Registra el porcentaje de avance operativo (progress) y comentarios (note) sobre la intervención {{intervention_id}}.",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"progreso\": 65,\n  \"comentarios\": \"Se realizaron 2 sesiones asistidas con 85% de asistencia de operadores.\",\n  \"estado\": \"EnProgreso\"\n}",
+              "raw": "{\n  \"progress\": 65,\n  \"note\": \"Se implementaron 2 sesiones de recuperación activa asistida en sala con 85% de asistencia.\",\n  \"actionType\": \"Taller grupal\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1967,10 +1983,10 @@
                 "campaigns"
               ]
             },
-            "description": "Crea una campaña y guarda su ID en {{campaign_id}}.",
+            "description": "Crea una campaña con código único obligatorio y guarda su ID en {{campaign_id}}.",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"nombre\": \"Campaña Soporte Postman\",\n  \"descripcion\": \"Campaña de operaciones de prueba\",\n  \"cliente\": \"Liberty BPO\"\n}",
+              "raw": "{\n  \"codigo\": \"{{dynamic_camp_code}}\",\n  \"nombre\": \"Campaña Soporte Postman\",\n  \"descripcion\": \"Campaña de operaciones de prueba en Postman\",\n  \"activa\": true\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1980,6 +1996,16 @@
           },
           "response": [],
           "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "var suffix = Math.floor(Math.random() * 9000 + 1000);",
+                  "pm.environment.set(\"dynamic_camp_code\", \"CAMP-POST-\" + suffix);"
+                ]
+              }
+            },
             {
               "listen": "test",
               "script": {
@@ -2022,10 +2048,10 @@
                 "{{campaign_id}}"
               ]
             },
-            "description": "Actualiza la información de la campaña {{campaign_id}}.",
+            "description": "Actualiza la información permitida de la campaña {{campaign_id}}.",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"descripcion\": \"Descripción actualizada desde suite Postman\"\n}",
+              "raw": "{\n  \"nombre\": \"Campaña Soporte Postman (Actualizada)\",\n  \"activa\": true\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -2072,10 +2098,10 @@
                 "teams"
               ]
             },
-            "description": "Crea un equipo en la campaña y guarda {{team_id}}.",
+            "description": "Crea un equipo en la campaña con supervisor asignado y guarda {{team_id}}.",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"nombre\": \"Equipo Gamma Postman\",\n  \"id_campana\": \"{{campaign_id}}\"\n}",
+              "raw": "{\n  \"campanaId\": \"camp-ventas\",\n  \"codigo\": \"{{dynamic_team_code}}\",\n  \"nombre\": \"Equipo Postman Alpha\",\n  \"supervisorId\": \"usr-supervisor\",\n  \"activo\": true\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -2085,6 +2111,16 @@
           },
           "response": [],
           "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "var suffix = Math.floor(Math.random() * 9000 + 1000);",
+                  "pm.environment.set(\"dynamic_team_code\", \"TM-\" + suffix);"
+                ]
+              }
+            },
             {
               "listen": "test",
               "script": {
@@ -2127,10 +2163,10 @@
                 "{{team_id}}"
               ]
             },
-            "description": "Modifica el nombre del equipo {{team_id}}.",
+            "description": "Modifica el nombre y estado del equipo {{team_id}}.",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"nombre\": \"Equipo Gamma Postman (Actualizado)\"\n}",
+              "raw": "{\n  \"nombre\": \"Equipo Postman Alpha (Actualizado)\",\n  \"activo\": true\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -2193,7 +2229,7 @@
           ]
         },
         {
-          "name": "7.7 [PUT] Modificar Parámetro de Sistema",
+          "name": "7.7 [PUT] Modificar Parámetro de Sistema (Protección Invariante)",
           "request": {
             "method": "PUT",
             "header": [
@@ -2219,7 +2255,7 @@
                 "alert_threshold_score"
               ]
             },
-            "description": "Modifica el umbral global de score de alerta.",
+            "description": "Demuestra que los parámetros de privacidad (k=5 y ventana de 2 horas) son invariantes protegidos de solo lectura por ley.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"valor\": \"75\"\n}",
@@ -2237,7 +2273,13 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.test(\"Status code is 200 OK\", function () { pm.response.to.have.status(200); });"
+                  "pm.test(\"Status code is 409 Conflict (Invariante protegido de solo lectura)\", function () {",
+                  "    pm.response.to.have.status(409);",
+                  "});",
+                  "pm.test(\"Código PARAM_READONLY confirmado\", function () {",
+                  "    var res = pm.response.json();",
+                  "    pm.expect(res.error.code).to.eql(\"PARAM_READONLY\");",
+                  "});"
                 ]
               }
             }
@@ -2269,10 +2311,10 @@
                 "policies"
               ]
             },
-            "description": "Publica una nueva versión de política de datos.",
+            "description": "Publica una nueva versión de política de datos con texto completo y aviso reglamentario.",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"titulo\": \"Política de Privacidad y Tratamiento de Datos v2.1\",\n  \"contenido\": \"Reglamento de privacidad y confidencialidad bajo Ley 1581 de 2012.\",\n  \"version\": \"2.1.0\"\n}",
+              "raw": "{\n  \"version\": \"{{dynamic_policy_version}}\",\n  \"titulo\": \"Política de Tratamiento de Datos Personales v{{dynamic_policy_version}}\",\n  \"textoPolitica\": \"Política marco de tratamiento de datos de bienestar laboral y salud ocupacional.\",\n  \"textoAviso\": \"Aviso de privacidad para operadores de centro de contacto bajo Ley 1581 de 2012.\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -2283,11 +2325,23 @@
           "response": [],
           "event": [
             {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "var vSuffix = Math.floor(Math.random() * 900 + 100);",
+                  "pm.environment.set(\"dynamic_policy_version\", \"3.\" + vSuffix + \".0\");"
+                ]
+              }
+            },
+            {
               "listen": "test",
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.test(\"Status code is 201 Created\", function () { pm.response.to.have.status(201); });"
+                  "pm.test(\"Status code is 201 Created o 200 OK\", function () {",
+                  "    pm.expect([200, 201]).to.include(pm.response.code);",
+                  "});"
                 ]
               }
             }

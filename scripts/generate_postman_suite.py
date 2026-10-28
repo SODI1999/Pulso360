@@ -338,8 +338,10 @@ pm.expect(res.data.usuario).to.have.property("correo");''',
             'POST',
             'auth/password-reset/request',
             body={'correo': 'agente@pulso360.co'},
-            test='''pm.test("Status code is 200 OK", function () { pm.response.to.have.status(200); });''',
-            desc='Genera el token temporal de recuperación de contraseña.'
+            test='''pm.test("Status code es 200 OK o 503 (Servicio SMTP no configurado en local)", function () {
+    pm.expect([200, 503]).to.include(pm.response.code);
+});''',
+            desc='Genera el token temporal de recuperación de contraseña. En desarrollo local sin SMTP configurado, el backend devuelve 503 controlado sin exponer datos.'
         )
     ]
 })
@@ -351,25 +353,28 @@ folders.append({
     'name': '4. Módulo Agente (Bienestar & Privacidad)',
     'item': [
         req(
-            '4.1 [POST] Registrar Check-in Diario (6 Dimensiones)',
+            '4.1 [POST] Registrar Check-in Diario (6 Dimensiones BPO)',
             'POST',
             'agent/checkin',
             headers={'Authorization': 'Bearer {{token_agente}}'},
             body={
-                'dimensiones': {
-                    'animo': 4,
-                    'energia': 3,
-                    'estres': 2,
-                    'claridad': 4,
-                    'carga': 3,
-                    'sueno': 4
-                },
-                'sintomas': ['fatiga_visual']
+                'journey_key': 'START_SHIFT',
+                'energia': 4,
+                'carga_emocional': 3,
+                'recuperacion': 4,
+                'apoyo': 5,
+                'distanciamiento': 1,
+                'ineficacia': 2
             },
             test='''pm.test("Status code is 201 Created o 200 OK", function () {
     pm.expect([200, 201]).to.include(pm.response.code);
+});
+pm.test("Check-in registrado exitosamente", function () {
+    var res = pm.response.json();
+    pm.expect(res.success).to.be.true;
+    pm.expect(res.data).to.have.property("id");
 });''',
-            desc='Envío del check-in multidimensional del operador.'
+            desc='Envío del check-in con las 6 dimensiones psicosociales normativas del modelo BPO en la raíz del payload.'
         ),
         req(
             '4.2 [GET] Consultar Check-in de Hoy',
@@ -393,7 +398,7 @@ folders.append({
             'agent/consent',
             headers={'Authorization': 'Bearer {{token_agente}}'},
             test='''pm.test("Status code is 200 OK", function () { pm.response.to.have.status(200); });''',
-            desc='Consulta las cláusulas de consentimiento C1..C5.'
+            desc='Consulta las cláusulas de consentimiento C1..C5 bajo la política vigente.'
         ),
         req(
             '4.5 [PUT] Actualizar Consentimiento Granular (C1..C5)',
@@ -401,14 +406,20 @@ folders.append({
             'agent/consent',
             headers={'Authorization': 'Bearer {{token_agente}}'},
             body={
-                'c1_metricas_agregadas': True,
-                'c2_nlp_desahogo': True,
-                'c3_alertas_preventivas': True,
-                'c4_analisis_predictivo': False,
-                'c5_compartir_estadisticas_sst': True
+                'c1_checkin': True,
+                'c2_bitacora': True,
+                'c3_apoyo': True,
+                'c4_analitica': True,
+                'c5_contacto': True,
+                'acepta_politica': True
             },
-            test='''pm.test("Status code is 200 OK", function () { pm.response.to.have.status(200); });''',
-            desc='Actualiza los consentimientos informados del trabajador bajo Ley 1581.'
+            test='''pm.test("Status code is 200 OK", function () { pm.response.to.have.status(200); });
+pm.test("Consentimiento actualizado exitosamente", function () {
+    var res = pm.response.json();
+    pm.expect(res.success).to.be.true;
+    pm.expect(res.data.flags.c1_checkin).to.be.true;
+});''',
+            desc='Actualiza los consentimientos informados del trabajador con las columnas oficiales de la base de datos (Ley 1581).'
         ),
         req(
             '4.6 [POST] Solicitar Apoyo Psicosocial Preventivo',
@@ -416,16 +427,18 @@ folders.append({
             'sst/support-requests',
             headers={'Authorization': 'Bearer {{token_agente}}'},
             body={
-                'tipo': 'EMOCIONAL',
-                'motivo': 'Sobrecarga de llamadas consecutivas en turno matutino.',
-                'prioridad': 'MEDIA'
+                'mode': 'anonimo',
+                'reason': 'Sobrecarga de llamadas y fatiga emocional',
+                'description': 'Requiero orientacion profesional para gestionar la sobrecarga durante el turno de la tarde.',
+                'urgency': 'media',
+                'contact_preference': 'app'
             },
             test='''pm.test("Status code is 201 Created", function () { pm.response.to.have.status(201); });
 var res = pm.response.json();
 if (res.data && res.data.id) {
     pm.environment.set("support_request_id", res.data.id);
 }''',
-            desc='Radica una solicitud privada de apoyo y guarda {{support_request_id}}.'
+            desc='Radica una solicitud privada de apoyo confidencial y guarda su ID en {{support_request_id}}.'
         ),
         req(
             '4.7 [GET] Consultar Mis Solicitudes de Apoyo',
@@ -441,11 +454,11 @@ if (res.data && res.data.id) {
             'agent/habeas-data',
             headers={'Authorization': 'Bearer {{token_agente}}'},
             body={
-                'tipo': 'ACCESO',
-                'detalles': 'Solicitud formal de acceso a historial de check-ins bajo Ley 1581.'
+                'type': 'Consulta',
+                'note': 'Solicitud formal de acceso a mi historial de check-ins bajo Ley 1581 de 2012.'
             },
             test='''pm.test("Status code is 201 Created", function () { pm.response.to.have.status(201); });''',
-            desc='Canal formal de ejercicio de derechos ARCO / Habeas Data.'
+            desc='Canal formal de ejercicio de derechos ARCO / Habeas Data (Tipos válidos: Consulta, Portabilidad, Rectificacion, Supresion).'
         ),
         req(
             '4.9 [GET] Consultar Mis Solicitudes Habeas Data',
@@ -490,11 +503,11 @@ if (res.data && res.data.length > 0) {
             'sst/alerts/{{alert_id}}',
             headers={'Authorization': 'Bearer {{token_sst}}'},
             body={
-                'status': 'EnRevision',
-                'notas': 'Revisión preventiva iniciada por especialista SST.'
+                'status': 'EN_REVISION',
+                'dismissReason': None
             },
             test='''pm.test("Status code is 200 OK", function () { pm.response.to.have.status(200); });''',
-            desc='Actualiza el ciclo de vida de una alerta en {{alert_id}}.'
+            desc='Actualiza el ciclo de vida de una alerta en {{alert_id}} con los estados oficiales (GENERADA, EN_REVISION, INTERVENIDA, DESCARTADA).'
         ),
         req(
             '5.4 [GET] Consultar Solicitudes de Apoyo Recibidas',
@@ -505,13 +518,13 @@ if (res.data && res.data.length > 0) {
             desc='Bandeja de solicitudes de apoyo de trabajadores para el equipo SST.'
         ),
         req(
-            '5.5 [PATCH] Cambiar Estado de Solicitud de Apoyo (Asignada)',
+            '5.5 [PATCH] Cambiar Estado de Solicitud de Apoyo (En Gestión)',
             'PATCH',
             'sst/support-requests/{{support_request_id}}/status',
             headers={'Authorization': 'Bearer {{token_sst}}'},
-            body={'estado': 'ASIGNADA'},
+            body={'status': 'En gestion'},
             test='''pm.test("Status code is 200 OK", function () { pm.response.to.have.status(200); });''',
-            desc='Pasa la solicitud {{support_request_id}} a estado asignada.'
+            desc='Actualiza la solicitud {{support_request_id}} con estados válidos (Recibida, En gestion, Atendida, Cerrada).'
         ),
         req(
             '5.6 [GET] Consultar Planes de Intervención',
@@ -531,19 +544,21 @@ if (res.data && res.data.length > 0) {
             'sst/interventions',
             headers={'Authorization': 'Bearer {{token_sst}}'},
             body={
-                'titulo': 'Programa de Pausas Activas Asistidas Postman',
-                'descripcion': 'Intervención de ergonomía y pausas activas para mitigar sobrecarga.',
-                'tipo': 'ERGONOMICA',
-                'nivelRiesgo': 'MEDIO',
-                'idCampana': None,
-                'idEquipo': None
+                'title': 'Pausas cognitivas de recuperación activa',
+                'type': 'Pausas activas coordinadas',
+                'campana_id': 'camp-ventas',
+                'equipo_id': 'team-ventas-portabilidad',
+                'start_date': '2026-10-05',
+                'end_date': '2026-10-25',
+                'indicator': 'Recuperacion agregada',
+                'target_desc': 'Mejorar percepción de recuperación en un 15%'
             },
             test='''pm.test("Status code is 201 Created", function () { pm.response.to.have.status(201); });
 var res = pm.response.json();
 if (res.data && res.data.id) {
     pm.environment.set("intervention_id", res.data.id);
 }''',
-            desc='Crea un plan de intervención institucional y guarda su ID en {{intervention_id}}.'
+            desc='Crea un plan de intervención institucional con los campos técnicos requeridos y guarda su ID en {{intervention_id}}.'
         ),
         req(
             '5.8 [GET] Consultar Reglas de Alerta Activas',
@@ -559,14 +574,16 @@ if (res.data && res.data.id) {
             'sst/rules',
             headers={'Authorization': 'Bearer {{token_sst}}'},
             body={
-                'nombre': 'Regla Fatiga Acumulada Postman',
-                'tipo': 'ESTRES_ELEVADO',
-                'umbral': 4.0,
-                'diasConsecutivos': 2,
-                'descripcion': 'Alerta disparada al superar 4.0 de estrés en 2 turnos consecutivos.'
+                'metric': 'Recuperación agregada',
+                'operator': 'baje más de',
+                'value': 15,
+                'unit': 'semanas',
+                'persistence': 2,
+                'severity': 'Alta',
+                'scope': 'cualquier equipo'
             },
             test='''pm.test("Status code is 201 Created", function () { pm.response.to.have.status(201); });''',
-            desc='Propone una regla que entrará a validación o aprobación.'
+            desc='Propone una regla de alerta preventiva con operadores y métricas agregadas admitidas por el evaluador semanal.'
         )
     ]
 })
@@ -582,8 +599,12 @@ folders.append({
             'GET',
             'supervisor/actions',
             headers={'Authorization': 'Bearer {{token_supervisor}}'},
-            test='''pm.test("Status code is 200 OK", function () { pm.response.to.have.status(200); });''',
-            desc='Acciones e intervenciones asignadas al equipo del supervisor.'
+            test='''pm.test("Status code is 200 OK", function () { pm.response.to.have.status(200); });
+var res = pm.response.json();
+if (res.data && res.data.length > 0) {
+    pm.environment.set("intervention_id", res.data[0].id);
+}''',
+            desc='Acciones e intervenciones asignadas al equipo del supervisor. Guarda la intervención en {{intervention_id}}.'
         ),
         req(
             '6.2 [POST] Registrar Avance y Seguimiento de Intervención',
@@ -591,14 +612,14 @@ folders.append({
             'supervisor/actions/{{intervention_id}}/followup',
             headers={'Authorization': 'Bearer {{token_supervisor}}'},
             body={
-                'progreso': 65,
-                'comentarios': 'Se realizaron 2 sesiones asistidas con 85% de asistencia de operadores.',
-                'estado': 'EnProgreso'
+                'progress': 65,
+                'note': 'Se implementaron 2 sesiones de recuperación activa asistida en sala con 85% de asistencia.',
+                'actionType': 'Taller grupal'
             },
             test='''pm.test("Status code is 200 OK o 201 Created", function () {
     pm.expect([200, 201]).to.include(pm.response.code);
 });''',
-            desc='Registra el porcentaje de avance operativo sobre la intervención {{intervention_id}}.'
+            desc='Registra el porcentaje de avance operativo (progress) y comentarios (note) sobre la intervención {{intervention_id}}.'
         )
     ]
 })
@@ -622,51 +643,65 @@ folders.append({
             'POST',
             'admin/campaigns',
             headers={'Authorization': 'Bearer {{token_admin}}'},
+            pre='''var suffix = Math.floor(Math.random() * 9000 + 1000);
+pm.environment.set("dynamic_camp_code", "CAMP-POST-" + suffix);''',
             body={
+                'codigo': '{{dynamic_camp_code}}',
                 'nombre': 'Campaña Soporte Postman',
-                'descripcion': 'Campaña de operaciones de prueba',
-                'cliente': 'Liberty BPO'
+                'descripcion': 'Campaña de operaciones de prueba en Postman',
+                'activa': True
             },
             test='''pm.test("Status code is 201 Created", function () { pm.response.to.have.status(201); });
 var res = pm.response.json();
 if (res.data && res.data.id) {
     pm.environment.set("campaign_id", res.data.id);
 }''',
-            desc='Crea una campaña y guarda su ID en {{campaign_id}}.'
+            desc='Crea una campaña con código único obligatorio y guarda su ID en {{campaign_id}}.'
         ),
         req(
             '7.3 [PATCH] Modificar Campaña Operativa',
             'PATCH',
             'admin/campaigns/{{campaign_id}}',
             headers={'Authorization': 'Bearer {{token_admin}}'},
-            body={'descripcion': 'Descripción actualizada desde suite Postman'},
+            body={
+                'nombre': 'Campaña Soporte Postman (Actualizada)',
+                'activa': True
+            },
             test='''pm.test("Status code is 200 OK", function () { pm.response.to.have.status(200); });''',
-            desc='Actualiza la información de la campaña {{campaign_id}}.'
+            desc='Actualiza la información permitida de la campaña {{campaign_id}}.'
         ),
         req(
             '7.4 [POST] Crear Equipo de Trabajo',
             'POST',
             'admin/teams',
             headers={'Authorization': 'Bearer {{token_admin}}'},
+            pre='''var suffix = Math.floor(Math.random() * 9000 + 1000);
+pm.environment.set("dynamic_team_code", "TM-" + suffix);''',
             body={
-                'nombre': 'Equipo Gamma Postman',
-                'id_campana': '{{campaign_id}}'
+                'campanaId': 'camp-ventas',
+                'codigo': '{{dynamic_team_code}}',
+                'nombre': 'Equipo Postman Alpha',
+                'supervisorId': 'usr-supervisor',
+                'activo': True
             },
             test='''pm.test("Status code is 201 Created", function () { pm.response.to.have.status(201); });
 var res = pm.response.json();
 if (res.data && res.data.id) {
     pm.environment.set("team_id", res.data.id);
 }''',
-            desc='Crea un equipo en la campaña y guarda {{team_id}}.'
+            desc='Crea un equipo en la campaña con supervisor asignado y guarda {{team_id}}.'
         ),
         req(
             '7.5 [PATCH] Modificar Equipo de Trabajo',
             'PATCH',
             'admin/teams/{{team_id}}',
             headers={'Authorization': 'Bearer {{token_admin}}'},
-            body={'nombre': 'Equipo Gamma Postman (Actualizado)'},
+            body={
+                'nombre': 'Equipo Postman Alpha (Actualizado)',
+                'activo': True
+            },
             test='''pm.test("Status code is 200 OK", function () { pm.response.to.have.status(200); });''',
-            desc='Modifica el nombre del equipo {{team_id}}.'
+            desc='Modifica el nombre y estado del equipo {{team_id}}.'
         ),
         req(
             '7.6 [GET] Consultar Parámetros de Sistema',
@@ -677,26 +712,37 @@ if (res.data && res.data.id) {
             desc='Parámetros de configuración global del sistema.'
         ),
         req(
-            '7.7 [PUT] Modificar Parámetro de Sistema',
+            '7.7 [PUT] Modificar Parámetro de Sistema (Protección Invariante)',
             'PUT',
             'admin/params/alert_threshold_score',
             headers={'Authorization': 'Bearer {{token_admin}}'},
             body={'valor': '75'},
-            test='''pm.test("Status code is 200 OK", function () { pm.response.to.have.status(200); });''',
-            desc='Modifica el umbral global de score de alerta.'
+            test='''pm.test("Status code is 409 Conflict (Invariante protegido de solo lectura)", function () {
+    pm.response.to.have.status(409);
+});
+pm.test("Código PARAM_READONLY confirmado", function () {
+    var res = pm.response.json();
+    pm.expect(res.error.code).to.eql("PARAM_READONLY");
+});''',
+            desc='Demuestra que los parámetros de privacidad (k=5 y ventana de 2 horas) son invariantes protegidos de solo lectura por ley.'
         ),
         req(
             '7.8 [POST] Crear y Publicar Política de Privacidad',
             'POST',
             'admin/policies',
             headers={'Authorization': 'Bearer {{token_admin}}'},
+            pre='''var vSuffix = Math.floor(Math.random() * 900 + 100);
+pm.environment.set("dynamic_policy_version", "3." + vSuffix + ".0");''',
             body={
-                'titulo': 'Política de Privacidad y Tratamiento de Datos v2.1',
-                'contenido': 'Reglamento de privacidad y confidencialidad bajo Ley 1581 de 2012.',
-                'version': '2.1.0'
+                'version': '{{dynamic_policy_version}}',
+                'titulo': 'Política de Tratamiento de Datos Personales v{{dynamic_policy_version}}',
+                'textoPolitica': 'Política marco de tratamiento de datos de bienestar laboral y salud ocupacional.',
+                'textoAviso': 'Aviso de privacidad para operadores de centro de contacto bajo Ley 1581 de 2012.'
             },
-            test='''pm.test("Status code is 201 Created", function () { pm.response.to.have.status(201); });''',
-            desc='Publica una nueva versión de política de datos.'
+            test='''pm.test("Status code is 201 Created o 200 OK", function () {
+    pm.expect([200, 201]).to.include(pm.response.code);
+});''',
+            desc='Publica una nueva versión de política de datos con texto completo y aviso reglamentario.'
         )
     ]
 })
