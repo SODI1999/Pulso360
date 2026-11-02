@@ -5,17 +5,27 @@ import { useNavigate } from 'react-router-dom';
 import { authService, roleLabels, roleHomePaths } from './authService';
 import { Icon } from '../components/Icon';
 
-export function AccessDenied({ userRole, allowedRoles = [] }) {
+/**
+ * Explica una denegación sin cambiar las reglas de acceso de la ruta.
+ * @param {object} props Contexto de autorización ya resuelto por ProtectedRoute.
+ * @param {string} [props.userRole] Rol de la sesión actual.
+ * @param {string[]} [props.allowedRoles] Roles admitidos por la ruta existente.
+ * @param {boolean} [props.standalone] Ofrece main cuando la vista no está dentro de AppLayout.
+ * @returns {JSX.Element} Estado protegido con regreso al panel del rol o al inicio de sesión.
+ */
+export function AccessDenied({ userRole, allowedRoles = [], standalone = false }) {
   const navigate = useNavigate();
   const user = authService.getCurrentUser();
-  const effectiveRole = userRole || user?.role || 'agente';
+  const effectiveRole = userRole || user?.role || null;
 
   const currentRoleLabel = roleLabels[effectiveRole] || effectiveRole;
   const allowedLabels = allowedRoles.map((r) => roleLabels[r] || r).join(', ') || 'otros roles autorizados';
   const targetHome = roleHomePaths[effectiveRole] || '/login';
+  const Container = standalone ? 'main' : 'section';
 
   return (
-    <main
+    <Container
+      aria-labelledby="access-denied-heading"
       className="page-container"
       style={{ minHeight: '75vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
     >
@@ -40,18 +50,21 @@ export function AccessDenied({ userRole, allowedRoles = [] }) {
           <Icon name="lock" size={32} />
         </div>
 
-        <h1 style={{ fontSize: '22px', fontWeight: '700', marginBottom: '12px', color: 'var(--c-texto)' }}>
+        <h1 id="access-denied-heading" style={{ fontSize: '22px', fontWeight: '700', marginBottom: '12px', color: 'var(--c-texto)' }}>
           Acceso no autorizado
         </h1>
 
         <p
           style={{ fontSize: '14px', color: 'var(--c-texto-suave)', lineHeight: '1.6', marginBottom: '24px' }}
         >
-          Tu rol actual es <strong>{currentRoleLabel}</strong>. Esta sección está reservada exclusivamente
-          para: <strong>{allowedLabels}</strong>.
+          {effectiveRole ? <>
+            Tu rol actual es <strong>{currentRoleLabel}</strong>. Esta sección está reservada exclusivamente
+            para: <strong>{allowedLabels}</strong>.
+          </> : 'No hay una sesión activa. Inicia sesión con una cuenta autorizada para acceder a esta sección.'}
         </p>
 
         <button
+          type="button"
           className="btn btn-primary"
           onClick={() => navigate(targetHome)}
           style={{
@@ -63,9 +76,9 @@ export function AccessDenied({ userRole, allowedRoles = [] }) {
           }}
         >
           <Icon name="arrowLeft" size={18} />
-          <span>Volver a mi panel</span>
+          <span>{effectiveRole ? 'Volver a mi panel' : 'Iniciar sesión'}</span>
         </button>
       </div>
-    </main>
+    </Container>
   );
 }

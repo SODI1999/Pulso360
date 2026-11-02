@@ -1,0 +1,254 @@
+[
+  {
+    "path": "/consentimiento",
+    "role": "agente",
+    "controls": 6,
+    "unnamed": [],
+    "observedAt": "2026-11-02T16:38:13.210Z"
+  },
+  {
+    "path": "/agente/panel",
+    "role": "agente",
+    "controls": 18,
+    "unnamed": [],
+    "observedAt": "2026-11-02T16:38:14.222Z"
+  },
+  {
+    "path": "/agente/checkin",
+    "role": "agente",
+    "controls": 20,
+    "unnamed": [],
+    "observedAt": "2026-11-02T16:38:15.152Z"
+  },
+  {
+    "path": "/agente/bitacora",
+    "role": "agente",
+    "controls": 16,
+    "unnamed": [],
+    "observedAt": "2026-11-02T16:38:16.069Z"
+  },
+  {
+    "path": "/agente/mi-bienestar",
+    "role": "agente",
+    "controls": 14,
+    "unnamed": [],
+    "observedAt": "2026-11-02T16:38:16.940Z"
+  },
+  {
+    "path": "/agente/apoyo",
+    "role": "agente",
+    "controls": 19,
+    "unnamed": [],
+    "observedAt": "2026-11-02T16:38:17.863Z"
+  },
+  {
+    "path": "/agente/mis-datos",
+    "role": "agente",
+    "controls": 21,
+    "unnamed": [],
+    "observedAt": "2026-11-02T16:38:18.839Z"
+  },
+  {
+    "path": "/apoyo-crisis",
+    "role": "agente",
+    "controls": 19,
+    "unnamed": [],
+    "observedAt": "2026-11-02T16:38:19.771Z"
+  },
+  {
+    "path": "/notificaciones",
+    "role": "agente",
+    "controls": 22,
+    "unnamed": [],
+    "observedAt": "2026-11-02T16:38:20.692Z"
+  },
+  {
+    "path": "/sst/panel",
+    "role": "sst",
+    "controls": 11,
+    "unnamed": [],
+    "observedAt": "2026-11-02T16:39:00.369Z"
+  },
+  {
+    "path": "/sst/alertas",
+    "role": "sst",
+    "controls": 17,
+    "unnamed": [],
+    "observedAt": "2026-11-02T16:39:01.280Z"
+  },
+  {
+    "path": "/sst/reglas-alertas",
+    "role": "sst",
+    "controls": 17,
+    "unnamed": [],
+    "observedAt": "2026-11-02T16:39:02.174Z"
+  },
+  {
+    "path": "/sst/intervenciones",
+    "role": "sst",
+    "controls": 20,
+    "unnamed": [],
+    "observedAt": "2026-11-02T16:39:03.112Z"
+  },
+  {
+    "path": "/sst/buzon",
+    "role": "sst",
+    "controls": 15,
+    "unnamed": [],
+    "observedAt": "2026-11-02T16:39:04.070Z"
+  },
+  {
+    "path": "/notificaciones",
+    "role": "sst",
+    "controls": 13,
+    "unnamed": [],
+    "observedAt": "2026-11-02T16:39:04.993Z"
+  },
+  {
+    "path": "/reportes",
+    "role": "sst",
+    "controls": 22,
+    "unnamed": [],
+    "observedAt": "2026-11-02T16:39:05.885Z"
+  },
+  {
+    "path": "/supervisor/panel",
+    "role": "supervisor",
+    "controls": 10,
+    "unnamed": [],
+    "observedAt": "2026-11-02T16:39:07.751Z"
+  },
+  {
+    "path": "/supervisor/acciones",
+    "role": "supervisor",
+    "controls": 16,
+    "unnamed": [],
+    "observedAt": "2026-11-02T16:39:08.686Z"
+  },
+  {
+    "path": "/notificaciones",
+    "role": "supervisor",
+    "controls": 10,
+    "unnamed": [],
+    "observedAt": "2026-11-02T16:39:09.579Z"
+  },
+  {
+    "path": "/reportes",
+    "role": "supervisor",
+    "controls": 19,
+    "unnamed": [],
+    "observedAt": "2026-11-02T16:39:10.477Z"
+  },
+  {
+    "path": "/auditor/auditoria",
+    "role": "auditor",
+    "controls": 11,
+    "unnamed": [],
+    "observedAt": "2026-11-02T16:39:23.253Z"
+  },
+  {
+    "path": "/notificaciones",
+    "role": "auditor",
+    "controls": 8,
+    "unnamed": [],
+    "observedAt": "2026-11-02T16:39:24.148Z"
+  },
+  {
+    "path": "/admin/organizacion",
+    "role": "admin",
+    "controls": 82,
+    "unnamed": [],
+    "observedAt": "2026-11-02T16:39:25.935Z"
+  },
+  {
+    "path": "/admin/usuarios-roles",
+    "role": "admin",
+    "controls": 128,
+    "unnamed": [],
+    "observedAt": "2026-11-02T16:39:26.938Z"
+  },
+  {
+    "path": "/admin/parametros",
+    "role": "admin",
+    "controls": 15,
+    "unnamed": [],
+    "observedAt": "2026-11-02T16:39:27.914Z"
+  },
+  {
+    "path": "/admin/importar",
+    "role": "admin",
+    "controls": 12,
+    "unnamed": [],
+    "observedAt": "2026-11-02T16:39:28.804Z"
+  },
+  {
+    "path": "/admin/solicitudes",
+    "role": "admin",
+    "controls": 17,
+    "unnamed": [],
+    "observedAt": "2026-11-02T16:39:29.685Z"
+  },
+  {
+    "path": "/notificaciones",
+    "role": "admin",
+    "controls": 13,
+    "unnamed": [],
+    "observedAt": "2026-11-02T16:39:30.616Z"
+  },
+  {
+    "path": "/reportes",
+    "role": "admin",
+    "controls": 22,
+    "unnamed": [],
+    "observedAt": "2026-11-02T16:39:31.560Z"
+  },
+  {
+    "path": "/login",
+    "role": "public",
+    "controls": 11,
+    "unnamed": [],
+    "observedAt": "2026-11-02T16:39:32.473Z"
+  },
+  {
+    "path": "/recuperar-clave",
+    "role": "public",
+    "controls": 5,
+    "unnamed": [],
+    "observedAt": "2026-11-02T16:39:33.377Z"
+  },
+  {
+    "path": "/nueva-clave",
+    "role": "public",
+    "controls": 4,
+    "unnamed": [],
+    "observedAt": "2026-11-02T16:39:34.252Z"
+  },
+  {
+    "path": "/403",
+    "role": "public",
+    "controls": 2,
+    "unnamed": [],
+    "observedAt": "2026-11-02T16:39:35.110Z"
+  },
+  {
+    "path": "/contactenos",
+    "role": "public",
+    "controls": 19,
+    "unnamed": [],
+    "observedAt": "2026-11-02T16:39:36.015Z"
+  },
+  {
+    "path": "/fundamentacion",
+    "role": "public",
+    "controls": 19,
+    "unnamed": [],
+    "observedAt": "2026-11-02T16:39:37.004Z"
+  },
+  {
+    "path": "/",
+    "role": "public",
+    "controls": 31,
+    "unnamed": [],
+    "observedAt": "2026-11-02T16:39:37.937Z"
+  }
+]

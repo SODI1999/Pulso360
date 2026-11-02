@@ -8,6 +8,16 @@
   max-width: 1200px;
   margin: 0 auto;
   width: 100%;
+  min-width: 0;
+}
+
+.reports-container .alert-banner {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.reports-container .alert-banner > span {
+  min-width: 0;
 }
 
 /* Subnavegación secundaria sobria y ergonómica */
@@ -54,9 +64,13 @@
 /* Workbench en 2 Columnas (Controles + Previsualización en Vivo) */
 .reports-workspace {
   display: grid;
-  grid-template-columns: minmax(320px, 1fr) minmax(380px, 1.2fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
   gap: var(--space-5);
   align-items: start;
+}
+
+.reports-workspace > * {
+  min-width: 0;
 }
 
 /* Panel Izquierdo: Controles de Parámetros */
@@ -90,9 +104,14 @@
 
 .reports-period-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr));
   gap: var(--space-3);
   margin-bottom: var(--space-3);
+}
+
+.reports-controls-panel .reports-generate-btn {
+  width: 100%;
+  white-space: normal;
 }
 
 .reports-checkbox-group {
@@ -275,6 +294,12 @@
   font-size: 12.5px;
   margin: var(--space-2) 0;
   color: var(--c-texto);
+  overflow-wrap: anywhere;
+}
+
+.reports-result-hash > code {
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .audit-code-cell {
@@ -351,7 +376,7 @@
 /* Responsive */
 @media (max-width: 900px) {
   .reports-workspace {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .reports-kpis-container {

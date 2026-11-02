@@ -16,7 +16,7 @@ export const DEMO_ROLES = [
     password: 'Pulso360#2026',
     icon: 'Headphones',
     description:
-      'Check-in de 60s al cierre de turno, bitácora personal y registro de fatiga sin métricas de AHT.'
+      'Check-in voluntario del turno, bitácora personal y solicitud de orientación a SST.'
   },
   {
     id: 'supervisor',

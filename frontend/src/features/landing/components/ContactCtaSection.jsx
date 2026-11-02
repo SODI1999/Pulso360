@@ -13,17 +13,16 @@ export function ContactCtaSection() {
               ¿Lideras una operación BPO o gestionas Seguridad y Salud en el Trabajo?
             </h2>
             <p className="contact-cta-lead">
-              Coordinemos una demostración técnica guiada para tu equipo de operaciones y talento humano, con
-              revisión de umbrales de k-anonimato y límites de privacidad aplicados a la operación.
+              Revisa cómo se explica Pulso360 y prueba un formulario de contacto de ejemplo para una operación BPO.
+              La página muestra su alcance antes de introducir datos.
             </p>
             <div className="contact-cta-buttons">
               <Link to="/contactenos" className="btn-editorial btn-editorial-primary">
-                Coordinar demostración o piloto
+                Probar formulario de contacto
               </Link>
             </div>
             <p className="contact-cta-guarantee">
-              La demostración se centra en umbrales de k-anonimato, tendencias agregadas y límites de acceso
-              por rol.
+              El formulario es una demostración local: prepara un resumen y no envía mensajes.
             </p>
           </div>
         </div>

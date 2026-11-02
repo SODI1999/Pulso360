@@ -1,0 +1,7 @@
+﻿{
+    "startedAt":  "2026-11-02T14:29:09.4656650Z",
+    "finishedAt":  "2026-11-02T14:29:36.3374405Z",
+    "command":  "npm test",
+    "exitCode":  0,
+    "cwd":  "backend"
+}

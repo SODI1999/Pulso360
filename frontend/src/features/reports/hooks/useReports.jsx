@@ -9,6 +9,11 @@ import { env } from '../../../core/config/env';
 import { BASE_SCOPES } from '../data/reportsData';
 import { bogotaCalendarDate } from '../../../core/time/calendarDate';
 
+/**
+ * Consulta el historial y coordina generación/descarga de reportes con los servicios existentes.
+ * Conserva la pertenencia del resultado al corte generado; el servidor aplica publicación y autorización.
+ * @returns {object} Configuración, historial, resultado y feedback explícito de éxito/error/advertencia.
+ */
 export function useReports() {
   const currentUser = authService.getCurrentUser();
   const [version, setVersion] = useState(0);
@@ -68,7 +73,7 @@ export function useReports() {
   const [format, setFormat] = useState('CSV');
 
   const [generatedReport, setGeneratedReport] = useState(null);
-  const [feedback, setFeedback] = useState('');
+  const [feedback, setFeedback] = useState(null);
 
   useExpiredFormDraft('report:configuration', { selectedScopeId, periodStart, periodEnd, sections, format }, draft => {
     setSelectedScopeId(draft.selectedScopeId);
@@ -108,17 +113,15 @@ export function useReports() {
   // Generar reporte
   const handleGenerateReport = async (e) => {
     e.preventDefault();
-    setFeedback('');
+    setFeedback(null);
 
     if (!periodStart || !periodEnd || periodStart > periodEnd) {
-      setFeedback('Error: selecciona un intervalo de fechas válido.');
+      setFeedback({ type: 'error', message: 'Selecciona un intervalo de fechas válido antes de generar el reporte.' });
       return;
     }
 
     if (!isAllowedByPrivacy) {
-      setFeedback(
-        'No se puede generar el reporte: el corte seleccionado no cumple las reglas de k-anonimato (N < 5).'
-      );
+      setFeedback({ type: 'warning', message: 'El corte seleccionado no permite generar este reporte. Elige otro ámbito o período que cumpla las reglas de publicación.' });
       return;
     }
 
@@ -126,7 +129,7 @@ export function useReports() {
       .filter(([, val]) => val)
       .map(([key]) => key);
     if (activeSections.length === 0) {
-      setFeedback('Debes seleccionar al menos una dimensión de indicadores para el reporte.');
+      setFeedback({ type: 'error', message: 'Selecciona al menos una dimensión de indicadores para generar el reporte.' });
       return;
     }
 
@@ -154,7 +157,7 @@ export function useReports() {
 
     const res = await generateReport(newReportRecord);
     if (res?.success !== true) {
-      setFeedback(`Error: ${res.error.message || res.error}`);
+      setFeedback({ type: 'error', message: `No se pudo generar el reporte: ${res.error.message || res.error}. Revisa la configuración y vuelve a intentarlo.` });
       return;
     }
 
@@ -174,7 +177,7 @@ export function useReports() {
         finalReport.serverContent = typeof content === 'string' ? content : JSON.stringify(content);
         finalReport.metrics = res.reportPayload.metrics;
       } catch (err) {
-        setFeedback(`Error al descargar reporte del servidor: ${err.response?.data?.error?.message || err.message}`);
+        setFeedback({ type: 'error', message: `No se pudo descargar el reporte del servidor: ${err.response?.data?.error?.message || err.message}. Puedes volver a generar y descargar el corte seleccionado.` });
         setGeneratedReport(null);
         return;
       }
@@ -188,7 +191,7 @@ export function useReports() {
     }
 
     setGeneratedReport({ ...finalReport, meta });
-    setFeedback(`Reporte generado exitosamente con código de integridad ${finalHash}.`);
+    setFeedback({ type: 'success', message: `Reporte generado con código de integridad ${finalHash}.` });
     setVersion((v) => v + 1);
   };
 

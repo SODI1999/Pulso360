@@ -88,7 +88,7 @@ export function GroundingClosureScene({ isCompleted, onToggleAnchor, handleKeyDo
           fontWeight="700"
           fill={isCompleted('c1') ? '#0f766e' : 'var(--c-texto, #0f172a)'}
         >
-          «Mi puesto es un espacio seguro. Yo conduzco mi ritmo.»
+          «Puedo detener este ejercicio y buscar apoyo.»
         </text>
       </g>
     </g>

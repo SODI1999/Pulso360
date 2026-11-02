@@ -1,0 +1,83 @@
+[
+  {
+    "path": "/panel",
+    "role": "public",
+    "expected": "/login",
+    "actual": "/login",
+    "result": "passed",
+    "artifact": "evidence/redirect-public--panel.png",
+    "observedAt": "2026-11-02T16:30:56.122Z"
+  },
+  {
+    "path": "/ruta-no-existente-muestra",
+    "role": "public",
+    "expected": "/",
+    "actual": "/",
+    "result": "passed",
+    "artifact": "evidence/redirect-public--ruta-no-existente-muestra.png",
+    "observedAt": "2026-11-02T16:30:56.819Z"
+  },
+  {
+    "path": "/admin/panel",
+    "role": "admin",
+    "expected": "/admin/organizacion",
+    "actual": "/admin/organizacion",
+    "result": "passed",
+    "artifact": "evidence/redirect-admin--admin-panel.png",
+    "observedAt": "2026-11-02T16:30:58.750Z"
+  },
+  {
+    "path": "/panel",
+    "role": "admin",
+    "expected": "/admin/organizacion",
+    "actual": "/admin/organizacion",
+    "result": "passed",
+    "artifact": "evidence/redirect-admin--panel.png",
+    "observedAt": "2026-11-02T16:30:59.344Z"
+  },
+  {
+    "path": "/auditor/panel",
+    "role": "auditor",
+    "expected": "/auditor/auditoria",
+    "actual": "/auditor/auditoria",
+    "result": "passed",
+    "artifact": "evidence/redirect-auditor--auditor-panel.png",
+    "observedAt": "2026-11-02T16:31:31.429Z"
+  },
+  {
+    "path": "/panel",
+    "role": "auditor",
+    "expected": "/auditor/auditoria",
+    "actual": "/auditor/auditoria",
+    "result": "passed",
+    "artifact": "evidence/redirect-auditor--panel.png",
+    "observedAt": "2026-11-02T16:31:32.071Z"
+  },
+  {
+    "path": "/panel",
+    "role": "supervisor",
+    "expected": "/supervisor/panel",
+    "actual": "/supervisor/panel",
+    "result": "passed",
+    "artifact": "evidence/redirect-supervisor--panel.png",
+    "observedAt": "2026-11-02T16:31:33.493Z"
+  },
+  {
+    "path": "/panel",
+    "role": "agente",
+    "expected": "/agente/panel",
+    "actual": "/agente/panel",
+    "result": "passed",
+    "artifact": "evidence/redirect-agente--panel.png",
+    "observedAt": "2026-11-02T16:32:14.888Z"
+  },
+  {
+    "path": "/panel",
+    "role": "sst",
+    "expected": "/sst/panel",
+    "actual": "/sst/panel",
+    "result": "passed",
+    "artifact": "evidence/redirect-sst--panel.png",
+    "observedAt": "2026-11-02T16:33:31.275Z"
+  }
+]

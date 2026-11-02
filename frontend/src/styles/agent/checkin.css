@@ -326,11 +326,14 @@
 @media (max-width: 620px) {
   .scale-selector-track {
     flex-direction: column;
+    width: 100%;
     padding: 6px;
     gap: 6px;
   }
 
   .scale-selector-track .scale-btn {
+    width: 100%;
+    min-width: 0;
     max-width: 100%;
     min-height: 48px;
     flex-direction: row;
@@ -340,8 +343,12 @@
   }
 
   .scale-selector-track .scale-btn .scale-label {
+    display: block;
+    min-width: 0;
+    white-space: normal;
+    overflow: visible;
     text-align: left;
-    -webkit-line-clamp: 1;
+    -webkit-line-clamp: unset;
   }
 }
 

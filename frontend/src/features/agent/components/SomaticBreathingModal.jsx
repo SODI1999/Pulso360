@@ -64,7 +64,7 @@ export function SomaticBreathingModal({ isOpen, onClose }) {
             onClick={onClose}
             autoFocus
           >
-            <span>Listo, volver a mi bitácora</span>
+            <span>Listo, volver</span>
           </button>
         </div>
       </div>

@@ -1,0 +1,32 @@
+[
+  {
+    "phase": "skip",
+    "startedAt": "2026-11-02T20:31:50.501Z",
+    "observedAt": "2026-11-02T20:31:52.223Z",
+    "path": "/login",
+    "mode": "skip",
+    "loads": 1,
+    "viewport": {
+      "width": 1366,
+      "height": 768,
+      "deviceScaleFactor": 1
+    },
+    "title": "Iniciar Sesión · Pulso360",
+    "active": {
+      "tag": "MAIN",
+      "text": "Iniciar SesiónAcceso institucional a tu espacio Pulso360.Probar acceso con Microsoft 365Probar acceso con Google Workspa",
+      "focusVisible": true,
+      "outline": "rgb(15, 118, 110) solid 2px",
+      "marker": "keyboard"
+    },
+    "heading": "Iniciar Sesión",
+    "scroll": {
+      "x": 0,
+      "y": 0
+    },
+    "documentWidth": 1366,
+    "clientWidth": 1366,
+    "artifact": "evidence/skip-login-1366.png",
+    "exitCode": 0
+  }
+]

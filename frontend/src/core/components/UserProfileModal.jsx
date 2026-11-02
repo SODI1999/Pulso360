@@ -7,6 +7,7 @@ import { Icon } from './Icon';
 import { authService, roleLabels } from '../auth/authService';
 import { getRandomAvatarForRole } from '../auth/avatarPool';
 import { preferences } from '../storage/preferences';
+import { useModalA11y } from '../hooks/useModalA11y';
 import '../../styles/profile.css';
 
 // Catálogo institucional representativo de BPO (sin etiquetas de rol para libre elección del colaborador)
@@ -93,9 +94,10 @@ function getDefaultAvatarForUser(user) {
  * @param {() => void} props.onClose - Modal dismissal callback.
  * @param {Object} props.user - Active authenticated user record.
  * @param {(updatedUser: Object) => void} [props.onProfileUpdated] - Callback fired after persisting profile updates.
+ * @param {object} [props.returnFocusRef] Stable account trigger to restore when the opening action unmounts.
  * @returns {import('react').JSX.Element|null} Rendered modal dialog or null if not open.
  */
-export function UserProfileModal({ isOpen, onClose, user, onProfileUpdated }) {
+export function UserProfileModal({ isOpen, onClose, user, onProfileUpdated, returnFocusRef }) {
   const [activeTab, setActiveTab] = useState('identity'); // 'identity' | 'preferences' | 'privacy'
   const [selectedAvatar, setSelectedAvatar] = useState(() => getDefaultAvatarForUser(user));
   const [pauseSound, setPauseSound] = useState(() => preferences.readPauseSound(true));
@@ -106,15 +108,14 @@ export function UserProfileModal({ isOpen, onClose, user, onProfileUpdated }) {
 
   const modalRef = useRef(null);
   const fileInputRef = useRef(null);
-  const previousActiveElement = useRef(null);
   const wasOpenRef = useRef(false);
+  useModalA11y({ isOpen: isOpen && Boolean(user), onClose, modalRef, returnFocusRef });
 
   // Sincronizar estado únicamente al abrir el modal (evita sobreescritura accidental ante re-renders de actividad)
   useEffect(() => {
     if (isOpen && !wasOpenRef.current && user) {
       wasOpenRef.current = true;
       setActiveTab('identity');
-      previousActiveElement.current = document.activeElement;
       setSelectedAvatar(user.avatar || getDefaultAvatarForUser(user));
       setPauseSound(preferences.readPauseSound(true));
       const reminderKey = `pulso360_reminder_${user.id}`;
@@ -122,50 +123,10 @@ export function UserProfileModal({ isOpen, onClose, user, onProfileUpdated }) {
       setReducedMotion(preferences.readReducedMotion(false));
       setFeedback(null);
 
-      // Foco inicial accesible
-      setTimeout(() => {
-        const closeBtn = modalRef.current?.querySelector('.user-profile-close-btn');
-        closeBtn?.focus();
-      }, 50);
     } else if (!isOpen && wasOpenRef.current) {
       wasOpenRef.current = false;
-      if (previousActiveElement.current) {
-        previousActiveElement.current.focus();
-      }
     }
   }, [isOpen, user]);
-
-  // Manejo de teclado WAI-ARIA: Trampa de foco y cierre con Escape
-  useEffect(() => {
-    if (!isOpen) return undefined;
-
-    const handleKeyDown = (event) => {
-      if (event.key === 'Escape') {
-        event.preventDefault();
-        onClose();
-        return;
-      }
-
-      if (event.key === 'Tab' && modalRef.current) {
-        const focusableElements = modalRef.current.querySelectorAll(
-          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-        );
-        const firstElement = focusableElements[0];
-        const lastElement = focusableElements[focusableElements.length - 1];
-
-        if (event.shiftKey && document.activeElement === firstElement) {
-          event.preventDefault();
-          lastElement?.focus();
-        } else if (!event.shiftKey && document.activeElement === lastElement) {
-          event.preventDefault();
-          firstElement?.focus();
-        }
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose]);
 
   if (!isOpen || !user) return null;
 
@@ -233,10 +194,8 @@ export function UserProfileModal({ isOpen, onClose, user, onProfileUpdated }) {
       setFeedback({ type: 'success', text: 'Perfil y preferencias guardados exitosamente.' });
       onProfileUpdated?.(updatedUser);
 
-      setTimeout(() => {
-        setIsSaving(false);
-        onClose();
-      }, 600);
+      setIsSaving(false);
+      onClose();
     } catch {
       setIsSaving(false);
       setFeedback({ type: 'error', text: 'No se pudieron guardar las preferencias locales.' });
@@ -245,6 +204,34 @@ export function UserProfileModal({ isOpen, onClose, user, onProfileUpdated }) {
 
   const roleLabel = roleLabels[user.role] || user.role;
   const initialLetter = user.name ? user.name.charAt(0).toUpperCase() : 'U';
+  const tabNames = ['identity', 'preferences', 'privacy'];
+  const hasPresetAvatar = INSTITUTIONAL_AVATARS.some(item => item.src === selectedAvatar);
+
+  const handleTabKeyDown = event => {
+    let index = tabNames.indexOf(activeTab);
+    if (event.key === 'ArrowRight') index = (index + 1) % tabNames.length;
+    else if (event.key === 'ArrowLeft') index = (index - 1 + tabNames.length) % tabNames.length;
+    else if (event.key === 'Home') index = 0;
+    else if (event.key === 'End') index = tabNames.length - 1;
+    else return;
+    event.preventDefault();
+    setActiveTab(tabNames[index]);
+    modalRef.current?.querySelector(`#tab-${tabNames[index]}`)?.focus();
+  };
+
+  const handleAvatarKeyDown = (event, index) => {
+    let next = index;
+    const count = INSTITUTIONAL_AVATARS.length;
+    if (event.key === 'ArrowRight' || event.key === 'ArrowDown') next = (index + 1) % count;
+    else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') next = (index - 1 + count) % count;
+    else if (event.key === 'Home') next = 0;
+    else if (event.key === 'End') next = count - 1;
+    else return;
+    event.preventDefault();
+    setSelectedAvatar(INSTITUTIONAL_AVATARS[next].src);
+    setFeedback(null);
+    modalRef.current?.querySelector(`[data-avatar-index="${next}"]`)?.focus();
+  };
 
   return (
     <div
@@ -295,6 +282,8 @@ export function UserProfileModal({ isOpen, onClose, user, onProfileUpdated }) {
             id="tab-identity"
             aria-selected={activeTab === 'identity'}
             aria-controls="panel-identity"
+            tabIndex={activeTab === 'identity' ? 0 : -1}
+            onKeyDown={handleTabKeyDown}
             className={`user-profile-tab-btn ${activeTab === 'identity' ? 'is-active' : ''}`}
             onClick={() => setActiveTab('identity')}
           >
@@ -307,6 +296,8 @@ export function UserProfileModal({ isOpen, onClose, user, onProfileUpdated }) {
             id="tab-preferences"
             aria-selected={activeTab === 'preferences'}
             aria-controls="panel-preferences"
+            tabIndex={activeTab === 'preferences' ? 0 : -1}
+            onKeyDown={handleTabKeyDown}
             className={`user-profile-tab-btn ${activeTab === 'preferences' ? 'is-active' : ''}`}
             onClick={() => setActiveTab('preferences')}
           >
@@ -319,6 +310,8 @@ export function UserProfileModal({ isOpen, onClose, user, onProfileUpdated }) {
             id="tab-privacy"
             aria-selected={activeTab === 'privacy'}
             aria-controls="panel-privacy"
+            tabIndex={activeTab === 'privacy' ? 0 : -1}
+            onKeyDown={handleTabKeyDown}
             className={`user-profile-tab-btn ${activeTab === 'privacy' ? 'is-active' : ''}`}
             onClick={() => setActiveTab('privacy')}
           >
@@ -394,7 +387,7 @@ export function UserProfileModal({ isOpen, onClose, user, onProfileUpdated }) {
                   </span>
                 </div>
                 <div className="avatar-catalog-grid" role="radiogroup" aria-label="Catálogo de avatares">
-                  {INSTITUTIONAL_AVATARS.map((item) => {
+                  {INSTITUTIONAL_AVATARS.map((item, index) => {
                     const isSelected = selectedAvatar === item.src;
                     return (
                       <button
@@ -402,6 +395,9 @@ export function UserProfileModal({ isOpen, onClose, user, onProfileUpdated }) {
                         type="button"
                         role="radio"
                         aria-checked={isSelected}
+                        tabIndex={isSelected || (!hasPresetAvatar && index === 0) ? 0 : -1}
+                        data-avatar-index={index}
+                        onKeyDown={event => handleAvatarKeyDown(event, index)}
                         className={`avatar-option-card ${isSelected ? 'is-selected' : ''}`}
                         onClick={() => {
                           setSelectedAvatar(item.src);

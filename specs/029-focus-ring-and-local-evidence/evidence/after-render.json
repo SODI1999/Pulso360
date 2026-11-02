@@ -1,0 +1,170 @@
+[
+  {
+    "phase": "after",
+    "startedAt": "2026-11-02T20:28:32.576Z",
+    "observedAt": "2026-11-02T20:28:34.568Z",
+    "path": "/",
+    "viewport": {
+      "width": 320,
+      "height": 768,
+      "deviceScaleFactor": 1
+    },
+    "title": "Bienestar y apoyo preventivo en Contact Centers.Registra cómo vives el turno y solicita orientación a SST. · Pulso360",
+    "active": {
+      "tag": "H1",
+      "text": "Bienestar y apoyo preventivo  en Contact Centers.Registra cómo vives el turno y solicita orientación a SST.",
+      "focusVisible": true,
+      "outline": "rgb(17, 38, 35) none 3px",
+      "marker": "quiet"
+    },
+    "heading": "Bienestar y apoyo preventivo  en Contact Centers.Registra cómo vives el turno y solicita orientación a SST.",
+    "scroll": {
+      "x": 0,
+      "y": 0
+    },
+    "documentWidth": 305,
+    "clientWidth": 305,
+    "artifact": "evidence/after-landing-320.png",
+    "exitCode": 0
+  },
+  {
+    "phase": "after",
+    "startedAt": "2026-11-02T20:28:34.629Z",
+    "observedAt": "2026-11-02T20:28:36.681Z",
+    "path": "/",
+    "viewport": {
+      "width": 1366,
+      "height": 768,
+      "deviceScaleFactor": 1
+    },
+    "title": "Bienestar y apoyo preventivo en Contact Centers.Registra cómo vives el turno y solicita orientación a SST. · Pulso360",
+    "active": {
+      "tag": "H1",
+      "text": "Bienestar y apoyo preventivo  en Contact Centers.Registra cómo vives el turno y solicita orientación a SST.",
+      "focusVisible": true,
+      "outline": "rgb(17, 38, 35) none 3px",
+      "marker": "quiet"
+    },
+    "heading": "Bienestar y apoyo preventivo  en Contact Centers.Registra cómo vives el turno y solicita orientación a SST.",
+    "scroll": {
+      "x": 0,
+      "y": 0
+    },
+    "documentWidth": 1351,
+    "clientWidth": 1351,
+    "artifact": "evidence/after-landing-1366.png",
+    "exitCode": 0
+  },
+  {
+    "phase": "after",
+    "startedAt": "2026-11-02T20:28:36.738Z",
+    "observedAt": "2026-11-02T20:28:38.408Z",
+    "path": "/403",
+    "viewport": {
+      "width": 320,
+      "height": 768,
+      "deviceScaleFactor": 1
+    },
+    "title": "Acceso no autorizado · Pulso360",
+    "active": {
+      "tag": "H1",
+      "text": "Acceso no autorizado",
+      "focusVisible": true,
+      "outline": "rgb(15, 23, 42) none 3px",
+      "marker": "quiet"
+    },
+    "heading": "Acceso no autorizado",
+    "scroll": {
+      "x": 0,
+      "y": 0
+    },
+    "documentWidth": 320,
+    "clientWidth": 320,
+    "artifact": "evidence/after-403-320.png",
+    "exitCode": 0
+  },
+  {
+    "phase": "after",
+    "startedAt": "2026-11-02T20:28:38.454Z",
+    "observedAt": "2026-11-02T20:28:40.116Z",
+    "path": "/403",
+    "viewport": {
+      "width": 1366,
+      "height": 768,
+      "deviceScaleFactor": 1
+    },
+    "title": "Acceso no autorizado · Pulso360",
+    "active": {
+      "tag": "H1",
+      "text": "Acceso no autorizado",
+      "focusVisible": true,
+      "outline": "rgb(15, 23, 42) none 3px",
+      "marker": "quiet"
+    },
+    "heading": "Acceso no autorizado",
+    "scroll": {
+      "x": 0,
+      "y": 0
+    },
+    "documentWidth": 1366,
+    "clientWidth": 1366,
+    "artifact": "evidence/after-403-1366.png",
+    "exitCode": 0
+  },
+  {
+    "phase": "after",
+    "startedAt": "2026-11-02T20:28:40.165Z",
+    "observedAt": "2026-11-02T20:28:42.021Z",
+    "path": "/login",
+    "viewport": {
+      "width": 320,
+      "height": 768,
+      "deviceScaleFactor": 1
+    },
+    "title": "Iniciar Sesión · Pulso360",
+    "active": {
+      "tag": "H2",
+      "text": "Iniciar Sesión",
+      "focusVisible": true,
+      "outline": "rgb(8, 47, 40) none 3px",
+      "marker": "quiet"
+    },
+    "heading": "Iniciar Sesión",
+    "scroll": {
+      "x": 0,
+      "y": 0
+    },
+    "documentWidth": 305,
+    "clientWidth": 305,
+    "artifact": "evidence/after-login-320.png",
+    "exitCode": 0
+  },
+  {
+    "phase": "after",
+    "startedAt": "2026-11-02T20:28:42.073Z",
+    "observedAt": "2026-11-02T20:28:43.916Z",
+    "path": "/login",
+    "viewport": {
+      "width": 1366,
+      "height": 768,
+      "deviceScaleFactor": 1
+    },
+    "title": "Iniciar Sesión · Pulso360",
+    "active": {
+      "tag": "H2",
+      "text": "Iniciar Sesión",
+      "focusVisible": true,
+      "outline": "rgb(8, 47, 40) none 3px",
+      "marker": "quiet"
+    },
+    "heading": "Iniciar Sesión",
+    "scroll": {
+      "x": 0,
+      "y": 0
+    },
+    "documentWidth": 1366,
+    "clientWidth": 1366,
+    "artifact": "evidence/after-login-1366.png",
+    "exitCode": 0
+  }
+]

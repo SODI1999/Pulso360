@@ -2,7 +2,8 @@ import { Link } from 'react-router-dom';
 import { Icon } from '../../../core/components/Icon';
 
 /**
- * Módulo de Respaldo Científico y Transferencia Tecnológica TdeA
+ * Explica el origen de la idea en una actividad de materia y enlaza su alcance.
+ * @returns {JSX.Element} Presentación del origen estudiantil de Pulso360.
  */
 export function AcademicBackingSection() {
   return (
@@ -11,11 +12,12 @@ export function AcademicBackingSection() {
         <div className="academic-backing-card">
           <div className="academic-card-top">
             <span className="acts-eyebrow">Origen y evidencia del proyecto</span>
-            <h2 id="academic-title">Ciencia social aplicada a la realidad operativa del Contact Center.</h2>
+            <h2 id="academic-title">Una actividad de aula dio origen a la idea de Pulso360.</h2>
             <p className="academic-backing-lead">
-              Pulso360 toma como referencia una investigación formativa del TdeA sobre agotamiento emocional y
-              apoyo social en 185 trabajadores de call center en Medellín. La plataforma es una transferencia
-              académica preventiva, no un instrumento clínico.
+              La idea nació de datos recogidos para una materia sobre agotamiento emocional y apoyo social
+              en un grupo de 185 operadores de call center en Medellín. Esos datos pertenecen a la actividad
+              de aula; no representan al sector ni validan la plataforma. El equipo es estudiantil y la
+              mención del TdeA no expresa aval institucional.
             </p>
           </div>
 
@@ -39,11 +41,11 @@ export function AcademicBackingSection() {
               <Icon name="fileText" size={16} className="paper-icon" />
               <p>
                 «Relación entre el agotamiento emocional y la percepción de apoyo social en trabajadores de
-                call center de Medellín». Asesoría: I. J. Saldarriaga Roa (TdeA).
+                call center de Medellín». Material de aula no publicado. Orientación docente: I. J. Saldarriaga Roa.
               </p>
             </div>
             <Link to="/fundamentacion" className="btn-academic-dossier">
-              <span>Consultar fundamentación y marco legal</span>
+              <span>Consultar origen, datos de aula y límites</span>
             </Link>
           </div>
         </div>

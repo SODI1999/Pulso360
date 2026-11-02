@@ -33,9 +33,8 @@ export function ThreeActsSection() {
           <span className="acts-eyebrow">Arquitectura Ética & Demostración Interactiva</span>
           <h2 id="acts-main-title">Los Tres Actos de Pulso360</h2>
           <p className="acts-lead">
-            Un único recorrido sereno que articula el cuidado en tiempo real: desde el micro-pulso voluntario
-            de 60 segundos del agente hasta la intervención oportuna de SST, respaldado por el muro matemático
-            de k-anonimato.
+            Explora un ejemplo de registro personal, la protección de las tendencias colectivas y el
+            seguimiento de SST. Los datos de esta demostración son ilustrativos.
           </p>
         </div>
 

@@ -1,0 +1,412 @@
+[
+  {
+    "actor": "agent",
+    "observer": "Codex aplicando better-interface y sus seis skills",
+    "sessionId": "61b79b3b-63e3-43e8-8e28-edeb4419ce11",
+    "surface": "/sst/buzon",
+    "environment": "Windows / Chrome156 headless, CDP, React18/Vite6; casos MUESTRA-UI y transporte local interceptado",
+    "steps": [
+      "Abrir radicado con Enter",
+      "Desde Cerrar panel: Tab a contexto y Enter",
+      "Tab a historial/compositor",
+      "Escribir y enviar con Enter"
+    ],
+    "expected": "Un diálogo; contexto desplegable, envío confirmado y foco en compositor",
+    "actual": "{\"start\":{\"dialog\":1,\"focus\":\"\",\"heading\":\"Solicitante con nombre oculto\",\"log\":\"Mensajes del radicado MUESTRA-UI-001\"},\"context\":{\"focus\":\"SUMMARY\",\"open\":true,\"fullReason\":\"Muestra técnica: sobrecarga de llamadas. Datos simulados para comprobar el canal.\"},\"sent\":{\"focus\":\"sst-chat-message\",\"confirmed\":true,\"atEnd\":true}}",
+    "result": "passed",
+    "observedAt": "2026-11-02T14:48:43.712Z",
+    "viewport": {
+      "width": 1366,
+      "height": 768
+    },
+    "artifact": "evidence/better-browser-sst-keyboard-send.png"
+  },
+  {
+    "actor": "agent",
+    "observer": "Codex aplicando better-interface y sus seis skills",
+    "sessionId": "61b79b3b-63e3-43e8-8e28-edeb4419ce11",
+    "surface": "/sst/buzon",
+    "environment": "Windows / Chrome156 headless, CDP, React18/Vite6; casos MUESTRA-UI y transporte local interceptado",
+    "steps": [
+      "Contexto completo desplegado e historial largo",
+      "Redimensionar viewport a 320×800",
+      "Medir control/compositor y overflow"
+    ],
+    "expected": "Contexto sin truncado, acciones alcanzables y sin overflow de página",
+    "actual": "{\"width\":320,\"scrollWidth\":320,\"dialogCount\":1,\"controls\":[{\"name\":\"Concluir conversación\",\"width\":175.0625,\"height\":44},{\"name\":\"Cerrar panel lateral\",\"width\":44,\"height\":44},{\"name\":\"Enviar respuesta\",\"width\":44,\"height\":44}],\"textarea\":{\"height\":56,\"font\":\"16px\"},\"reason\":\"Muestra técnica: sobrecarga de llamadas. Datos simulados para comprobar el canal.\"}",
+    "result": "passed",
+    "observedAt": "2026-11-02T14:49:05.075Z",
+    "viewport": {
+      "width": 320,
+      "height": 800
+    },
+    "artifact": "evidence/better-browser-sst-320.png"
+  },
+  {
+    "actor": "agent",
+    "observer": "Codex aplicando better-interface y sus seis skills",
+    "sessionId": "61b79b3b-63e3-43e8-8e28-edeb4419ce11",
+    "surface": "/sst/buzon",
+    "environment": "Windows / Chrome156 headless, CDP, React18/Vite6; casos MUESTRA-UI y transporte local interceptado",
+    "steps": [
+      "Contexto completo desplegado e historial largo",
+      "Redimensionar viewport a 768×900",
+      "Medir control/compositor y overflow"
+    ],
+    "expected": "Contexto sin truncado, acciones alcanzables y sin overflow de página",
+    "actual": "{\"width\":768,\"scrollWidth\":768,\"dialogCount\":1,\"controls\":[{\"name\":\"Concluir conversación\",\"width\":175.0625,\"height\":44},{\"name\":\"Cerrar panel lateral\",\"width\":44,\"height\":44},{\"name\":\"Enviar respuesta\",\"width\":44,\"height\":44}],\"textarea\":{\"height\":56,\"font\":\"13.5px\"},\"reason\":\"Muestra técnica: sobrecarga de llamadas. Datos simulados para comprobar el canal.\"}",
+    "result": "passed",
+    "observedAt": "2026-11-02T14:49:05.216Z",
+    "viewport": {
+      "width": 768,
+      "height": 900
+    },
+    "artifact": "evidence/better-browser-sst-768.png"
+  },
+  {
+    "actor": "agent",
+    "observer": "Codex aplicando better-interface y sus seis skills",
+    "sessionId": "61b79b3b-63e3-43e8-8e28-edeb4419ce11",
+    "surface": "/sst/buzon",
+    "environment": "Windows / Chrome156 headless, CDP, React18/Vite6; casos MUESTRA-UI y transporte local interceptado",
+    "steps": [
+      "Contexto completo desplegado e historial largo",
+      "Redimensionar viewport a 1366×768",
+      "Medir control/compositor y overflow"
+    ],
+    "expected": "Contexto sin truncado, acciones alcanzables y sin overflow de página",
+    "actual": "{\"width\":1366,\"scrollWidth\":1366,\"dialogCount\":1,\"controls\":[{\"name\":\"Concluir conversación\",\"width\":175.0625,\"height\":44},{\"name\":\"Cerrar panel lateral\",\"width\":44,\"height\":44},{\"name\":\"Enviar respuesta\",\"width\":44,\"height\":44}],\"textarea\":{\"height\":56,\"font\":\"13.5px\"},\"reason\":\"Muestra técnica: sobrecarga de llamadas. Datos simulados para comprobar el canal.\"}",
+    "result": "passed",
+    "observedAt": "2026-11-02T14:49:05.409Z",
+    "viewport": {
+      "width": 1366,
+      "height": 768
+    },
+    "artifact": "evidence/better-browser-sst-1366.png"
+  },
+  {
+    "actor": "agent",
+    "observer": "Codex aplicando better-interface y sus seis skills",
+    "sessionId": "61b79b3b-63e3-43e8-8e28-edeb4419ce11",
+    "surface": "/sst/buzon",
+    "environment": "Windows / Chrome156 headless, CDP, React18/Vite6; casos MUESTRA-UI y transporte local interceptado",
+    "steps": [
+      "Desde Concluir presionar Enter",
+      "Shift+Tab al último control",
+      "Tab al primero",
+      "Escape para cancelar"
+    ],
+    "expected": "Un diálogo, ciclo de foco y regreso a Concluir",
+    "actual": "{\"initialClose\":{\"dialogCount\":1,\"focus\":\"Volver a la conversación\",\"hidden\":true},\"wrapped\":true,\"first\":\"Volver a la conversación\",\"restored\":true}",
+    "result": "passed",
+    "observedAt": "2026-11-02T14:49:05.807Z",
+    "viewport": {
+      "width": 320,
+      "height": 800
+    },
+    "artifact": "evidence/better-browser-sst-dialog-keyboard.png"
+  },
+  {
+    "actor": "agent",
+    "observer": "Codex aplicando better-interface y sus seis skills",
+    "sessionId": "61b79b3b-63e3-43e8-8e28-edeb4419ce11",
+    "surface": "/sst/buzon",
+    "environment": "Windows / Chrome156 headless, CDP, React18/Vite6; casos MUESTRA-UI y transporte local interceptado",
+    "steps": [
+      "Concluir con notas de muestra",
+      "Servicio local devuelve503"
+    ],
+    "expected": "Error visible/enfocado, notas retenidas y botón de reintento habilitado",
+    "actual": "{\"focus\":\"sst-close-error\",\"error\":\"Muestra técnica: cierre no confirmado. Reintenta.\",\"visible\":true,\"notes\":\"Muestra técnica: notas conservadas para comprobar un error de cierre.\",\"canRetry\":true}",
+    "result": "passed",
+    "observedAt": "2026-11-02T14:49:06.113Z",
+    "viewport": {
+      "width": 320,
+      "height": 800
+    },
+    "artifact": "evidence/better-browser-sst-close-error.png"
+  },
+  {
+    "actor": "agent",
+    "observer": "Codex aplicando better-interface y sus seis skills",
+    "sessionId": "61b79b3b-63e3-43e8-8e28-edeb4419ce11",
+    "surface": "/sst/buzon",
+    "environment": "Windows / Chrome156 headless, CDP, React18/Vite6; casos MUESTRA-UI y transporte local interceptado",
+    "steps": [
+      "Ampliar letter-spacing.12em/word-spacing.16em/line-height1.5 y separación de párrafos2em",
+      "Contexto desplegado a320px",
+      "Tab del compositor a Enviar"
+    ],
+    "expected": "Acción alcanzable y página sin overflow",
+    "actual": "{\"width\":320,\"scrollWidth\":320,\"focus\":\"Enviar respuesta\",\"visible\":true}",
+    "result": "passed",
+    "observedAt": "2026-11-02T14:50:00.774Z",
+    "viewport": {
+      "width": 320,
+      "height": 800
+    },
+    "artifact": "evidence/better-browser-sst-text-spacing.png"
+  },
+  {
+    "actor": "agent",
+    "observer": "Codex aplicando better-interface y sus seis skills",
+    "sessionId": "61b79b3b-63e3-43e8-8e28-edeb4419ce11",
+    "surface": "/sst/buzon",
+    "environment": "Windows / Chrome156 headless, CDP, React18/Vite6; casos MUESTRA-UI y transporte local interceptado",
+    "steps": [
+      "Tab a Enviar",
+      "Medir color y fondo efectivo de seis pares",
+      "Emular prefers-reduced-motion:reduce"
+    ],
+    "expected": "Texto/foco>=umbrales, foco visible y sin animación de entrada",
+    "actual": "{\"colors\":[{\"selector\":\".sst-composer-label\",\"foreground\":\"rgb(15, 23, 42)\",\"background\":\"rgb(255, 255, 255)\",\"ratio\":17.85,\"outline\":\"none\",\"offset\":\"0px\"},{\"selector\":\".chat-privacy-note\",\"foreground\":\"rgb(71, 85, 105)\",\"background\":\"rgb(255, 255, 255)\",\"ratio\":7.58,\"outline\":\"none\",\"offset\":\"0px\"},{\"selector\":\".chat-status-pill\",\"foreground\":\"rgb(15, 118, 110)\",\"background\":\"rgb(236, 253, 245)\",\"ratio\":5.2,\"outline\":\"none\",\"offset\":\"0px\"},{\"selector\":\".msg-incoming .embedded-msg-time\",\"foreground\":\"rgb(100, 116, 139)\",\"background\":\"rgb(255, 255, 255)\",\"ratio\":4.76,\"outline\":\"none\",\"offset\":\"0px\"},{\"selector\":\".msg-outgoing .embedded-msg-text\",\"foreground\":\"rgb(255, 255, 255)\",\"background\":\"rgb(15, 118, 110)\",\"ratio\":5.47,\"outline\":\"none\",\"offset\":\"0px\"},{\"selector\":\".embedded-composer-send-btn\",\"foreground\":\"rgb(255, 255, 255)\",\"background\":\"rgb(15, 118, 110)\",\"ratio\":5.47,\"outline\":\"solid\",\"offset\":\"-4px\"}],\"motion\":{\"reduced\":true,\"panelAnimation\":\"none\"}}",
+    "result": "passed",
+    "observedAt": "2026-11-02T14:50:01.043Z",
+    "viewport": {
+      "width": 320,
+      "height": 800
+    },
+    "artifact": "evidence/better-browser-sst-colors-motion.png"
+  },
+  {
+    "actor": "agent",
+    "observer": "Codex aplicando better-interface y sus seis skills",
+    "sessionId": "61b79b3b-63e3-43e8-8e28-edeb4419ce11",
+    "surface": "/sst/buzon",
+    "environment": "Windows / Chrome156 headless, CDP, React18/Vite6; casos MUESTRA-UI y transporte local interceptado",
+    "steps": [
+      "Reintentar cierre con confirmación local",
+      "Revisar historial y acciones"
+    ],
+    "expected": "Historial de solo lectura; sin compositor",
+    "actual": "{\"composer\":false,\"text\":\"Conversación concluida. Puedes consultar su historial en solo lectura.\",\"dialog\":1}",
+    "result": "passed",
+    "observedAt": "2026-11-02T14:51:13.151Z",
+    "viewport": {
+      "width": 320,
+      "height": 800
+    },
+    "artifact": "evidence/better-browser-sst-read-only.png"
+  },
+  {
+    "actor": "agent",
+    "observer": "Codex aplicando better-interface y sus seis skills",
+    "sessionId": "61b79b3b-63e3-43e8-8e28-edeb4419ce11",
+    "surface": "/sst/buzon",
+    "environment": "Windows / Chrome156 headless, CDP, React18/Vite6; casos MUESTRA-UI y transporte local interceptado",
+    "steps": [
+      "Abrir radicado con respuesta local503"
+    ],
+    "expected": "Error comprensible y acción de reintento",
+    "actual": "{\"text\":\"Muestra técnica: historial no disponible. Reintenta.Reintentar carga\",\"retry\":\"Reintentar carga\"}",
+    "result": "passed",
+    "observedAt": "2026-11-02T14:51:13.335Z",
+    "viewport": {
+      "width": 320,
+      "height": 800
+    },
+    "artifact": "evidence/better-browser-sst-load-error.png"
+  },
+  {
+    "actor": "agent",
+    "observer": "Codex aplicando better-interface y sus seis skills",
+    "sessionId": "61b79b3b-63e3-43e8-8e28-edeb4419ce11",
+    "surface": "/sst/buzon",
+    "environment": "Windows / Chrome156 headless, CDP, React18/Vite6; casos MUESTRA-UI y transporte local interceptado",
+    "steps": [
+      "Activar Reintentar carga",
+      "Responder con sesión activa sin mensajes"
+    ],
+    "expected": "Vacío explícito y compositor disponible",
+    "actual": "{\"empty\":\"Esta conversación no tiene mensajes registrados.\",\"composer\":true}",
+    "result": "passed",
+    "observedAt": "2026-11-02T14:51:13.476Z",
+    "viewport": {
+      "width": 320,
+      "height": 800
+    },
+    "artifact": "evidence/better-browser-sst-empty-recovered.png"
+  },
+  {
+    "actor": "agent",
+    "observer": "Codex aplicando better-interface y sus seis skills",
+    "sessionId": "61b79b3b-63e3-43e8-8e28-edeb4419ce11",
+    "surface": "/sst/buzon",
+    "environment": "Windows / Chrome156 headless, CDP, React18/Vite6; casos MUESTRA-UI y transporte local interceptado",
+    "steps": [
+      "Abrir radicado sin chat/urgencia/plazo",
+      "Desplegar contexto"
+    ],
+    "expected": "Ausencias explícitas y acción Abrir conversación",
+    "actual": "{\"text\":\"Motivo y datos de solicitudUrgencia: No registradaMotivoMuestra técnica: consulta sin urgencia ni plazo registrados. Datos simulados.Estado del radicadoRecibidaPlazo registradoSin plazo registrado\",\"composer\":false}",
+    "result": "passed",
+    "observedAt": "2026-11-02T14:51:13.708Z",
+    "viewport": {
+      "width": 320,
+      "height": 800
+    },
+    "artifact": "evidence/better-browser-sst-waiting.png"
+  },
+  {
+    "actor": "agent",
+    "observer": "Codex aplicando better-interface y sus seis skills",
+    "sessionId": "61b79b3b-63e3-43e8-8e28-edeb4419ce11",
+    "surface": "/agente/apoyo",
+    "environment": "Windows / Chrome156 headless, CDP, React18/Vite6; casos MUESTRA-UI y transporte local interceptado",
+    "steps": [
+      "Lista sin selección inicial",
+      "Enter abre",
+      "Volver devuelve foco",
+      "Espacio vuelve a abrir"
+    ],
+    "expected": "Selección explícita, foco en título y retorno al disparador",
+    "actual": "{\"initial\":{\"selected\":0,\"count\":3},\"opened\":{\"focus\":\"H2\",\"title\":\"Radicado MUESTRA-UI-001\",\"selected\":1},\"returned\":{\"selected\":0,\"focus\":\"support-case-card \",\"code\":\"MUESTRA-UI-001\"}}",
+    "result": "passed",
+    "observedAt": "2026-11-02T14:51:42.654Z",
+    "viewport": {
+      "width": 1366,
+      "height": 768
+    },
+    "artifact": "evidence/better-browser-agent-keyboard.png"
+  },
+  {
+    "actor": "agent",
+    "observer": "Codex aplicando better-interface y sus seis skills",
+    "sessionId": "61b79b3b-63e3-43e8-8e28-edeb4419ce11",
+    "surface": "/agente/apoyo",
+    "environment": "Windows / Chrome156 headless, CDP, React18/Vite6; casos MUESTRA-UI y transporte local interceptado",
+    "steps": [
+      "Seleccionar radicado de muestra",
+      "Redimensionar a 320×800"
+    ],
+    "expected": "Lista/detalle móvil y ambos escritorio, sin desbordamiento",
+    "actual": "{\"width\":320,\"scrollWidth\":305,\"master\":\"none\",\"detail\":\"block\",\"textarea\":{\"height\":56,\"font\":\"16px\"}}",
+    "result": "passed",
+    "observedAt": "2026-11-02T14:51:42.814Z",
+    "viewport": {
+      "width": 320,
+      "height": 800
+    },
+    "artifact": "evidence/better-browser-agent-320.png"
+  },
+  {
+    "actor": "agent",
+    "observer": "Codex aplicando better-interface y sus seis skills",
+    "sessionId": "61b79b3b-63e3-43e8-8e28-edeb4419ce11",
+    "surface": "/agente/apoyo",
+    "environment": "Windows / Chrome156 headless, CDP, React18/Vite6; casos MUESTRA-UI y transporte local interceptado",
+    "steps": [
+      "Seleccionar radicado de muestra",
+      "Redimensionar a 768×900"
+    ],
+    "expected": "Lista/detalle móvil y ambos escritorio, sin desbordamiento",
+    "actual": "{\"width\":768,\"scrollWidth\":753,\"master\":\"none\",\"detail\":\"block\",\"textarea\":{\"height\":56,\"font\":\"13.5px\"}}",
+    "result": "passed",
+    "observedAt": "2026-11-02T14:51:42.954Z",
+    "viewport": {
+      "width": 768,
+      "height": 900
+    },
+    "artifact": "evidence/better-browser-agent-768.png"
+  },
+  {
+    "actor": "agent",
+    "observer": "Codex aplicando better-interface y sus seis skills",
+    "sessionId": "61b79b3b-63e3-43e8-8e28-edeb4419ce11",
+    "surface": "/agente/apoyo",
+    "environment": "Windows / Chrome156 headless, CDP, React18/Vite6; casos MUESTRA-UI y transporte local interceptado",
+    "steps": [
+      "Seleccionar radicado de muestra",
+      "Redimensionar a 1366×768"
+    ],
+    "expected": "Lista/detalle móvil y ambos escritorio, sin desbordamiento",
+    "actual": "{\"width\":1366,\"scrollWidth\":1366,\"master\":\"block\",\"detail\":\"block\",\"textarea\":{\"height\":56,\"font\":\"13.5px\"}}",
+    "result": "passed",
+    "observedAt": "2026-11-02T14:51:43.139Z",
+    "viewport": {
+      "width": 1366,
+      "height": 768
+    },
+    "artifact": "evidence/better-browser-agent-1366.png"
+  },
+  {
+    "actor": "agent",
+    "observer": "Codex aplicando better-interface y sus seis skills",
+    "sessionId": "61b79b3b-63e3-43e8-8e28-edeb4419ce11",
+    "surface": "/agente/apoyo",
+    "environment": "Windows / Chrome156 headless, CDP, React18/Vite6; casos MUESTRA-UI y transporte local interceptado",
+    "steps": [
+      "Escribir con teclado",
+      "Enter con acuse local de error"
+    ],
+    "expected": "Borrador retenido, error anunciado y foco en textarea",
+    "actual": "{\"draft\":\"Muestra técnica: reintento del agente durante revisión better.\",\"focus\":\"TEXTAREA\",\"error\":\"Muestra técnica: envío no confirmado. Reintenta.\"}",
+    "result": "passed",
+    "observedAt": "2026-11-02T14:51:43.440Z",
+    "viewport": {
+      "width": 320,
+      "height": 800
+    },
+    "artifact": "evidence/better-browser-agent-send-error.png"
+  },
+  {
+    "actor": "agent",
+    "observer": "Codex aplicando better-interface y sus seis skills",
+    "sessionId": "61b79b3b-63e3-43e8-8e28-edeb4419ce11",
+    "surface": "/agente/apoyo",
+    "environment": "Windows / Chrome156 headless, CDP, React18/Vite6; casos MUESTRA-UI y transporte local interceptado",
+    "steps": [
+      "Enter para reintentar con acuse correcto"
+    ],
+    "expected": "Vaciar al confirmar, foco en compositor y final visible",
+    "actual": "{\"focus\":\"TEXTAREA\",\"count\":2,\"atEnd\":true}",
+    "result": "passed",
+    "observedAt": "2026-11-02T14:51:43.611Z",
+    "viewport": {
+      "width": 320,
+      "height": 800
+    },
+    "artifact": "evidence/better-browser-agent-send-retry.png"
+  },
+  {
+    "actor": "agent",
+    "observer": "Codex aplicando better-interface y sus seis skills",
+    "sessionId": "61b79b3b-63e3-43e8-8e28-edeb4419ce11",
+    "surface": "/agente/apoyo",
+    "environment": "Windows / Chrome156 headless, CDP, React18/Vite6; casos MUESTRA-UI y transporte local interceptado",
+    "steps": [
+      "Emular reflow de1366×768 al200% medianteCSS683×384 DPR2",
+      "Tab hasta Enviar"
+    ],
+    "expected": "Sin overflow; acción de envío alcanzable",
+    "actual": "{\"width\":683,\"scrollWidth\":668,\"focus\":\"Enviar mensaje\",\"visible\":true}",
+    "result": "passed",
+    "observedAt": "2026-11-02T14:52:50.859Z",
+    "viewport": {
+      "width": 683,
+      "height": 384,
+      "deviceScaleFactor": 2
+    },
+    "artifact": "evidence/better-browser-agent-reflow.png"
+  },
+  {
+    "actor": "agent",
+    "observer": "Codex aplicando better-interface y sus seis skills",
+    "sessionId": "61b79b3b-63e3-43e8-8e28-edeb4419ce11",
+    "surface": "/agente/apoyo",
+    "environment": "Windows / Chrome156 headless, CDP, React18/Vite6; casos MUESTRA-UI y transporte local interceptado",
+    "steps": [
+      "Inspeccionar texto largo y controles a320px",
+      "Medir tamaño/peso/interlineado y wrapping de estilos efectivos"
+    ],
+    "expected": "Texto legible sin truncado; input16px y peso>=400",
+    "actual": "[{\"selector\":\".embedded-msg-text\",\"font\":\"\\\"Plus Jakarta Sans\\\", -apple-system, BlinkMacSystemFont, \\\"Segoe UI\\\", Roboto, sans-serif\",\"size\":\"13.5px\",\"weight\":\"400\",\"lineHeight\":\"20.25px\",\"wrap\":\"pre-wrap\",\"numeric\":\"normal\"},{\"selector\":\".embedded-msg-sender\",\"font\":\"\\\"Plus Jakarta Sans\\\", -apple-system, BlinkMacSystemFont, \\\"Segoe UI\\\", Roboto, sans-serif\",\"size\":\"11.5px\",\"weight\":\"700\",\"lineHeight\":\"17.25px\",\"wrap\":\"normal\",\"numeric\":\"normal\"},{\"selector\":\".embedded-msg-time\",\"font\":\"\\\"Plus Jakarta Sans\\\", -apple-system, BlinkMacSystemFont, \\\"Segoe UI\\\", Roboto, sans-serif\",\"size\":\"12px\",\"weight\":\"400\",\"lineHeight\":\"18px\",\"wrap\":\"normal\",\"numeric\":\"tabular-nums\"},{\"selector\":\".embedded-composer-textarea\",\"font\":\"\\\"Plus Jakarta Sans\\\", -apple-system, BlinkMacSystemFont, \\\"Segoe UI\\\", Roboto, sans-serif\",\"size\":\"16px\",\"weight\":\"400\",\"lineHeight\":\"23.2px\",\"wrap\":\"pre-wrap\",\"numeric\":\"normal\"},{\"selector\":\".composer-keyboard-hint\",\"font\":\"\\\"Plus Jakarta Sans\\\", -apple-system, BlinkMacSystemFont, \\\"Segoe UI\\\", Roboto, sans-serif\",\"size\":\"11px\",\"weight\":\"400\",\"lineHeight\":\"17.05px\",\"wrap\":\"normal\",\"numeric\":\"normal\"}]",
+    "result": "passed",
+    "observedAt": "2026-11-02T14:52:51.038Z",
+    "viewport": {
+      "width": 320,
+      "height": 800
+    },
+    "artifact": "evidence/better-browser-agent-typography.png"
+  }
+]

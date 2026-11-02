@@ -1,0 +1,233 @@
+[
+  {
+    "role": "supervisor",
+    "path": "/supervisor/panel",
+    "width": 320,
+    "scroll": 305,
+    "clip": 0
+  },
+  {
+    "role": "supervisor",
+    "path": "/supervisor/panel",
+    "width": 768,
+    "scroll": 753,
+    "clip": 0
+  },
+  {
+    "role": "supervisor",
+    "path": "/supervisor/panel",
+    "width": 1366,
+    "scroll": 1366,
+    "clip": 9
+  },
+  {
+    "role": "supervisor",
+    "path": "/supervisor/acciones",
+    "width": 320,
+    "scroll": 305,
+    "clip": 0
+  },
+  {
+    "role": "supervisor",
+    "path": "/supervisor/acciones",
+    "width": 768,
+    "scroll": 753,
+    "clip": 0
+  },
+  {
+    "role": "supervisor",
+    "path": "/supervisor/acciones",
+    "width": 1366,
+    "scroll": 1366,
+    "clip": 0
+  },
+  {
+    "role": "supervisor",
+    "path": "/reportes",
+    "width": 320,
+    "scroll": 305,
+    "clip": 0
+  },
+  {
+    "role": "supervisor",
+    "path": "/reportes",
+    "width": 768,
+    "scroll": 753,
+    "clip": 0
+  },
+  {
+    "role": "supervisor",
+    "path": "/reportes",
+    "width": 1366,
+    "scroll": 1366,
+    "clip": 2
+  },
+  {
+    "role": "supervisor",
+    "path": "/notificaciones",
+    "width": 320,
+    "scroll": 305,
+    "clip": 0
+  },
+  {
+    "role": "supervisor",
+    "path": "/notificaciones",
+    "width": 768,
+    "scroll": 768,
+    "clip": 0
+  },
+  {
+    "role": "supervisor",
+    "path": "/notificaciones",
+    "width": 1366,
+    "scroll": 1366,
+    "clip": 2
+  },
+  {
+    "role": "sst",
+    "path": "/sst/panel",
+    "width": 320,
+    "scroll": 305,
+    "clip": 0
+  },
+  {
+    "role": "sst",
+    "path": "/sst/panel",
+    "width": 768,
+    "scroll": 768,
+    "clip": 0
+  },
+  {
+    "role": "sst",
+    "path": "/sst/panel",
+    "width": 1366,
+    "scroll": 1366,
+    "clip": 5
+  },
+  {
+    "role": "sst",
+    "path": "/sst/alertas",
+    "width": 320,
+    "scroll": 305,
+    "clip": 0
+  },
+  {
+    "role": "sst",
+    "path": "/sst/alertas",
+    "width": 768,
+    "scroll": 753,
+    "clip": 0
+  },
+  {
+    "role": "sst",
+    "path": "/sst/alertas",
+    "width": 1366,
+    "scroll": 1366,
+    "clip": 0
+  },
+  {
+    "role": "sst",
+    "path": "/sst/reglas-alertas",
+    "width": 320,
+    "scroll": 318,
+    "clip": 0
+  },
+  {
+    "role": "sst",
+    "path": "/sst/reglas-alertas",
+    "width": 768,
+    "scroll": 753,
+    "clip": 0
+  },
+  {
+    "role": "sst",
+    "path": "/sst/reglas-alertas",
+    "width": 1366,
+    "scroll": 1366,
+    "clip": 1
+  },
+  {
+    "role": "sst",
+    "path": "/sst/intervenciones",
+    "width": 320,
+    "scroll": 305,
+    "clip": 0
+  },
+  {
+    "role": "sst",
+    "path": "/sst/intervenciones",
+    "width": 768,
+    "scroll": 753,
+    "clip": 0
+  },
+  {
+    "role": "sst",
+    "path": "/sst/intervenciones",
+    "width": 1366,
+    "scroll": 1366,
+    "clip": 0
+  },
+  {
+    "role": "sst",
+    "path": "/sst/buzon",
+    "width": 320,
+    "scroll": 305,
+    "clip": 0
+  },
+  {
+    "role": "sst",
+    "path": "/sst/buzon",
+    "width": 768,
+    "scroll": 753,
+    "clip": 0
+  },
+  {
+    "role": "sst",
+    "path": "/sst/buzon",
+    "width": 1366,
+    "scroll": 1366,
+    "clip": 0
+  },
+  {
+    "role": "sst",
+    "path": "/reportes",
+    "width": 320,
+    "scroll": 305,
+    "clip": 0
+  },
+  {
+    "role": "sst",
+    "path": "/reportes",
+    "width": 768,
+    "scroll": 753,
+    "clip": 0
+  },
+  {
+    "role": "sst",
+    "path": "/reportes",
+    "width": 1366,
+    "scroll": 1366,
+    "clip": 2
+  },
+  {
+    "role": "sst",
+    "path": "/notificaciones",
+    "width": 320,
+    "scroll": 305,
+    "clip": 0
+  },
+  {
+    "role": "sst",
+    "path": "/notificaciones",
+    "width": 768,
+    "scroll": 768,
+    "clip": 0
+  },
+  {
+    "role": "sst",
+    "path": "/notificaciones",
+    "width": 1366,
+    "scroll": 1366,
+    "clip": 0
+  }
+]

@@ -9,12 +9,13 @@ export function AcademicTransfer() {
       aria-labelledby="sec-transferencia-titulo"
     >
       <div className="section-title-wrap">
-        <span className="section-tag">Transferencia Metodológica</span>
-        <h2 id="sec-transferencia-titulo">De la problemática social a los requerimientos de software</h2>
+        <span className="section-tag">Origen de la propuesta de software</span>
+        <h2 id="sec-transferencia-titulo">De los datos de aula a las decisiones de diseño</h2>
       </div>
       <p className="section-prose">
-        Pulso360 no pretendió digitalizar un formulario pasivo, sino responder a las fricciones reales del
-        piso de operación de los centros de contacto:
+        Los datos recogidos en la actividad dieron origen a la idea de Pulso360. El equipo formuló las
+        siguientes preguntas y decisiones de diseño; las funciones de software no son resultados
+        comprobados de aquella actividad:
       </p>
       <div className="transfer-cards-grid">
         {TRANSFER_CARDS.map((card) => (
@@ -38,7 +39,7 @@ export function AcademicTransfer() {
                   <span className="step-line" aria-hidden="true"></span>
                 </div>
                 <div className="step-text-wrap">
-                  <span className="step-label">Diagnóstico Social (TdeA)</span>
+                  <span className="step-label">Punto de partida en la actividad de aula</span>
                   <p>{card.socialProblem}</p>
                 </div>
               </div>
@@ -48,7 +49,7 @@ export function AcademicTransfer() {
                   <span className="step-line" aria-hidden="true"></span>
                 </div>
                 <div className="step-text-wrap">
-                  <span className="step-label">Fricción en Call Center</span>
+                  <span className="step-label">Pregunta del equipo de estudiantes</span>
                   <p>{card.bpoBarrier}</p>
                 </div>
               </div>
@@ -59,7 +60,7 @@ export function AcademicTransfer() {
                 <div className="step-text-wrap">
                   <span className="step-label solution-label">
                     <Icon name="checkCircle" size={13} />
-                    <span>Solución en Pulso360</span>
+                    <span>Decisión de diseño en Pulso360</span>
                   </span>
                   <p>{card.pulsoSolution}</p>
                 </div>

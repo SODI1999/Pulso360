@@ -186,7 +186,7 @@ export function SstDashboardPage() {
       <div className="alert-banner info" style={{ marginBottom: 'var(--space-4)', display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
         <Icon name="info" size={18} />
         <div style={{ fontSize: '13px', lineHeight: '1.4' }}>
-          <strong>Vigilancia epidemiológica preventiva:</strong> Información colectiva agregada protegida por umbral de privacidad ($N \ge 5$) conforme a la Res. 2646 de 2008.
+          <strong>Información colectiva:</strong> Los resultados se muestran cuando la muestra alcanza el umbral de privacidad de {minThreshold} participantes.
         </div>
       </div>
 
@@ -243,9 +243,9 @@ export function SstDashboardPage() {
               en gestión
             </span>
           </div>
-          <div className="kpi-delta ok">
+          <div className="kpi-delta neutral">
             <Icon name="clock" size={16} />
-            <span>Seguimiento según SLA establecido</span>
+            <span>Seguimiento por radicado</span>
           </div>
         </div>
       </div>

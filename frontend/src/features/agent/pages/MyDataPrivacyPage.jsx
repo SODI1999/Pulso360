@@ -20,6 +20,8 @@ export function MyDataPrivacyPage() {
 
   const {
     loading,
+    hasSnapshot,
+    isRefreshing,
     loadError,
     reload,
     activeTab,
@@ -30,9 +32,11 @@ export function MyDataPrivacyPage() {
     rectificationText,
     setRectificationText,
     rectificationFeedback,
+    isRectifying,
     suppressionConfirmText,
     setSuppressionConfirmText,
     suppressionFeedback,
+    isSuppressing,
     formatDate,
     summary,
     portabilityFiles,
@@ -44,7 +48,7 @@ export function MyDataPrivacyPage() {
   } = useMyDataPrivacy();
 
   // 1. Estado de Carga
-  if (loading) {
+  if (loading && !hasSnapshot) {
     return (
       <div className="agent-page agent-page--privacy">
         <div className="loading-state-box" role="status" style={{ padding: '48px 16px', textAlign: 'center' }}>
@@ -58,7 +62,7 @@ export function MyDataPrivacyPage() {
   }
 
   // 2. Estado de Error
-  if (loadError) {
+  if (loadError && !hasSnapshot) {
     return (
       <div className="agent-page agent-page--privacy">
         <nav className="agent-subnav" aria-label="Navegación secundaria">
@@ -139,6 +143,19 @@ export function MyDataPrivacyPage() {
         </p>
       </header>
 
+      {loadError && (
+        <div className="alert-banner warn" role="alert">
+          <div>
+            <strong>No se pudo actualizar esta vista.</strong> {loadError}
+            <p>Se conserva la última información cargada. Una solicitud ya confirmada no necesita otro envío.</p>
+          </div>
+          <button type="button" className="btn btn-secondary btn-sm" onClick={reload} disabled={isRefreshing}>
+            {isRefreshing ? 'Actualizando registros…' : 'Actualizar registros'}
+          </button>
+        </div>
+      )}
+      {isRefreshing && !loadError && <p role="status">Actualizando registros…</p>}
+
       {/* Barra de pestañas WAI-ARIA */}
       <div className="agent-privacy-tabs" role="tablist" aria-label="Pestañas de gestión de datos personales y privacidad">
         {tabs.map((tab) => {
@@ -208,6 +225,7 @@ export function MyDataPrivacyPage() {
           setRectificationText={setRectificationText}
           handleRectificationSubmit={handleRectificationSubmit}
           rectificationFeedback={rectificationFeedback}
+          isRectifying={isRectifying}
           onOpenSuppressionModal={() => setIsSuppressionModalOpen(true)}
           portabilityFiles={portabilityFiles}
           handleDownloadPortability={handleDownloadPortability}
@@ -219,15 +237,15 @@ export function MyDataPrivacyPage() {
       {/* Modal Seguro de Confirmación para Supresión */}
       <SuppressionConfirmModal
         isOpen={isSuppressionModalOpen}
-        onClose={() => setIsSuppressionModalOpen(false)}
+        onClose={() => {
+          if (!isSuppressing) setIsSuppressionModalOpen(false);
+        }}
         suppressionConfirmText={suppressionConfirmText}
         setSuppressionConfirmText={setSuppressionConfirmText}
-        handleSuppressionSubmit={async () => {
-          await handleSuppressionSubmit();
-          setIsSuppressionModalOpen(false);
-        }}
+        handleSuppressionSubmit={handleSuppressionSubmit}
         suppressionFeedback={suppressionFeedback}
         isSuppressionConfirmed={isSuppressionConfirmed}
+        isSuppressing={isSuppressing}
       />
     </div>
   );

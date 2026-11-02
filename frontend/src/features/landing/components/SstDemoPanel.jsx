@@ -53,10 +53,10 @@ export function SstDemoPanel() {
             <Icon name="ClipboardList" size={20} />
           </div>
           <div>
-            <strong>Cero consecuencias punitivas · Trazabilidad auditable para SST</strong>
+            <strong>Seguimiento preventivo y trazabilidad para SST</strong>
             <p>
-              La demo presenta intervenciones preventivas separadas de nómina, AHT y sanciones laborales; la
-              implementación debe conservar esa separación mediante sus controles de acceso.
+              La demo muestra acciones de orientación y seguimiento. No presenta nómina ni AHT, y no
+              acredita decisiones institucionales sobre sanciones o condiciones laborales.
             </p>
           </div>
         </div>

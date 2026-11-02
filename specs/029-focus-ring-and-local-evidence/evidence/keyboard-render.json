@@ -1,0 +1,32 @@
+[
+  {
+    "phase": "keyboard",
+    "startedAt": "2026-11-02T20:31:46.357Z",
+    "observedAt": "2026-11-02T20:31:48.326Z",
+    "path": "/login",
+    "mode": "keyboard",
+    "loads": 1,
+    "viewport": {
+      "width": 1366,
+      "height": 768,
+      "deviceScaleFactor": 1
+    },
+    "title": "Iniciar Sesión · Pulso360",
+    "active": {
+      "tag": "H2",
+      "text": "Iniciar Sesión",
+      "focusVisible": true,
+      "outline": "rgb(15, 118, 110) solid 2px",
+      "marker": "keyboard"
+    },
+    "heading": "Iniciar Sesión",
+    "scroll": {
+      "x": 0,
+      "y": 0
+    },
+    "documentWidth": 1366,
+    "clientWidth": 1366,
+    "artifact": "evidence/keyboard-403-1366.png",
+    "exitCode": 0
+  }
+]

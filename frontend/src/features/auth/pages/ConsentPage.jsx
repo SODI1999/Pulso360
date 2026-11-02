@@ -26,7 +26,7 @@ export function ConsentPage() {
     canSubmit,
     setPolicyAccepted,
     history,
-    statusMessage,
+    feedback,
     isSaving,
     isModalOpen,
     settings,
@@ -58,7 +58,7 @@ export function ConsentPage() {
   }, [settings.policyEffectiveDate]);
 
   return (
-    <div className="agent-page consent-editorial-page">
+    <main className="agent-page consent-editorial-page">
       {/* Retorno sobrio */}
       {!comesFromLogin && (
         <nav className="agent-subnav" aria-label="Navegación secundaria">
@@ -85,14 +85,12 @@ export function ConsentPage() {
       >
         <h2 className="consent-preamble-title">Principio de voluntariedad y dignidad laboral</h2>
         <p className="consent-preamble-text">
-          La participación en Pulso360 es confidencial y enteramente voluntaria. Los datos recopilados son de
-          carácter sensible y tienen como único propósito la prevención del desgaste laboral en el Contact
-          Center. Ninguna de las finalidades C1 a C5 es obligatoria; activar, pausar o revocar cualquiera de
-          ellas no afecta tu evaluación de desempeño, bonos de campaña, adherencia operativa ni estabilidad
-          contractual.
+          La participación en Pulso360 es voluntaria. Puedes activar, pausar o revocar cada finalidad C1 a C5.
+          Tus elecciones cambian las herramientas y tratamientos de datos disponibles, según se explica
+          en cada opción y en la política publicada. Revisa esos efectos antes de guardar.
         </p>
         <button type="button" className="consent-modal-trigger-link" onClick={openModal}>
-          <span>Consultar garantías normativas completas (Ley 1581)</span>
+          <span>Consultar política y aviso de privacidad</span>
         </button>
       </section>
 
@@ -108,7 +106,7 @@ export function ConsentPage() {
         activeCount={activeCount}
         activeCodes={activeCodes}
         isSaving={isSaving}
-        statusMessage={statusMessage}
+        feedback={feedback}
       />
 
       {/* Historial inmutable: tabla editorial limpia sin caja gigante */}
@@ -124,6 +122,6 @@ export function ConsentPage() {
           modalCloseBtnRef={modalCloseBtnRef}
         />
       )}
-    </div>
+    </main>
   );
 }

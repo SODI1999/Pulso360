@@ -151,8 +151,7 @@ export function ReportConfiguration({
 
         <button
           type="submit"
-          className="btn btn-primary"
-          style={{ width: '100%', justifyContent: 'center' }}
+          className="btn btn-primary reports-generate-btn"
           disabled={!isAllowedByPrivacy}
         >
           <Icon name="summarize" size={16} />

@@ -51,6 +51,7 @@ export function AppLayout() {
   const [accountOpen, setAccountOpen] = useState(false);
   const [profileModalOpen, setProfileModalOpen] = useState(false);
   const accountRef = useRef(null);
+  const accountTriggerRef = useRef(null);
 
   // Cierra el menú de cuenta al hacer clic fuera o con Escape (devuelve el foco al botón)
   useEffect(() => {
@@ -64,7 +65,7 @@ export function AppLayout() {
     const handleKeyDown = (event) => {
       if (event.key === 'Escape') {
         setAccountOpen(false);
-        accountRef.current?.querySelector('.account-trigger')?.focus();
+        accountTriggerRef.current?.focus();
       }
     };
 
@@ -252,74 +253,16 @@ export function AppLayout() {
         </nav>
 
         {/* Pie de barra lateral: Ventana sutil y pequeña de usuario */}
-        <div className="sidebar-footer" ref={accountRef}>
-          {accountOpen && (
-            <div
-              className={`account-popover account-menu${
-                sidebarCollapsed ? ' account-popover--floating account-menu--collapsed' : ' account-popover--embedded'
-              }`}
-              role="menu"
-              aria-label="Opciones de cuenta"
-            >
-              {/* Cabecera contextual ligera sin duplicar la tarjeta de identidad */}
-              <div className="account-popover-context-header">
-                <span className="account-popover-email" title={user.email}>
-                  {user.email}
-                </span>
-                <span className="account-popover-shift-badge">
-                  <Icon name="Clock" size={11} />
-                  <span>{contextLabel || roleLabel}</span>
-                </span>
-              </div>
-
-              <div className="account-popover-divider" role="separator" />
-
-              {/* Acciones de cuenta */}
-              <div className="account-popover-actions">
-                <button
-                  type="button"
-                  className="account-popover-item account-menu-item"
-                  role="menuitem"
-                  onClick={() => {
-                    setAccountOpen(false);
-                    setProfileModalOpen(true);
-                  }}
-                >
-                  <Icon name="User" size={15} />
-                  <span>Mi perfil y preferencias</span>
-                </button>
-
-                {/* "Mis datos y privacidad" es un módulo exclusivo del rol agente (Habeas Data) */}
-                {user.role === 'agente' && (
-                  <Link
-                    to="/agente/mis-datos"
-                    className="account-popover-item account-menu-item"
-                    role="menuitem"
-                    onClick={() => setAccountOpen(false)}
-                  >
-                    <Icon name="ShieldCheck" size={15} />
-                    <span>Mis datos y privacidad</span>
-                  </Link>
-                )}
-                <button
-                  type="button"
-                  className="account-popover-item account-popover-logout account-menu-item account-menu-logout"
-                  role="menuitem"
-                  onClick={handleLogout}
-                >
-                  <Icon name="LogOut" size={15} />
-                  <span>Cerrar sesión</span>
-                </button>
-              </div>
-            </div>
-          )}
-
+        <div className="sidebar-footer" ref={accountRef} onBlur={event => {
+          if (!event.currentTarget.contains(event.relatedTarget)) setAccountOpen(false);
+        }}>
           <button
+            ref={accountTriggerRef}
             type="button"
             className={`user-card account-trigger${sidebarCollapsed ? ' is-compact' : ''}`}
             onClick={() => setAccountOpen((open) => !open)}
             aria-expanded={accountOpen}
-            aria-haspopup="menu"
+            aria-controls="account-options"
             title={sidebarCollapsed ? `Cuenta: ${user.name} (${roleLabel})` : 'Opciones de cuenta'}
             aria-label={sidebarCollapsed ? `Cuenta de ${user.name}` : 'Opciones de cuenta'}
           >
@@ -348,6 +291,65 @@ export function AppLayout() {
               <Icon name="ChevronUp" size={16} />
             </span>
           </button>
+
+          {accountOpen && (
+            <div
+              className={`account-popover account-menu${
+                sidebarCollapsed ? ' account-popover--floating account-menu--collapsed' : ' account-popover--embedded'
+              }`}
+              id="account-options"
+              role="group"
+              aria-label="Opciones de cuenta"
+            >
+              {/* Cabecera contextual ligera sin duplicar la tarjeta de identidad */}
+              <div className="account-popover-context-header">
+                <span className="account-popover-email" title={user.email}>
+                  {user.email}
+                </span>
+                <span className="account-popover-shift-badge">
+                  <Icon name="Clock" size={11} />
+                  <span>{contextLabel || roleLabel}</span>
+                </span>
+              </div>
+
+              <div className="account-popover-divider" role="separator" />
+
+              {/* Acciones de cuenta */}
+              <div className="account-popover-actions">
+                <button
+                  type="button"
+                  className="account-popover-item account-menu-item"
+                  onClick={() => {
+                    setAccountOpen(false);
+                    setProfileModalOpen(true);
+                  }}
+                >
+                  <Icon name="User" size={15} />
+                  <span>Mi perfil y preferencias</span>
+                </button>
+
+                {/* "Mis datos y privacidad" es un módulo exclusivo del rol agente (Habeas Data) */}
+                {user.role === 'agente' && (
+                  <Link
+                    to="/agente/mis-datos"
+                    className="account-popover-item account-menu-item"
+                    onClick={() => setAccountOpen(false)}
+                  >
+                    <Icon name="ShieldCheck" size={15} />
+                    <span>Mis datos y privacidad</span>
+                  </Link>
+                )}
+                <button
+                  type="button"
+                  className="account-popover-item account-popover-logout account-menu-item account-menu-logout"
+                  onClick={handleLogout}
+                >
+                  <Icon name="LogOut" size={15} />
+                  <span>Cerrar sesión</span>
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </aside>
 
@@ -419,7 +421,7 @@ export function AppLayout() {
           </div>
         </header>
 
-        <main className="page-container">
+        <main id="app-main-content" tabIndex={-1} className="page-container">
           {countsError && <div className="alert-banner danger" role="alert">
             <span>{countsError}</span><button type="button" className="btn btn-secondary btn-sm" onClick={refreshCounts}>Reintentar</button>
           </div>}
@@ -436,6 +438,7 @@ export function AppLayout() {
         onClose={() => setProfileModalOpen(false)}
         user={user}
         onProfileUpdated={() => setUser(authService.getCurrentUser())}
+        returnFocusRef={accountTriggerRef}
       />
     </div>
   );

@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Render de rutas Pulso360</title>
+</head>
+<body style="margin:0;overflow:hidden">
+  <iframe id="route-frame" title="Página Pulso360 bajo revisión" style="position:fixed;left:0;top:0;border:0"></iframe>
+  <script>
+    const query = new URL(location.href).searchParams;
+    const frame = document.querySelector('iframe');
+    frame.style.width = (Number(query.get('width')) || 1366) + 'px';
+    frame.style.height = (Number(query.get('height')) || 768) + 'px';
+    let loads = 0;
+    frame.addEventListener('load', () => {
+      loads += 1;
+      if (query.get('mode') === 'reload' && loads === 1) {
+        frame.contentWindow.location.reload();
+        return;
+      }
+      setTimeout(async () => {
+      const mode = query.get('mode') || 'initial';
+      const targetDocument = frame.contentDocument;
+      if (mode === 'keyboard' || mode === 'pointer') {
+        const event = mode === 'keyboard'
+          ? new frame.contentWindow.KeyboardEvent('keydown', { key: 'Enter', bubbles: true })
+          : new frame.contentWindow.PointerEvent('pointerdown', { bubbles: true });
+        targetDocument.dispatchEvent(event);
+        targetDocument.querySelector('button').click();
+        await new Promise(resolve => setTimeout(resolve, 250));
+      } else if (mode === 'skip') {
+        targetDocument.querySelector('.app-skip-link').click();
+      } else if (mode === 'control') {
+        const input = targetDocument.querySelector('input');
+        input.focus();
+        frame.contentWindow.getComputedStyle(input).borderColor;
+        // dumpDOM keeps CSS transition time at zero; inspect the real final focus style.
+        targetDocument.getAnimations().filter(animation => animation.effect?.target === input).forEach(animation => animation.finish());
+      }
+      await new Promise(resolve => setTimeout(resolve, 250));
+      const page = frame.contentWindow;
+      const doc = page.document;
+      const active = doc.activeElement;
+      const heading = doc.querySelector('main h1') || doc.querySelector('main h2') || doc.querySelector('h1');
+      const result = {
+        path: page.location.pathname, mode, loads,
+        viewport: { width: page.innerWidth, height: page.innerHeight, deviceScaleFactor: page.devicePixelRatio },
+        title: doc.title,
+        active: {
+          tag: active?.tagName,
+          className: active?.className,
+          focused: active?.matches(':focus'),
+          documentHasFocus: doc.hasFocus(),
+          text: active?.textContent.trim().slice(0, 120),
+          focusVisible: active?.matches(':focus-visible'),
+          outline: active ? page.getComputedStyle(active).outline : null,
+          border: active ? page.getComputedStyle(active).border : null,
+          boxShadow: active ? page.getComputedStyle(active).boxShadow : null,
+          parentBorder: active?.parentElement ? page.getComputedStyle(active.parentElement).border : null,
+          parentBoxShadow: active?.parentElement ? page.getComputedStyle(active.parentElement).boxShadow : null,
+          marker: active?.getAttribute('data-route-focus'),
+          animations: doc.getAnimations().filter(animation => animation.effect?.target === active).map(animation => ({time:animation.currentTime,progress:animation.effect.getComputedTiming().progress,duration:animation.effect.getTiming().duration}))
+        },
+        heading: heading?.textContent.trim().slice(0, 120),
+        scroll: { x: page.scrollX, y: page.scrollY },
+        documentWidth: doc.documentElement.scrollWidth,
+        clientWidth: doc.documentElement.clientWidth
+      };
+      document.body.dataset.routeRenderResult = encodeURIComponent(JSON.stringify(result));
+      }, 450);
+    });
+    frame.src = query.get('route') || '/403';
+  </script>
+</body>
+</html>

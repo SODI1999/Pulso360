@@ -11,17 +11,30 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useSocket } from '../../../core/socket/socketClient';
 import { useChatDelivery } from '../../../core/socket/useChatDelivery';
+import { useChatScroll } from '../../../core/hooks/useChatScroll';
 import { useModalA11y } from '../../../core/hooks/useModalA11y';
 import { chatService } from '../../../core/api/chatService';
 import { Icon } from '../../../core/components/Icon';
+import { SstChatCloseForm } from './SstChatCloseForm';
+import { getSupportUrgency } from '../utils/supportCasePresentation';
+import '../../../styles/support-chat.css';
 
-export function SstRequestChatDrawer({ ticket, onClose, onSessionChanged }) {
+/**
+ * Panel de atención SST por radicado, con una confirmación de cierre en la misma superficie.
+ * @param {object} props Contexto autorizado del caso y acciones de su página.
+ * @param {object} props.ticket Radicado devuelto por el servicio SST.
+ * @param {string} props.inputText Borrador del radicado conservado en memoria del buzón.
+ * @param {import('react').Dispatch<import('react').SetStateAction<string>>} props.setInputText Actualiza solo este borrador.
+ * @param {Function} props.onClose Cierra el panel sin concluir la conversación.
+ * @param {Function} [props.onSessionChanged] Refresca el buzón tras activación o cierre confirmado.
+ * @returns {JSX.Element} Diálogo con historial, compositor, estados y confirmación.
+ */
+export function SstRequestChatDrawer({ ticket, inputText, setInputText, onClose, onSessionChanged }) {
   const { socket } = useSocket();
 
   const [session, setSession] = useState(null);
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [inputText, setInputText] = useState('');
   const { isSending, sendError, sendMessage } = useChatDelivery(socket, session?.id);
   const [isActivating, setIsActivating] = useState(false);
   const [showCloseModal, setShowCloseModal] = useState(false);
@@ -31,12 +44,35 @@ export function SstRequestChatDrawer({ ticket, onClose, onSessionChanged }) {
   const [errorMsg, setErrorMsg] = useState(null);
   const [closeError, setCloseError] = useState(null);
 
-  const messagesEndRef = useRef(null);
+  const { containerRef, onScroll, hasNewMessages, scrollToLatest } = useChatScroll({
+    messages,
+    conversationId: session?.id,
+    enabled: !showCloseModal && !isLoading && !errorMsg && Boolean(session)
+  });
   const inputRef = useRef(null);
+  const restoreComposerFocusRef = useRef(false);
+  useEffect(() => {
+    if (isSending || !restoreComposerFocusRef.current) return;
+    restoreComposerFocusRef.current = false;
+    if (document.activeElement === document.body || document.activeElement?.classList.contains('embedded-composer-send-btn')) {
+      inputRef.current?.focus({ preventScroll: true });
+    }
+  }, [isSending, sendError, messages]);
   const drawerRef = useRef(null);
   const closeModalRef = useRef(null);
-  useModalA11y({ isOpen: !showCloseModal, onClose, modalRef: drawerRef });
-  useModalA11y({ isOpen: showCloseModal, onClose: () => { if (!isClosing) setShowCloseModal(false); }, modalRef: closeModalRef });
+  useModalA11y({
+    isOpen: true,
+    onClose: () => {
+      if (isClosing) return;
+      if (showCloseModal) setShowCloseModal(false);
+      else onClose();
+    },
+    modalRef: showCloseModal ? closeModalRef : drawerRef
+  });
+
+  useEffect(() => {
+    if (closeError) closeModalRef.current?.querySelector('#sst-close-error')?.focus();
+  }, [closeError]);
 
   // 1. Cargar el estado del chat del radicado
   const fetchChat = useCallback(async () => {
@@ -99,13 +135,6 @@ export function SstRequestChatDrawer({ ticket, onClose, onSessionChanged }) {
     };
   }, [socket, session?.id, onSessionChanged]);
 
-  // 3. Scroll automático
-  useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
-    }
-  }, [messages]);
-
   // 4. Activar canal de chat preventivo para el radicado
   const handleActivateChat = async () => {
     try {
@@ -143,8 +172,10 @@ export function SstRequestChatDrawer({ ticket, onClose, onSessionChanged }) {
   const handleSendMessage = async () => {
     const text = inputText.trim();
     if (!text || !session?.id || session.status !== 'activa' || isSending) return;
+    restoreComposerFocusRef.current = true;
     const confirmed = await sendMessage(text);
     if (!confirmed) return;
+    scrollToLatest();
     setMessages(previous => previous.some(message => message.id === confirmed.id)
       ? previous : [...previous, confirmed]);
     setInputText(previous => {
@@ -157,7 +188,7 @@ export function SstRequestChatDrawer({ ticket, onClose, onSessionChanged }) {
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) {
       e.preventDefault();
       handleSendMessage();
     }
@@ -195,7 +226,12 @@ export function SstRequestChatDrawer({ ticket, onClose, onSessionChanged }) {
 
   // 6. Concluir formalmente el chat preventivo
   const handleConfirmClose = async () => {
-    if (!session?.id) return;
+    if (!session?.id || isClosing) return;
+    if (!closeNotes.trim()) {
+      setCloseError('Escribe las notas de cierre y los acuerdos antes de confirmar.');
+      closeModalRef.current?.querySelector('textarea')?.focus();
+      return;
+    }
     try {
       setIsClosing(true);
       setCloseError(null);
@@ -217,356 +253,251 @@ export function SstRequestChatDrawer({ ticket, onClose, onSessionChanged }) {
   const isAnon = ticket.mode === 'anonimo';
   const isClosed = session?.status === 'cerrada';
   const isActive = session?.status === 'activa';
+  const urgency = getSupportUrgency(ticket.urgency || ticket.severity);
 
   return (
-    <aside className="sst-chat-drawer-overlay" role="dialog" aria-modal="true" aria-labelledby="drawer-title">
+    <aside className="sst-chat-drawer-overlay" role="dialog" aria-modal="true" aria-labelledby={showCloseModal ? 'modalCloseTitle' : 'drawer-title'}>
       <div className="sst-chat-drawer-panel" ref={drawerRef} tabIndex={-1}>
-        {/* Cabecera del Drawer */}
-        {/* Cabecera compacta y profesional del Chat */}
-        <header className="sst-drawer-header">
-          <div className="sst-drawer-user-info">
-            <div className={`sst-drawer-avatar ${isAnon ? 'is-anon' : ''}`} aria-hidden="true">
-              {isAnon ? (
-                <Icon name="eyeOff" size={17} />
-              ) : (
-                <span>
-                  {ticket.userName
-                    ? ticket.userName
-                        .split(' ')
-                        .map((n) => n[0])
-                        .slice(0, 2)
-                        .join('')
-                        .toUpperCase()
-                    : 'AG'}
-                </span>
-              )}
-              {isActive && <span className="sst-avatar-online-dot" title="En vivo" />}
-            </div>
-
-            <div className="sst-drawer-titles">
-              <div className="sst-drawer-name-row">
-                <h2 id="drawer-title" className="sst-drawer-name">
-                  {isAnon ? 'Solicitante Anónimo' : (ticket.userName || 'Agente')}
-                </h2>
-                {isActive && (
-                  <span className="chat-status-pill live">
-                    <span className="chat-status-dot" />
-                    <span>En vivo</span>
+        <div className="sst-drawer-conversation" hidden={showCloseModal}>
+          <header className="sst-drawer-header">
+            <div className="sst-drawer-user-info">
+              <div className={`sst-drawer-avatar ${isAnon ? 'is-anon' : ''}`} aria-hidden="true">
+                {isAnon ? (
+                  <Icon name="eyeOff" size={17} />
+                ) : (
+                  <span>
+                    {ticket.userName
+                      ? ticket.userName
+                          .split(' ')
+                          .map((n) => n[0])
+                          .slice(0, 2)
+                          .join('')
+                          .toUpperCase()
+                      : 'AG'}
                   </span>
                 )}
               </div>
-              <div className="sst-drawer-meta-line">
-                <span className="sst-meta-code">{ticket.code || ticket.id}</span>
+
+              <div className="sst-drawer-titles">
+                <div className="sst-drawer-name-row">
+                  <h2 id="drawer-title" className="sst-drawer-name">
+                    {isAnon ? 'Solicitante con nombre oculto' : (ticket.userName || 'Agente')}
+                  </h2>
+                  {isActive && (
+                    <span className="chat-status-pill live">
+                      <span className="chat-status-dot" />
+                      <span>Canal abierto</span>
+                    </span>
+                  )}
+                  {isClosed && <span className="chat-status-pill closed">Solo lectura</span>}
+                </div>
+                <div className="sst-drawer-meta-line">
+                  <span className="sst-meta-code">Radicado {ticket.code || ticket.id}</span>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="sst-drawer-header-actions">
-            {isActive && (
+            <div className="sst-drawer-header-actions">
+              {isActive && (
+                <button
+                  type="button"
+                  className="btn btn-secondary btn-sm sst-btn-conclude"
+                  onClick={() => setShowCloseModal(true)}
+                  disabled={isSending}
+                >
+                  <Icon name="checkCircle" size={14} />
+                  <span>Concluir conversación</span>
+                </button>
+              )}
               <button
                 type="button"
-                className="btn btn-secondary btn-sm sst-btn-conclude"
-                onClick={() => setShowCloseModal(true)}
+                className="sst-btn-icon-close"
+                onClick={onClose}
+                aria-label="Cerrar panel lateral"
+                title="Cerrar panel"
               >
-                <Icon name="checkCircle" size={14} />
-                <span>Concluir caso</span>
+                <Icon name="x" size={18} />
               </button>
-            )}
-            <button
-              type="button"
-              className="sst-btn-icon-close"
-              onClick={onClose}
-              aria-label="Cerrar panel lateral"
-              title="Cerrar panel"
-            >
-              <Icon name="x" size={18} />
-            </button>
-          </div>
-        </header>
-
-        {/* Barra de Contexto Sobria del Radicado ("Zero Slop") */}
-        <div className="sst-drawer-context-bar" aria-label="Detalles del radicado de acompañamiento">
-          <div className="sst-context-item">
-            <span className="sst-context-label">Motivo:</span>
-            <span className="sst-context-value" title={ticket.reason || 'Sin motivo especificado'}>
-              {ticket.reason || 'Sin motivo especificado'}
-            </span>
-          </div>
-          <div className="sst-context-item">
-            <span className="sst-context-label">Urgencia:</span>
-            <span className={`sst-context-badge urgency-${(ticket.urgency || ticket.severity || 'media').toLowerCase()}`}>
-              {ticket.urgency || ticket.severity || 'Media'}
-            </span>
-          </div>
-          <div className="sst-context-item">
-            <span className="sst-context-label">Plazo:</span>
-            <span className="sst-context-value">{ticket.sla || '24h hábiles'}</span>
-          </div>
-        </div>
-
-        {/* Modal canónico y accesible de confirmación de cierre */}
-        {showCloseModal && (
-          <div className="modal-overlay active" role="dialog" aria-modal="true" aria-labelledby="modalCloseTitle">
-            <div className="modal-box sst-close-modal-box" ref={closeModalRef} tabIndex={-1}>
-              <div className="modal-header">
-                <div>
-                  <h2 id="modalCloseTitle" className="modal-title">
-                    Concluir orientación preventiva SG-SST
-                  </h2>
-                  <div className="modal-subtitle">
-                    {ticket.code || ticket.id} · Radicado de acompañamiento ocupacional
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  className="modal-close-btn"
-                  onClick={() => setShowCloseModal(false)}
-                  aria-label="Cerrar modal"
-                  disabled={isClosing}
-                >
-                  <Icon name="x" size={18} />
-                </button>
-              </div>
-
-              <div>
-                <p className="sst-modal-disclaimer">
-                  El canal pasará a <strong>solo lectura</strong>. Sus mensajes y las notas de cierre permanecerán en el historial del radicado.
-                </p>
-
-                <div className="form-group" style={{ marginBottom: 'var(--space-4)' }}>
-                  <label className="form-label" style={{ marginBottom: 'var(--space-2)' }}>
-                    Estado posterior del radicado formal de acompañamiento:
-                  </label>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    <label style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', cursor: 'pointer', fontSize: '13px' }}>
-                      <input
-                        type="radio"
-                        name="targetRequestStatus"
-                        value="Cerrada"
-                        checked={targetRequestStatus === 'Cerrada'}
-                        onChange={(e) => setTargetRequestStatus(e.target.value)}
-                        disabled={isClosing}
-                        style={{ marginTop: '2px' }}
-                      />
-                      <span>
-                        <strong>Concluir radicado formalmente (Pasa a &quot;Cerrada&quot;)</strong>
-                        <span style={{ display: 'block', fontSize: '12px', color: 'var(--c-texto-mutado)' }}>
-                          El caso finaliza. Tanto el radicado como el canal de chat pasan a estado de consulta histórica.
-                        </span>
-                      </span>
-                    </label>
-                    <label style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', cursor: 'pointer', fontSize: '13px' }}>
-                      <input
-                        type="radio"
-                        name="targetRequestStatus"
-                        value="En gestion"
-                        checked={targetRequestStatus === 'En gestion'}
-                        onChange={(e) => setTargetRequestStatus(e.target.value)}
-                        disabled={isClosing}
-                        style={{ marginTop: '2px' }}
-                      />
-                      <span>
-                        <strong>Mantener en seguimiento formal (Permanece &quot;En gestión&quot;)</strong>
-                        <span style={{ display: 'block', fontSize: '12px', color: 'var(--c-texto-mutado)' }}>
-                          Finaliza la sesión de chat interactiva actual, pero el radicado queda abierto para acciones adicionales de SST.
-                        </span>
-                      </span>
-                    </label>
-                  </div>
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label" htmlFor="sstCloseNotesInput">
-                    Notas de cierre y acuerdos de orientación <span style={{ color: 'var(--c-critico)' }}>*</span>
-                  </label>
-                  <textarea
-                    id="sstCloseNotesInput"
-                    className="form-input form-textarea"
-                    rows={4}
-                    placeholder="Describe las micropausas sugeridas, acuerdos de seguimiento o ajuste ergonómico realizado…"
-                    value={closeNotes}
-                    onChange={(e) => setCloseNotes(e.target.value)}
-                    maxLength={500}
-                    required
-                    autoFocus
-                    disabled={isClosing}
-                  />
-                  <div className="sst-form-char-count">
-                    <span>Notas de cierre del radicado</span>
-                    <span>{closeNotes.length} / 500 caracteres</span>
-                  </div>
-                </div>
-
-                {closeError && <p className="alert-banner danger" role="alert">{closeError}</p>}
-                <div className="modal-footer">
-                  <button
-                    type="button"
-                    className="btn btn-secondary btn-sm"
-                    onClick={() => setShowCloseModal(false)}
-                    disabled={isClosing}
-                  >
-                    Cancelar
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-primary btn-sm"
-                    onClick={handleConfirmClose}
-                    disabled={isClosing || !closeNotes.trim()}
-                  >
-                    <Icon name="checkCircle" size={14} />
-                    <span>{isClosing ? 'Cerrando sesión…' : 'Confirmar cierre formal'}</span>
-                  </button>
-                </div>
-              </div>
             </div>
-          </div>
-        )}
+          </header>
 
-        {/* Cuerpo del Drawer */}
-        <div className="sst-drawer-body">
-          {isLoading ? (
-            <div className="sst-drawer-loading" role="status">
-              <Icon name="clock" size={20} />
-              <span>Cargando conversación del radicado…</span>
-            </div>
-          ) : errorMsg && !session ? (
-            <div className="alert-banner danger" role="alert">
-              <Icon name="alertTriangle" size={16} />
-              <span>{errorMsg}</span>
-              <button type="button" className="btn btn-secondary btn-sm" onClick={fetchChat}>Reintentar carga</button>
-            </div>
-          ) : !session ? (
-            (ticket.status === 'Cerrada' || ticket.status === 'Atendida') ? (
-              <div className="sst-drawer-closed-banner" style={{ margin: 'var(--space-6) var(--space-4)', padding: 'var(--space-5)', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
-                <Icon name="checkCircle" size={24} />
-                <strong style={{ fontSize: '14px', color: 'var(--c-texto)' }}>Radicado concluido sin canal de chat</strong>
-                <p style={{ margin: 0, fontSize: '12.5px', color: 'var(--c-texto-suave)', lineHeight: 1.4 }}>
-                  Este caso fue gestionado y finalizado formalmente mediante el flujo de radicado sin requerir una sesión de chat interactiva en vivo.
-                </p>
+          <details className="sst-drawer-context">
+            <summary tabIndex={0}>
+              <span>Motivo y datos de solicitud</span>
+              <span className={`sst-context-badge urgency-${urgency.tone}`}>Urgencia: {urgency.label}</span>
+            </summary>
+            <dl>
+              <div><dt>Motivo</dt><dd>{ticket.reason || 'Sin motivo registrado'}</dd></div>
+              <div><dt>Estado del radicado</dt><dd>{ticket.status || 'No registrado'}</dd></div>
+              <div><dt>Plazo registrado</dt><dd>{ticket.sla || 'Sin plazo registrado'}</dd></div>
+            </dl>
+          </details>
+          {/* Cuerpo del Drawer */}
+          <div className="sst-drawer-body">
+            {isLoading ? (
+              <div className="sst-drawer-loading" role="status">
+                <Icon name="clock" size={20} />
+                <span>Cargando conversación del radicado…</span>
               </div>
-            ) : (
-              <div className="sst-drawer-activate-callout">
-                <Icon name="MessagesSquare" size={32} />
-                <h3>Este radicado no tiene chat preventivo iniciado</h3>
-                <p>
-                  Al hacer clic en el botón inferior, se creará la sala interactiva para este radicado,
-                  se actualizará el estado del caso a <strong>En gestión</strong> y se notificará en tiempo real al agente.
-                </p>
-                <button
-                  type="button"
-                  className="btn btn-primary sst-activate-big-btn"
-                  onClick={handleActivateChat}
-                  disabled={isActivating}
-                >
-                  <Icon name="MessagesSquare" size={16} />
-                  <span>{isActivating ? 'Activando canal…' : 'Iniciar chat preventivo ahora'}</span>
-                </button>
+            ) : errorMsg ? (
+              <div className="sst-chat-state support-chat-state support-chat-state--error" role="alert">
+                <Icon name="alertTriangle" size={16} />
+                <span>{errorMsg}</span>
+                <button type="button" className="btn btn-secondary btn-sm" onClick={fetchChat}>Reintentar carga</button>
               </div>
-            )
-          ) : (
-            <div className="sst-drawer-chat-stream">
-              {isAnon && <p className="chat-privacy-note">El nombre y el identificador de cuenta del agente no se muestran. El contenido que comparta puede revelar su identidad.</p>}
-              {sendError && <p className="chat-delivery-feedback alert-banner danger" role="alert">{sendError}</p>}
-              {isSending && <p className="chat-delivery-feedback" role="status">Esperando confirmación del envío…</p>}
-              {/* Contenedor de mensajes */}
-              <div ref={messagesEndRef} className="sst-drawer-messages-list" role="log" aria-live="polite">
-                {messages.map((m, index) => {
-                  const prevMsg = index > 0 ? messages[index - 1] : null;
-                  const showSeparator = shouldShowDateSeparator(m, prevMsg);
-                  const separatorLabel = showSeparator ? formatChatDateSeparator(m.timestamp) : null;
-                  const isSst = m.senderRole === 'SST';
-                  const isSys = m.senderRole === 'SISTEMA';
-
-                  return (
-                    <div key={m.id || index} className="embedded-chat-msg-row">
-                      {showSeparator && separatorLabel && (
-                        <div className="chat-date-separator" role="separator" aria-label={`Mensajes del día: ${separatorLabel}`}>
-                          <span className="chat-date-pill">{separatorLabel}</span>
-                        </div>
-                      )}
-                      {isSys ? (
-                        <div className="embedded-chat-msg system-msg">
-                          <Icon name="info" size={14} />
-                          <span>{m.text}</span>
-                        </div>
-                      ) : (
-                        <div
-                          className={`embedded-chat-bubble-wrap ${isSst ? 'msg-outgoing' : 'msg-incoming'}`}
-                        >
-                          <div className="embedded-chat-bubble">
-                            <div className="embedded-msg-meta">
-                              <strong className="embedded-msg-sender">
-                                {isSst ? 'Tú (SST)' : (m.senderName || 'Agente')}
-                              </strong>
-                              <span className="embedded-msg-time">
-                                {m.timestamp ? new Date(m.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
-                              </span>
-                            </div>
-                            <p className="embedded-msg-text">{m.text}</p>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-
-              {/* Footer: Input o Banner cerrado */}
-              {isClosed ? (
-                <div className="sst-drawer-closed-banner">
-                  <Icon name="checkCircle" size={16} />
-                  <span>
-                    Caso concluido formalmente. El chat se encuentra en modo de solo lectura para trazabilidad SG-SST.
-                  </span>
+            ) : !session ? (
+              (ticket.status === 'Cerrada' || ticket.status === 'Atendida') ? (
+                <div className="sst-chat-state support-chat-state">
+                  <Icon name="checkCircle" size={24} />
+                  <strong>Radicado sin historial de chat</strong>
+                  <p>
+                    El estado de este radicado es {ticket.status}. No tiene una conversación de chat registrada.
+                  </p>
                 </div>
               ) : (
-                <form
-                  className="sst-drawer-composer"
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    handleSendMessage();
-                  }}
-                >
-                  <div className="embedded-chat-composer-box">
-                    <textarea
-                      ref={inputRef}
-                      rows={1}
-                      className="embedded-composer-textarea"
-                      placeholder="Escribe tu recomendación ocupacional o respuesta preventiva…"
-                      value={inputText}
-                      onChange={handleInputChange}
-                      onKeyDown={handleKeyDown}
-                      maxLength={800}
-                      disabled={isSending}
-                      aria-label="Recomendación o respuesta para el agente"
-                    />
-                    <div className="embedded-composer-footer">
-                      <span className="composer-keyboard-hint">
-                        Enter ↵ para enviar · Shift+Enter para salto de línea
-                      </span>
-                      <div className="composer-actions-group">
-                        {inputText.length > 0 && (
-                          <span className="embedded-composer-counter" aria-live="polite">
-                            {inputText.length}/800
-                          </span>
+                <div className="sst-drawer-activate-callout">
+                  <Icon name="MessagesSquare" size={32} />
+                  <h3>Sin conversación abierta</h3>
+                  <p>
+                    Al abrir el canal podrás responder sobre este radicado. La solicitud pasará a <strong>En gestión</strong>.
+                  </p>
+                  <button
+                    type="button"
+                    className="btn btn-primary sst-activate-big-btn"
+                    onClick={handleActivateChat}
+                    disabled={isActivating}
+                  >
+                    <Icon name="MessagesSquare" size={16} />
+                    <span>{isActivating ? 'Abriendo canal…' : 'Abrir conversación'}</span>
+                  </button>
+                </div>
+              )
+            ) : (
+              <div className="sst-drawer-chat-stream">
+                {isAnon && <p className="chat-privacy-note">El nombre y el identificador de cuenta del agente no se muestran. El contenido que comparta puede revelar su identidad.</p>}
+                {sendError && <p className="chat-delivery-feedback alert-banner danger" role="alert">{sendError}</p>}
+                {isSending && <p className="chat-delivery-feedback" role="status">Esperando confirmación del envío…</p>}
+                {/* Contenedor de mensajes */}
+                <div ref={containerRef} onScroll={onScroll} tabIndex={0} className="sst-drawer-messages-list" role="log" aria-live="polite" aria-label={`Mensajes del radicado ${ticket.code || ticket.id}`}>
+                  {messages.length === 0 && <p className="sst-chat-history-empty">Esta conversación no tiene mensajes registrados.</p>}
+                  {messages.map((m, index) => {
+                    const prevMsg = index > 0 ? messages[index - 1] : null;
+                    const showSeparator = shouldShowDateSeparator(m, prevMsg);
+                    const separatorLabel = showSeparator ? formatChatDateSeparator(m.timestamp) : null;
+                    const isSst = m.senderRole === 'SST';
+                    const isSys = m.senderRole === 'SISTEMA';
+
+                    return (
+                      <div key={m.id || index} className="embedded-chat-msg-row">
+                        {showSeparator && separatorLabel && (
+                          <div className="chat-date-separator" role="separator" aria-label={`Mensajes del día: ${separatorLabel}`}>
+                            <span className="chat-date-pill">{separatorLabel}</span>
+                          </div>
                         )}
-                        <button
-                          type="submit"
-                          className="embedded-composer-send-btn"
-                          disabled={!inputText.trim() || isSending}
-                          aria-label={isSending ? 'Enviando recomendación…' : 'Enviar recomendación'}
-                          title="Enviar recomendación (Enter)"
-                        >
-                          <Icon name="send" size={15} />
-                        </button>
+                        {isSys ? (
+                          <div className="embedded-chat-msg system-msg">
+                            <Icon name="info" size={14} />
+                            <span>{m.text}</span>
+                          </div>
+                        ) : (
+                          <div
+                            className={`embedded-chat-bubble-wrap ${isSst ? 'msg-outgoing' : 'msg-incoming'}`}
+                          >
+                            <div className="embedded-chat-bubble">
+                              <div className="embedded-msg-meta">
+                                <strong className="embedded-msg-sender">
+                                  {isSst ? 'Tú (SST)' : (m.senderName || 'Agente')}
+                                </strong>
+                                <span className="embedded-msg-time">
+                                  {m.timestamp ? new Date(m.timestamp).toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit', timeZone: 'America/Bogota' }) : ''}
+                                </span>
+                              </div>
+                              <p className="embedded-msg-text">{m.text}</p>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div className="chat-new-messages" role="status">
+                  {hasNewMessages && (
+                    <button type="button" className="btn btn-secondary btn-sm" onClick={() => {
+                      scrollToLatest();
+                      containerRef.current?.focus({ preventScroll: true });
+                    }}>
+                      Ver mensajes nuevos
+                    </button>
+                  )}
+                </div>
+
+                {/* Footer: Input o Banner cerrado */}
+                {!isActive ? (
+                  <div className="sst-drawer-closed-banner">
+                    <Icon name="checkCircle" size={16} />
+                    <span>
+                      {isClosed ? 'Conversación concluida. Puedes consultar su historial en solo lectura.' : 'Este canal no permite enviar mensajes en su estado actual.'}
+                    </span>
+                  </div>
+                ) : (
+                  <form
+                    className="sst-drawer-composer"
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      handleSendMessage();
+                    }}
+                  >
+                    <label className="sst-composer-label" htmlFor="sst-chat-message">Respuesta para el agente</label>
+                    <div className="embedded-chat-composer-box">
+                      <textarea
+                        id="sst-chat-message"
+                        ref={inputRef}
+                        rows={1}
+                        className="embedded-composer-textarea"
+                        placeholder="Escribe tu respuesta sobre este radicado…"
+                        value={inputText}
+                        onChange={handleInputChange}
+                        onKeyDown={handleKeyDown}
+                        maxLength={800}
+                        disabled={isSending}
+                        aria-describedby="sst-chat-keyboard-hint"
+                      />
+                      <div className="embedded-composer-footer">
+                        <span id="sst-chat-keyboard-hint" className="composer-keyboard-hint">
+                          Enter ↵ para enviar · Shift+Enter para salto de línea
+                        </span>
+                        <div className="composer-actions-group">
+                          {inputText.length > 0 && (
+                            <span className="embedded-composer-counter">
+                              {inputText.length}/800
+                            </span>
+                          )}
+                          <button
+                            type="submit"
+                            className="embedded-composer-send-btn"
+                            disabled={!inputText.trim() || isSending}
+                            aria-label={isSending ? 'Enviando respuesta…' : 'Enviar respuesta'}
+                            title="Enviar respuesta (Enter)"
+                          >
+                            <Icon name="send" size={15} />
+                          </button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </form>
-              )}
-            </div>
-          )}
+                  </form>
+                )}
+              </div>
+            )}
+          </div>
         </div>
+        {showCloseModal && (
+          <SstChatCloseForm surfaceRef={closeModalRef} requestCode={ticket.code || ticket.id}
+            notes={closeNotes} onNotesChange={setCloseNotes}
+            targetStatus={targetRequestStatus} onTargetStatusChange={setTargetRequestStatus}
+            onCancel={() => setShowCloseModal(false)} onConfirm={handleConfirmClose}
+            isClosing={isClosing} error={closeError} />
+        )}
       </div>
     </aside>
   );
@@ -574,6 +505,8 @@ export function SstRequestChatDrawer({ ticket, onClose, onSessionChanged }) {
 
 SstRequestChatDrawer.propTypes = {
   ticket: PropTypes.object.isRequired,
+  inputText: PropTypes.string.isRequired,
+  setInputText: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
   onSessionChanged: PropTypes.func
 };

@@ -3,16 +3,17 @@ import { Link } from 'react-router-dom';
 import { Icon } from '../../../core/components/Icon';
 
 /**
- * Inspector Estructurado de Consentimientos y Finalidades Legales (C1–C5).
- * Organizado como un registro formal de gobernanza y control de finalidades bajo Habeas Data
- * (Ley 1581 de 2012 y Decreto 1377 de 2013 de Colombia).
- * Cumple con accesibilidad WAI-ARIA (acordeón semántico sin controles anidados) y
- * garantiza alineación vertical estricta a la derecha para estados y controles.
+ * Muestra las finalidades C1–C5 y el estado normalizado del consentimiento.
+ * La ausencia de un permiso no se interpreta como una autorización.
+ * @param {object} props Datos del consentimiento y formato de fecha de la página.
+ * @param {object|null} props.consent Consentimiento normalizado por consentContract.
+ * @param {(date: string) => string} props.formatDate Formato legible de la fecha guardada.
+ * @returns {JSX.Element} Resumen de finalidades con consecuencias funcionales desplegables.
  */
 export function ConsentSummaryCard({ consent, formatDate }) {
   const [expandedPurpose, setExpandedPurpose] = useState(null);
 
-  const isPolicyAccepted = Boolean(consent?.policyAccepted);
+  const isPolicyCurrent = Boolean(consent?.active);
   const updatedAtFormatted = consent?.updatedAt ? formatDate(consent.updatedAt) : 'Sin fecha registrada';
 
   const purposes = [
@@ -21,50 +22,50 @@ export function ConsentSummaryCard({ consent, formatDate }) {
       title: 'Check-in diario de turno',
       icon: 'HeartPulse',
       iconColor: 'var(--c-primario)',
-      scopeLabel: 'Registro Somático',
-      desc: 'Monitoreo preventivo de energía y fatiga al cierre de tu jornada operativa.',
-      impactText: 'Si se revoca, no se solicitará tu autoevaluación al salir del turno, pero no registrarás tu histórico de vitalidad.',
-      active: Boolean(consent?.c1_checkin ?? true)
+      scopeLabel: 'Registro personal',
+      desc: 'Registro voluntario de seis dimensiones sobre cómo vives el turno.',
+      impactText: 'Al pausarla, no podrás guardar nuevos check-ins mientras permanezca desactivada.',
+      active: isPolicyCurrent && Boolean(consent?.c1_checkin ?? consent?.c1)
     },
     {
       code: 'C2',
       title: 'Bitácora personal y reflexiones',
       icon: 'BookOpen',
-      iconColor: '#0d9488',
-      scopeLabel: 'Local en Estación',
-      desc: 'Espacio de desahogo privado con análisis léxico ejecutado 100% en tu navegador.',
-      impactText: 'Tus notas no se guardan en el servidor y ningún líder ni supervisor tiene acceso a los textos escritos.',
-      active: Boolean(consent?.c2_bitacora ?? true)
+      iconColor: 'var(--c-primario)',
+      scopeLabel: 'Bitácora de tu cuenta',
+      desc: 'Permite guardar reflexiones personales en el servidor, asociadas a tu cuenta.',
+      impactText: 'Al pausarla, no podrás crear nuevas notas. Las vistas de supervisión no muestran el texto de la bitácora; el análisis léxico se ejecuta localmente y requiere C3.',
+      active: isPolicyCurrent && Boolean(consent?.c2_bitacora ?? consent?.c2)
     },
     {
       code: 'C3',
       title: 'Acompañamiento psicosocial',
       icon: 'HeartHandshake',
-      iconTone: '#8b5cf6',
-      scopeLabel: 'Canal Reservado',
-      desc: 'Canal directo para solicitar pausas asistidas o contacto con profesionales de SST.',
-      impactText: 'Permite que el equipo de bienestar te contacte de forma confidencial si solicitas orientación.',
-      active: Boolean(consent?.c3_apoyo ?? true)
+      iconColor: 'var(--c-rol-sst)',
+      scopeLabel: 'Orientación preventiva',
+      desc: 'Autoriza el análisis léxico de la bitácora y las solicitudes de apoyo a SST.',
+      impactText: 'Al pausarla, la bitácora queda sin análisis léxico y el canal de apoyo permanece deshabilitado hasta volver a autorizarla.',
+      active: isPolicyCurrent && Boolean(consent?.c3_apoyo ?? consent?.c3)
     },
     {
       code: 'C4',
-      title: 'Analítica colectiva (k ≥ 5)',
+      title: 'Analítica colectiva',
       icon: 'BarChart3',
       iconColor: 'var(--c-info)',
-      scopeLabel: 'Anonimato Grupal',
-      desc: 'Aportar a las tendencias de ergonomía del equipo sin vincular tu nombre ni tu ID.',
-      impactText: 'Tus datos solo se promedian si hay 5 o más agentes en el turno. Nunca se asocian a tu desempeño o AHT.',
-      active: Boolean(consent?.c4_analitica ?? true)
+      scopeLabel: 'Agregados protegidos',
+      desc: 'Permite incluir tus respuestas autorizadas en tendencias colectivas.',
+      impactText: 'El servidor aplica los mínimos de participación vigentes al grupo y período consultados. Al pausarla, tus respuestas no se incluyen en los promedios ni en el recuento de participantes.',
+      active: isPolicyCurrent && Boolean(consent?.c4_analitica ?? consent?.c4)
     },
     {
       code: 'C5',
-      title: 'Notificaciones en estación',
+      title: 'Contacto preventivo proactivo',
       icon: 'Bell',
-      iconColor: '#f59e0b',
-      scopeLabel: 'Avisos en Pantalla',
-      desc: 'Recordatorios amables para pausas activas, estiramientos y ergonomía visual.',
-      impactText: 'Si se revoca, tu estación no mostrará avisos sonoros o emergentes de pausas preventivas.',
-      active: Boolean(consent?.c5_contacto ?? true)
+      iconColor: 'var(--c-rol-sst)',
+      scopeLabel: 'Contacto SST',
+      desc: 'Preferencia de autorización para contactos preventivos de SST.',
+      impactText: 'La aplicación guarda esta preferencia; no activa un servicio de contacto automático. Al pausarla, la preferencia queda desactivada. Las solicitudes voluntarias de apoyo dependen de C3.',
+      active: isPolicyCurrent && Boolean(consent?.c5_contacto ?? consent?.c5)
     }
   ];
 
@@ -107,8 +108,8 @@ export function ConsentSummaryCard({ consent, formatDate }) {
           <div className="consent-status-meta">
             <div className="consent-meta-row">
               <span className="consent-meta-label">Estado de la política:</span>
-              <span className={`badge ${isPolicyAccepted ? 'badge-ok' : 'badge-warn'}`}>
-                {isPolicyAccepted ? 'Vigente y Aceptada' : 'Aceptación Pendiente'}
+              <span className={`badge ${isPolicyCurrent ? 'badge-ok' : 'badge-warn'}`}>
+                {isPolicyCurrent ? 'Vigente y aceptada' : 'Requiere revisión'}
               </span>
             </div>
             <div className="consent-meta-row">
@@ -120,7 +121,7 @@ export function ConsentSummaryCard({ consent, formatDate }) {
           <div className="consent-guarantee-note">
             <Icon name="ShieldCheck" size={15} style={{ color: 'var(--c-primario)', flexShrink: 0, marginTop: '2px' }} />
             <p style={{ margin: 0, fontSize: '11.5px', color: 'var(--c-texto-suave)', lineHeight: 1.45 }}>
-              En Colombia, puedes revocar cualquiera de estas finalidades en cualquier momento. <strong>La revocación no genera consecuencias laborales ni disciplinarias.</strong>
+              Puedes revisar, pausar o revocar estas finalidades. Antes de guardar, consulta cómo cambia la disponibilidad de cada herramienta.
             </p>
           </div>
 

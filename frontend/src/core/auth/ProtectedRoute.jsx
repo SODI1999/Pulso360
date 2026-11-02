@@ -8,7 +8,7 @@ import { useEffect, useRef, useState } from 'react';
 import { env } from '../config/env';
 import { getAuthToken } from '../api/apiClient';
 
-export function ProtectedRoute({ allowedRoles, children }) {
+export function ProtectedRoute({ allowedRoles, children, standalone = false }) {
   const location = useLocation();
   const [user, setUser] = useState(() => authService.getCurrentUser());
   const lastOwnerRef = useRef(user?.id);
@@ -96,7 +96,7 @@ export function ProtectedRoute({ allowedRoles, children }) {
       status: 'DENEGADO'
     });
 
-    return <AccessDenied userRole={user.role} allowedRoles={allowedRoles} />;
+    return <AccessDenied userRole={user.role} allowedRoles={allowedRoles} standalone={standalone} />;
   }
 
   // 4. Acceso Concedido: Renderiza la vista solicitada

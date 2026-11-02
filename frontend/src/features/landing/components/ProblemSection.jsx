@@ -10,19 +10,19 @@ export function ProblemSection() {
         {/* Cabecera Editorial abierta y serena */}
         <div className="problem-editorial-header">
           <h2 id="problem-title">
-            El agotamiento no avisa con anticipación; se acumula llamada tras llamada.
+            La experiencia del turno merece un espacio propio.
           </h2>
           <p className="problem-lead">
-            En un Contact Center, la presión sostenida por colas continuas, solicitudes complejas y fricciones
-            técnicas genera un desgaste silencioso. Cuando la organización se entera a través de ausentismos
-            no planificados o deserción imprevista, el daño laboral ya ocurrió.
+            Las llamadas consecutivas, las consultas complejas y las fallas técnicas forman parte del
+            contexto que una persona puede querer registrar o compartir al solicitar apoyo. Los ejemplos
+            siguientes ayudan a explicar esa idea; no son resultados medidos por Pulso360.
           </p>
         </div>
 
         {/* =========================================================================
             TIEMPO 1: FRANJA MÉTRICA CORRIDA (SIN CAJAS CERRADAS)
             ========================================================================= */}
-        <div className="problem-metric-strip" aria-label="Indicadores clave de la industria BPO">
+        <div className="problem-metric-strip" aria-label="Contexto BPO y dato atribuido a la actividad de aula">
           <div className="strip-metric-item">
             <span className="strip-metric-val">AHT</span>
             <strong className="strip-metric-lbl">Presión por duración de llamada</strong>
@@ -49,12 +49,12 @@ export function ProblemSection() {
 
           <div className="strip-metric-item highlight-item">
             <span className="strip-metric-val">84.3%</span>
-            <strong className="strip-metric-lbl">Prevalencia de fatiga emocional (Hallazgo TdeA)</strong>
+            <strong className="strip-metric-lbl">Categorías media y alta en los datos de aula</strong>
             <p className="strip-metric-sub">
-              Evidencia empírica identificada en la investigación base del Semillero en Medellín.
+              Dato recogido en una actividad de una materia que dio origen a la idea de Pulso360. No representa al sector ni mide resultados de la plataforma.
             </p>
             <span className="strip-metric-source">
-              Investigación formativa TdeA · muestra n=185 · Medellín
+              Actividad de aula · grupo n=185 · Medellín
             </span>
           </div>
         </div>
@@ -68,13 +68,13 @@ export function ProblemSection() {
             <div className="problem-documentary-frame">
               <img
                 src="/assets/fotos/bpo-operations-reality.webp"
-                alt="Operación de centro de contacto en Medellín: fatiga y sobrecarga acumulada en piso de llamadas ininterrumpidas"
+                alt="Personas en una operación de centro de contacto"
                 className="problem-documentary-img"
                 loading="lazy"
               />
               <div className="documentary-caption-strip">
-                <span className="caption-tag">Evidencia de Piso · Operación BPO</span>
-                <span className="caption-meta">Medellín, Colombia</span>
+                <span className="caption-tag">Imagen de contexto BPO</span>
+                <span className="caption-meta">Uso ilustrativo</span>
               </div>
             </div>
 
@@ -83,7 +83,7 @@ export function ProblemSection() {
               digo algo me clavan el turno de cierre o me toca domingo.»
             </blockquote>
             <cite className="dialogue-quote-cite">
-              Relato testimonial basado en la investigación cualitativa del TdeA con operadores en Medellín
+              Situación ilustrativa sobre presión de llamadas; no es una cita de una persona participante
             </cite>
           </div>
 
@@ -178,7 +178,7 @@ export function ProblemSection() {
                     <Icon name="checkCircle" size={15} />
                   </span>
                   <div>
-                    <strong>Micro-pulso ágil de 60 segundos</strong>
+                    <strong>Check-in voluntario del turno</strong>
                     <p>Voluntario al cerrar turno y pensado para una interacción breve.</p>
                   </div>
                 </li>

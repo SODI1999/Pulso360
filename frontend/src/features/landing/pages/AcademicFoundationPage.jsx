@@ -1,5 +1,5 @@
 // src/features/landing/pages/AcademicFoundationPage.jsx
-// Pagina publica institucional: Fundamentación Cientifica, Evidencia Empírica y Transferencia Tecnologica
+// Origen estudiantil de Pulso360 a partir de datos recogidos en una actividad de materia.
 
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
@@ -95,7 +95,7 @@ export function AcademicFoundationPage() {
             <span className="breadcrumb-separator" aria-hidden="true">
               /
             </span>
-            <span className="breadcrumb-current">Fundamentación científica y origen</span>
+            <span className="breadcrumb-current">Origen y datos de la actividad de aula</span>
           </nav>
 
           <article className="academic-article-shell">
@@ -173,9 +173,9 @@ export function AcademicFoundationPage() {
 
             {/* Pie formal exclusivo para exportación a PDF / impresión institucional */}
             <footer className="print-document-footer only-print" aria-hidden="true">
-              <span className="print-footer-inst">Tecnológico de Antioquia · Institución Universitaria</span>
-              <span className="print-footer-doc">Dossier de Fundamentación Científica y Transferencia Tecnológica</span>
-              <span className="print-footer-audit">Ficha Técnica Oficial para Inspección y Auditoría SG-SST</span>
+              <span className="print-footer-inst">Pulso360 · Proyecto estudiantil</span>
+              <span className="print-footer-doc">Datos de una actividad de aula y decisiones de diseño</span>
+              <span className="print-footer-audit">Referencia de materia · Sin aval institucional</span>
             </footer>
           </article>
         </div>

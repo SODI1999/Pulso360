@@ -39,14 +39,12 @@
   }
 
   .modal-overlay {
-    padding: var(--space-3);
+    --modal-gutter: var(--space-3);
   }
 
   .modal-box,
   .modal-card {
     padding: var(--space-4);
-    max-height: 90vh;
-    overflow-y: auto;
     -webkit-overflow-scrolling: touch;
   }
 }
@@ -80,7 +78,7 @@
   .form-input,
   .form-select,
   .form-textarea {
-    font-size: 13px;
+    font-size: 16px;
     padding: 8px 11px;
   }
 

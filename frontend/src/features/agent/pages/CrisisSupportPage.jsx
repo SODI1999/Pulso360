@@ -49,7 +49,7 @@ export function CrisisSupportPage() {
               Pausa de respiración en puesto
             </h2>
             <p className="crisis-section-desc">
-              Sigue el compás del círculo para bajar la frecuencia cardíaca y recuperar tu centro.
+              Si te resulta cómodo, acompaña el círculo con una respiración sin forzar. Puedes detener el ejercicio o consultar las opciones de apoyo cuando lo necesites.
             </p>
           </div>
 

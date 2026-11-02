@@ -1,0 +1,164 @@
+[
+  {
+    "path": "/admin/organizacion",
+    "width": 320,
+    "scroll": 305,
+    "clip": 0
+  },
+  {
+    "path": "/admin/organizacion",
+    "width": 768,
+    "scroll": 753,
+    "clip": 0
+  },
+  {
+    "path": "/admin/organizacion",
+    "width": 1366,
+    "scroll": 1366,
+    "clip": 0
+  },
+  {
+    "path": "/admin/usuarios-roles",
+    "width": 320,
+    "scroll": 305,
+    "clip": 0
+  },
+  {
+    "path": "/admin/usuarios-roles",
+    "width": 768,
+    "scroll": 753,
+    "clip": 0
+  },
+  {
+    "path": "/admin/usuarios-roles",
+    "width": 1366,
+    "scroll": 1366,
+    "clip": 5
+  },
+  {
+    "path": "/admin/parametros",
+    "width": 320,
+    "scroll": 318,
+    "clip": 0
+  },
+  {
+    "path": "/admin/parametros",
+    "width": 768,
+    "scroll": 753,
+    "clip": 0
+  },
+  {
+    "path": "/admin/parametros",
+    "width": 1366,
+    "scroll": 1366,
+    "clip": 6
+  },
+  {
+    "path": "/admin/importar",
+    "width": 320,
+    "scroll": 305,
+    "clip": 0
+  },
+  {
+    "path": "/admin/importar",
+    "width": 768,
+    "scroll": 753,
+    "clip": 0
+  },
+  {
+    "path": "/admin/importar",
+    "width": 1366,
+    "scroll": 1366,
+    "clip": 5
+  },
+  {
+    "path": "/admin/solicitudes",
+    "width": 320,
+    "scroll": 305,
+    "clip": 0
+  },
+  {
+    "path": "/admin/solicitudes",
+    "width": 768,
+    "scroll": 753,
+    "clip": 0
+  },
+  {
+    "path": "/admin/solicitudes",
+    "width": 1366,
+    "scroll": 1366,
+    "clip": 0
+  },
+  {
+    "path": "/reportes",
+    "width": 320,
+    "scroll": 305,
+    "clip": 0
+  },
+  {
+    "path": "/reportes",
+    "width": 768,
+    "scroll": 753,
+    "clip": 0
+  },
+  {
+    "path": "/reportes",
+    "width": 1366,
+    "scroll": 1366,
+    "clip": 2
+  },
+  {
+    "path": "/notificaciones",
+    "width": 320,
+    "scroll": 305,
+    "clip": 0
+  },
+  {
+    "path": "/notificaciones",
+    "width": 768,
+    "scroll": 768,
+    "clip": 0
+  },
+  {
+    "path": "/notificaciones",
+    "width": 1366,
+    "scroll": 1366,
+    "clip": 2
+  },
+  {
+    "path": "/auditor/auditoria",
+    "width": 320,
+    "scroll": 305,
+    "clip": 0
+  },
+  {
+    "path": "/auditor/auditoria",
+    "width": 768,
+    "scroll": 768,
+    "clip": 0
+  },
+  {
+    "path": "/auditor/auditoria",
+    "width": 1366,
+    "scroll": 1366,
+    "clip": 6
+  },
+  {
+    "path": "/notificaciones",
+    "width": 320,
+    "scroll": 305,
+    "clip": 0
+  },
+  {
+    "path": "/notificaciones",
+    "width": 768,
+    "scroll": 768,
+    "clip": 0
+  },
+  {
+    "path": "/notificaciones",
+    "width": 1366,
+    "scroll": 1366,
+    "clip": 2
+  }
+]

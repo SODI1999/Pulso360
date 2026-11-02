@@ -1,0 +1,10 @@
+[
+  "specs/027-audit-001-interface-remediation/better-browser-review.md",
+  "specs/027-audit-001-interface-remediation/completion.json",
+  "specs/027-audit-001-interface-remediation/evidence/better-browser-observations.json",
+  "specs/027-audit-001-interface-remediation/evidence/better-browser-sst-320.png",
+  "specs/027-audit-001-interface-remediation/evidence/better-browser-sst-keyboard-send.png",
+  "specs/027-audit-001-interface-remediation/evidence/better-browser-sst-close-error.png",
+  "specs/027-audit-001-interface-remediation/evidence/better-browser-sst-text-spacing.png",
+  "specs/027-audit-001-interface-remediation/evidence/better-browser-agent-send-retry.png"
+]

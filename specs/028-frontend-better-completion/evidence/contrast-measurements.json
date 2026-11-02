@@ -1,0 +1,101 @@
+{
+  "phonePairs": [
+    {
+      "selector": "a[href=\"tel:106\"]",
+      "foreground": "rgb(255, 255, 255)",
+      "background": [
+        15,
+        118,
+        110
+      ],
+      "ratio": 5.47,
+      "text": "Llamar 106"
+    },
+    {
+      "selector": "a[href=\"tel:155\"]",
+      "foreground": "rgb(15, 23, 42)",
+      "background": [
+        241,
+        245,
+        249
+      ],
+      "ratio": 16.3,
+      "text": "Marcar 155"
+    },
+    {
+      "selector": "a[href=\"tel:123\"]",
+      "foreground": "rgb(153, 27, 27)",
+      "background": [
+        254,
+        242,
+        242
+      ],
+      "ratio": 7.6,
+      "text": "Marcar 123"
+    }
+  ],
+  "adminPairs": [
+    {
+      "selector": ".sidebar-nav-heading",
+      "foreground": "rgb(71, 85, 105)",
+      "background": [
+        241,
+        245,
+        249
+      ],
+      "ratio": 6.92,
+      "text": "Organización"
+    },
+    {
+      "selector": ".user-role-badge",
+      "foreground": "rgb(180, 83, 9)",
+      "background": [
+        255,
+        251,
+        235
+      ],
+      "ratio": 4.84,
+      "text": "Administrador"
+    },
+    {
+      "selector": ".topbar-pill-badge",
+      "missing": true
+    }
+  ],
+  "sstPairs": [
+    {
+      "selector": ".nav-item-badge",
+      "foreground": "rgb(180, 83, 9)",
+      "background": [
+        255,
+        251,
+        235
+      ],
+      "ratio": 4.84,
+      "text": "6"
+    },
+    {
+      "selector": ".kpi-delta.neutral",
+      "foreground": "rgb(71, 85, 105)",
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "ratio": 7.58,
+      "text": "Seguimiento por radicado"
+    },
+    {
+      "selector": ".badge-info",
+      "foreground": "rgb(3, 105, 161)",
+      "background": [
+        240,
+        249,
+        255
+      ],
+      "ratio": 5.57,
+      "text": "7"
+    }
+  ],
+  "limits": "Composición alfa sobre superficies opacas computadas; el barrido de texto excluye imágenes, gradientes, opacity<1 y controles deshabilitados. Separadores decorativos exentos se revisaron visualmente. No certificación global."
+}

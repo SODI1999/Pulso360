@@ -1,7 +1,12 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { CONTACT_SUBJECTS } from '../data/landingData';
 import { validateContactForm } from '../services/contactValidation';
 
+/**
+ * Valida el formulario de demostración y prepara un resumen en memoria.
+ * No realiza envíos ni persiste los datos; al reiniciar vuelve al primer campo.
+ * @returns {object} Datos, errores, referencias y acciones del formulario/resumen local.
+ */
 export function useContactForm() {
   const [formData, setFormData] = useState({
     name: '',
@@ -17,6 +22,16 @@ export function useContactForm() {
   const [hasSubmittedOnce, setHasSubmittedOnce] = useState(false);
   const [submittedData, setSubmittedData] = useState(null);
   const formRef = useRef(null);
+  const summaryRef = useRef(null);
+  const hasPreparedSummaryRef = useRef(false);
+
+  useEffect(() => {
+    if (submittedData) {
+      summaryRef.current?.focus();
+    } else if (hasPreparedSummaryRef.current) {
+      formRef.current?.elements.namedItem('name')?.focus();
+    }
+  }, [submittedData]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -56,6 +71,7 @@ export function useContactForm() {
       minute: '2-digit'
     });
 
+    hasPreparedSummaryRef.current = true;
     setSubmittedData({
       name: formData.name.trim(),
       email: formData.email.trim(),
@@ -85,6 +101,7 @@ export function useContactForm() {
   return {
     formData,
     formRef,
+    summaryRef,
     formErrors,
     hasSubmittedOnce,
     submittedData,

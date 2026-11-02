@@ -125,8 +125,8 @@ export const AGENT_SCALE_SCENARIOS = {
 };
 
 /**
- * Escenarios operacionales reales para la simulación del Espacio Íntimo del Agente (Acto I)
- * Basados en los relatos recopilados en la investigación formativa del TdeA con operadores en Medellín
+ * Escenarios ilustrativos para explicar el espacio personal del agente.
+ * No son testimonios ni salidas calculadas por el motor léxico.
  */
 export const BPO_SIMULATION_SCENARIOS = [
   {
@@ -135,11 +135,11 @@ export const BPO_SIMULATION_SCENARIOS = [
     category: 'Sobrecarga Emocional',
     agentQuote:
       '«Atendí tres reclamos seguidos de usuarios muy alterados por cobros duplicados. Siento tensión en los hombros y agotamiento al terminar el turno.»',
-    nlpTitle: 'Tensión por Interacciones Difíciles',
+    nlpTitle: 'Ejemplo: presión tras llamadas difíciles',
     nlpFeedback:
-      'Identificamos señales de tensión muscular y desgaste por hostilidad en la línea. Sugerimos soltar la diadema, realizar estiramientos cervicales e hidratarte antes del siguiente bloque.',
+      'El relato ilustra tensión después de varias interacciones. El espacio personal permite describir lo vivido y decidir si se quiere solicitar orientación.',
     domainContext:
-      'Las interacciones hostiles sucesivas sin tiempo de descompresión aceleran la sobrecarga emocional en el piso de llamadas.'
+      'Situación de ejemplo sobre interacciones difíciles en una operación de llamadas.'
   },
   {
     id: 'falla',
@@ -147,11 +147,11 @@ export const BPO_SIMULATION_SCENARIOS = [
     category: 'Fricción Tecnológica',
     agentQuote:
       '«El CRM y la telefonía fallaron a mitad de turno con 30 clientes en espera. El AHT se nos disparó y los usuarios entraban irritados por la demora sin ser culpa nuestra.»',
-    nlpTitle: 'Frustración por Falla de Plataforma',
+    nlpTitle: 'Ejemplo: fallas de la plataforma de trabajo',
     nlpFeedback:
-      'Detectamos sobrecarga derivada de incidencias técnicas. Recuerda que las demoras originadas en plataformas corporativas son ajenas a tu gestión individual.',
+      'El caso describe una falla técnica y presión por la cola de atención. Son condiciones que una persona puede querer dejar por escrito al solicitar orientación.',
     domainContext:
-      'La inestabilidad tecnológica en piso distorsiona los tiempos de operación (AHT) y genera desgaste injusto en el equipo.'
+      'Situación ilustrativa sobre incidencias técnicas y presión por el AHT; no es una medición de la plataforma.'
   },
   {
     id: 'cola',
@@ -159,11 +159,11 @@ export const BPO_SIMULATION_SCENARIOS = [
     category: 'Sobrecarga de Atención',
     agentQuote:
       '«Turno corrido de 8 horas con colas en rojo ininterrumpidas. No alcancé a tomar la pausa activa programada y salgo con zumbido en los oídos y fatiga mental.»',
-    nlpTitle: 'Fatiga Auditiva y Atención Sostenida',
+    nlpTitle: 'Ejemplo: un turno sin la pausa prevista',
     nlpFeedback:
-      'Registramos demanda auditiva prolongada sin descanso de turno. Esta señal alimenta la métrica colectiva para alertar a SST sobre adherencia a pausas en tu campaña.',
+      'En este ejemplo no se tomó la pausa prevista. La persona puede registrar su experiencia o consultar las opciones de apoyo; este texto ilustrativo no genera una alerta ni alimenta métricas.',
     domainContext:
-      'La atención telefónica continua sin pausas programadas compromete la salud auditiva y la adherencia saludable al turno.'
+      'Situación ilustrativa sobre pausas y carga del turno; no es una evaluación de salud.'
   }
 ];
 
@@ -175,7 +175,7 @@ export const UNIFIED_SHOWCASE_TABS = [
     id: 'agente',
     label: '1. Espacio Íntimo del Agente',
     icon: 'Headphones',
-    subtitle: 'Check-in diario de 60s, bitácora personal y orientación sin consecuencias laborales.'
+    subtitle: 'Check-in voluntario, bitácora personal y solicitud de orientación a SST.'
   },
   {
     id: 'kanonymity',
@@ -259,9 +259,9 @@ export const ROLES_PERMISSIONS_MATRIX = [
     roleTag: 'Espacio Íntimo y Confidencial',
     badgeClass: 'badge-agent',
     icon: 'Headphones',
-    mission: 'Espacio personal y seguro para registrar el cansancio del turno sin consecuencias laborales.',
+    mission: 'Espacio personal para registrar voluntariamente cómo vives el turno y consultar tus propios registros.',
     permissions: [
-      { text: 'Registrar su check-in voluntario de 60 segundos al cierre de turno.', allowed: true },
+      { text: 'Registrar voluntariamente su check-in del turno.', allowed: true },
       { text: 'Escribir en su bitácora personal con orientación léxica preventiva local.', allowed: true },
       { text: 'Consultar su propio historial y evolución de bienestar a lo largo del mes.', allowed: true },
       { text: 'Acceder a métricas o respuestas individuales de otros compañeros.', allowed: false },
@@ -345,6 +345,6 @@ export const CONTACT_SUBJECTS = [
   { value: 'piloto', label: 'Proyecto piloto para BPO' },
   { value: 'demostracion', label: 'Demostración técnica SST' },
   { value: 'privacidad', label: 'Consultoría en k-anonimato' },
-  { value: 'academico', label: 'Vinculación académica TdeA' },
+  { value: 'academico', label: 'Consulta sobre el proyecto estudiantil' },
   { value: 'otro', label: 'Otro requerimiento' }
 ];

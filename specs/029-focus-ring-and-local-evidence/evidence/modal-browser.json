@@ -1,0 +1,7 @@
+{
+    "startedAt":  "2026-11-02T20:29:28.0384666Z",
+    "finishedAt":  "2026-11-02T20:29:31.6189062Z",
+    "command":  "node tests/modal-accessibility.browser.mjs",
+    "exitCode":  0,
+    "cwd":  "frontend"
+}

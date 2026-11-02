@@ -20,6 +20,10 @@ export function TeamDashboardPage() {
   const [periodStart, setPeriodStart] = useState(() => bogotaCalendarDate().slice(0, 7) + '-01');
   const [periodEnd, setPeriodEnd] = useState(() => bogotaCalendarDate());
   const periodFilter = `${periodStart}|${periodEnd}`;
+  const selectedScope = user?.scopes?.find(scope => String(scope.id) === String(scopeFilter));
+  const scopeTitle = env.useMockStorage
+    ? (scopeFilter === 'all' ? 'Equipo de demostración' : 'Subgrupo de muestra protegido')
+    : selectedScope ? `${selectedScope.campana_nombre} · ${selectedScope.nombre}` : 'Ámbito asignado';
 
   const {
     loading,
@@ -32,7 +36,7 @@ export function TeamDashboardPage() {
     kpis,
     reload
   } = useSupervisorMetrics({
-    campanaId: user?.scopes?.find(s => s.id===scopeFilter)?.campana_id || user?.campaignId,
+    campanaId: selectedScope?.campana_id || user?.campaignId,
     equipoId: env.useMockStorage ? user?.teamId : scopeFilter,
     scopeFilter,
     periodFilter
@@ -87,7 +91,7 @@ export function TeamDashboardPage() {
       {/* Cabecera del Panel */}
       <div className="page-header">
         <div>
-          <h1 className="page-title">Panel de Supervisión · {user?.campaign || 'Ámbito asignado'}</h1>
+          <h1 className="page-title">Panel de Supervisión · {scopeTitle}</h1>
           <p className="page-subtitle">
             Visualización agregada protegida por umbral de privacidad (N ≥ {minThreshold}). Esta vista no
             incluye datos individuales.

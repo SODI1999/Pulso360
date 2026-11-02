@@ -77,7 +77,7 @@
   --c-rol-auditor-bg: #f1f5f9;
   --c-rol-auditor-border: #cbd5e1;
 
-  --c-rol-admin: #d97706;
+  --c-rol-admin: #b45309;
   /* Ámbar */
   --c-rol-admin-bg: #fffbeb;
   --c-rol-admin-border: #fde68a;
@@ -87,15 +87,16 @@
   --c-exito-bg: #ecfdf5;
   --c-exito-border: #a7f3d0;
 
-  --c-alerta: #d97706;
+  --c-alerta: #b45309;
   --c-alerta-bg: #fffbeb;
   --c-alerta-border: #fde68a;
 
   --c-critico: #dc2626;
+  --c-critico-texto: #991b1b;
   --c-critico-bg: #fef2f2;
   --c-critico-border: #fecaca;
 
-  --c-info: #0284c7;
+  --c-info: #0369a1;
   --c-info-bg: #f0f9ff;
   --c-info-border: #bae6fd;
 

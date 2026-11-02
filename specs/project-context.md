@@ -1,5 +1,43 @@
 # Project context
 
+## Actualización vigente — 2026-11-02 / bug029
+
+El usuario pide quitar el marcoverde alentrar/recargar, mantener localesen.gitignore lasimágenes generadas y publicar enGitHub los cambios valiosos de027/028 más029. Mejoras visuales dirigidas porbetter-interface con responsablebetter-accessibility. Se confirmó elmarco enChrome real sobrelanding/403/login. Cambios acotados al focoderuta,CSS yregresiónDOM; no retirar indicadores decontroles ni focosemántico. También se detectó scrollinicial115px enlanding, responsabilidad delscrollIntoView programático, para cierre con misma dirección.
+
+621 capturas originales de027/028,66,466,057bytes, quedaron ignoradas porpatronesdeimagen enspecs/*/evidence, sin borrarlas. Se conservan34activosdeproducto versionados; cero imágenes nuevas candidatas. No se amplía la exclusión a fuente,JSON/pruebas o assets de aplicación. Revisión previa apublicar dearchivoscambiados/nuevos: sin.env/llaves/tokens comunes o marcadoresdeconflicto detectados enelescaneo limitado. No certificación integral de seguridad.
+
+El usuario autorizó explícitamente commit/push normales alorigin/develop existente. Fetch ejecutado; sin divergencia al inspeccionarlo. Decisiónpublish-interface-remediation aplica a029 ysupersede la restricción anterior solo paraestos cambios. No se autorizó deploy,forcepush,migraciones o cambios globales. ConvenciónConventionalCommits enespañol,JSDoc se mantiene.
+
+Capacidades actuales:Deskaartifact-list vuelvea funcionar; preview sigue sinventana yCUAhost/pipe indisponible. Arranque deChromecon depuraciónremota rechazado porpolítica, sinreintento. Alternativa ejecutada:Chrome156 dumpDOM conperfiltemporal yestilos reales, harness11grupos previos yregresiónnueva; capturas de rutasreales eniframeconmétricasdelnavegador. Sesiónrender1fb7c764-07b1-4655-9ffc-2e32050c84ff previa a observaciones029. Noafirmarnativeinput/CDP olector de pantalla paraestepase.
+
+[Contrato029](029-focus-ring-and-local-evidence/bug.md),[verificación](029-focus-ring-and-local-evidence/verification.md). Gatefinal de código porverify029 ycomplete029; resultadoGitHub se informará conhashremoto separado delgate. No se inventa unpush por tenerautorización. Lasactualizaciones028ysiguientes sonhistóricas.
+
+
+## Actualización vigente — 2026-11-02 / deuda028
+
+El usuario amplió el encargo a completar el frontend bajo dirección de better-interface y exige revisión real en navegador. Alcance:34 entradas de App.jsx,30 páginas distintas y4 redirecciones; cinco roles más público. Se conservan los cambios027 y trabajo previo. React18/JSX/Vite, servicios REST, browserStorage, auth, roles, k-anonimato y NLP determinista preservados; sin cambios de backend/dependencias ni publicación. ConvenciónJSDoc. El número de archivos del fit expresa alcance aproximado compartido con027, no una atribución de todo el diff a028.
+
+Aclaración explícita del usuario: la investigación se realizó dentro del aula para una materia y su fuente son los datos recogidos en esa actividad; de allí surgió la idea de Pulso360. Landing, fundamentación, atribución y vista de impresión lo explican sin presentar una publicación universitaria, semillero o aval institucional. Cifras/nombres existentes se atribuyen al material de aula; no se recibió ni auditó independientemente el conjunto de datos original. Decisión classroom-research-provenance aplica a028.
+
+Capacidades ejecutadas: Chrome156 aislado por CDPloopback, Node24.22.1, CLI0.8.1 coincide conmanifest. Sesión41377bbe-f56e-474b-92a1-abdf704609d9 registrada antes de observaciones028. Deska sin ventana en último intento; causa no identificada, alternativaChrome autorizada por usuario. MuestrasMUESTRA-UI y transporte interceptado: ningún mensaje, cierre, radicación, campaña ni correo real creado por la revisión. Solo login/logout de cuentas académicas. No hay evidenciaE2E entre dos usuarios reales.
+
+Revisión final de render:108 combinaciones ruta/rol/viewport320/768/1366, geometría estable tras última corrección; matrizAX36 combinaciones sin controles sin nombre en los estados inspeccionados. Tab/Escape/foco/retorno, formularios y errores, consentimiento/inactividad, petición confirmada con refresco fallido, SST/agente y modo solo lectura se ejercitaron. Reflow equivalente200%CSS683×384DPR2 y espaciado ampliado comprobados; no menú de zoom nativo, lector de pantalla ni dispositivo físico. Once grupos del harnessDOMChrome ejecutados exit0. Los cuatro gates finales los debe ligar verify028; su registro es la fuente del estado final y no se escribe verification.json a mano.
+
+[Verificación028](028-frontend-better-completion/verification.md), [matriz de rutas](028-frontend-better-completion/route-inventory.json) y [reporte better](028-frontend-better-completion/better-report.md) conservan resultados, límites y warning de bundle. Las auditorías027 y antecedentes que siguen son históricos.
+
+
+## Actualización acotada — 2026-11-02 / deuda027
+
+El usuario autorizó el ciclo Omni completo sobre audit-001 y priorizó urgentemente el chat SST con better-interface como dirección visual. Se implementaron AC-01…12 sin cambios de stack, dependencias, permisos, backend, motorNLP o persistencia. React/JSX y servicios existentes conservados; borradores por radicado en RAM mientras la página siga montada. No autorizó commits, publicación, migraciones ni borrado de datos.
+
+Entorno ejecutado: Node 24.22.1, Vite 6.4.4, CLI 0.8.1 igual al manifest y Chrome 156 en Windows. Scripts vigentes: test backend; test/lint/build frontend. Pase directo final: backend132/132, frontend50/50, lint/build exit0 y diff--check0; warning build>500kB conservado. Logs final-* y revisión por criterio en [verification.md](027-audit-001-interface-remediation/verification.md). El vínculo automático final y estado de entrega lo generan verify 027/complete 027; no se modifica verification.json a mano.
+
+Capacidades: terminal y revisión independiente disponibles. El bloqueo inicial de render de Deska/CUA es histórico. El usuario pidió específicamente Chrome DevTools como alternativa y se utilizó perfil temporal aislado con CDP en loopback. Deska siguió informando ausencia de ventana en el último intento; causa no determinada. Sesión render registrada29682fe4-8915-43a9-a8dd-3f8fbb96e69c antes de 39 observaciones guardadas. Casos/mensajes MUESTRA-UI e interceptación local de POST/Socket: no se enviaron mensajes ni cerraron casos reales. No afirmar E2E entre cuentas.
+
+Validación actual: agente/SST a320/768/1366 CSS px, reflow equivalente200% (CSS683×384 DPR 2, sin operar menú de zoom nativo), teclado/foco, carga/vacío/error/protegido, borrador, lectura/aviso, envío/error y cierre; supervisor con ámbitos autorizados, latencia/respuesta tardía/caché. Contraste computado y movimiento reducido. Sin lector de pantalla ni móvil físico; sin certificación global. [Reporte better y gate único](../anti-slop/audit-004-2026-11-02.md).
+
+La documentación de raíz sobre ausencia de tests/almacenamiento antiguo no representa todo el código vigente: frontend/src/AGENTS.md remite a apiClient/browserStorage, preservados aquí. Convención JSDoc. Conflictos de versiones/documentación no investigados permanecen fuera de este alcance. El contexto del 18 de octubre que sigue es histórico y no constituye una validación vigente.
+
 Contexto de ingeniería y estado de reconocimiento de Pulso360 generado mediante `/omni-init`.
 
 ## 1. Onboarding state and scope

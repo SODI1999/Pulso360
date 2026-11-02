@@ -676,6 +676,25 @@
 }
 
 /* 4. Línea de Tiempo de Habeas Data */
+.habeas-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+  gap: var(--space-5);
+}
+
+.habeas-actions-grid .btn {
+  max-width: 100%;
+  white-space: normal;
+}
+
+.habeas-form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-3);
+}
+
 .habeas-timeline-list {
   display: flex;
   flex-direction: column;
@@ -806,6 +825,15 @@
   border: 1px solid var(--c-borde);
   max-height: 90vh;
   overflow-y: auto;
+}
+
+.suppression-modal-actions {
+  margin-top: 0;
+}
+
+.suppression-modal-actions .btn {
+  max-width: 100%;
+  white-space: normal;
 }
 
 /* Badges semánticos auxiliares si no existen globalmente */

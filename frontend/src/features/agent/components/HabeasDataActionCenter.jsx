@@ -1,4 +1,5 @@
 import { Icon } from '../../../core/components/Icon';
+import { useEffect, useRef } from 'react';
 import { DownloadLink } from '../../../core/components/DownloadLink';
 
 /**
@@ -10,10 +11,16 @@ export function HabeasDataActionCenter({
   setRectificationText,
   handleRectificationSubmit,
   rectificationFeedback,
+  isRectifying,
   onOpenSuppressionModal,
   portabilityFiles,
   handleDownloadPortability
 }) {
+  const rectificationFeedbackRef = useRef(null);
+  useEffect(() => {
+    if (rectificationFeedback && document.activeElement === document.body) rectificationFeedbackRef.current?.focus();
+  }, [rectificationFeedback]);
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
       {/* 1. Portabilidad de Datos */}
@@ -24,7 +31,7 @@ export function HabeasDataActionCenter({
               Portabilidad de Datos Propios
             </h2>
             <p className="card-subtitle">
-              Descarga una copia completa de los registros asociados a tu cuenta. El archivo se genera de forma inmediata y segura en tu navegador.
+              El JSON incluye tus check-ins, bitácoras, solicitudes de apoyo y consentimiento disponibles en esta página. El CSV contiene un listado de referencias y fechas de esos registros. Los archivos se preparan en tu navegador; no son una copia de todos los datos de la cuenta.
             </p>
           </div>
         </div>
@@ -49,19 +56,13 @@ export function HabeasDataActionCenter({
             onDownload={() => handleDownloadPortability('csv')}
           >
             <Icon name="FileSpreadsheet" size={14} />
-            <span>Descargar CSV propio</span>
+            <span>Descargar listado CSV</span>
           </DownloadLink>
         </div>
       </div>
 
       {/* 2. Grid de Trámites: Rectificación y Supresión */}
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-          gap: '20px'
-        }}
-      >
+      <div className="habeas-actions-grid">
         {/* Formulario de Rectificación */}
         <div className="card">
           <div className="card-header">
@@ -75,36 +76,41 @@ export function HabeasDataActionCenter({
             </div>
           </div>
 
-          <form onSubmit={handleRectificationSubmit}>
+          <form onSubmit={handleRectificationSubmit} aria-busy={isRectifying}>
+            <label className="form-label" htmlFor="rectification-details">Dato o registro que deseas rectificar</label>
             <textarea
+              id="rectification-details"
               className="form-textarea"
               rows={3}
               maxLength={300}
               placeholder="Describe el dato, registro o fecha que consideras que debe ser corregido..."
               value={rectificationText}
+              readOnly={isRectifying}
               onChange={(e) => setRectificationText(e.target.value)}
               style={{ width: '100%', marginBottom: '10px' }}
             />
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div className="habeas-form-actions">
               <span style={{ fontSize: '11.5px', color: 'var(--c-texto-suave)' }}>
                 {rectificationText.length}/300 caracteres
               </span>
               <button
                 type="submit"
                 className="btn btn-secondary btn-sm"
-                disabled={rectificationText.trim().length < 10}
+                disabled={isRectifying || rectificationText.trim().length < 10}
               >
                 <Icon name="Pencil" size={14} />
-                <span>Radicar solicitud de rectificación</span>
+                <span>{isRectifying ? 'Registrando solicitud…' : 'Radicar solicitud de rectificación'}</span>
               </button>
             </div>
           </form>
+          {isRectifying && <p role="status">Esperando confirmación del registro de la solicitud…</p>}
 
           {rectificationFeedback && (
-            <div className="form-feedback info" style={{ marginTop: '12px' }}>
-              <Icon name="Info" size={14} />
-              <span>{rectificationFeedback}</span>
+            <div ref={rectificationFeedbackRef} tabIndex={-1} className={`alert-banner ${rectificationFeedback.type === 'error' ? 'danger' : 'ok'}`}
+              role={rectificationFeedback.type === 'error' ? 'alert' : 'status'} style={{ marginTop: '12px' }}>
+              <Icon name={rectificationFeedback.type === 'error' ? 'AlertTriangle' : 'CheckCircle2'} size={14} />
+              <span>{rectificationFeedback.message}</span>
             </div>
           )}
         </div>
@@ -137,7 +143,7 @@ export function HabeasDataActionCenter({
               <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
                 <Icon name="Shield" size={15} style={{ color: 'var(--c-primario)', flexShrink: 0, marginTop: '2px' }} />
                 <span>
-                  El trámite se procesa administrativamente ante el Oficial de Privacidad. Puedes consultar las condiciones y confirmar de forma segura.
+                  El trámite se registra para su gestión administrativa. Puedes consultar su alcance antes de confirmar; crearlo no ejecuta un borrado automático.
                 </span>
               </div>
             </div>

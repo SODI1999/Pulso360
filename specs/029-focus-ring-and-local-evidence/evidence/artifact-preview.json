@@ -1,0 +1,13 @@
+{
+  "observedAt": "2026-11-02T20:41:13.825Z",
+  "surface": "http://127.0.0.1:5187/artifact-report.html",
+  "actual": {
+    "width": 1348,
+    "height": 804,
+    "scroll": 1333,
+    "client": 1333,
+    "loadedImages": 3
+  },
+  "artifact": "evidence/artifact-preview.png",
+  "limit": "Render de escritorio del informe, separado deapp320/1366."
+}

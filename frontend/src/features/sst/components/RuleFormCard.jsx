@@ -109,7 +109,7 @@ export function RuleFormCard({ onSaveRule }) {
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', marginBottom: '14px' }}>
+          <div className="rule-field-grid">
             <div className="form-group">
               <label className="form-label" htmlFor="ruleOperator">
                 Condición
@@ -147,7 +147,7 @@ export function RuleFormCard({ onSaveRule }) {
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+          <div className="rule-field-grid">
             <div className="form-group">
               <label className="form-label" htmlFor="rulePersistence">
                 Persistencia temporal
@@ -246,7 +246,7 @@ export function RuleFormCard({ onSaveRule }) {
           </div>
         )}
 
-        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+        <div className="rule-builder-actions">
           <button type="button" className="btn btn-secondary" onClick={handleSimulate} disabled={!env.useMockStorage}>
             <Icon name="play" size={16} />
             <span>{env.useMockStorage ? 'Simular ejemplo de muestra' : 'Simulación no disponible'}</span>

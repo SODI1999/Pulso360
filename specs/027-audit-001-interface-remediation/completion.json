@@ -1,0 +1,88 @@
+{
+  "id": "027",
+  "status": "COMPLETED",
+  "completedAt": "2026-11-02T14:35:28.736Z",
+  "mode": "automated",
+  "verifiedAt": "2026-11-02T14:34:35.966Z",
+  "fingerprint": "6dd9df3f04c8d0e9ee4171c9f9f5c545ce6306d7f8609060555a916979eb7858",
+  "automatedChecksPassed": true,
+  "criteria": [
+    {
+      "id": "AC-10",
+      "kind": "interaction",
+      "status": "passed",
+      "method": "manual"
+    },
+    {
+      "id": "AC-11",
+      "kind": "visual",
+      "status": "passed",
+      "method": "manual"
+    },
+    {
+      "id": "AC-12",
+      "kind": "functional",
+      "status": "passed",
+      "method": "automated",
+      "execution": "PASSED"
+    },
+    {
+      "id": "AC-01",
+      "kind": "functional",
+      "status": "passed",
+      "method": "automated",
+      "execution": "PASSED"
+    },
+    {
+      "id": "AC-02",
+      "kind": "functional",
+      "status": "passed",
+      "method": "manual"
+    },
+    {
+      "id": "AC-03",
+      "kind": "interaction",
+      "status": "passed",
+      "method": "manual"
+    },
+    {
+      "id": "AC-04",
+      "kind": "accessibility",
+      "status": "passed",
+      "method": "manual"
+    },
+    {
+      "id": "AC-05",
+      "kind": "visual",
+      "status": "passed",
+      "method": "manual"
+    },
+    {
+      "id": "AC-06",
+      "kind": "interaction",
+      "status": "passed",
+      "method": "manual"
+    },
+    {
+      "id": "AC-07",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection"
+    },
+    {
+      "id": "AC-08",
+      "kind": "functional",
+      "status": "passed",
+      "method": "automated",
+      "execution": "PASSED"
+    },
+    {
+      "id": "AC-09",
+      "kind": "functional",
+      "status": "passed",
+      "method": "automated",
+      "execution": "PASSED"
+    }
+  ],
+  "source": "specs/manifest.json generado por complete027; copia de entrega sin editar el registroCLI"
+}

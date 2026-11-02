@@ -10,6 +10,7 @@ import { useSystemParams } from '../hooks/useSystemParams';
 
 import { env } from '../../../core/config/env';
 import { Icon } from '../../../core/components/Icon';
+import { handleTabNavigation } from '../../../core/components/tabNavigation';
 
 import '../../../styles/admin.css';
 
@@ -125,6 +126,11 @@ export function SystemParamsPage() {
           type="button"
           role="tab"
           aria-selected={activeTab === 'privacy'}
+          id="params-tab-privacy"
+          aria-controls="params-panel-privacy"
+          data-tab-value="privacy"
+          tabIndex={activeTab === 'privacy' ? 0 : -1}
+          onKeyDown={event => handleTabNavigation(event, setActiveTab)}
           className={`admin-tab-btn ${activeTab === 'privacy' ? 'active' : ''}`}
           onClick={() => setActiveTab('privacy')}
         >
@@ -136,6 +142,11 @@ export function SystemParamsPage() {
           type="button"
           role="tab"
           aria-selected={activeTab === 'slas'}
+          id="params-tab-slas"
+          aria-controls="params-panel-slas"
+          data-tab-value="slas"
+          tabIndex={activeTab === 'slas' ? 0 : -1}
+          onKeyDown={event => handleTabNavigation(event, setActiveTab)}
           className={`admin-tab-btn ${activeTab === 'slas' ? 'active' : ''}`}
           onClick={() => setActiveTab('slas')}
         >
@@ -147,6 +158,11 @@ export function SystemParamsPage() {
           type="button"
           role="tab"
           aria-selected={activeTab === 'governance'}
+          id="params-tab-governance"
+          aria-controls="params-panel-governance"
+          data-tab-value="governance"
+          tabIndex={activeTab === 'governance' ? 0 : -1}
+          onKeyDown={event => handleTabNavigation(event, setActiveTab)}
           className={`admin-tab-btn ${activeTab === 'governance' ? 'active' : ''}`}
           onClick={() => setActiveTab('governance')}
         >
@@ -162,7 +178,8 @@ export function SystemParamsPage() {
 
       {/* Contenido Pestaña 1: Privacidad */}
       {activeTab === 'privacy' && (
-        <form onSubmit={handleSaveParams} className="params-section" role="tabpanel" aria-label="Parámetros de Privacidad">
+        <form onSubmit={handleSaveParams} className="params-section" role="tabpanel"
+          id="params-panel-privacy" aria-labelledby="params-tab-privacy" tabIndex={0}>
           {!env.useMockStorage && (
             <p role="note" className="alert-banner info" style={{ marginBottom: 'var(--space-4)' }}>
               <Icon name="info" size={16} />
@@ -247,7 +264,8 @@ export function SystemParamsPage() {
 
       {/* Contenido Pestaña 2: SLAs */}
       {activeTab === 'slas' && (
-        <form onSubmit={handleSaveParams} className="params-section" role="tabpanel" aria-label="Acuerdos de Nivel de Servicio">
+        <form onSubmit={handleSaveParams} className="params-section" role="tabpanel"
+          id="params-panel-slas" aria-labelledby="params-tab-slas" tabIndex={0}>
           <div className="card">
             <div className="card-header">
               <div>
@@ -295,7 +313,7 @@ export function SystemParamsPage() {
 
       {/* Contenido Pestaña 3: Gobernanza NLP y Políticas */}
       {activeTab === 'governance' && (
-        <div role="tabpanel" aria-label="Gobernanza NLP y Políticas">
+        <div role="tabpanel" id="params-panel-governance" aria-labelledby="params-tab-governance" tabIndex={0}>
           <PolicyAndNlpSettings
             settings={settings}
             handlePublishPolicy={handlePublishPolicy}

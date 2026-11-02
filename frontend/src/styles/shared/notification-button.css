@@ -49,7 +49,7 @@
 
 .topbar-pill-badge {
   background-color: var(--c-alerta); /* ámbar: semántica de atención, no de urgencia crítica */
-  color: #ffffff;
+  color: var(--c-texto-invertido);
   font-size: 10px;
   font-weight: 700;
   padding: 1px 6px;

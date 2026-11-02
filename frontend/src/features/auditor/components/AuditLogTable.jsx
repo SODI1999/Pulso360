@@ -1,8 +1,10 @@
 // src/features/auditor/components/AuditLogTable.jsx
 // Tabla ergonómica de eventos auditables con filtros e inspector criptográfico tipo Drawer lateral (RF-13)
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Icon } from '../../../core/components/Icon';
+import { useModalA11y } from '../../../core/hooks/useModalA11y';
+import { formatAuditDate, formatAuditAction } from '../utils/auditDisplay';
 
 /**
  * Componente modular de visualización de eventos de auditoría con soporte de Drawer lateral.
@@ -18,7 +20,7 @@ import { Icon } from '../../../core/components/Icon';
  */
 export function AuditLogTable({
   logs = [],
-  integrityStatus = { checked: false, valid: true, badgeText: 'Cadena inmutable activa', badgeType: 'badge-info' },
+  integrityStatus = { checked: false, valid: null, badgeText: 'Integridad pendiente de comprobar', badgeType: 'badge-info' },
   searchTerm = '',
   onSearchChange = () => {},
   statusFilter = 'ALL',
@@ -28,24 +30,46 @@ export function AuditLogTable({
   const [copiedId, setCopiedId] = useState(null);
   const [selectedLog, setSelectedLog] = useState(null);
   const [inspectingFailure, setInspectingFailure] = useState(false);
+  const [copyFeedback, setCopyFeedback] = useState('');
+  const [copyError, setCopyError] = useState('');
+  const drawerRef = useRef(null);
+  const copyTimerRef = useRef(null);
+  const copyAttemptRef = useRef(0);
+  useModalA11y({ isOpen: Boolean(selectedLog), onClose: () => setSelectedLog(null), modalRef: drawerRef });
 
-  // Cierre accesible con tecla Escape
   useEffect(() => {
-    if (!selectedLog) return;
-    const handleKeyDown = (e) => {
-      if (e.key === 'Escape') {
-        setSelectedLog(null);
-      }
+    return () => {
+      copyAttemptRef.current += 1;
+      clearTimeout(copyTimerRef.current);
     };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  useEffect(() => {
+    copyAttemptRef.current += 1;
+    clearTimeout(copyTimerRef.current);
+    setCopiedId(null);
+    setCopyFeedback('');
+    setCopyError('');
   }, [selectedLog]);
 
-  const handleCopy = (text, key) => {
+  const handleCopy = async (text, key) => {
     if (!text) return;
-    navigator.clipboard?.writeText(text);
-    setCopiedId(key);
-    setTimeout(() => setCopiedId(null), 2000);
+    const attempt = ++copyAttemptRef.current;
+    clearTimeout(copyTimerRef.current);
+    setCopiedId(null);
+    setCopyFeedback('');
+    setCopyError('');
+    try {
+      if (!navigator.clipboard?.writeText) throw new Error('Clipboard no disponible');
+      await navigator.clipboard.writeText(text);
+      if (attempt !== copyAttemptRef.current) return;
+      setCopiedId(key);
+      setCopyFeedback('Copiado al portapapeles.');
+      copyTimerRef.current = setTimeout(() => setCopiedId(null), 2000);
+    } catch {
+      if (attempt !== copyAttemptRef.current) return;
+      setCopyError('No se pudo copiar. Selecciona el texto y cópialo con el menú del navegador o con Ctrl+C.');
+    }
   };
 
   const handleInspectFailure = async (failureId) => {
@@ -67,6 +91,8 @@ export function AuditLogTable({
 
   return (
     <div className="card audit-card">
+      <div role="status" className="audit-copy-feedback">{!selectedLog ? copyFeedback : ''}</div>
+      <div role="alert" className="audit-copy-feedback">{!selectedLog ? copyError : ''}</div>
       {/* Encabezado de la Tarjeta */}
       <div className="card-header audit-card-header">
         <div>
@@ -76,7 +102,7 @@ export function AuditLogTable({
           </div>
         </div>
         <span className={`badge ${integrityStatus.badgeType || 'badge-info'} audit-header-badge`}>
-          {integrityStatus.badgeText || (integrityStatus.checked ? (integrityStatus.valid ? 'Cadena íntegra' : 'Discrepancia') : 'Cadena activa')}
+          {integrityStatus.badgeText || (integrityStatus.checked ? (integrityStatus.valid ? 'Cadena íntegra' : 'Discrepancia') : 'Integridad pendiente de comprobar')}
         </span>
       </div>
 
@@ -248,13 +274,13 @@ export function AuditLogTable({
                       </div>
                     </td>
                     <td>
-                      <span className="audit-date-cell">{log.date}</span>
+                      <span className="audit-date-cell">{formatAuditDate(log.date)}</span>
                     </td>
                     <td>
                       <strong className="audit-actor-name">{log.actor}</strong>
                     </td>
                     <td>
-                      <span className="badge badge-info audit-action-badge">{log.action}</span>
+                      <span className="badge badge-info audit-action-badge">{formatAuditAction(log.action)}</span>
                     </td>
                     <td>
                       <span className="audit-target-text" title={log.target}>
@@ -296,6 +322,7 @@ export function AuditLogTable({
           onClick={() => setSelectedLog(null)}
         >
           <aside
+            ref={drawerRef}
             className="audit-drawer-panel"
             role="dialog"
             aria-modal="true"
@@ -339,6 +366,8 @@ export function AuditLogTable({
             </div>
 
             <div className="audit-drawer-body">
+              <div role="status" className="audit-copy-feedback">{copyFeedback}</div>
+              <div role="alert" className="audit-copy-feedback">{copyError}</div>
               {/* Alerta de discrepancia criptográfica si el evento inspeccionado está marcado */}
               {(() => {
                 const failure = integrityStatus.failures?.find(
@@ -364,6 +393,14 @@ export function AuditLogTable({
 
               {/* Información principal de la operación */}
               <div className="audit-detail-grid">
+                <div className="audit-detail-item">
+                  <span className="audit-detail-label">Código de acción</span>
+                  <code className="audit-detail-value">{selectedLog.action}</code>
+                </div>
+                <div className="audit-detail-item">
+                  <span className="audit-detail-label">Fecha exacta registrada</span>
+                  <span className="audit-detail-value">{selectedLog.date || 'No registrada'}</span>
+                </div>
                 <div className="audit-detail-item">
                   <span className="audit-detail-label">Actor Responsable</span>
                   <strong className="audit-detail-value">{selectedLog.actor}</strong>

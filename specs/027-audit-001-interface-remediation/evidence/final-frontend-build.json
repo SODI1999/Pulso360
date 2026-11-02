@@ -1,0 +1,7 @@
+﻿{
+    "startedAt":  "2026-11-02T14:29:09.5058591Z",
+    "finishedAt":  "2026-11-02T14:29:17.4139543Z",
+    "command":  "npm run build",
+    "exitCode":  0,
+    "cwd":  "frontend"
+}

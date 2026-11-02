@@ -152,6 +152,15 @@
   margin-bottom: var(--space-4);
 }
 
+.params-section fieldset {
+  min-inline-size: 0;
+}
+
+.params-section button[type="submit"] {
+  max-width: 100%;
+  white-space: normal;
+}
+
 .params-grid-2 {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));

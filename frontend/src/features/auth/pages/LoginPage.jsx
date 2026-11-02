@@ -98,7 +98,7 @@ export function LoginPage({ initialMode }) {
               <DemoAccountsCard activeEmail={email} onSelectDemo={(r) => fillCredentials(r.email)} />
 
               <footer className="auth-corporate-legal">
-                <p>Protección de datos conforme a la Ley 1581 de 2012 y estándares SG-SST</p>
+                <p>Pulso360 · Prototipo estudiantil de apoyo preventivo en entornos BPO</p>
               </footer>
             </>
           )}
@@ -150,7 +150,7 @@ export function LoginPage({ initialMode }) {
               )}
 
               <footer className="auth-corporate-legal">
-                <p>Protección de datos conforme a la Ley 1581 de 2012 y estándares SG-SST</p>
+                <p>Pulso360 · Prototipo estudiantil de apoyo preventivo en entornos BPO</p>
               </footer>
             </>
           )}
@@ -233,7 +233,7 @@ export function LoginPage({ initialMode }) {
               )}
 
               <footer className="auth-corporate-legal">
-                <p>Protección de datos conforme a la Ley 1581 de 2012 y estándares SG-SST</p>
+                <p>Pulso360 · Prototipo estudiantil de apoyo preventivo en entornos BPO</p>
               </footer>
             </>
           )}

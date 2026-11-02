@@ -2,10 +2,10 @@ import { Icon } from '../../../core/components/Icon';
 
 const SECTIONS = [
   { id: 'autores', label: 'Autores y Equipo', icon: 'users' },
-  { id: 'evidencia-empirica', label: '1. Evidencia Empírica', icon: 'Activity' },
-  { id: 'transferencia', label: '2. Transferencia', icon: 'FileText' },
+  { id: 'evidencia-empirica', label: '1. Datos de aula', icon: 'Activity' },
+  { id: 'transferencia', label: '2. Origen de la idea', icon: 'FileText' },
   { id: 'antivigilancia', label: '3. Anti-vigilancia', icon: 'ShieldCheck' },
-  { id: 'citacion', label: '4. Citación & DSpace', icon: 'Bookmark' },
+  { id: 'citacion', label: '4. Atribución del material', icon: 'Bookmark' },
   { id: 'marco-legal', label: '5. Marco Legal', icon: 'Scale' }
 ];
 

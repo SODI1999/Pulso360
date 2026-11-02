@@ -1061,12 +1061,12 @@
 .btn-crisis-call--emergency {
   background-color: var(--c-critico-bg);
   border: 1px solid var(--c-critico-border);
-  color: var(--c-critico);
+  color: var(--c-critico-texto);
 }
 
 .btn-crisis-call--emergency:hover {
   background-color: #fee2e2;
-  color: var(--c-critico);
+  color: var(--c-critico-texto);
 }
 
 .btn-crisis-call--secondary {
@@ -1203,7 +1203,7 @@
 
 .crisis-sst-info {
   flex: 1;
-  min-width: 280px;
+  min-width: min(280px, 100%);
 }
 
 .crisis-sst-title {
@@ -1560,7 +1560,7 @@
   font-family: var(--font-family-mono, monospace);
   font-size: 14px;
   font-weight: 800;
-  color: var(--c-primario);
+  color: var(--c-calma-text);
   letter-spacing: -0.01em;
   background-color: rgba(15, 118, 110, 0.12);
   padding: 1px 7px;
@@ -1568,7 +1568,7 @@
 }
 
 .crisis-line-number--emergency {
-  color: #dc2626;
+  color: var(--c-critico-texto);
   background-color: rgba(220, 38, 38, 0.1);
 }
 

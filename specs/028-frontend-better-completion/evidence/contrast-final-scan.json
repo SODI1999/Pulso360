@@ -1,0 +1,357 @@
+[
+  {
+    "path": "/",
+    "role": "public",
+    "fails": [
+      {
+        "tag": "SPAN",
+        "class": "bullet-neutral",
+        "text": "•",
+        "fg": "rgb(140, 158, 154)",
+        "bg": [
+          245,
+          242,
+          235
+        ],
+        "ratio": 2.51,
+        "required": 4.5,
+        "size": "15.2px"
+      },
+      {
+        "tag": "SPAN",
+        "class": "bullet-neutral",
+        "text": "•",
+        "fg": "rgb(140, 158, 154)",
+        "bg": [
+          245,
+          242,
+          235
+        ],
+        "ratio": 2.51,
+        "required": 4.5,
+        "size": "15.2px"
+      },
+      {
+        "tag": "SPAN",
+        "class": "bullet-neutral",
+        "text": "•",
+        "fg": "rgb(140, 158, 154)",
+        "bg": [
+          245,
+          242,
+          235
+        ],
+        "ratio": 2.51,
+        "required": 4.5,
+        "size": "15.2px"
+      }
+    ]
+  },
+  {
+    "path": "/login",
+    "role": "public",
+    "fails": []
+  },
+  {
+    "path": "/recuperar-clave",
+    "role": "public",
+    "fails": []
+  },
+  {
+    "path": "/nueva-clave",
+    "role": "public",
+    "fails": []
+  },
+  {
+    "path": "/contactenos",
+    "role": "public",
+    "fails": []
+  },
+  {
+    "path": "/fundamentacion",
+    "role": "public",
+    "fails": [
+      {
+        "tag": "SPAN",
+        "class": "breadcrumb-separator",
+        "text": "/",
+        "fg": "rgb(148, 168, 164)",
+        "bg": [
+          245,
+          242,
+          235
+        ],
+        "ratio": 2.24,
+        "required": 4.5,
+        "size": "13.12px"
+      },
+      {
+        "tag": "SPAN",
+        "class": "kicker-separator",
+        "text": "·",
+        "fg": "rgb(164, 182, 178)",
+        "bg": [
+          255,
+          255,
+          255
+        ],
+        "ratio": 2.12,
+        "required": 4.5,
+        "size": "16px"
+      },
+      {
+        "tag": "SPAN",
+        "class": "node-arrow",
+        "text": "↑",
+        "fg": "rgb(22, 163, 74)",
+        "bg": [
+          248,
+          250,
+          249
+        ],
+        "ratio": 3.14,
+        "required": 4.5,
+        "size": "13.76px"
+      }
+    ]
+  },
+  {
+    "path": "/403",
+    "role": "public",
+    "fails": []
+  },
+  {
+    "path": "/sst/panel",
+    "role": "sst",
+    "fails": [
+      {
+        "tag": "SPAN",
+        "class": "nav-item-badge badge-info",
+        "text": "7",
+        "fg": "rgb(2, 132, 199)",
+        "bg": [
+          240,
+          249,
+          255
+        ],
+        "ratio": 3.84,
+        "required": 4.5,
+        "size": "10px"
+      },
+      {
+        "tag": "SPAN",
+        "class": "",
+        "text": "Seguimiento según SLA establecido",
+        "fg": "rgb(5, 150, 105)",
+        "bg": [
+          255,
+          255,
+          255
+        ],
+        "ratio": 3.77,
+        "required": 4.5,
+        "size": "11.5px"
+      }
+    ]
+  },
+  {
+    "path": "/sst/alertas",
+    "role": "sst",
+    "fails": [
+      {
+        "tag": "SPAN",
+        "class": "nav-item-badge badge-info",
+        "text": "7",
+        "fg": "rgb(2, 132, 199)",
+        "bg": [
+          240,
+          249,
+          255
+        ],
+        "ratio": 3.84,
+        "required": 4.5,
+        "size": "10px"
+      }
+    ]
+  },
+  {
+    "path": "/sst/reglas-alertas",
+    "role": "sst",
+    "fails": [
+      {
+        "tag": "SPAN",
+        "class": "nav-item-badge badge-info",
+        "text": "7",
+        "fg": "rgb(2, 132, 199)",
+        "bg": [
+          240,
+          249,
+          255
+        ],
+        "ratio": 3.84,
+        "required": 4.5,
+        "size": "10px"
+      }
+    ]
+  },
+  {
+    "path": "/sst/intervenciones",
+    "role": "sst",
+    "fails": [
+      {
+        "tag": "SPAN",
+        "class": "nav-item-badge badge-info",
+        "text": "7",
+        "fg": "rgb(2, 132, 199)",
+        "bg": [
+          240,
+          249,
+          255
+        ],
+        "ratio": 3.84,
+        "required": 4.5,
+        "size": "10px"
+      }
+    ]
+  },
+  {
+    "path": "/sst/buzon",
+    "role": "sst",
+    "fails": [
+      {
+        "tag": "SPAN",
+        "class": "nav-item-badge badge-info",
+        "text": "7",
+        "fg": "rgb(2, 132, 199)",
+        "bg": [
+          240,
+          249,
+          255
+        ],
+        "ratio": 3.84,
+        "required": 4.5,
+        "size": "10px"
+      }
+    ]
+  },
+  {
+    "path": "/reportes",
+    "role": "sst",
+    "fails": [
+      {
+        "tag": "SPAN",
+        "class": "nav-item-badge badge-info",
+        "text": "7",
+        "fg": "rgb(2, 132, 199)",
+        "bg": [
+          240,
+          249,
+          255
+        ],
+        "ratio": 3.84,
+        "required": 4.5,
+        "size": "10px"
+      }
+    ]
+  },
+  {
+    "path": "/notificaciones",
+    "role": "sst",
+    "fails": [
+      {
+        "tag": "SPAN",
+        "class": "nav-item-badge badge-info",
+        "text": "7",
+        "fg": "rgb(2, 132, 199)",
+        "bg": [
+          240,
+          249,
+          255
+        ],
+        "ratio": 3.84,
+        "required": 4.5,
+        "size": "10px"
+      }
+    ]
+  },
+  {
+    "path": "/admin/organizacion",
+    "role": "admin",
+    "fails": []
+  },
+  {
+    "path": "/admin/usuarios-roles",
+    "role": "admin",
+    "fails": []
+  },
+  {
+    "path": "/admin/parametros",
+    "role": "admin",
+    "fails": []
+  },
+  {
+    "path": "/admin/importar",
+    "role": "admin",
+    "fails": []
+  },
+  {
+    "path": "/admin/solicitudes",
+    "role": "admin",
+    "fails": []
+  },
+  {
+    "path": "/supervisor/panel",
+    "role": "supervisor",
+    "fails": []
+  },
+  {
+    "path": "/supervisor/acciones",
+    "role": "supervisor",
+    "fails": []
+  },
+  {
+    "path": "/auditor/auditoria",
+    "role": "auditor",
+    "fails": []
+  },
+  {
+    "path": "/agente/panel",
+    "role": "agente",
+    "fails": []
+  },
+  {
+    "path": "/agente/checkin",
+    "role": "agente",
+    "fails": []
+  },
+  {
+    "path": "/agente/bitacora",
+    "role": "agente",
+    "fails": []
+  },
+  {
+    "path": "/agente/mi-bienestar",
+    "role": "agente",
+    "fails": []
+  },
+  {
+    "path": "/agente/apoyo",
+    "role": "agente",
+    "fails": []
+  },
+  {
+    "path": "/agente/mis-datos",
+    "role": "agente",
+    "fails": []
+  },
+  {
+    "path": "/apoyo-crisis",
+    "role": "agente",
+    "fails": []
+  },
+  {
+    "path": "/consentimiento",
+    "role": "agente",
+    "fails": []
+  }
+]

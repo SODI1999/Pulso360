@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import { useEffect, useRef } from 'react';
 import { Icon } from '../../../core/components/Icon';
 
 const REASON_OPTIONS = [
@@ -31,7 +32,7 @@ const REASON_OPTIONS = [
 /**
  * Ergonomic guided intake form for psychosocial and occupational support requests (SST).
  * Features modality selection (anonymous vs identified), reason selection cards,
- * urgency scoring, contact preferences, and statutory CCL disclaimers.
+ * perceived urgency, contact preferences and feedback that distinguishes save and history failures.
  *
  * @param {Object} props - Component properties.
  * @param {boolean} props.isAnonymous - Flag indicating whether anonymity is requested.
@@ -42,12 +43,15 @@ const REASON_OPTIONS = [
  * @param {(val: string) => void} props.onChangeDetails - Details setter.
  * @param {string} props.urgency - Selected urgency level ('baja'|'media'|'alta').
  * @param {(val: string) => void} props.onChangeUrgency - Urgency setter.
- * @param {string} props.contactPreference - Preferred contact method ('app'|'correo'|'llamada').
+ * @param {string} props.contactPreference - Preferred contact method ('app'|'directo'|'llamada').
  * @param {(val: string) => void} props.onChangeContactPreference - Contact preference setter.
  * @param {string} props.timeWindow - Preferred availability slot.
  * @param {(val: string) => void} props.onChangeTimeWindow - Time window setter.
- * @param {(e: import('react').FormEvent) => void} props.onSubmit - Form submission handler.
- * @param {string} [props.feedback] - Feedback alert message.
+ * @param {(e: import('react').FormEvent) => Promise<void>} props.onSubmit - Coordinates confirmed save and history synchronization.
+ * @param {{type: 'success'|'error'|'warning', message: string}|null} [props.feedback] - Explicit result of submission/history synchronization.
+ * @param {boolean} props.isSubmitting - Disables another submission while the current one is pending.
+ * @param {boolean} props.isRefreshingHistory - Disables duplicate history refreshes.
+ * @param {() => Promise<void>} props.onRetryHistory - Refreshes history without resubmitting the request.
  * @returns {import('react').JSX.Element} Support request form section.
  */
 export function SupportRequestForm({
@@ -64,8 +68,18 @@ export function SupportRequestForm({
   timeWindow,
   onChangeTimeWindow,
   onSubmit,
-  feedback
+  feedback,
+  isSubmitting,
+  isRefreshingHistory,
+  onRetryHistory
 }) {
+  const feedbackRef = useRef(null);
+  useEffect(() => {
+    if (!feedback) return;
+    const focused = document.activeElement;
+    if (focused === document.body || focused?.closest('.support-form-actions')) feedbackRef.current?.focus();
+  }, [feedback]);
+
   return (
     <section className="support-form-card" aria-labelledby="support-form-title">
       <header className="support-form-header">
@@ -73,7 +87,7 @@ export function SupportRequestForm({
           Nueva solicitud de orientación y acompañamiento con SST
         </h2>
         <p className="support-form-subtitle">
-          Canal preventivo para coordinar apoyo psicosocial y ergonomía con el equipo de Seguridad y Salud en el Trabajo. Toda solicitud genera un radicado institucional formal.
+          Canal preventivo para solicitar orientación sobre sobrecarga de llamadas, fatiga o ergonomía. Recibirás un radicado cuando el servidor confirme el registro.
         </p>
       </header>
 
@@ -261,7 +275,7 @@ export function SupportRequestForm({
           <div className="support-anon-callout" role="note">
             <Icon name="info" size={15} />
             <span>
-              Al radicar en modo anónimo, no se requieren datos personales ni horarios; la comunicación se realiza exclusivamente mediante mensajes en este radicado.
+              En esta modalidad, tu nombre no se muestra a SST y el seguimiento se realiza desde tu cuenta mediante el radicado. El sistema conserva ese vínculo; evita incluir datos que te identifiquen si prefieres reservar tu identidad.
             </span>
           </div>
         )}
@@ -270,21 +284,27 @@ export function SupportRequestForm({
         <div className="support-legal-callout">
           <Icon name="info" size={16} className="support-legal-icon" />
           <div className="support-legal-text">
-            <strong>Alcance y tiempos de atención:</strong> Tu solicitud será gestionada por el área de SST durante la jornada hábil (SLA estimado: 24 horas hábiles; prioritario si indicas alta urgencia). Para situaciones relacionadas con presunto acoso laboral o conductas contempladas en la <strong>Ley 1010 de 2006</strong>, el canal legal y confidencial es el <strong>Comité de Convivencia Laboral (CCL)</strong>.
+            <strong>Seguimiento de la solicitud:</strong> El equipo SST revisa los radicados. Este formulario no informa un plazo de respuesta; podrás consultar el estado y cualquier plazo registrado en el seguimiento. La urgencia que indiques no confirma atención inmediata. Para una situación urgente, consulta las opciones de apoyo inmediato de la página.
           </div>
         </div>
 
         <footer className="support-form-actions">
-          <button className="btn-support-submit" type="submit">
+          <button className="btn-support-submit" type="submit" disabled={isSubmitting || isRefreshingHistory}>
             <Icon name="send" size={15} />
-            <span>Radicar solicitud ante SST</span>
+            <span>{isSubmitting ? 'Procesando solicitud…' : 'Radicar solicitud ante SST'}</span>
           </button>
         </footer>
 
         {feedback && (
-          <div className="support-feedback-alert" role="status" aria-live="polite">
-            <Icon name="checkCircle" size={18} />
-            <span>{feedback}</span>
+          <div ref={feedbackRef} tabIndex={-1} className={`support-feedback-alert support-feedback-alert--${feedback.type}`}
+            role={feedback.type === 'error' ? 'alert' : 'status'}>
+            <Icon name={feedback.type === 'success' ? 'checkCircle' : 'alertTriangle'} size={18} />
+            <span>{feedback.message}</span>
+            {feedback.type !== 'success' && (
+              <button type="button" className="btn btn-secondary btn-sm" onClick={onRetryHistory} disabled={isRefreshingHistory}>
+                {isRefreshingHistory ? 'Actualizando historial…' : 'Actualizar historial'}
+              </button>
+            )}
           </div>
         )}
       </form>
@@ -306,5 +326,11 @@ SupportRequestForm.propTypes = {
   timeWindow: PropTypes.string.isRequired,
   onChangeTimeWindow: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
-  feedback: PropTypes.string
+  feedback: PropTypes.shape({
+    type: PropTypes.oneOf(['success', 'error', 'warning']).isRequired,
+    message: PropTypes.string.isRequired
+  }),
+  isSubmitting: PropTypes.bool.isRequired,
+  isRefreshingHistory: PropTypes.bool.isRequired,
+  onRetryHistory: PropTypes.func.isRequired
 };

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { preferences } from '../../../core/storage/preferences';
-import { useBodyScrollLock } from '../../../core/hooks/useBodyScrollLock';
+import { useModalA11y } from '../../../core/hooks/useModalA11y';
 import { createAmbientSound } from '../services/ambientSound';
 import { BREATH_SECONDS, PHASE_DURATIONS, TIMED_PHASES, NEXT_PHASE } from '../data/bpoPauseData';
 
@@ -29,21 +29,11 @@ export function useBpoPause(isOpen, onClose) {
   const audioBreathPhaseRef = useRef(null);
   const exitButtonRef = useRef(null);
   const entryButtonRef = useRef(null);
-  const openerRef = useRef(null);
   const cycleRef = useRef(0);
   const [soundOn, setSoundOn] = useState(() => preferences.readPauseSound(true));
   const [pauseStarted, setPauseStarted] = useState(false);
-  useBodyScrollLock(isOpen);
+  useModalA11y({ isOpen, onClose, modalRef: overlayRef, initialFocusRef: entryButtonRef });
 
-  // Cada apertura reinicia el flujo desde la entrada
-  useEffect(() => {
-    if (!isOpen) {
-      openerRef.current?.focus?.();
-      openerRef.current = null;
-      return;
-    }
-    openerRef.current = document.activeElement;
-  }, [isOpen]);
   useEffect(() => {
     if (isOpen) {
       setPhase('entry');
@@ -52,6 +42,7 @@ export function useBpoPause(isOpen, onClose) {
       cycleRef.current = 0;
     }
   }, [isOpen]);
+
   useEffect(() => {
     if (!isOpen) return;
     if (phase === 'entry') {
@@ -60,35 +51,6 @@ export function useBpoPause(isOpen, onClose) {
     }
     exitButtonRef.current?.focus();
   }, [isOpen, phase]);
-
-  // Escape para salir y trampa de foco básica (Tab cicla entre los controles).
-  useEffect(() => {
-    if (!isOpen) return undefined;
-    const handleKey = (e) => {
-      if (e.key === 'Escape') {
-        onClose();
-        return;
-      }
-      if (e.key !== 'Tab' || !overlayRef.current) return;
-      const focusables = Array.from(overlayRef.current.querySelectorAll('button')).filter(
-        (el) => !el.disabled
-      );
-      if (focusables.length === 0) return;
-      const first = focusables[0];
-      const last = focusables[focusables.length - 1];
-      if (e.shiftKey && document.activeElement === first) {
-        last.focus();
-        e.preventDefault();
-      } else if (!e.shiftKey && document.activeElement === last) {
-        first.focus();
-        e.preventDefault();
-      }
-    };
-    window.addEventListener('keydown', handleKey);
-    return () => {
-      window.removeEventListener('keydown', handleKey);
-    };
-  }, [isOpen, onClose]);
 
   // Transición de fase: cambia la fase y sincroniza su duración en el mismo
   // lote de estado (evita que el avance dispare antes de inicializar el conteo)

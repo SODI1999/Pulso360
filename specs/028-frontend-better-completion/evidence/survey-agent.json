@@ -1,0 +1,245 @@
+[
+  {
+    "path": "/agente/panel",
+    "width": 320,
+    "scroll": 360,
+    "clip": 2,
+    "h1": [
+      "Buenos días, Laura Gomez"
+    ]
+  },
+  {
+    "path": "/agente/panel",
+    "width": 768,
+    "scroll": 753,
+    "clip": 0,
+    "h1": [
+      "Buenos días, Laura Gomez"
+    ]
+  },
+  {
+    "path": "/agente/panel",
+    "width": 1366,
+    "scroll": 1366,
+    "clip": 3,
+    "h1": [
+      "Buenos días, Laura Gomez"
+    ]
+  },
+  {
+    "path": "/agente/checkin",
+    "width": 320,
+    "scroll": 305,
+    "clip": 0,
+    "h1": [
+      "Check-in de bienestar"
+    ]
+  },
+  {
+    "path": "/agente/checkin",
+    "width": 768,
+    "scroll": 753,
+    "clip": 0,
+    "h1": [
+      "Check-in de bienestar"
+    ]
+  },
+  {
+    "path": "/agente/checkin",
+    "width": 1366,
+    "scroll": 1366,
+    "clip": 0,
+    "h1": [
+      "Check-in de bienestar"
+    ]
+  },
+  {
+    "path": "/agente/bitacora",
+    "width": 320,
+    "scroll": 305,
+    "clip": 0,
+    "h1": [
+      "Mi bitácora laboral"
+    ]
+  },
+  {
+    "path": "/agente/bitacora",
+    "width": 768,
+    "scroll": 753,
+    "clip": 0,
+    "h1": [
+      "Mi bitácora laboral"
+    ]
+  },
+  {
+    "path": "/agente/bitacora",
+    "width": 1366,
+    "scroll": 1366,
+    "clip": 4,
+    "h1": [
+      "Mi bitácora laboral"
+    ]
+  },
+  {
+    "path": "/agente/mi-bienestar",
+    "width": 320,
+    "scroll": 305,
+    "clip": 0,
+    "h1": [
+      "Mi tendencia personal de bienestar"
+    ]
+  },
+  {
+    "path": "/agente/mi-bienestar",
+    "width": 768,
+    "scroll": 768,
+    "clip": 0,
+    "h1": [
+      "Mi tendencia personal de bienestar"
+    ]
+  },
+  {
+    "path": "/agente/mi-bienestar",
+    "width": 1366,
+    "scroll": 1366,
+    "clip": 2,
+    "h1": [
+      "Mi tendencia personal de bienestar"
+    ]
+  },
+  {
+    "path": "/agente/apoyo",
+    "width": 320,
+    "scroll": 305,
+    "clip": 0,
+    "h1": [
+      "Acompañamiento con SST"
+    ]
+  },
+  {
+    "path": "/agente/apoyo",
+    "width": 768,
+    "scroll": 753,
+    "clip": 0,
+    "h1": [
+      "Acompañamiento con SST"
+    ]
+  },
+  {
+    "path": "/agente/apoyo",
+    "width": 1366,
+    "scroll": 1366,
+    "clip": 1,
+    "h1": [
+      "Acompañamiento con SST"
+    ]
+  },
+  {
+    "path": "/agente/mis-datos",
+    "width": 320,
+    "scroll": 305,
+    "clip": 0,
+    "h1": [
+      "Centro de Datos y Privacidad del Agente"
+    ]
+  },
+  {
+    "path": "/agente/mis-datos",
+    "width": 768,
+    "scroll": 753,
+    "clip": 0,
+    "h1": [
+      "Centro de Datos y Privacidad del Agente"
+    ]
+  },
+  {
+    "path": "/agente/mis-datos",
+    "width": 1366,
+    "scroll": 1366,
+    "clip": 2,
+    "h1": [
+      "Centro de Datos y Privacidad del Agente"
+    ]
+  },
+  {
+    "path": "/apoyo-crisis",
+    "width": 320,
+    "scroll": 313,
+    "clip": 1,
+    "h1": [
+      "Espacio de contención y apoyo inmediato"
+    ]
+  },
+  {
+    "path": "/apoyo-crisis",
+    "width": 768,
+    "scroll": 753,
+    "clip": 0,
+    "h1": [
+      "Espacio de contención y apoyo inmediato"
+    ]
+  },
+  {
+    "path": "/apoyo-crisis",
+    "width": 1366,
+    "scroll": 1366,
+    "clip": 8,
+    "h1": [
+      "Espacio de contención y apoyo inmediato"
+    ]
+  },
+  {
+    "path": "/consentimiento",
+    "width": 320,
+    "scroll": 305,
+    "clip": 0,
+    "h1": [
+      "Consentimiento informado y preferencias"
+    ]
+  },
+  {
+    "path": "/consentimiento",
+    "width": 768,
+    "scroll": 753,
+    "clip": 0,
+    "h1": [
+      "Consentimiento informado y preferencias"
+    ]
+  },
+  {
+    "path": "/consentimiento",
+    "width": 1366,
+    "scroll": 1351,
+    "clip": 0,
+    "h1": [
+      "Consentimiento informado y preferencias"
+    ]
+  },
+  {
+    "path": "/notificaciones",
+    "width": 320,
+    "scroll": 305,
+    "clip": 0,
+    "h1": [
+      "Avisos y notificaciones"
+    ]
+  },
+  {
+    "path": "/notificaciones",
+    "width": 768,
+    "scroll": 753,
+    "clip": 0,
+    "h1": [
+      "Avisos y notificaciones"
+    ]
+  },
+  {
+    "path": "/notificaciones",
+    "width": 1366,
+    "scroll": 1366,
+    "clip": 0,
+    "h1": [
+      "Avisos y notificaciones"
+    ]
+  }
+]

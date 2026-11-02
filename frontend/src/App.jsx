@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { authService, roleHomePaths } from './core/auth/authService';
 import { ProtectedRoute } from './core/auth/ProtectedRoute';
 import { AppLayout } from './core/layout/AppLayout';
+import { RouteAccessibility } from './core/components/RouteAccessibility';
 import { env } from './core/config/env';
 
 // Páginas de Autenticación (Hito 1)
@@ -73,6 +74,7 @@ function App() {
 
   return (
     <BrowserRouter>
+      <RouteAccessibility />
       <Routes>
         {/* 1. Rutas Públicas de Autenticación y Demostración */}
         <Route path="/login" element={<LoginPage />} />
@@ -86,7 +88,7 @@ function App() {
         <Route
           path="/consentimiento"
           element={
-            <ProtectedRoute allowedRoles={['agente']}>
+            <ProtectedRoute allowedRoles={['agente']} standalone>
               <ConsentPage />
             </ProtectedRoute>
           }

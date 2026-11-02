@@ -1,48 +1,47 @@
 import { Icon } from '../../../core/components/Icon';
 
 /**
- * Escala de Niveles de Privacidad y Salvaguardas de Pulso360.
- * Presenta los 4 niveles de visibilidad en un timeline vertical conectado que visualiza
- * la progresión desde el aislamiento íntimo en la estación hasta la capa operativa corporativa.
- * Cumple con el estándar anti-slop: sin badges decorativos redundantes ni pastillas radius-9999.
+ * Describe almacenamiento y acceso según el tipo de información del agente.
+ * Distingue el análisis léxico local de la persistencia y autorización del servidor.
+ * @returns {JSX.Element} Matriz de alcance de los datos y controles implementados.
  */
 export function PrivacyVisibilityMatrix() {
   const levels = [
     {
       level: 1,
-      scopeTag: 'Aislamiento local en estación',
+      scopeTag: 'Acceso personal',
       icon: 'Lock',
       iconTone: 'var(--c-primario)',
-      title: 'Exclusivo en tu estación de trabajo',
+      title: 'Bitácora de tu cuenta',
       scope: 'Bitácoras personales, textos de desahogo y reflexiones privadas de turno.',
-      safeguard: 'El motor léxico opera 100% de forma local en tu navegador. Ni supervisores ni RRHH tienen acceso al contenido escrito; no hay envíos a servidores ni a modelos remotos de IA.'
+      safeguard: 'El análisis léxico se ejecuta en tu navegador, sin modelos remotos de IA. Al guardar, el texto y su análisis se envían al servidor y quedan asociados a tu cuenta. Las vistas de supervisión no muestran el contenido de tus bitácoras.'
     },
     {
       level: 2,
-      scopeTag: 'Anonimato grupal (k ≥ 5)',
+      scopeTag: 'Agregados protegidos',
       icon: 'Users',
       iconTone: 'var(--c-info)',
-      title: 'Tendencias Agregadas para SG-SST',
-      scope: 'Puntajes somáticos de fatiga, tensión y energía del Check-in diario.',
-      safeguard: 'Solo alimenta mapas térmicos colectivos si hay al menos 5 agentes en la misma campaña y turno. Jamás se desagrega individualmente ni afecta tu evaluación operativa o AHT.'
+      title: 'Tendencias colectivas',
+      scope: 'Respuestas de check-in autorizadas para analítica colectiva.',
+      safeguard: 'El servidor aplica los mínimos de participación vigentes al grupo y período autorizados. Si no se cumplen, restringe los resultados; las vistas colectivas no muestran respuestas individuales. La dotación de un equipo no determina por sí sola que una métrica pueda publicarse.'
     },
     {
       level: 3,
       scopeTag: 'Canal de salud ocupacional',
       icon: 'HeartHandshake',
-      iconTone: '#8b5cf6',
-      title: 'Acompañamiento Psicosocial Voluntario',
-      scope: 'Solicitudes voluntarias de orientación psicosocial o pausas guiadas.',
-      safeguard: 'Visible exclusivamente por el profesional de SST o Psicología asignado para atender tu caso, amparado bajo estricto secreto y deber legal de reserva profesional.'
+      iconTone: 'var(--c-rol-sst)',
+      title: 'Acompañamiento voluntario con SST',
+      scope: 'Solicitudes de apoyo y mensajes que compartes en su radicado.',
+      safeguard: 'El equipo SST autorizado puede consultar y gestionar estos casos. En modalidad anónima, SST no recibe tu nombre ni tu identificador de cuenta, pero el contenido puede revelar tu identidad. El sistema conserva el vínculo del radicado con tu cuenta para permitir su seguimiento.'
     },
     {
       level: 4,
-      scopeTag: 'Capa institucional y WFM',
+      scopeTag: 'Administración de acceso',
       icon: 'Building2',
       iconTone: 'var(--c-texto-suave)',
-      title: 'Datos Institucionales de Estación',
-      scope: 'Nombre corporativo, correo de campaña, sede, turno y campaña asignada por WFM.',
-      safeguard: 'Información administrada por el área de operaciones para habilitar tu estación de trabajo, validar tu jornada y permitir el acceso seguro a sistemas.'
+      title: 'Datos de tu cuenta y asignación',
+      scope: 'Nombre, correo, rol y asignaciones organizacionales registradas en Pulso360.',
+      safeguard: 'La administración gestiona las cuentas, sus roles y asignaciones. Esos permisos delimitan las rutas y datos accesibles; administrar una cuenta no habilita la lectura de su bitácora personal.'
     }
   ];
 
@@ -51,10 +50,10 @@ export function PrivacyVisibilityMatrix() {
       <div className="card-header">
         <div>
           <h2 className="card-title" style={{ fontSize: '15px' }}>
-            Escala de Niveles de Privacidad: ¿Quién tiene acceso a qué?
+            ¿Cómo se guardan y quién puede consultar tus datos?
           </h2>
           <p className="card-subtitle">
-            Pulso360 organiza la información en 4 capas de protección para garantizar que el bienestar jamás se confunda con vigilancia laboral.
+            El acceso depende del tipo de registro y de los permisos de cada rol. Estas son las diferencias entre tu información personal, los agregados y las solicitudes de apoyo.
           </p>
         </div>
       </div>

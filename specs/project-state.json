@@ -1,0 +1,260 @@
+{
+  "schemaVersion": 1,
+  "context": {
+    "recordedAt": "2026-11-02T20:40:46.422Z",
+    "scope": "CONTEXT_INPUTS_V3",
+    "inputs": {
+      ".github/workflows/ci.yml": "037895a693e4a455bb7dcfcc505e9d06f9393e00a4569ea890a5849a3ab782ab",
+      "CONSTITUTION.md": "3f607334881304b86b11ee5e92e35805a617e406a416cd2432b28b05bd0f350e",
+      "README.md": "7e2574dc16d6e7f1132fa269d41dfb06a420f68e42ba770d03deb3eab4e83051",
+      "backend/.env.example": "41423f35b1ae3f4c96b767f07339de239e32c929c8fa5d1ed766be4436a98304",
+      "backend/Dockerfile": "d0083b0323f2af3883fc9c6d22638306d3dcc1ebd6e8807d5e3d0da8b0c82cb8",
+      "backend/README.md": "3a75a2c219e7500c871fcaac143dff7f75f28f78df9b441f20d1845105df6932",
+      "backend/package.json": "fc6af409d2219152e179ee4d6b162575c5ab5dec767fee2ece9591387f3fa1f8",
+      "backend/src/domain/privacyRules.js": "3efb467c6426cd65082330aeb59187851c6eb3d27264e13daf6b3b80caa8a38a",
+      "backend/src/index.js": "4788110367b53658782e58bed1148d626098f851e5896dd44fc96ed3532aa717",
+      "docker-compose.yml": "355fc1b139c68fc5841a25999638d4d5b71c7772f02c36149937db48ce1bdb41",
+      "frontend/.env.example": "a610b395508e5b99a3c358a2a11bf071ddd0c12ce393bad232e2185141fe140f",
+      "frontend/Dockerfile": "ccf543b2703addd1480f60410fb84faff2e8610a735e73f61972dd05ebd2edbc",
+      "frontend/README.md": "f5f332a71cd00793bdb7bdb50cc4fbd92438f525fa294a419fd7a933b918b6db",
+      "frontend/eslint.config.js": "bfc58f36f77deff76bb7adb334edee8f2ebbaf4b16fd8027cf0bee013f6ca378",
+      "frontend/index.html": "d5c1e41fb4227caa220aca1526fcad75b289c57f55ad4f6dd0abf4b56f5953b7",
+      "frontend/package.json": "40cea1a21ba90586fe6ba86d78a7fd7a353f0dcadbb1b88eeba003d2cd4529b0",
+      "frontend/src/main.jsx": "2770100322f65c4d43229b3371c28c50624b9b189f07e43c2fd4f474c2e760bc",
+      "frontend/vite.config.js": "4d36db3522a7b2dd10e0936e1004373c7ee65f10f7cd7920cd76410459c15a45",
+      "specs/029-focus-ring-and-local-evidence/bug.md": "42840189320b357403877165030066749c74bc4ce9e0d232b08f560d9a680a32",
+      "specs/029-focus-ring-and-local-evidence/verification.md": "1ee1b6f35265d58e8fafa3f5bf61c713d4e07533e077d183623412e2e50dad1b",
+      "specs/028-frontend-better-completion/verification.md": "77f576f7fd446cd4305d5bdef6464a68d185efdb930f91e274ffd0d7c7f26adf",
+      "specs/028-frontend-better-completion/route-inventory.json": "77803e14dc0dbf8a940503bb908df45a6aa438a874c440736ef5d1ec93b7033e",
+      "specs/028-frontend-better-completion/better-report.md": "3b3548b89dec5ddd0a40cda0183c42391448b12445c3ddeee126346cd3393f73",
+      "specs/027-audit-001-interface-remediation/verification.md": "6d77dbccdb7837f304dd6320684c88dad00d396c20012ae583f8ad44f55a0a23",
+      "specs/project-context.md": "d5ec2c84ceb1cb21244730d9e76f05b55c412e9ff044cf7bc8e4d8678ef01eab"
+    },
+    "reviewScope": "EOL_NORMALIZED_BASELINE_AND_STRUCTURAL_LINKS_ONLY",
+    "semanticReview": "AGENT_OR_HUMAN_REQUIRED"
+  },
+  "session": {
+    "id": "1fb7c764-07b1-4655-9ffc-2e32050c84ff",
+    "host": "Codex/Windows/Pulso360",
+    "observedAt": "2026-11-02T20:21:42.936Z",
+    "recordedAt": "2026-11-02T20:21:42.943Z",
+    "capabilities": {
+      "questions": {
+        "status": "available",
+        "source": "Chat y herramientas nativas; intención y publicación autorizadas por usuario."
+      },
+      "web": {
+        "status": "available",
+        "source": "MDN focus-visible yHTMLElement.focus consultados2026-11-02."
+      },
+      "terminal": {
+        "status": "available",
+        "source": "CLI0.8.1 igualmanifest;gitfetch sin divergencia;testsDOMChrome ejecutados."
+      },
+      "render": {
+        "status": "available",
+        "source": "Chrome156 ejecutó harnessDOM11grupos exit0 mediante dump-dom, sin depuración remota. PreviewDeska sin ventana; CUAhost/pipe indisponible; arranqueCDP rechazado por política, no se reintenta."
+      },
+      "delegation": {
+        "status": "available",
+        "source": "Better-interface dirige al revisor better_accessibility_review para corrección acotada."
+      }
+    }
+  },
+  "decisions": [
+    {
+      "id": "audit-001-remediation-scope",
+      "topic": "scope",
+      "status": "delegated",
+      "value": "Corregir los doce hallazgos de audit-001; better-interface dirige las seis disciplinas. Chat local por radicado, sin persistencia nueva entre rutas. Conservar React/JSX, servicios, autorización y privacidad.",
+      "basis": "El usuario autorizó proceder con el ciclo completo de Omni y todos los ajustes necesarios el 2026-11-02, después de la discusión con dos entregas y persistencia entre rutas excluida. Sin autorización para commits, publicación, borrado de datos ni migraciones.",
+      "required": true,
+      "appliesTo": [
+        "027"
+      ],
+      "recordedAt": "2026-11-02T05:01:46.609Z",
+      "revision": 1
+    },
+    {
+      "id": "better-frontend-completion-scope",
+      "topic": "scope",
+      "status": "delegated",
+      "value": "Completar revisión por todas las rutas de frontend y corregir hallazgos/refactorizaciones necesarias bajo better-interface; orquestación acotada por disciplinas y navegador obligatorio.",
+      "basis": "El usuario pide explícitamente que todas las correcciones, mejoras y refactorizaciones que better dirija y orqueste queden completadas. Conserva autorización previa de cicloOmni; sin commits/despliegues/migraciones o mutaciones de datos reales.",
+      "required": true,
+      "appliesTo": [
+        "028"
+      ],
+      "recordedAt": "2026-11-02T15:04:54.609Z",
+      "revision": 1
+    },
+    {
+      "id": "classroom-research-provenance",
+      "topic": "domain",
+      "status": "approved",
+      "value": "La investigación que originó la idea de Pulso360 se realizó dentro del aula para una materia; su fuente son los datos recogidos en esa actividad. No representa investigación universitaria institucional, semillero, publicación ni aval del TdeA.",
+      "basis": "Aclaración explícita del usuario el2026-11-02. Se conservan nombres/cifras existentes atribuidos al material de aula, sin afirmar que se verificó independientemente su conjunto de datos.",
+      "required": true,
+      "appliesTo": [
+        "028"
+      ],
+      "recordedAt": "2026-11-02T16:40:25.099Z",
+      "revision": 1
+    },
+    {
+      "id": "publish-interface-remediation",
+      "topic": "publication",
+      "status": "approved",
+      "value": "Commit y push normales de los cambios revisados027/028/029 al origin/develop existente, excluyendo capturas locales e ignorados. Sin forcepush,deploy,migraciones ni cambios globales.",
+      "basis": "Usuario2026-11-02: pide corregir marco verde,ignorar las imágenes generadas y pushear los cambios valiosos aGitHub. Rama actualdevelop;fetchorigin ejecutado ysin divergencia.",
+      "required": true,
+      "appliesTo": [
+        "029"
+      ],
+      "recordedAt": "2026-11-02T20:20:08.812Z",
+      "revision": 1
+    }
+  ],
+  "sessions": [
+    {
+      "id": "064e5999-5a22-463b-a5ac-023b882adfdd",
+      "host": "Codex / Deska",
+      "observedAt": "2026-11-02T05:01:46.308Z",
+      "recordedAt": "2026-11-02T05:01:46.322Z",
+      "capabilities": {
+        "questions": {
+          "status": "available",
+          "source": "Preguntas estructuradas y chat disponibles; el usuario autorizó el ciclo completo y delegó la dirección visual a better-interface."
+        },
+        "web": {
+          "status": "available",
+          "source": "web.run disponible; no hay cambios de stack ni nuevas APIs externas que investigar."
+        },
+        "terminal": {
+          "status": "available",
+          "source": "CLI OmniSpec 0.8.1 y Vite ejecutados en PowerShell."
+        },
+        "render": {
+          "status": "unavailable",
+          "source": "preview_open: No Deska window is open. Computer Use detuvo Chrome al no poder determinar la URL con confianza. No se elude el bloqueo."
+        },
+        "delegation": {
+          "status": "available",
+          "source": "Herramientas de colaboración disponibles; omni-audit solicita revisión separada con el rol instalado omni-auditor."
+        }
+      }
+    },
+    {
+      "id": "de0d1ca0-6cd4-4629-aed3-cbcf7a95f749",
+      "host": "Codex / Chrome DevTools Protocol directo",
+      "observedAt": "2026-11-02T05:41:11.244Z",
+      "recordedAt": "2026-11-02T05:41:11.253Z",
+      "capabilities": {
+        "questions": {
+          "status": "available",
+          "source": "Chat y preguntas nativas disponibles; el usuario pidió explícitamente usar Chrome DevTools como alternativa el 2026-11-02."
+        },
+        "web": {
+          "status": "available",
+          "source": "Consultadas páginas oficiales Chrome Headless y remote-debugging-port; sin cambio de stack."
+        },
+        "terminal": {
+          "status": "available",
+          "source": "CLI local 0.8.1 coincide con manifest y procesos locales inspeccionados."
+        },
+        "render": {
+          "status": "available",
+          "source": "Conexión CDP directa establecida con Chrome156, protocolo1.3, perfil temporal aislado y navegación a http://localhost:5173. Deska y host de browser siguen indisponibles; el usuario autorizó la alternativa específica."
+        },
+        "delegation": {
+          "status": "available",
+          "source": "Colaboración disponible; rol instalado omni-auditor para revisión acotada independiente."
+        }
+      }
+    },
+    {
+      "id": "29682fe4-8915-43a9-a8dd-3f8fbb96e69c",
+      "host": "Codex / Chrome DevTools Protocol directo",
+      "observedAt": "2026-11-02T14:15:05.129Z",
+      "recordedAt": "2026-11-02T14:15:05.135Z",
+      "capabilities": {
+        "questions": {
+          "status": "available",
+          "source": "Chat y preguntas nativas disponibles; el usuario pidió explícitamente usar Chrome DevTools como alternativa el 2026-11-02."
+        },
+        "web": {
+          "status": "available",
+          "source": "Consultadas páginas oficiales Chrome Headless y remote-debugging-port; sin cambio de stack."
+        },
+        "terminal": {
+          "status": "available",
+          "source": "CLI local 0.8.1 coincide con manifest y procesos locales inspeccionados."
+        },
+        "render": {
+          "status": "available",
+          "source": "Conexión CDP directa establecida con Chrome156, protocolo1.3, perfil temporal aislado y navegación a http://localhost:5173. Deska y host de browser siguen indisponibles; el usuario autorizó la alternativa específica."
+        },
+        "delegation": {
+          "status": "available",
+          "source": "Colaboración disponible; rol instalado omni-auditor para revisión acotada independiente."
+        }
+      }
+    },
+    {
+      "id": "61b79b3b-63e3-43e8-8e28-edeb4419ce11",
+      "host": "Codex / Chrome DevTools Protocol directo",
+      "observedAt": "2026-11-02T14:47:23.786Z",
+      "recordedAt": "2026-11-02T14:47:23.795Z",
+      "capabilities": {
+        "questions": {
+          "status": "available",
+          "source": "Chat y preguntas nativas disponibles; el usuario pidió explícitamente usar Chrome DevTools como alternativa el 2026-11-02."
+        },
+        "web": {
+          "status": "available",
+          "source": "Consultadas páginas oficiales Chrome Headless y remote-debugging-port; sin cambio de stack."
+        },
+        "terminal": {
+          "status": "available",
+          "source": "CLI local 0.8.1 coincide con manifest y procesos locales inspeccionados."
+        },
+        "render": {
+          "status": "available",
+          "source": "Conexión CDP directa establecida con Chrome156, protocolo1.3, perfil temporal aislado y navegación a http://localhost:5173. Deska y host de browser siguen indisponibles; el usuario autorizó la alternativa específica."
+        },
+        "delegation": {
+          "status": "available",
+          "source": "Colaboración disponible; rol instalado omni-auditor para revisión acotada independiente."
+        }
+      }
+    },
+    {
+      "id": "41377bbe-f56e-474b-92a1-abdf704609d9",
+      "host": "Codex / Chrome DevTools Protocol directo",
+      "observedAt": "2026-11-02T15:01:32.035Z",
+      "recordedAt": "2026-11-02T15:01:32.041Z",
+      "capabilities": {
+        "questions": {
+          "status": "available",
+          "source": "Chat y preguntas nativas disponibles; el usuario pidió explícitamente usar Chrome DevTools como alternativa el 2026-11-02."
+        },
+        "web": {
+          "status": "available",
+          "source": "Consultadas páginas oficiales Chrome Headless y remote-debugging-port; sin cambio de stack."
+        },
+        "terminal": {
+          "status": "available",
+          "source": "CLI local 0.8.1 coincide con manifest y procesos locales inspeccionados."
+        },
+        "render": {
+          "status": "available",
+          "source": "Conexión CDP directa establecida con Chrome156, protocolo1.3, perfil temporal aislado y navegación a http://localhost:5173. Deska y host de browser siguen indisponibles; el usuario autorizó la alternativa específica."
+        },
+        "delegation": {
+          "status": "available",
+          "source": "Colaboración disponible; rol instalado omni-auditor para revisión acotada independiente."
+        }
+      }
+    }
+  ]
+}

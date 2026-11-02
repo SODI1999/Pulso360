@@ -64,8 +64,9 @@ export function PerspectiveSimModal({ isOpen, onClose }) {
                   <Icon name="check_circle" size={15} />
                 </span>
                 <span>
-                  <strong>Notas de Bitácora:</strong> La redacción íntegra, las emociones y el desahogo de
-                  turno permanecen sólo en tu espacio personal; nadie más los ve dentro de la aplicación.
+                  <strong>Notas de bitácora:</strong> Al guardar, el texto y su análisis se envían al servidor
+                  y quedan asociados a tu cuenta. Las vistas de supervisión no muestran esos textos; el
+                  análisis léxico se ejecuta localmente en el navegador.
                 </span>
               </li>
               <li className="perspective-list-item">

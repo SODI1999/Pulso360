@@ -9,12 +9,12 @@ export function AcademicEvidence() {
       aria-labelledby="sec-evidencia-titulo"
     >
       <div className="section-title-wrap">
-        <span className="section-tag">Evidencia Empírica de Campo</span>
-        <h2 id="sec-evidencia-titulo">Radiografía del agotamiento en centros de contacto locales</h2>
+        <span className="section-tag">Datos recogidos en la actividad de aula</span>
+        <h2 id="sec-evidencia-titulo">Qué reporta el grupo de la actividad</h2>
       </div>
       <p className="section-prose">
-        {EMPIRICAL_DATA.sampleContext} La investigación reporta el uso de los siguientes instrumentos; sus
-        resultados y condiciones de aplicación pertenecen al estudio original:
+        {EMPIRICAL_DATA.sampleContext} El material de aula menciona los siguientes instrumentos como
+        referencias. No se presentan como instrumentos de Pulso360 ni como validación de la plataforma:
       </p>
       <div className="instruments-row">
         {EMPIRICAL_DATA.instruments.map((inst) => (
@@ -41,11 +41,11 @@ export function AcademicEvidence() {
             <div
               className="distribution-bar-track"
               role="progressbar"
-              aria-label="Distribución de niveles de fatiga emocional"
+              aria-label="Distribución de categorías de agotamiento reportadas en la actividad de aula"
               aria-valuenow="84.3"
               aria-valuemin="0"
               aria-valuemax="100"
-              aria-valuetext="84.3% de prevalencia de agotamiento emocional"
+              aria-valuetext="84.3% en categorías media y alta, según los datos de la actividad de aula"
             >
               {EMPIRICAL_DATA.distribution.map((dist) => (
                 <div
@@ -91,8 +91,8 @@ export function AcademicEvidence() {
                 <div
                   className="correlation-vector-box"
                   role="group"
-                  aria-label="Relación psicométrica: a mayor apoyo social percibido, menor nivel de agotamiento reportado (r = -0.428, p < 0.01)"
-                  title="Correlación inversa estadísticamente significativa de Pearson (p < 0.01): el apoyo social actúa como factor protector amortiguador."
+                  aria-label="Asociación reportada en la actividad de aula: mayor apoyo social y menor agotamiento (r = -0.428, p < 0.01); no establece causalidad"
+                  title="Asociación inversa reportada en el material de aula; no demuestra causalidad ni resultados de Pulso360."
                 >
                   <div className="correlation-node node-support">
                     <span className="node-label">Apoyo Social</span>
@@ -102,7 +102,7 @@ export function AcademicEvidence() {
                   </div>
                   <div className="correlation-vector-arrow" aria-hidden="true">
                     <span className="vector-line" />
-                    <span className="vector-tag">amortigua</span>
+                    <span className="vector-tag">se asocia</span>
                     <span className="vector-line" />
                   </div>
                   <div className="correlation-node node-burnout">
@@ -118,7 +118,7 @@ export function AcademicEvidence() {
                 <div className="aside-highlight-box">
                   <Icon name="info" size={14} className="highlight-icon" />
                   <span>
-                    <strong>Traducción Operativa:</strong> {sec.operationalMeaning}
+                    <strong>Relación con la idea del proyecto:</strong> {sec.operationalMeaning}
                   </span>
                 </div>
               )}

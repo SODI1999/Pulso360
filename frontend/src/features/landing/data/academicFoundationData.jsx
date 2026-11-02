@@ -1,71 +1,65 @@
 // src/features/landing/data/academicFoundationData.jsx
-// Fuente de datos estructurada para Fundamentación Científica y Transferencia Tecnológica
-// Basado en la investigación formativa original del Tecnológico de Antioquia (TdeA)
+// Datos atribuidos a una actividad de aula de una materia, origen de la idea Pulso360.
+// El contexto estudiantil TdeA no implica publicación, aval ni validación institucional.
 
 export const FOUNDATION_META = {
-  kicker: 'Medellín, Colombia · Investigación Formativa TdeA 2026',
-  badge: 'Evidencia Empírica & Transferencia Tecnológica',
+  kicker: 'Actividad de aula · Medellín, Colombia · 2026',
+  badge: 'Origen de la idea Pulso360',
   title:
-    'De la investigación social a la ingeniería preventiva: Relación entre el agotamiento emocional y el apoyo social en call centers',
-  lead: 'Cómo un estudio cuantitativo sobre 185 operadores en Medellín (84.3% con agotamiento significativo) inspiró a estudiantes de Ingeniería de Software del TdeA a crear Pulso360: una plataforma preventiva que separa tendencias agregadas de registros individuales en sus flujos definidos.',
-  lastUpdated: 'Septiembre 2026',
-  institution: 'Tecnológico de Antioquia: Institución Universitaria',
+    'De una actividad de aula sobre agotamiento y apoyo social a la idea de Pulso360',
+  lead: 'La idea de Pulso360 nació de datos recogidos en una actividad de aula de una materia. El material reporta un grupo de 185 operadores de call center en Medellín y una relación entre agotamiento emocional y apoyo social. Las cifras describen esa actividad: no representan al sector ni son resultados o validación de Pulso360. La mención del TdeA sitúa al equipo de estudiantes; no expresa aval institucional.',
+  lastUpdated: 'Noviembre 2026',
+  institution: 'Contexto estudiantil: Tecnológico de Antioquia (TdeA)',
   city: 'Medellín, Colombia'
 };
 
 export const AUTHORS_MATRIX = {
   socialResearch: {
-    badge: 'Investigación Social de Campo',
-    roleTitle: 'Semillero de Investigación en Trabajo Social',
+    badge: 'Actividad de aula',
+    roleTitle: 'Trabajo realizado para una materia',
     leadAuthor: 'Ingrid Johana Saldarriaga Roa',
-    leadAuthorRole: 'Docente Líder & Asesora Metodológica',
+    leadAuthorRole: 'Docente orientadora de la actividad',
     coauthors: ['Leidy Katherin Valles', 'Verónica Velasquez', 'Luis Ferney Vargas', 'Jhonfer David Lezcano'],
-    faculty: 'Facultad de Educación y Ciencias Sociales',
-    institution: 'Tecnológico de Antioquia (TdeA)',
+    institution: 'Contexto estudiantil: TdeA',
     focus:
-      'Diagnóstico cuantitativo del agotamiento emocional y redes de apoyo social en agentes de call center de Medellín',
+      'Datos recogidos durante una actividad de materia sobre agotamiento emocional y apoyo social. Material de aula no publicado.',
     icon: 'users'
   },
   softwareEngineering: {
-    badge: 'Ingeniería de Software & Transferencia',
-    roleTitle: 'Equipo de Ingeniería de Software (TdeA)',
+    badge: 'Idea y desarrollo de software',
+    roleTitle: 'Equipo estudiantil de Pulso360',
     leadAuthor: 'Brahian Andrés Ospina Ríos, Leonardo Otálvaro, Andrés Felipe Trujillo',
-    leadAuthorRole: 'Desarrolladores & Autores de la Plataforma Pulso360',
-    coauthors: [
-      'Facultad de Ingeniería (Ingeniería de Software)',
-      'Obra Informática Derivada e Independiente (Ley 23 de 1982)'
-    ],
-    faculty: 'Facultad de Ingeniería (Ingeniería de Software)',
-    institution: 'Tecnológico de Antioquia (TdeA)',
+    leadAuthorRole: 'Estudiantes desarrolladores de Pulso360',
+    institution: 'Estudiantes del Tecnológico de Antioquia (TdeA)',
     focus:
-      'Regla de agregación k-anonimato (k ≥ 5 agentes únicos), micro-pulsos al cierre de turno y análisis léxico local para la bitácora',
+      'La actividad de aula dio origen a una propuesta de software para registros voluntarios, apoyo y tendencias colectivas protegidas. Los datos de esa actividad no validan los instrumentos ni los resultados de la plataforma.',
     icon: 'fileShield'
   }
 };
 
 export const EMPIRICAL_DATA = {
   sampleContext:
-    'Estudio transversal en operadores activos de Contact Center y BPO en Medellín, evaluados bajo alta carga de interacciones simultáneas, rotación de turnos y métricas estrictas de AHT.',
+    'Fuente de las cifras de esta página: datos recogidos en una actividad de aula de una materia, referidos a 185 operadores de call center en Medellín. Su alcance se limita a ese grupo y a las condiciones de la actividad; no se presentan como una publicación universitaria ni como una estimación de todo el sector BPO.',
   instruments: [
     {
       acronym: 'MBI-HSS',
       name: 'Maslach Burnout Inventory: Human Services Survey (MBI-HSS)',
       purpose:
-        'Instrumento descrito en la investigación para explorar agotamiento emocional en trabajadores de servicios de alta interacción.'
+        'Instrumento mencionado en el material de aula al abordar el agotamiento emocional. No es el check-in de Pulso360 ni acredita su validación clínica.'
     },
     {
       acronym: 'MSPSS',
       name: 'Multidimensional Scale of Perceived Social Support (MSPSS de Zimet et al.)',
       purpose:
-        'Escala de Zimet et al. descrita para explorar la percepción de apoyo social en tres dimensiones: pares laborales, supervisores y familia/entorno significativo.'
+        'Escala mencionada en el material de aula para abordar el apoyo social percibido. Esa referencia no valida las funciones ni los resultados de Pulso360.'
     }
   ],
   mainMetric: {
     percentage: '84.3%',
-    tag: 'Indicador Psicométrico Central',
-    label: 'Prevalencia de Agotamiento Emocional en Muestra de Referencia',
+    tag: 'Dato de la actividad de aula',
+    label: 'Categorías media y alta de agotamiento en el grupo de la actividad',
     description:
-      'Estudio de caso formativo de referencia con 185 operadores de centros de contacto en Medellín (TdeA). En la muestra evaluada, más de 8 de cada 10 participantes reportaron manifestaciones significativas de fatiga acumulada, vaciamiento energético y sobrecarga por atención continuada.'
+      'En los datos recogidos en la actividad de materia, el 84.3% corresponde a las categorías media y alta reportadas para el grupo de 185 participantes. Es una descripción de esos datos, no un diagnóstico individual, una cifra de todo el sector ni una medición de Pulso360.'
   },
   distribution: [
     {
@@ -73,51 +67,51 @@ export const EMPIRICAL_DATA = {
       percentage: 19.6,
       color: '#dc2626',
       toneClass: 'dist-high',
-      label: '19.6% Alto (Sobrecarga Severa)',
+      label: '19.6% · Categoría alta',
       summary:
-        'Agotamiento severo que demanda intervención prioritaria preventiva del equipo de SST y revisión de condiciones de piso.'
+        'Proporción clasificada en la categoría alta en el material de la actividad de aula.'
     },
     {
       level: 'Medio',
       percentage: 64.7,
       color: '#b45309',
       toneClass: 'dist-mid',
-      label: '64.7% Medio (Fatiga Acumulada)',
+      label: '64.7% · Categoría media',
       summary:
-        'Desgaste acumulado por turnos extensos, colas continuas de llamadas y tiempos reducidos de pausa.'
+        'Proporción clasificada en la categoría media en el material de la actividad de aula.'
     },
     {
       level: 'Bajo',
       percentage: 15.7,
       color: '#059669',
       toneClass: 'dist-low',
-      label: '15.7% Bajo',
+      label: '15.7% · Categoría baja',
       summary:
-        'Operadores con niveles estables de energía, respaldados por factores amortiguadores y red de contención activa.'
+        'Proporción clasificada en la categoría baja en el material de la actividad de aula.'
     }
   ],
   secondaryMetrics: [
     {
       id: 'turnover',
       value: '76.5%',
-      title: 'Intención de Deserción Operativa',
+      title: 'Intención de renuncia en el grupo de la actividad',
       description:
-        'En la muestra del estudio de caso académico formativo de referencia, el 76.5% de los operadores consultados manifestó haber considerado renunciar a su puesto como salida a la sobrecarga y tensión operativa diaria en piso.',
-      tag: 'Impacto en Rotación BPO',
+        'En los datos recogidos durante la actividad de aula, se reportó que el 76.5% de los participantes había considerado renunciar a su puesto. La cifra se atribuye únicamente a ese grupo.',
+      tag: 'Dato recogido en el aula',
       operationalMeaning:
-        'La intención de retiro voluntario opera como señal exploratoria de alerta temprana frente a la saturación por colas de llamadas continuas y la escasez de pausas de recuperación psicofísica.'
+        'Este dato motivó al equipo a considerar el acceso a orientación y apoyo. La intención declarada no es una tasa de rotación efectiva ni evidencia de que Pulso360 la reduzca.'
     },
     {
       id: 'protective',
       value: 'r = -0.428',
-      title: 'Efecto Protector del Apoyo Social',
+      title: 'Relación entre apoyo social y agotamiento',
       description:
-        'Correlación inversa estadísticamente significativa (p < 0.01) observada en el estudio de caso académico formativo de referencia: a mayor apoyo social percibido entre pares y supervisión, menor fue el nivel de agotamiento emocional reportado.',
-      tag: 'Hallazgo Psicométrico Clave',
+        'El material de la actividad de aula reporta una asociación inversa (r = -0.428; p < 0.01): en esos datos, un mayor apoyo social percibido se relacionó con menor agotamiento reportado. La asociación no establece causalidad.',
+      tag: 'Asociación reportada en el aula',
       footnote:
-        'Nota metodológica: Estimación basada en administración académica de escalas MSPSS y MBI-HSS (p < 0.01).',
+        'La cifra pertenece a la actividad de materia. Las referencias a MSPSS y MBI-HSS no validan el check-in ni el análisis léxico de Pulso360.',
       operationalMeaning:
-        'El respaldo constructivo y la contención cotidiana entre pares operan como amortiguadores esenciales frente al desgaste; el aislamiento operacional profundiza la sobrecarga afectiva.'
+        'La relación observada dio importancia al apoyo social al formular la idea de Pulso360. Orienta una pregunta de diseño sobre acceso a apoyo; no demuestra un beneficio medido de la plataforma.'
     }
   ]
 };
@@ -126,26 +120,26 @@ export const TRANSFER_CARDS = [
   {
     id: 'k-anonymity',
     number: '01',
-    title: 'Miedo a Represalias vs. Salvaguarda de k-Anonimato (k ≥ 5)',
+    title: 'Confianza al compartir información y protección de tendencias',
     socialProblem:
-      'Junto con la alta intención de deserción (76.5%), los relatos cualitativos de campo evidenciaron que los operadores suelen sobrellevar la sobrecarga en silencio por temor a repercusiones en turno o estabilidad.',
+      'El dato de intención de renuncia (76.5%) recogido en la actividad llevó al equipo a considerar cómo ofrecer apoyo sin presentar registros individuales a supervisión.',
     bpoBarrier:
-      'Las encuestas internas nominales despiertan desconfianza en piso por miedo a represalias, pérdida de turnos preferidos o afectación en evaluaciones.',
+      'Pregunta de diseño: cómo explicar qué datos se guardan y qué puede consultar cada rol, sin prometer una confidencialidad absoluta.',
     pulsoSolution:
-      'Agregación colectiva por diseño en los flujos definidos: supervisores y SST reciben tendencias consolidadas sólo cuando el grupo alcanza el umbral de 5 agentes únicos (k ≥ 5). La interfaz bloquea la vista colectiva por debajo de ese umbral.',
-    featureBadge: 'Privacidad por Diseño (k ≥ 5 agentes únicos)',
+      'El servidor aplica mínimos de participación a los grupos y períodos autorizados. Las vistas colectivas restringen resultados cuando no se cumplen esos mínimos y no muestran respuestas individuales.',
+    featureBadge: 'Agregados y acceso por rol',
     icon: 'kAnonymityShield'
   },
   {
     id: 'micro-pulses',
     number: '02',
-    title: 'Medición Anual Tardía vs. Micro-pulsos Diarios de 60 Segundos al Cerrar Turno',
+    title: 'Evaluaciones periódicas y registros voluntarios del turno',
     socialProblem:
-      'El agotamiento emocional varía según las colas de llamadas y la intensidad de la semana, pero las evaluaciones corporativas suelen ser anuales y retrospectivas.',
+      'La actividad recogió percepciones de agotamiento y apoyo social en un grupo concreto. A partir de esa experiencia, el equipo planteó registros voluntarios cercanos al turno.',
     bpoBarrier:
-      'Cuando se consolida la evaluación de riesgo psicosocial meses después, la persona con agotamiento severo suele haber renunciado o encontrarse incapacitada médicamente.',
+      'Pregunta de diseño: cómo permitir un registro propio sin convertirlo en evaluación de desempeño ni asumir que describe por completo la situación de la persona.',
     pulsoSolution:
-      'Micro-pulsos diarios de 60 segundos contestados voluntariamente al cerrar turno: registran una percepción breve del turno y pueden alimentar una revisión agregada de SST cuando se cumple el umbral definido.',
+      'Check-ins diarios contestados voluntariamente: registran una percepción del turno y pueden alimentar una revisión agregada de SST cuando se cumplen las reglas de participación y consentimiento.',
     featureBadge: 'Ergonomía de Turno',
     icon: 'clock'
   },
@@ -154,22 +148,22 @@ export const TRANSFER_CARDS = [
     number: '03',
     title: 'Falta de Desahogo Seguro vs. Bitácora Íntima con NLP Léxico Local',
     socialProblem:
-      'La investigación de campo relacionó el desahogo emocional y la ventilación cognitiva con el abordaje del agotamiento; el estudio también señaló la falta de canales de expresión confiables en planta.',
+      'La asociación entre apoyo social y agotamiento reportada en la actividad motivó la idea de ofrecer un espacio de reflexión y una ruta voluntaria hacia apoyo.',
     bpoBarrier:
-      'El monitoreo corporativo continuo sobre chats y llamadas inhibe cualquier expresión espontánea de frustración por temor a sanciones disciplinarias.',
+      'Pregunta de diseño: cómo diferenciar la reflexión personal del contenido que la persona decide compartir en una solicitud a SST.',
     pulsoSolution:
-      'Bitácora personal con análisis léxico determinista en el navegador. El procesamiento se ejecuta localmente en el dispositivo del operador, garantizando que el desahogo emocional permanezca confidencial y nunca sea accesible por supervisión ni utilizado para monitoreo.',
+      'Bitácora personal con análisis léxico determinista en el navegador. Al guardar, el texto y su análisis se envían al servidor y quedan asociados a la cuenta del titular. Las vistas de supervisión no muestran los textos de la bitácora; el procesamiento local no equivale a almacenamiento exclusivamente local.',
     featureBadge: 'Seguridad Psicológica & NLP Local',
     icon: 'edit_note'
   },
   {
     id: 'disconnection',
     number: '04',
-    title: 'Invasión de Descansos vs. Salvaguarda de Desconexión Laboral (Ley 2191 de 2022)',
+    title: 'Desconexión: criterio de diseño y límite de implementación',
     socialProblem:
-      'La invasión constante de los descansos y días libres con avisos o turnos sobrevenidos intensifica la fatiga auditiva crónica y la deserción operativa.',
+      'Al formular la idea, el equipo también consideró el límite entre una herramienta voluntaria de bienestar y las condiciones organizacionales del turno.',
     bpoBarrier:
-      'En la dinámica 24/7 de los Contact Centers, las comunicaciones fuera de horario desbordan las jornadas pactadas e impiden la recuperación psicofísica.',
+      'Pregunta de diseño: cómo evitar que el uso de la aplicación se presente como una obligación adicional o como una garantía sobre los horarios laborales.',
     pulsoSolution:
       'La Ley 2191 de 2022 se presenta como marco de referencia para la desconexión laboral. La versión actual documenta el principio, pero no demuestra una sincronización con turnos pactados ni un bloqueo integral fuera de jornada.',
     featureBadge: 'Desconexión Laboral (Ley 2191 de 2022)',
@@ -178,12 +172,11 @@ export const TRANSFER_CARDS = [
 ];
 
 export const CITATION_DATA = {
-  apa7: 'Valles, L. K., Velasquez, V., Vargas, L. F., & Lezcano, J. D. (2026). Relación entre el agotamiento emocional y la percepción de apoyo social en trabajadores de call center de Medellín (I. J. Saldarriaga Roa, Asesora) [Investigación formativa, Facultad de Educación y Ciencias Sociales, Tecnológico de Antioquia].',
+  apa7: 'Valles, L. K., Velasquez, V., Vargas, L. F., & Lezcano, J. D. (2026). Relación entre el agotamiento emocional y la percepción de apoyo social en trabajadores de call center de Medellín [Trabajo de aula de una materia, no publicado]. Orientación docente: I. J. Saldarriaga Roa.',
   bibtex:
-    "@unpublished{valles2026relacion,\n  author = {Valles, Leidy Katherin and Velasquez, Ver{'o}nica and Vargas, Luis Ferney and Lezcano, Jhonfer David},\n  title = {Relaci{'o}n entre el agotamiento emocional y la percepci{'o}n de apoyo social en trabajadores de call center de Medell{'i}n},\n  note = {Docente l{'i}der y asesora: Ingrid Johana Saldarriaga Roa. Investigaci{'o}n formativa, Semillero de Trabajo Social},\n  school = {Tecnol{'o}gico de Antioquia -- Instituci{'o}n Universitaria},\n  year = {2026},\n  address = {Medell{'i}n, Colombia}\n}",
-  repositoryUrl: 'https://dspace.tdea.edu.co/',
+    "@unpublished{valles2026relacion,\n  author = {Valles, Leidy Katherin and Velasquez, Ver{'o}nica and Vargas, Luis Ferney and Lezcano, Jhonfer David},\n  title = {Relaci{'o}n entre el agotamiento emocional y la percepci{'o}n de apoyo social en trabajadores de call center de Medell{'i}n},\n  note = {Trabajo de aula realizado para una materia, no publicado. Orientaci{'o}n docente: Ingrid Johana Saldarriaga Roa. Contexto estudiantil: TdeA, sin aval institucional},\n  year = {2026},\n  address = {Medell{'i}n, Colombia}\n}",
   academicNote:
-    'Investigación formativa adscrita a la Facultad de Educación y Ciencias Sociales del Tecnológico de Antioquia (TdeA). Documento original custodiado en el Repositorio Institucional digital de la universidad.'
+    'Referencia al material no publicado de una actividad de aula de una materia. Sus datos originaron la idea de Pulso360; no constituyen una publicación ni un aval institucional del TdeA. La aplicación no proporciona un documento original alojado en un repositorio.'
 };
 
 export const LEGAL_FRAMEWORK_META = {
@@ -194,8 +187,8 @@ export const LEGAL_FRAMEWORK_META = {
 export const LEGAL_FRAMEWORK_DATA = [
   {
     code: 'Ley 23 de 1982',
-    title: 'Propiedad Intelectual & Derechos Morales de Autor',
-    body: 'Pulso360 reconoce y salvaguarda de forma irrenunciable los derechos morales de autoría del Semillero de Investigación en Trabajo Social (Facultad de Educación y Ciencias Sociales del TdeA). El código fuente, algoritmos de privacidad, diseño de interfaces y arquitectura tecnológica son una obra informática derivada e independiente desarrollada por los estudiantes del programa de Ingeniería de Software del Tecnológico de Antioquia.',
+    title: 'Reconocimiento de autoría y origen',
+    body: 'Se reconoce a las personas indicadas como autoras del material de aula y a la docente por su orientación. Pulso360 es la propuesta estudiantil de software que nació de esa actividad. Esta referencia no presenta el trabajo como publicación universitaria ni implica un aval institucional de la plataforma.',
     tag: 'Derechos Morales',
     icon: 'fileText'
   },
@@ -237,15 +230,15 @@ export const ANTI_SURVEILLANCE_PILLARS = [
     icon: 'checkCircle'
   },
   {
-    title: 'Umbral de agregación k-Anonimato (k ≥ 5 agentes)',
+    title: 'Mínimos de participación para publicar agregados',
     description:
-      'Las métricas grupales se activan únicamente cuando la cohorte alcanza o supera los 5 agentes únicos, bloqueando la visualización por debajo de ese umbral para impedir la reidentificación.',
+      'El servidor restringe las métricas si el grupo y período autorizados no cumplen los mínimos vigentes de participación. La agregación reduce la exposición de respuestas individuales, pero no equivale a una garantía absoluta contra la reidentificación.',
     icon: 'shieldCheck'
   },
   {
     title: 'Análisis léxico confidencial en el navegador',
     description:
-      'El procesamiento de lenguaje natural de la bitácora opera exclusivamente en el cliente local; el texto íntimo de desahogo jamás viaja a modelos generativos externos ni se almacena para monitoreo disciplinario.',
+      'El análisis léxico se ejecuta en el navegador sin modelos generativos externos. Guardar la entrada envía el texto y su análisis al servidor para conservarlos en la cuenta del titular, con acceso restringido por los permisos implementados.',
     icon: 'lock'
   },
   {

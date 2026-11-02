@@ -1,0 +1,89 @@
+[
+  {
+    "phase": "after-ring-fix",
+    "path": "/",
+    "url": "http://127.0.0.1:5173/",
+    "startedAt": "2026-11-02T20:23:59.540Z",
+    "observedAt": "2026-11-02T20:24:01.353Z",
+    "viewport": {
+      "width": 1348,
+      "height": 804,
+      "deviceScaleFactor": 1
+    },
+    "title": "Bienestar y apoyo preventivo en Contact Centers.Registra cómo vives el turno y solicita orientación a SST. · Pulso360",
+    "active": {
+      "tag": "H1",
+      "text": "Bienestar y apoyo preventivo  en Contact Centers.Registra cómo vives el turno y solicita orientación a SST.",
+      "focusVisible": true,
+      "outline": "rgb(17, 38, 35) none 3px",
+      "marker": "quiet"
+    },
+    "heading": "Bienestar y apoyo preventivo  en Contact Centers.Registra cómo vives el turno y solicita orientación a SST.",
+    "scroll": {
+      "x": 0,
+      "y": 115
+    },
+    "documentWidth": 1333,
+    "clientWidth": 1333,
+    "artifact": "evidence/after-ring-landing.png",
+    "exitCode": 0
+  },
+  {
+    "phase": "after-ring-fix",
+    "path": "/403",
+    "url": "http://127.0.0.1:5173/403",
+    "startedAt": "2026-11-02T20:24:01.354Z",
+    "observedAt": "2026-11-02T20:24:02.878Z",
+    "viewport": {
+      "width": 1348,
+      "height": 804,
+      "deviceScaleFactor": 1
+    },
+    "title": "Acceso no autorizado · Pulso360",
+    "active": {
+      "tag": "H1",
+      "text": "Acceso no autorizado",
+      "focusVisible": true,
+      "outline": "rgb(15, 23, 42) none 3px",
+      "marker": "quiet"
+    },
+    "heading": "Acceso no autorizado",
+    "scroll": {
+      "x": 0,
+      "y": 0
+    },
+    "documentWidth": 1348,
+    "clientWidth": 1348,
+    "artifact": "evidence/after-ring-403.png",
+    "exitCode": 0
+  },
+  {
+    "phase": "after-ring-fix",
+    "path": "/login",
+    "url": "http://127.0.0.1:5173/login",
+    "startedAt": "2026-11-02T20:24:02.878Z",
+    "observedAt": "2026-11-02T20:24:04.600Z",
+    "viewport": {
+      "width": 1348,
+      "height": 804,
+      "deviceScaleFactor": 1
+    },
+    "title": "Iniciar Sesión · Pulso360",
+    "active": {
+      "tag": "H2",
+      "text": "Iniciar Sesión",
+      "focusVisible": true,
+      "outline": "rgb(8, 47, 40) none 3px",
+      "marker": "quiet"
+    },
+    "heading": "Iniciar Sesión",
+    "scroll": {
+      "x": 0,
+      "y": 0
+    },
+    "documentWidth": 1348,
+    "clientWidth": 1348,
+    "artifact": "evidence/after-ring-login.png",
+    "exitCode": 0
+  }
+]

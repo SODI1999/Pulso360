@@ -4,6 +4,7 @@ import { useNotifications } from '../hooks/useNotifications';
 // Centro de Notificaciones y Avisos Operativos (RF-17)
 
 import { Icon } from '../../../core/components/Icon';
+import { handleTabNavigation } from '../../../core/components/tabNavigation';
 import { NotificationItem } from '../components/NotificationItem';
 import { ReminderPreferencesCard } from '../components/ReminderPreferencesCard';
 
@@ -103,6 +104,11 @@ export function NotificationsPage() {
             type="button"
             role="tab"
             aria-selected={activeFilter === 'all'}
+            id="notifications-tab-all"
+            aria-controls="notifications-panel"
+            data-tab-value="all"
+            tabIndex={activeFilter === 'all' ? 0 : -1}
+            onKeyDown={event => handleTabNavigation(event, setActiveFilter)}
             className={`notif-tab-btn ${activeFilter === 'all' ? 'is-active' : ''}`}
             onClick={() => setActiveFilter('all')}
           >
@@ -113,6 +119,11 @@ export function NotificationsPage() {
             type="button"
             role="tab"
             aria-selected={activeFilter === 'unread'}
+            id="notifications-tab-unread"
+            aria-controls="notifications-panel"
+            data-tab-value="unread"
+            tabIndex={activeFilter === 'unread' ? 0 : -1}
+            onKeyDown={event => handleTabNavigation(event, setActiveFilter)}
             className={`notif-tab-btn ${activeFilter === 'unread' ? 'is-active' : ''}`}
             onClick={() => setActiveFilter('unread')}
           >
@@ -131,7 +142,8 @@ export function NotificationsPage() {
       </div>
 
       {/* 4. Feed de Notificaciones */}
-      <section aria-label="Listado de notificaciones">
+      <section role="tabpanel" id="notifications-panel"
+        aria-labelledby={`notifications-tab-${activeFilter}`} tabIndex={0}>
         <div className="notif-items-feed" role="feed">
           {displayedNotifications.length === 0 ? (
             <div className="notif-empty-inbox">
@@ -169,8 +181,8 @@ export function NotificationsPage() {
       <footer className="notif-confidentiality-footer" role="contentinfo">
         <Icon name="shield" size={16} />
         <span>
-          <strong>Confidencialidad operativa:</strong> Los avisos son de carácter estrictamente individual. El
-          sistema nunca expone reflexiones privadas de bitácora ni respuestas personales de bienestar.
+          <strong>Alcance de los avisos:</strong> Esta vista reúne notificaciones dirigidas a tu cuenta o a tu rol.
+          Una notificación compartida por rol puede ser visible para otras personas con ese mismo permiso.
         </span>
       </footer>
     </div>

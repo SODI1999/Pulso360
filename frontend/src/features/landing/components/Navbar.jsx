@@ -150,7 +150,7 @@ export function Navbar() {
                 to="/contactenos"
                 onClick={() => setIsMenuOpen(false)}
               >
-                Contáctenos
+                Contacto de ejemplo
               </Link>
             </li>
             <li className="nav-item-mobile-cta">

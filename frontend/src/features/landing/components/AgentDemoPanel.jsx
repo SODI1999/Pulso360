@@ -20,7 +20,7 @@ export function AgentDemoPanel({
       <div className="act-content-header">
         <div className="act-header-lead">
           <strong className="act-header-title">Espacio personal · Ejemplo ilustrativo</strong>
-          <span className="act-header-scope">Micro-pulso voluntario de 60 segundos sin consecuencias laborales</span>
+          <span className="act-header-scope">Ejemplo de registro voluntario sobre el turno</span>
         </div>
       </div>
 
@@ -107,7 +107,7 @@ export function AgentDemoPanel({
             <p className="journal-entry-text">{selectedSituation.agentQuote}</p>
             <span className="journal-privacy-notice">
               <Icon name="lock" size={12} />
-              En esta demo, el texto permanece en la bitácora individual y no aparece en la vista agregada
+              Texto ilustrativo: no es un testimonio ni se guarda como una bitácora real
             </span>
           </div>
 
@@ -115,14 +115,14 @@ export function AgentDemoPanel({
             <div className="nlp-guidance-top">
               <div className="nlp-meta-lead">
                 <Icon name="compass" size={13} className="nlp-meta-icon" />
-                <span className="nlp-meta-label">Motor Léxico Preventivo · Orientación no médica</span>
+                <span className="nlp-meta-label">Lectura ilustrativa · Sin análisis automático</span>
               </div>
               <button
                 type="button"
                 className="nlp-expand-btn"
                 onClick={() => setShowNlpAdvice(!showNlpAdvice)}
               >
-                {showNlpAdvice ? 'Ocultar recomendación' : 'Ver recomendación ergonómica por nivel'}
+                {showNlpAdvice ? 'Ocultar pauta de ejemplo' : 'Ver pauta de ejemplo'}
               </button>
             </div>
 
@@ -132,7 +132,7 @@ export function AgentDemoPanel({
             {showNlpAdvice && (
               <div className="nlp-extra-advice" role="note">
                 <p>
-                  <strong>Pauta ergonómica preventiva:</strong> {currentScaleScenario.advice}
+                  <strong>Pauta ilustrativa según la selección:</strong> {currentScaleScenario.advice}
                 </p>
               </div>
             )}

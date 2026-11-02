@@ -73,3 +73,12 @@ docs/audits/
 backend/CODING_STANDARDS.md
 
 scripts/*
+
+# Capturas de revisión: se conservan localmente, fuera del historial de Git.
+# Los activos que usa la aplicación en frontend/public siguen versionados.
+/specs/*/evidence/**/*.png
+/specs/*/evidence/**/*.jpg
+/specs/*/evidence/**/*.jpeg
+/specs/*/evidence/**/*.webp
+/specs/*/evidence/**/*.gif
+/specs/*/evidence/**/*.svg

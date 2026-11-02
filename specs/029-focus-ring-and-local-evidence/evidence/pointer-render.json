@@ -1,0 +1,32 @@
+[
+  {
+    "phase": "pointer",
+    "startedAt": "2026-11-02T20:31:48.436Z",
+    "observedAt": "2026-11-02T20:31:50.382Z",
+    "path": "/login",
+    "mode": "pointer",
+    "loads": 1,
+    "viewport": {
+      "width": 1366,
+      "height": 768,
+      "deviceScaleFactor": 1
+    },
+    "title": "Iniciar Sesión · Pulso360",
+    "active": {
+      "tag": "H2",
+      "text": "Iniciar Sesión",
+      "focusVisible": true,
+      "outline": "rgb(8, 47, 40) none 3px",
+      "marker": "quiet"
+    },
+    "heading": "Iniciar Sesión",
+    "scroll": {
+      "x": 0,
+      "y": 0
+    },
+    "documentWidth": 1366,
+    "clientWidth": 1366,
+    "artifact": "evidence/pointer-403-1366.png",
+    "exitCode": 0
+  }
+]

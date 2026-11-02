@@ -5,10 +5,15 @@ import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { authService } from '../../../core/auth/authService';
 import { useExpiredFormDraft } from '../../../core/auth/useExpiredFormDraft';
-import { useBodyScrollLock } from '../../../core/hooks/useBodyScrollLock';
+import { useModalA11y } from '../../../core/hooks/useModalA11y';
 
 import { CONSENT_PURPOSES } from '../data/consentData';
 
+/**
+ * Carga y guarda las finalidades de consentimiento mediante los servicios existentes.
+ * Conserva las selecciones ante un fallo y bloquea su edición mientras espera confirmación.
+ * @returns {object} Preferencias, historial, acciones y feedback {type, message} de error, advertencia o éxito.
+ */
 export function useConsent() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -28,18 +33,17 @@ export function useConsent() {
   const [policyAccepted, setPolicyAccepted] = useState(false);
   const [previouslyAccepted, setPreviouslyAccepted] = useState(false);
   const [history, setHistory] = useState([]);
-  const [statusMessage, setStatusMessage] = useState('');
+  const [feedback, setFeedback] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
+  const savingRef = useRef(false);
   const [loaded, setLoaded] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  useBodyScrollLock(isModalOpen);
   const [settings, setSettings] = useState({
     policyVersion: null,
     policyEffectiveDate: null
   });
 
   // Gestión de foco para el modal accesible (R-26 / R-32)
-  const lastFocusedElementRef = useRef(null);
   const modalCloseBtnRef = useRef(null);
   const backdropRef = useRef(null);
 
@@ -76,7 +80,7 @@ export function useConsent() {
         setHistory(data?.consentHistory || userConsent?.history || []);
         if (!env.useMockStorage) authService.updateConsent(userConsent);
       } catch (error) {
-        if (mounted) setStatusMessage(error.message);
+        if (mounted) setFeedback({ type: 'error', message: `No se pudieron cargar tus preferencias: ${error.message}. Vuelve a cargar la página para intentarlo de nuevo.` });
       } finally {
         if (mounted) setLoaded(true);
       }
@@ -88,43 +92,20 @@ export function useConsent() {
 
   useExpiredFormDraft('consent:preferences', { consents, policyAccepted, policyVersion:settings.policyVersion }, draft => {
     if (draft.policyVersion !== settings.policyVersion) {
-      setStatusMessage('La política cambió. Revisa la versión vigente antes de confirmar tus preferencias.');
+      setFeedback({ type: 'warning', message: 'La política cambió. Revisa la versión vigente antes de confirmar tus preferencias.' });
       return;
     }
     setConsents(draft.consents); setPolicyAccepted(draft.policyAccepted);
   }, loaded);
 
-  // Control accesible de tecla Escape en modal
-  useEffect(() => {
-    if (isModalOpen) {
-      setTimeout(() => {
-        modalCloseBtnRef.current?.focus();
-      }, 50);
-
-      const handleKeyDown = (e) => {
-        if (e.key === 'Escape') {
-          closeModal();
-        }
-      };
-
-      window.addEventListener('keydown', handleKeyDown);
-      return () => {
-        window.removeEventListener('keydown', handleKeyDown);
-      };
-    }
-  }, [isModalOpen]);
-
   const openModal = () => {
-    lastFocusedElementRef.current = document.activeElement;
     setIsModalOpen(true);
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
-    setTimeout(() => {
-      lastFocusedElementRef.current?.focus();
-    }, 50);
   };
+  useModalA11y({ isOpen: isModalOpen, onClose: closeModal, modalRef: backdropRef });
 
   const handleBackdropClick = (e) => {
     if (e.target === backdropRef.current) {
@@ -133,43 +114,51 @@ export function useConsent() {
   };
 
   const handleCheckboxChange = (key) => {
+    if (savingRef.current) return;
     setConsents((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
+
+  const handlePolicyAcceptedChange = (value) => {
+    if (!savingRef.current) setPolicyAccepted(value);
   };
 
   // Guardar consentimiento y registrar evento inmutable
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!settings.policyVersion || (!policyAccepted && !previouslyAccepted) || !currentUser) return;
+    if (savingRef.current || !settings.policyVersion || (!policyAccepted && !previouslyAccepted) || !currentUser) return;
 
+    savingRef.current = true;
     setIsSaving(true);
-    setStatusMessage('');
+    setFeedback(null);
+    try {
+      const result = await saveConsent(settings, currentUser, {
+        ...consents,
+        policyAccepted,
+        noticeAccepted: policyAccepted
+      });
+      if (result.success !== true) {
+        setFeedback({ type: 'error', message: `No se confirmó el guardado: ${result.error}. Tus selecciones se conservan; revisa el mensaje y vuelve a intentarlo.` });
+        return;
+      }
 
-    const result = await saveConsent(settings, currentUser, {
-      ...consents,
-      policyAccepted,
-      noticeAccepted: policyAccepted
-    });
-    if (result.success !== true) {
+      if (!env.useMockStorage && result.payload) {
+        setConsents(Object.fromEntries(['c1','c2','c3','c4','c5'].map(key => [key, Boolean(result.payload[key])])));
+        setPolicyAccepted(result.payload.policyAccepted);
+        setHistory(result.payload.history || []);
+        authService.updateConsent(result.payload);
+      }
+
+      loadConsentHistory();
+      setFeedback({ type: 'success', message: 'Preferencias guardadas.' });
+
+      if (comesFromLogin) {
+        setTimeout(() => {
+          navigate('/agente/panel');
+        }, 500);
+      }
+    } finally {
+      savingRef.current = false;
       setIsSaving(false);
-      setStatusMessage(`Error: ${result.error}`);
-      return;
-    }
-
-    if (!env.useMockStorage && result.payload) {
-      setConsents(Object.fromEntries(['c1','c2','c3','c4','c5'].map(key => [key, Boolean(result.payload[key])])));
-      setPolicyAccepted(result.payload.policyAccepted);
-      setHistory(result.payload.history || []);
-      authService.updateConsent(result.payload);
-    }
-
-    loadConsentHistory();
-    setIsSaving(false);
-    setStatusMessage('Preferencias guardadas.');
-
-    if (comesFromLogin) {
-      setTimeout(() => {
-        navigate('/agente/panel');
-      }, 500);
     }
   };
 
@@ -200,9 +189,9 @@ export function useConsent() {
     consents,
     policyAccepted,
     canSubmit: Boolean(settings.policyVersion && (policyAccepted || previouslyAccepted)),
-    setPolicyAccepted,
+    setPolicyAccepted: handlePolicyAcceptedChange,
     history,
-    statusMessage,
+    feedback,
     isSaving,
     isModalOpen,
     settings,

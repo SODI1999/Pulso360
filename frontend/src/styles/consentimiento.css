@@ -417,9 +417,6 @@
   align-items: center;
   gap: var(--space-2);
   padding: 10px 14px;
-  background: var(--c-exito-bg);
-  border: 1px solid var(--c-exito-border);
-  color: var(--c-exito);
   border-radius: var(--radius-sm);
   font-size: 13px;
   font-weight: 600;

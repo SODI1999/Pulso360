@@ -1,0 +1,723 @@
+[
+  {
+    "path": "/admin/organizacion",
+    "role": "admin",
+    "fails": [
+      {
+        "tag": "DIV",
+        "class": "sidebar-nav-heading",
+        "text": "Organización",
+        "fg": "rgb(100, 116, 139)",
+        "bg": [
+          241,
+          245,
+          249
+        ],
+        "ratio": 4.34,
+        "required": 4.5,
+        "size": "11px"
+      },
+      {
+        "tag": "DIV",
+        "class": "sidebar-nav-heading",
+        "text": "Configuración y datos",
+        "fg": "rgb(100, 116, 139)",
+        "bg": [
+          241,
+          245,
+          249
+        ],
+        "ratio": 4.34,
+        "required": 4.5,
+        "size": "11px"
+      },
+      {
+        "tag": "DIV",
+        "class": "sidebar-nav-heading",
+        "text": "Reportes",
+        "fg": "rgb(100, 116, 139)",
+        "bg": [
+          241,
+          245,
+          249
+        ],
+        "ratio": 4.34,
+        "required": 4.5,
+        "size": "11px"
+      },
+      {
+        "tag": "SPAN",
+        "class": "user-role-badge role-admin",
+        "text": "Administrador",
+        "fg": "rgb(217, 119, 6)",
+        "bg": [
+          255,
+          251,
+          235
+        ],
+        "ratio": 3.07,
+        "required": 4.5,
+        "size": "10px"
+      }
+    ]
+  },
+  {
+    "path": "/admin/parametros",
+    "role": "admin",
+    "fails": [
+      {
+        "tag": "DIV",
+        "class": "sidebar-nav-heading",
+        "text": "Organización",
+        "fg": "rgb(100, 116, 139)",
+        "bg": [
+          241,
+          245,
+          249
+        ],
+        "ratio": 4.34,
+        "required": 4.5,
+        "size": "11px"
+      },
+      {
+        "tag": "DIV",
+        "class": "sidebar-nav-heading",
+        "text": "Configuración y datos",
+        "fg": "rgb(100, 116, 139)",
+        "bg": [
+          241,
+          245,
+          249
+        ],
+        "ratio": 4.34,
+        "required": 4.5,
+        "size": "11px"
+      },
+      {
+        "tag": "DIV",
+        "class": "sidebar-nav-heading",
+        "text": "Reportes",
+        "fg": "rgb(100, 116, 139)",
+        "bg": [
+          241,
+          245,
+          249
+        ],
+        "ratio": 4.34,
+        "required": 4.5,
+        "size": "11px"
+      },
+      {
+        "tag": "SPAN",
+        "class": "user-role-badge role-admin",
+        "text": "Administrador",
+        "fg": "rgb(217, 119, 6)",
+        "bg": [
+          255,
+          251,
+          235
+        ],
+        "ratio": 3.07,
+        "required": 4.5,
+        "size": "10px"
+      }
+    ]
+  },
+  {
+    "path": "/admin/importar",
+    "role": "admin",
+    "fails": [
+      {
+        "tag": "DIV",
+        "class": "sidebar-nav-heading",
+        "text": "Organización",
+        "fg": "rgb(100, 116, 139)",
+        "bg": [
+          241,
+          245,
+          249
+        ],
+        "ratio": 4.34,
+        "required": 4.5,
+        "size": "11px"
+      },
+      {
+        "tag": "DIV",
+        "class": "sidebar-nav-heading",
+        "text": "Configuración y datos",
+        "fg": "rgb(100, 116, 139)",
+        "bg": [
+          241,
+          245,
+          249
+        ],
+        "ratio": 4.34,
+        "required": 4.5,
+        "size": "11px"
+      },
+      {
+        "tag": "DIV",
+        "class": "sidebar-nav-heading",
+        "text": "Reportes",
+        "fg": "rgb(100, 116, 139)",
+        "bg": [
+          241,
+          245,
+          249
+        ],
+        "ratio": 4.34,
+        "required": 4.5,
+        "size": "11px"
+      },
+      {
+        "tag": "SPAN",
+        "class": "user-role-badge role-admin",
+        "text": "Administrador",
+        "fg": "rgb(217, 119, 6)",
+        "bg": [
+          255,
+          251,
+          235
+        ],
+        "ratio": 3.07,
+        "required": 4.5,
+        "size": "10px"
+      }
+    ]
+  },
+  {
+    "path": "/reportes",
+    "role": "admin",
+    "fails": [
+      {
+        "tag": "DIV",
+        "class": "sidebar-nav-heading",
+        "text": "Organización",
+        "fg": "rgb(100, 116, 139)",
+        "bg": [
+          241,
+          245,
+          249
+        ],
+        "ratio": 4.34,
+        "required": 4.5,
+        "size": "11px"
+      },
+      {
+        "tag": "DIV",
+        "class": "sidebar-nav-heading",
+        "text": "Configuración y datos",
+        "fg": "rgb(100, 116, 139)",
+        "bg": [
+          241,
+          245,
+          249
+        ],
+        "ratio": 4.34,
+        "required": 4.5,
+        "size": "11px"
+      },
+      {
+        "tag": "DIV",
+        "class": "sidebar-nav-heading",
+        "text": "Reportes",
+        "fg": "rgb(100, 116, 139)",
+        "bg": [
+          241,
+          245,
+          249
+        ],
+        "ratio": 4.34,
+        "required": 4.5,
+        "size": "11px"
+      },
+      {
+        "tag": "SPAN",
+        "class": "user-role-badge role-admin",
+        "text": "Administrador",
+        "fg": "rgb(217, 119, 6)",
+        "bg": [
+          255,
+          251,
+          235
+        ],
+        "ratio": 3.07,
+        "required": 4.5,
+        "size": "10px"
+      }
+    ]
+  },
+  {
+    "path": "/notificaciones",
+    "role": "admin",
+    "fails": [
+      {
+        "tag": "DIV",
+        "class": "sidebar-nav-heading",
+        "text": "Organización",
+        "fg": "rgb(100, 116, 139)",
+        "bg": [
+          241,
+          245,
+          249
+        ],
+        "ratio": 4.34,
+        "required": 4.5,
+        "size": "11px"
+      },
+      {
+        "tag": "DIV",
+        "class": "sidebar-nav-heading",
+        "text": "Configuración y datos",
+        "fg": "rgb(100, 116, 139)",
+        "bg": [
+          241,
+          245,
+          249
+        ],
+        "ratio": 4.34,
+        "required": 4.5,
+        "size": "11px"
+      },
+      {
+        "tag": "DIV",
+        "class": "sidebar-nav-heading",
+        "text": "Reportes",
+        "fg": "rgb(100, 116, 139)",
+        "bg": [
+          241,
+          245,
+          249
+        ],
+        "ratio": 4.34,
+        "required": 4.5,
+        "size": "11px"
+      },
+      {
+        "tag": "SPAN",
+        "class": "user-role-badge role-admin",
+        "text": "Administrador",
+        "fg": "rgb(217, 119, 6)",
+        "bg": [
+          255,
+          251,
+          235
+        ],
+        "ratio": 3.07,
+        "required": 4.5,
+        "size": "10px"
+      },
+      {
+        "tag": "SPAN",
+        "class": "",
+        "text": "Confidencialidad operativa: Los avisos son de carácter estrictamente individual. El s",
+        "fg": "rgb(100, 116, 139)",
+        "bg": [
+          241,
+          245,
+          249
+        ],
+        "ratio": 4.34,
+        "required": 4.5,
+        "size": "12px"
+      }
+    ]
+  },
+  {
+    "path": "/agente/panel",
+    "role": "agente",
+    "fails": [
+      {
+        "tag": "DIV",
+        "class": "sidebar-nav-heading",
+        "text": "Tu jornada",
+        "fg": "rgb(100, 116, 139)",
+        "bg": [
+          241,
+          245,
+          249
+        ],
+        "ratio": 4.34,
+        "required": 4.5,
+        "size": "11px"
+      },
+      {
+        "tag": "DIV",
+        "class": "sidebar-nav-heading",
+        "text": "Tu bienestar",
+        "fg": "rgb(100, 116, 139)",
+        "bg": [
+          241,
+          245,
+          249
+        ],
+        "ratio": 4.34,
+        "required": 4.5,
+        "size": "11px"
+      },
+      {
+        "tag": "SPAN",
+        "class": "topbar-pill-badge",
+        "text": "6",
+        "fg": "rgb(255, 255, 255)",
+        "bg": [
+          217,
+          119,
+          6
+        ],
+        "ratio": 3.19,
+        "required": 4.5,
+        "size": "10px"
+      }
+    ]
+  },
+  {
+    "path": "/agente/checkin",
+    "role": "agente",
+    "fails": [
+      {
+        "tag": "DIV",
+        "class": "sidebar-nav-heading",
+        "text": "Tu jornada",
+        "fg": "rgb(100, 116, 139)",
+        "bg": [
+          241,
+          245,
+          249
+        ],
+        "ratio": 4.34,
+        "required": 4.5,
+        "size": "11px"
+      },
+      {
+        "tag": "DIV",
+        "class": "sidebar-nav-heading",
+        "text": "Tu bienestar",
+        "fg": "rgb(100, 116, 139)",
+        "bg": [
+          241,
+          245,
+          249
+        ],
+        "ratio": 4.34,
+        "required": 4.5,
+        "size": "11px"
+      },
+      {
+        "tag": "SPAN",
+        "class": "topbar-pill-badge",
+        "text": "6",
+        "fg": "rgb(255, 255, 255)",
+        "bg": [
+          217,
+          119,
+          6
+        ],
+        "ratio": 3.19,
+        "required": 4.5,
+        "size": "10px"
+      }
+    ]
+  },
+  {
+    "path": "/agente/bitacora",
+    "role": "agente",
+    "fails": [
+      {
+        "tag": "DIV",
+        "class": "sidebar-nav-heading",
+        "text": "Tu jornada",
+        "fg": "rgb(100, 116, 139)",
+        "bg": [
+          241,
+          245,
+          249
+        ],
+        "ratio": 4.34,
+        "required": 4.5,
+        "size": "11px"
+      },
+      {
+        "tag": "DIV",
+        "class": "sidebar-nav-heading",
+        "text": "Tu bienestar",
+        "fg": "rgb(100, 116, 139)",
+        "bg": [
+          241,
+          245,
+          249
+        ],
+        "ratio": 4.34,
+        "required": 4.5,
+        "size": "11px"
+      },
+      {
+        "tag": "SPAN",
+        "class": "topbar-pill-badge",
+        "text": "6",
+        "fg": "rgb(255, 255, 255)",
+        "bg": [
+          217,
+          119,
+          6
+        ],
+        "ratio": 3.19,
+        "required": 4.5,
+        "size": "10px"
+      }
+    ]
+  },
+  {
+    "path": "/agente/mi-bienestar",
+    "role": "agente",
+    "fails": [
+      {
+        "tag": "DIV",
+        "class": "sidebar-nav-heading",
+        "text": "Tu jornada",
+        "fg": "rgb(100, 116, 139)",
+        "bg": [
+          241,
+          245,
+          249
+        ],
+        "ratio": 4.34,
+        "required": 4.5,
+        "size": "11px"
+      },
+      {
+        "tag": "DIV",
+        "class": "sidebar-nav-heading",
+        "text": "Tu bienestar",
+        "fg": "rgb(100, 116, 139)",
+        "bg": [
+          241,
+          245,
+          249
+        ],
+        "ratio": 4.34,
+        "required": 4.5,
+        "size": "11px"
+      },
+      {
+        "tag": "SPAN",
+        "class": "topbar-pill-badge",
+        "text": "6",
+        "fg": "rgb(255, 255, 255)",
+        "bg": [
+          217,
+          119,
+          6
+        ],
+        "ratio": 3.19,
+        "required": 4.5,
+        "size": "10px"
+      }
+    ]
+  },
+  {
+    "path": "/agente/apoyo",
+    "role": "agente",
+    "fails": [
+      {
+        "tag": "DIV",
+        "class": "sidebar-nav-heading",
+        "text": "Tu jornada",
+        "fg": "rgb(100, 116, 139)",
+        "bg": [
+          241,
+          245,
+          249
+        ],
+        "ratio": 4.34,
+        "required": 4.5,
+        "size": "11px"
+      },
+      {
+        "tag": "DIV",
+        "class": "sidebar-nav-heading",
+        "text": "Tu bienestar",
+        "fg": "rgb(100, 116, 139)",
+        "bg": [
+          241,
+          245,
+          249
+        ],
+        "ratio": 4.34,
+        "required": 4.5,
+        "size": "11px"
+      },
+      {
+        "tag": "SPAN",
+        "class": "topbar-pill-badge",
+        "text": "6",
+        "fg": "rgb(255, 255, 255)",
+        "bg": [
+          217,
+          119,
+          6
+        ],
+        "ratio": 3.19,
+        "required": 4.5,
+        "size": "10px"
+      }
+    ]
+  },
+  {
+    "path": "/agente/mis-datos",
+    "role": "agente",
+    "fails": [
+      {
+        "tag": "DIV",
+        "class": "sidebar-nav-heading",
+        "text": "Tu jornada",
+        "fg": "rgb(100, 116, 139)",
+        "bg": [
+          241,
+          245,
+          249
+        ],
+        "ratio": 4.34,
+        "required": 4.5,
+        "size": "11px"
+      },
+      {
+        "tag": "DIV",
+        "class": "sidebar-nav-heading",
+        "text": "Tu bienestar",
+        "fg": "rgb(100, 116, 139)",
+        "bg": [
+          241,
+          245,
+          249
+        ],
+        "ratio": 4.34,
+        "required": 4.5,
+        "size": "11px"
+      },
+      {
+        "tag": "SPAN",
+        "class": "topbar-pill-badge",
+        "text": "6",
+        "fg": "rgb(255, 255, 255)",
+        "bg": [
+          217,
+          119,
+          6
+        ],
+        "ratio": 3.19,
+        "required": 4.5,
+        "size": "10px"
+      }
+    ]
+  },
+  {
+    "path": "/apoyo-crisis",
+    "role": "agente",
+    "fails": [
+      {
+        "tag": "DIV",
+        "class": "sidebar-nav-heading",
+        "text": "Tu jornada",
+        "fg": "rgb(100, 116, 139)",
+        "bg": [
+          241,
+          245,
+          249
+        ],
+        "ratio": 4.34,
+        "required": 4.5,
+        "size": "11px"
+      },
+      {
+        "tag": "DIV",
+        "class": "sidebar-nav-heading",
+        "text": "Tu bienestar",
+        "fg": "rgb(100, 116, 139)",
+        "bg": [
+          241,
+          245,
+          249
+        ],
+        "ratio": 4.34,
+        "required": 4.5,
+        "size": "11px"
+      },
+      {
+        "tag": "SPAN",
+        "class": "topbar-pill-badge",
+        "text": "6",
+        "fg": "rgb(255, 255, 255)",
+        "bg": [
+          217,
+          119,
+          6
+        ],
+        "ratio": 3.19,
+        "required": 4.5,
+        "size": "10px"
+      },
+      {
+        "tag": "SPAN",
+        "class": "crisis-line-number",
+        "text": "106",
+        "fg": "rgb(15, 118, 110)",
+        "bg": [
+          216,
+          233,
+          231
+        ],
+        "ratio": 4.34,
+        "required": 4.5,
+        "size": "14px"
+      },
+      {
+        "tag": "SPAN",
+        "class": "crisis-line-number crisis-line-number--emergency",
+        "text": "123",
+        "fg": "rgb(220, 38, 38)",
+        "bg": [
+          239,
+          224,
+          228
+        ],
+        "ratio": 3.79,
+        "required": 4.5,
+        "size": "14px"
+      },
+      {
+        "tag": "SPAN",
+        "class": "",
+        "text": "Marcar 123",
+        "fg": "rgb(220, 38, 38)",
+        "bg": [
+          254,
+          242,
+          242
+        ],
+        "ratio": 4.41,
+        "required": 4.5,
+        "size": "12.5px"
+      },
+      {
+        "tag": "SPAN",
+        "class": "crisis-line-number",
+        "text": "155",
+        "fg": "rgb(15, 118, 110)",
+        "bg": [
+          214,
+          230,
+          232
+        ],
+        "ratio": 4.25,
+        "required": 4.5,
+        "size": "14px"
+      }
+    ]
+  },
+  {
+    "path": "/consentimiento",
+    "role": "agente",
+    "fails": []
+  }
+]

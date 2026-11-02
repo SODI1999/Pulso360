@@ -1,0 +1,1380 @@
+{
+  "version": 3,
+  "id": "027",
+  "mode": "automated",
+  "passed": true,
+  "verifiedAt": "2026-11-02T14:34:35.966Z",
+  "fingerprint": "6dd9df3f04c8d0e9ee4171c9f9f5c545ce6306d7f8609060555a916979eb7858",
+  "attestedFiles": 525,
+  "sourceChangedDuringVerification": false,
+  "changedDuringVerification": [],
+  "changedDuringVerificationCount": 0,
+  "reason": null,
+  "checks": [
+    {
+      "id": "gate-1",
+      "command": "cd \"backend\" && npm test",
+      "cwd": ".",
+      "timeoutMs": 120000,
+      "kind": "automated"
+    },
+    {
+      "id": "gate-2",
+      "command": "cd \"frontend\" && npm test",
+      "cwd": ".",
+      "timeoutMs": 120000,
+      "kind": "automated"
+    },
+    {
+      "id": "gate-3",
+      "command": "cd \"frontend\" && npm run lint",
+      "cwd": ".",
+      "timeoutMs": 120000,
+      "kind": "automated"
+    },
+    {
+      "id": "gate-4",
+      "command": "cd \"frontend\" && npm run build",
+      "cwd": ".",
+      "timeoutMs": 120000,
+      "kind": "automated"
+    }
+  ],
+  "timeoutOverride": null,
+  "acceptance": {
+    "criteria": [
+      {
+        "id": "AC-10",
+        "status": "passed",
+        "method": "manual",
+        "kind": "interaction",
+        "observations": [
+          {
+            "name": "sst-keyboard",
+            "actor": "agent",
+            "observer": "Codex / better-interface con Chrome DevTools",
+            "sessionId": "29682fe4-8915-43a9-a8dd-3f8fbb96e69c",
+            "surface": "/sst/buzon",
+            "environment": "Windows, Chrome156 headless, Vite local; datos técnicos de muestra y transporte interceptado cuando se indica",
+            "steps": [
+              "Abrir panel",
+              "Tab hasta Motivo y datos",
+              "Enter despliega el contexto"
+            ],
+            "expected": "Resumen nativo operable por teclado y foco dentro del diálogo",
+            "actual": "{\"focus\":\"SUMMARY\",\"contextOpen\":true}",
+            "result": "passed",
+            "observedAt": "2026-11-02T14:19:28.866Z",
+            "artifact": "evidence/sst-final-keyboard.png",
+            "viewport": {
+              "width": 320,
+              "height": 800
+            }
+          },
+          {
+            "name": "sst-cancel-draft",
+            "actor": "agent",
+            "observer": "Codex / better-interface con Chrome DevTools",
+            "sessionId": "29682fe4-8915-43a9-a8dd-3f8fbb96e69c",
+            "surface": "/sst/buzon",
+            "environment": "Windows, Chrome156 headless, Vite local; datos técnicos de muestra y transporte interceptado cuando se indica",
+            "steps": [
+              "Escribir borrador de muestra",
+              "Concluir conversación",
+              "Escape"
+            ],
+            "expected": "Un diálogo; vuelve a conversación, borrador retenido y foco en Concluir",
+            "actual": "{\"close\":{\"dialogs\":1,\"conversationHidden\":true,\"focus\":\"Volver a la conversación\"},\"cancel\":{\"draft\":\"Muestra técnica: borrador conservado al cancelar.\",\"focus\":\"btn btn-secondary btn-sm sst-btn-conclude\"}}",
+            "result": "passed",
+            "observedAt": "2026-11-02T14:19:29.248Z",
+            "artifact": "evidence/sst-final-cancel.png",
+            "viewport": {
+              "width": 320,
+              "height": 800
+            }
+          },
+          {
+            "name": "sst-draft-reopen",
+            "actor": "agent",
+            "observer": "Codex / better-interface con Chrome DevTools",
+            "sessionId": "29682fe4-8915-43a9-a8dd-3f8fbb96e69c",
+            "surface": "/sst/buzon",
+            "environment": "Windows, Chrome156 headless, Vite local; datos técnicos de muestra y transporte interceptado cuando se indica",
+            "steps": [
+              "Escribir borrador de muestra",
+              "Cerrar panel sin concluir",
+              "Reabrir mismo radicado"
+            ],
+            "expected": "Borrador en RAM del buzón conserva texto; no se envía",
+            "actual": "{\"draft\":\"Muestra técnica: borrador SST por radicado.\",\"sendCount\":2}",
+            "result": "passed",
+            "observedAt": "2026-11-02T14:28:18.941Z",
+            "artifact": "evidence/sst-final-draft-reopen.png",
+            "viewport": {
+              "width": 320,
+              "height": 800
+            }
+          },
+          {
+            "name": "sst-close-error",
+            "actor": "agent",
+            "observer": "Codex / better-interface con Chrome DevTools",
+            "sessionId": "29682fe4-8915-43a9-a8dd-3f8fbb96e69c",
+            "surface": "/sst/buzon",
+            "environment": "Windows, Chrome156 headless, Vite local; datos técnicos de muestra y transporte interceptado cuando se indica",
+            "steps": [
+              "Revisión integrada tras último cambio",
+              "Concluir con notas de muestra y error local503"
+            ],
+            "expected": "Notas retenidas y error visible enfocado",
+            "actual": "{\"focus\":\"sst-close-error\",\"notes\":56,\"visible\":true}",
+            "result": "passed",
+            "observedAt": "2026-11-02T14:27:47.998Z",
+            "artifact": "evidence/sst-final-close-error.png",
+            "viewport": {
+              "width": 320,
+              "height": 800
+            }
+          },
+          {
+            "name": "sst-close-confirmed",
+            "actor": "agent",
+            "observer": "Codex / better-interface con Chrome DevTools",
+            "sessionId": "29682fe4-8915-43a9-a8dd-3f8fbb96e69c",
+            "surface": "/sst/buzon",
+            "environment": "Windows, Chrome156 headless, Vite local; datos técnicos de muestra y transporte interceptado cuando se indica",
+            "steps": [
+              "Reintentar cierre con acuse local retenido",
+              "Escape durante guardado",
+              "Liberar confirmación de muestra"
+            ],
+            "expected": "Controles bloqueados al guardar; luego historial de solo lectura",
+            "actual": "{\"pending\":{\"dialog\":1,\"disabled\":true},\"target\":{\"status\":\"En gestion\",\"notesLength\":73},\"readOnly\":true}",
+            "result": "passed",
+            "observedAt": "2026-11-02T14:20:23.610Z",
+            "artifact": "evidence/sst-final-closed.png",
+            "viewport": {
+              "width": 320,
+              "height": 800
+            }
+          },
+          {
+            "name": "sst-activate-missing-data",
+            "actor": "agent",
+            "observer": "Codex / better-interface con Chrome DevTools",
+            "sessionId": "29682fe4-8915-43a9-a8dd-3f8fbb96e69c",
+            "surface": "/sst/buzon",
+            "environment": "Windows, Chrome156 headless, Vite local; datos técnicos de muestra y transporte interceptado cuando se indica",
+            "steps": [
+              "Abrir MUESTRA-UI-003 sin urgencia ni plazo",
+              "Desplegar contexto",
+              "Abrir conversación con respuesta local"
+            ],
+            "expected": "Sin datos fabricados ni compositor antes de activar; compositor tras activación",
+            "actual": "{\"waiting\":{\"text\":\"Motivo y datos de solicitudUrgencia: No registradaMotivoMuestra técnica: consulta sin urgencia ni plazo registrados. Datos simulados.Estado del radicadoRecibidaPlazo registradoSin plazo registrado\",\"composer\":false},\"activated\":true}",
+            "result": "passed",
+            "observedAt": "2026-11-02T14:21:11.446Z",
+            "artifact": "evidence/sst-final-waiting.png",
+            "viewport": {
+              "width": 320,
+              "height": 800
+            }
+          },
+          {
+            "name": "sst-load-retry",
+            "actor": "agent",
+            "observer": "Codex / better-interface con Chrome DevTools",
+            "sessionId": "29682fe4-8915-43a9-a8dd-3f8fbb96e69c",
+            "surface": "/sst/buzon",
+            "environment": "Windows, Chrome156 headless, Vite local; datos técnicos de muestra y transporte interceptado cuando se indica",
+            "steps": [
+              "Error503 local al abrir historial",
+              "Reintentar carga con respuesta correcta"
+            ],
+            "expected": "Error recuperable y regreso al historial; Escape anterior devuelve foco",
+            "actual": "{\"restored\":\"Abrir conversación\",\"loaded\":true}",
+            "result": "passed",
+            "observedAt": "2026-11-02T14:21:00.088Z",
+            "artifact": "evidence/sst-final-load-error.png",
+            "viewport": {
+              "width": 320,
+              "height": 800
+            }
+          },
+          {
+            "name": "sst-send-error",
+            "actor": "agent",
+            "observer": "Codex / better-interface con Chrome DevTools",
+            "sessionId": "29682fe4-8915-43a9-a8dd-3f8fbb96e69c",
+            "surface": "/sst/buzon",
+            "environment": "Windows, Chrome156 headless, Vite local; datos técnicos de muestra y transporte interceptado cuando se indica",
+            "steps": [
+              "Enviar respuesta técnica con acuse local de error"
+            ],
+            "expected": "Texto retenido, error anunciado y foco en compositor",
+            "actual": "{\"focused\":\"sst-chat-message\",\"draft\":\"Muestra técnica: respuesta con error y reintento.\",\"error\":\"Muestra técnica: envío no confirmado. Reintenta.\"}",
+            "result": "passed",
+            "observedAt": "2026-11-02T14:27:28.797Z",
+            "artifact": "evidence/sst-final-send-error.png",
+            "viewport": {
+              "width": 320,
+              "height": 800
+            }
+          }
+        ]
+      },
+      {
+        "id": "AC-11",
+        "status": "passed",
+        "method": "manual",
+        "kind": "visual",
+        "observations": [
+          {
+            "name": "sst-layout-320",
+            "actor": "agent",
+            "observer": "Codex / better-interface con Chrome DevTools",
+            "sessionId": "29682fe4-8915-43a9-a8dd-3f8fbb96e69c",
+            "surface": "/sst/buzon",
+            "environment": "Windows, Chrome156 headless, Vite local; datos técnicos de muestra y transporte interceptado cuando se indica",
+            "steps": [
+              "Revisión integrada tras última corrección",
+              "Abrir historial largo y ajustar viewport 320×800"
+            ],
+            "expected": "Sin overflow; historial al final y controles>=44px",
+            "actual": "{\"width\":320,\"scrollWidth\":320,\"dialogs\":1,\"atEnd\":true,\"inputHeight\":56,\"buttons\":[44,44,44]}",
+            "result": "passed",
+            "observedAt": "2026-11-02T14:27:47.075Z",
+            "artifact": "evidence/sst-final-320.png",
+            "viewport": {
+              "width": 320,
+              "height": 800
+            }
+          },
+          {
+            "name": "sst-layout-768",
+            "actor": "agent",
+            "observer": "Codex / better-interface con Chrome DevTools",
+            "sessionId": "29682fe4-8915-43a9-a8dd-3f8fbb96e69c",
+            "surface": "/sst/buzon",
+            "environment": "Windows, Chrome156 headless, Vite local; datos técnicos de muestra y transporte interceptado cuando se indica",
+            "steps": [
+              "Revisión integrada tras última corrección",
+              "Abrir historial largo y ajustar viewport 768×900"
+            ],
+            "expected": "Sin overflow; historial al final y controles>=44px",
+            "actual": "{\"width\":768,\"scrollWidth\":768,\"dialogs\":1,\"atEnd\":true,\"inputHeight\":56,\"buttons\":[44,44,44]}",
+            "result": "passed",
+            "observedAt": "2026-11-02T14:27:47.260Z",
+            "artifact": "evidence/sst-final-768.png",
+            "viewport": {
+              "width": 768,
+              "height": 900
+            }
+          },
+          {
+            "name": "sst-layout-1366",
+            "actor": "agent",
+            "observer": "Codex / better-interface con Chrome DevTools",
+            "sessionId": "29682fe4-8915-43a9-a8dd-3f8fbb96e69c",
+            "surface": "/sst/buzon",
+            "environment": "Windows, Chrome156 headless, Vite local; datos técnicos de muestra y transporte interceptado cuando se indica",
+            "steps": [
+              "Revisión integrada tras última corrección",
+              "Abrir historial largo y ajustar viewport 1366×768"
+            ],
+            "expected": "Sin overflow; historial al final y controles>=44px",
+            "actual": "{\"width\":1366,\"scrollWidth\":1366,\"dialogs\":1,\"atEnd\":true,\"inputHeight\":56,\"buttons\":[44,44,44]}",
+            "result": "passed",
+            "observedAt": "2026-11-02T14:27:47.442Z",
+            "artifact": "evidence/sst-final-1366.png",
+            "viewport": {
+              "width": 1366,
+              "height": 768
+            }
+          },
+          {
+            "name": "sst-reflow-200",
+            "actor": "agent",
+            "observer": "Codex / better-interface con Chrome DevTools",
+            "sessionId": "29682fe4-8915-43a9-a8dd-3f8fbb96e69c",
+            "surface": "/sst/buzon",
+            "environment": "Windows, Chrome156 headless, Vite local; datos técnicos de muestra y transporte interceptado cuando se indica",
+            "steps": [
+              "Emular viewport CSS683×384 DPR2, equivalente de reflow1366×768 al200%",
+              "Tab desde compositor a Enviar"
+            ],
+            "expected": "Sin overflow horizontal; enviar alcanzable y visible",
+            "actual": "{\"width\":683,\"scrollWidth\":683,\"focus\":\"Enviar respuesta\",\"visible\":true}",
+            "result": "passed",
+            "observedAt": "2026-11-02T14:21:11.813Z",
+            "artifact": "evidence/sst-final-zoom.png",
+            "viewport": {
+              "width": 683,
+              "height": 384,
+              "deviceScaleFactor": 2
+            }
+          },
+          {
+            "name": "sst-reduced-motion",
+            "actor": "agent",
+            "observer": "Codex / better-interface con Chrome DevTools",
+            "sessionId": "29682fe4-8915-43a9-a8dd-3f8fbb96e69c",
+            "surface": "/sst/buzon",
+            "environment": "Windows, Chrome156 headless, Vite local; datos técnicos de muestra y transporte interceptado cuando se indica",
+            "steps": [
+              "Activar prefers-reduced-motion:reduce"
+            ],
+            "expected": "Panel sin animación de entrada",
+            "actual": "{\"reduced\":true,\"animation\":\"none\"}",
+            "result": "passed",
+            "observedAt": "2026-11-02T14:21:11.966Z",
+            "artifact": "evidence/sst-final-motion.png",
+            "viewport": {
+              "width": 320,
+              "height": 800
+            }
+          },
+          {
+            "name": "sst-effective-contrast",
+            "actor": "agent",
+            "observer": "Codex / better-interface con Chrome DevTools",
+            "sessionId": "29682fe4-8915-43a9-a8dd-3f8fbb96e69c",
+            "surface": "/sst/buzon",
+            "environment": "Windows, Chrome156 headless, Vite local; datos técnicos de muestra y transporte interceptado cuando se indica",
+            "steps": [
+              "Medir colores computados y fondo opaco de ancestros en chat activo",
+              "Tab a Enviar"
+            ],
+            "expected": "Texto normal >=4.5:1 y foco>=3:1",
+            "actual": "[{\"selector\":\".sst-composer-label\",\"foreground\":\"rgb(15, 23, 42)\",\"background\":\"rgb(255, 255, 255)\",\"ratio\":17.85,\"outline\":\"none\",\"offset\":\"0px\"},{\"selector\":\".chat-privacy-note\",\"foreground\":\"rgb(71, 85, 105)\",\"background\":\"rgb(255, 255, 255)\",\"ratio\":7.58,\"outline\":\"none\",\"offset\":\"0px\"},{\"selector\":\".chat-status-pill\",\"foreground\":\"rgb(15, 118, 110)\",\"background\":\"rgb(236, 253, 245)\",\"ratio\":5.2,\"outline\":\"none\",\"offset\":\"0px\"},{\"selector\":\".embedded-msg-text\",\"foreground\":\"rgb(15, 23, 42)\",\"background\":\"rgb(255, 255, 255)\",\"ratio\":17.85,\"outline\":\"none\",\"offset\":\"0px\"},{\"selector\":\".embedded-msg-time\",\"foreground\":\"rgb(100, 116, 139)\",\"background\":\"rgb(255, 255, 255)\",\"ratio\":4.76,\"outline\":\"none\",\"offset\":\"0px\"},{\"selector\":\".embedded-composer-send-btn\",\"foreground\":\"rgb(255, 255, 255)\",\"background\":\"rgb(15, 118, 110)\",\"ratio\":5.47,\"outline\":\"solid\",\"offset\":\"-4px\"}]",
+            "result": "passed",
+            "observedAt": "2026-11-02T14:21:28.833Z",
+            "artifact": "evidence/sst-final-focus-contrast.png",
+            "viewport": {
+              "width": 320,
+              "height": 800
+            }
+          },
+          {
+            "name": "sst-loading",
+            "actor": "agent",
+            "observer": "Codex / better-interface con Chrome DevTools",
+            "sessionId": "29682fe4-8915-43a9-a8dd-3f8fbb96e69c",
+            "surface": "/sst/buzon",
+            "environment": "Windows, Chrome156 headless, Vite local; datos técnicos de muestra y transporte interceptado cuando se indica",
+            "steps": [
+              "Abrir radicado con GET local retenido"
+            ],
+            "expected": "Estado de carga visible con historial pendiente",
+            "actual": "{\"loading\":true}",
+            "result": "passed",
+            "observedAt": "2026-11-02T14:20:59.812Z",
+            "artifact": "evidence/sst-final-loading.png",
+            "viewport": {
+              "width": 320,
+              "height": 800
+            }
+          },
+          {
+            "name": "sst-load-retry",
+            "actor": "agent",
+            "observer": "Codex / better-interface con Chrome DevTools",
+            "sessionId": "29682fe4-8915-43a9-a8dd-3f8fbb96e69c",
+            "surface": "/sst/buzon",
+            "environment": "Windows, Chrome156 headless, Vite local; datos técnicos de muestra y transporte interceptado cuando se indica",
+            "steps": [
+              "Error503 local al abrir historial",
+              "Reintentar carga con respuesta correcta"
+            ],
+            "expected": "Error recuperable y regreso al historial; Escape anterior devuelve foco",
+            "actual": "{\"restored\":\"Abrir conversación\",\"loaded\":true}",
+            "result": "passed",
+            "observedAt": "2026-11-02T14:21:00.088Z",
+            "artifact": "evidence/sst-final-load-error.png",
+            "viewport": {
+              "width": 320,
+              "height": 800
+            }
+          },
+          {
+            "name": "sst-close-error",
+            "actor": "agent",
+            "observer": "Codex / better-interface con Chrome DevTools",
+            "sessionId": "29682fe4-8915-43a9-a8dd-3f8fbb96e69c",
+            "surface": "/sst/buzon",
+            "environment": "Windows, Chrome156 headless, Vite local; datos técnicos de muestra y transporte interceptado cuando se indica",
+            "steps": [
+              "Revisión integrada tras último cambio",
+              "Concluir con notas de muestra y error local503"
+            ],
+            "expected": "Notas retenidas y error visible enfocado",
+            "actual": "{\"focus\":\"sst-close-error\",\"notes\":56,\"visible\":true}",
+            "result": "passed",
+            "observedAt": "2026-11-02T14:27:47.998Z",
+            "artifact": "evidence/sst-final-close-error.png",
+            "viewport": {
+              "width": 320,
+              "height": 800
+            }
+          },
+          {
+            "name": "sst-close-confirmed",
+            "actor": "agent",
+            "observer": "Codex / better-interface con Chrome DevTools",
+            "sessionId": "29682fe4-8915-43a9-a8dd-3f8fbb96e69c",
+            "surface": "/sst/buzon",
+            "environment": "Windows, Chrome156 headless, Vite local; datos técnicos de muestra y transporte interceptado cuando se indica",
+            "steps": [
+              "Reintentar cierre con acuse local retenido",
+              "Escape durante guardado",
+              "Liberar confirmación de muestra"
+            ],
+            "expected": "Controles bloqueados al guardar; luego historial de solo lectura",
+            "actual": "{\"pending\":{\"dialog\":1,\"disabled\":true},\"target\":{\"status\":\"En gestion\",\"notesLength\":73},\"readOnly\":true}",
+            "result": "passed",
+            "observedAt": "2026-11-02T14:20:23.610Z",
+            "artifact": "evidence/sst-final-closed.png",
+            "viewport": {
+              "width": 320,
+              "height": 800
+            }
+          },
+          {
+            "name": "sst-activate-missing-data",
+            "actor": "agent",
+            "observer": "Codex / better-interface con Chrome DevTools",
+            "sessionId": "29682fe4-8915-43a9-a8dd-3f8fbb96e69c",
+            "surface": "/sst/buzon",
+            "environment": "Windows, Chrome156 headless, Vite local; datos técnicos de muestra y transporte interceptado cuando se indica",
+            "steps": [
+              "Abrir MUESTRA-UI-003 sin urgencia ni plazo",
+              "Desplegar contexto",
+              "Abrir conversación con respuesta local"
+            ],
+            "expected": "Sin datos fabricados ni compositor antes de activar; compositor tras activación",
+            "actual": "{\"waiting\":{\"text\":\"Motivo y datos de solicitudUrgencia: No registradaMotivoMuestra técnica: consulta sin urgencia ni plazo registrados. Datos simulados.Estado del radicadoRecibidaPlazo registradoSin plazo registrado\",\"composer\":false},\"activated\":true}",
+            "result": "passed",
+            "observedAt": "2026-11-02T14:21:11.446Z",
+            "artifact": "evidence/sst-final-waiting.png",
+            "viewport": {
+              "width": 320,
+              "height": 800
+            }
+          }
+        ]
+      },
+      {
+        "id": "AC-12",
+        "status": "passed",
+        "method": "automated",
+        "kind": "functional",
+        "checkIds": [
+          "gate-2"
+        ],
+        "checks": [
+          {
+            "checkId": "gate-2",
+            "command": "cd \"frontend\" && npm test",
+            "cwd": ".",
+            "status": "PASSED"
+          }
+        ],
+        "execution": "PASSED"
+      },
+      {
+        "id": "AC-01",
+        "status": "passed",
+        "method": "automated",
+        "kind": "functional",
+        "checkIds": [
+          "gate-2"
+        ],
+        "checks": [
+          {
+            "checkId": "gate-2",
+            "command": "cd \"frontend\" && npm test",
+            "cwd": ".",
+            "status": "PASSED"
+          }
+        ],
+        "execution": "PASSED"
+      },
+      {
+        "id": "AC-02",
+        "status": "passed",
+        "method": "manual",
+        "kind": "functional",
+        "observations": [
+          {
+            "name": "supervisor-filter-loading",
+            "actor": "agent",
+            "observer": "Codex / better-interface con Chrome DevTools",
+            "sessionId": "29682fe4-8915-43a9-a8dd-3f8fbb96e69c",
+            "surface": "/supervisor/panel",
+            "environment": "Windows, Chrome156 headless, Vite local; datos técnicos de muestra y transporte interceptado cuando se indica",
+            "steps": [
+              "Seleccionar segundo ámbito autorizado con flecha abajo/Enter",
+              "Retener GET de métricas"
+            ],
+            "expected": "Título y consulta corresponden al nuevo ámbito; no aparecen métricas anteriores",
+            "actual": "{\"selected\":\"Campaña Ventas Outbound & Portabilidad · Equipo Postman Alpha (Actualizado)\",\"heading\":\"Panel de Supervisión · Campaña Ventas Outbound & Portabilidad · Equipo Postman Alpha (Actualizado)\",\"loading\":true,\"oldMetrics\":false,\"query\":\"?campana_id=camp-ventas&equipo_id=a75ec3f4-6959-4a8f-bc37-b6d7aca7c0d6&desde=2026-11-01&hasta=2026-11-02\"}",
+            "result": "passed",
+            "observedAt": "2026-11-02T14:26:52.232Z",
+            "artifact": "evidence/supervisor-final-loading.png",
+            "viewport": {
+              "width": 1366,
+              "height": 768
+            }
+          },
+          {
+            "name": "supervisor-late-response",
+            "actor": "agent",
+            "observer": "Codex / better-interface con Chrome DevTools",
+            "sessionId": "29682fe4-8915-43a9-a8dd-3f8fbb96e69c",
+            "surface": "/supervisor/panel",
+            "environment": "Windows, Chrome156 headless, Vite local; datos técnicos de muestra y transporte interceptado cuando se indica",
+            "steps": [
+              "Cambiar de vuelta al primer ámbito antes de resolver el segundo",
+              "Resolver segundo tardío y luego primero"
+            ],
+            "expected": "La respuesta tardía no sustituye el contexto actual; se conserva protección",
+            "actual": "{\"late\":{\"heading\":\"Panel de Supervisión · Campaña Retención & Bajas MásMóvil · Equipo Retención VIP\",\"selected\":\"Campaña Retención & Bajas MásMóvil · Equipo Retención VIP\",\"staleVisible\":false},\"currentQuery\":\"?campana_id=camp-retencion&equipo_id=team-retencion-vip&desde=2026-11-01&hasta=2026-11-02\",\"currentProtected\":true}",
+            "result": "passed",
+            "observedAt": "2026-11-02T14:26:52.518Z",
+            "artifact": "evidence/supervisor-final-late.png",
+            "viewport": {
+              "width": 1366,
+              "height": 768
+            }
+          },
+          {
+            "name": "supervisor-cache-scope",
+            "actor": "agent",
+            "observer": "Codex / better-interface con Chrome DevTools",
+            "sessionId": "29682fe4-8915-43a9-a8dd-3f8fbb96e69c",
+            "surface": "/supervisor/panel",
+            "environment": "Windows, Chrome156 headless, Vite local; datos técnicos de muestra y transporte interceptado cuando se indica",
+            "steps": [
+              "Volver al segundo ámbito con respuesta previa en caché"
+            ],
+            "expected": "Título y resultado conservan pertenencia al ámbito seleccionado",
+            "actual": "{\"heading\":\"Panel de Supervisión · Campaña Ventas Outbound & Portabilidad · Equipo Postman Alpha (Actualizado)\",\"selected\":\"Campaña Ventas Outbound & Portabilidad · Equipo Postman Alpha (Actualizado)\",\"wrongCurrent\":false}",
+            "result": "passed",
+            "observedAt": "2026-11-02T14:27:26.922Z",
+            "artifact": "evidence/supervisor-final-cache.png",
+            "viewport": {
+              "width": 1366,
+              "height": 768
+            }
+          }
+        ]
+      },
+      {
+        "id": "AC-03",
+        "status": "passed",
+        "method": "manual",
+        "kind": "interaction",
+        "observations": [
+          {
+            "name": "agent-native-keyboard",
+            "actor": "agent",
+            "observer": "Codex / better-interface con Chrome DevTools",
+            "sessionId": "29682fe4-8915-43a9-a8dd-3f8fbb96e69c",
+            "surface": "/agente/apoyo",
+            "environment": "Windows, Chrome156 headless, Vite local; datos técnicos de muestra y transporte interceptado cuando se indica",
+            "steps": [
+              "Volver al listado",
+              "Enter sobre botón del radicado",
+              "Volver y Espacio sobre el mismo botón"
+            ],
+            "expected": "Lista sin reselección; disparador recupera foco; Enter/Espacio abren y enfocan título",
+            "actual": "{\"initial\":{\"selected\":0,\"focus\":\"support-case-card \"},\"enter\":{\"focus\":\"H2\",\"text\":\"Radicado MUESTRA-UI-001\",\"selected\":1},\"space\":\"Radicado MUESTRA-UI-001\"}",
+            "result": "passed",
+            "observedAt": "2026-11-02T14:23:56.220Z",
+            "artifact": "evidence/agent-final-native-keyboard.png",
+            "viewport": {
+              "width": 320,
+              "height": 800
+            }
+          },
+          {
+            "name": "agent-state-loading",
+            "actor": "agent",
+            "observer": "Codex / better-interface con Chrome DevTools",
+            "sessionId": "29682fe4-8915-43a9-a8dd-3f8fbb96e69c",
+            "surface": "/agente/apoyo",
+            "environment": "Windows, Chrome156 headless, Vite local; datos técnicos de muestra y transporte interceptado cuando se indica",
+            "steps": [
+              "Abrir radicado en estado loading con respuesta local",
+              "Volver a radicados"
+            ],
+            "expected": "Volver disponible, lista sin reselección y foco en disparador",
+            "actual": "{\"opened\":{\"focus\":\"H2\",\"heading\":\"Radicado MUESTRA-UI-001\",\"back\":true,\"width\":320,\"scrollWidth\":320},\"returned\":{\"selected\":0,\"focus\":\"support-case-card \",\"code\":\"MUESTRA-UI-001\"}}",
+            "result": "passed",
+            "observedAt": "2026-11-02T14:24:14.993Z",
+            "artifact": "evidence/agent-final-loading.png",
+            "viewport": {
+              "width": 320,
+              "height": 800
+            }
+          },
+          {
+            "name": "agent-state-error",
+            "actor": "agent",
+            "observer": "Codex / better-interface con Chrome DevTools",
+            "sessionId": "29682fe4-8915-43a9-a8dd-3f8fbb96e69c",
+            "surface": "/agente/apoyo",
+            "environment": "Windows, Chrome156 headless, Vite local; datos técnicos de muestra y transporte interceptado cuando se indica",
+            "steps": [
+              "Abrir radicado en estado error con respuesta local",
+              "Volver a radicados"
+            ],
+            "expected": "Volver disponible, lista sin reselección y foco en disparador",
+            "actual": "{\"opened\":{\"focus\":\"H2\",\"heading\":\"Radicado MUESTRA-UI-001\",\"back\":true,\"width\":320,\"scrollWidth\":320},\"returned\":{\"selected\":0,\"focus\":\"support-case-card \",\"code\":\"MUESTRA-UI-001\"}}",
+            "result": "passed",
+            "observedAt": "2026-11-02T14:24:15.209Z",
+            "artifact": "evidence/agent-final-error.png",
+            "viewport": {
+              "width": 320,
+              "height": 800
+            }
+          },
+          {
+            "name": "agent-state-waiting",
+            "actor": "agent",
+            "observer": "Codex / better-interface con Chrome DevTools",
+            "sessionId": "29682fe4-8915-43a9-a8dd-3f8fbb96e69c",
+            "surface": "/agente/apoyo",
+            "environment": "Windows, Chrome156 headless, Vite local; datos técnicos de muestra y transporte interceptado cuando se indica",
+            "steps": [
+              "Abrir radicado en estado waiting con respuesta local",
+              "Volver a radicados"
+            ],
+            "expected": "Volver disponible, lista sin reselección y foco en disparador",
+            "actual": "{\"opened\":{\"focus\":\"H2\",\"heading\":\"Radicado MUESTRA-UI-003\",\"back\":true,\"width\":320,\"scrollWidth\":320},\"returned\":{\"selected\":0,\"focus\":\"support-case-card \",\"code\":\"MUESTRA-UI-003\"}}",
+            "result": "passed",
+            "observedAt": "2026-11-02T14:24:15.443Z",
+            "artifact": "evidence/agent-final-waiting.png",
+            "viewport": {
+              "width": 320,
+              "height": 800
+            }
+          },
+          {
+            "name": "agent-state-closed",
+            "actor": "agent",
+            "observer": "Codex / better-interface con Chrome DevTools",
+            "sessionId": "29682fe4-8915-43a9-a8dd-3f8fbb96e69c",
+            "surface": "/agente/apoyo",
+            "environment": "Windows, Chrome156 headless, Vite local; datos técnicos de muestra y transporte interceptado cuando se indica",
+            "steps": [
+              "Abrir radicado en estado closed con respuesta local",
+              "Volver a radicados"
+            ],
+            "expected": "Volver disponible, lista sin reselección y foco en disparador",
+            "actual": "{\"opened\":{\"focus\":\"H2\",\"heading\":\"Radicado MUESTRA-UI-002\",\"back\":true,\"width\":320,\"scrollWidth\":305},\"returned\":{\"selected\":0,\"focus\":\"support-case-card \",\"code\":\"MUESTRA-UI-002\"}}",
+            "result": "passed",
+            "observedAt": "2026-11-02T14:24:15.809Z",
+            "artifact": "evidence/agent-final-closed.png",
+            "viewport": {
+              "width": 320,
+              "height": 800
+            }
+          },
+          {
+            "name": "agent-draft-per-case",
+            "actor": "agent",
+            "observer": "Codex / better-interface con Chrome DevTools",
+            "sessionId": "29682fe4-8915-43a9-a8dd-3f8fbb96e69c",
+            "surface": "/agente/apoyo",
+            "environment": "Windows, Chrome156 headless, Vite local; datos técnicos de muestra y transporte interceptado cuando se indica",
+            "steps": [
+              "Escribir en primer radicado",
+              "Volver y abrir historial cerrado de segundo radicado",
+              "Volver al primero"
+            ],
+            "expected": "Borrador del primer radicado conservado solo allí",
+            "actual": "{\"retained\":true}",
+            "result": "passed",
+            "observedAt": "2026-11-02T14:24:16.830Z",
+            "artifact": "evidence/agent-final-draft.png",
+            "viewport": {
+              "width": 320,
+              "height": 800
+            }
+          }
+        ]
+      },
+      {
+        "id": "AC-04",
+        "status": "passed",
+        "method": "manual",
+        "kind": "accessibility",
+        "observations": [
+          {
+            "name": "agent-native-keyboard",
+            "actor": "agent",
+            "observer": "Codex / better-interface con Chrome DevTools",
+            "sessionId": "29682fe4-8915-43a9-a8dd-3f8fbb96e69c",
+            "surface": "/agente/apoyo",
+            "environment": "Windows, Chrome156 headless, Vite local; datos técnicos de muestra y transporte interceptado cuando se indica",
+            "steps": [
+              "Volver al listado",
+              "Enter sobre botón del radicado",
+              "Volver y Espacio sobre el mismo botón"
+            ],
+            "expected": "Lista sin reselección; disparador recupera foco; Enter/Espacio abren y enfocan título",
+            "actual": "{\"initial\":{\"selected\":0,\"focus\":\"support-case-card \"},\"enter\":{\"focus\":\"H2\",\"text\":\"Radicado MUESTRA-UI-001\",\"selected\":1},\"space\":\"Radicado MUESTRA-UI-001\"}",
+            "result": "passed",
+            "observedAt": "2026-11-02T14:23:56.220Z",
+            "artifact": "evidence/agent-final-native-keyboard.png",
+            "viewport": {
+              "width": 320,
+              "height": 800
+            }
+          },
+          {
+            "name": "agent-accessible-buttons",
+            "actor": "agent",
+            "observer": "Codex / better-interface con Chrome DevTools",
+            "sessionId": "29682fe4-8915-43a9-a8dd-3f8fbb96e69c",
+            "surface": "/agente/apoyo",
+            "environment": "Windows, Chrome156 headless, Vite local; datos técnicos de muestra y transporte interceptado cuando se indica",
+            "steps": [
+              "Inspeccionar árbol accesible de lista visible a1366px"
+            ],
+            "expected": "Tres botones nativos con código/motivo/estado en el nombre",
+            "actual": "{\"buttons\":[{\"role\":\"button\",\"name\":\"MUESTRA-UI-001 Nombre oculto a SST Muestra técnica: sobrecarga de llamadas. Datos simulados para comprobar el canal. En gestion 2026-11-02 Canal abierto\"},{\"role\":\"button\",\"name\":\"MUESTRA-UI-002 Nombre oculto a SST Muestra técnica: consulta concluida. Datos simulados. Cerrada 2026-11-02 Concluido\"},{\"role\":\"button\",\"name\":\"MUESTRA-UI-003 Nombre oculto a SST Muestra técnica: consulta sin urgencia ni plazo registrados. Datos simulados. Recibida 2026-11-02\"}],\"selected\":\"MUESTRA-UI-001\"}",
+            "result": "passed",
+            "observedAt": "2026-11-02T14:25:30.196Z",
+            "artifact": "evidence/agent-final-accessible-list.png",
+            "viewport": {
+              "width": 1366,
+              "height": 768
+            }
+          },
+          {
+            "name": "agent-visible-focus",
+            "actor": "agent",
+            "observer": "Codex / better-interface con Chrome DevTools",
+            "sessionId": "29682fe4-8915-43a9-a8dd-3f8fbb96e69c",
+            "surface": "/agente/apoyo",
+            "environment": "Windows, Chrome156 headless, Vite local; datos técnicos de muestra y transporte interceptado cuando se indica",
+            "steps": [
+              "Volver a radicados",
+              "Tab y Shift+Tab al disparador"
+            ],
+            "expected": "Foco visible del botón nativo",
+            "actual": "{\"tag\":\"BUTTON\",\"code\":\"MUESTRA-UI-001\",\"color\":\"rgb(15, 118, 110)\",\"style\":\"solid\",\"width\":\"2px\"}",
+            "result": "passed",
+            "observedAt": "2026-11-02T14:28:33.259Z",
+            "artifact": "evidence/agent-final-list-focus.png",
+            "viewport": {
+              "width": 320,
+              "height": 800
+            }
+          },
+          {
+            "name": "agent-load-retry",
+            "actor": "agent",
+            "observer": "Codex / better-interface con Chrome DevTools",
+            "sessionId": "29682fe4-8915-43a9-a8dd-3f8fbb96e69c",
+            "surface": "/agente/apoyo",
+            "environment": "Windows, Chrome156 headless, Vite local; datos técnicos de muestra y transporte interceptado cuando se indica",
+            "steps": [
+              "Historial devuelve503 local",
+              "Reintentar carga"
+            ],
+            "expected": "Carga recuperada con historial y compositor",
+            "actual": "{\"recovered\":true}",
+            "result": "passed",
+            "observedAt": "2026-11-02T14:25:30.883Z",
+            "artifact": "evidence/agent-final-retry.png",
+            "viewport": {
+              "width": 320,
+              "height": 800
+            }
+          },
+          {
+            "name": "agent-send-error",
+            "actor": "agent",
+            "observer": "Codex / better-interface con Chrome DevTools",
+            "sessionId": "29682fe4-8915-43a9-a8dd-3f8fbb96e69c",
+            "surface": "/agente/apoyo",
+            "environment": "Windows, Chrome156 headless, Vite local; datos técnicos de muestra y transporte interceptado cuando se indica",
+            "steps": [
+              "Escribir mensaje técnico",
+              "Enviar con acuse local de error"
+            ],
+            "expected": "Error anunciado, borrador retenido y foco al compositor",
+            "actual": "{\"focused\":true,\"draft\":\"Muestra técnica: borrador ante fallo de envío.\",\"error\":\"Muestra técnica: envío no confirmado. Reintenta.\"}",
+            "result": "passed",
+            "observedAt": "2026-11-02T14:22:56.544Z",
+            "artifact": "evidence/agent-final-send-error.png",
+            "viewport": {
+              "width": 320,
+              "height": 800
+            }
+          },
+          {
+            "name": "sst-effective-contrast",
+            "actor": "agent",
+            "observer": "Codex / better-interface con Chrome DevTools",
+            "sessionId": "29682fe4-8915-43a9-a8dd-3f8fbb96e69c",
+            "surface": "/sst/buzon",
+            "environment": "Windows, Chrome156 headless, Vite local; datos técnicos de muestra y transporte interceptado cuando se indica",
+            "steps": [
+              "Medir colores computados y fondo opaco de ancestros en chat activo",
+              "Tab a Enviar"
+            ],
+            "expected": "Texto normal >=4.5:1 y foco>=3:1",
+            "actual": "[{\"selector\":\".sst-composer-label\",\"foreground\":\"rgb(15, 23, 42)\",\"background\":\"rgb(255, 255, 255)\",\"ratio\":17.85,\"outline\":\"none\",\"offset\":\"0px\"},{\"selector\":\".chat-privacy-note\",\"foreground\":\"rgb(71, 85, 105)\",\"background\":\"rgb(255, 255, 255)\",\"ratio\":7.58,\"outline\":\"none\",\"offset\":\"0px\"},{\"selector\":\".chat-status-pill\",\"foreground\":\"rgb(15, 118, 110)\",\"background\":\"rgb(236, 253, 245)\",\"ratio\":5.2,\"outline\":\"none\",\"offset\":\"0px\"},{\"selector\":\".embedded-msg-text\",\"foreground\":\"rgb(15, 23, 42)\",\"background\":\"rgb(255, 255, 255)\",\"ratio\":17.85,\"outline\":\"none\",\"offset\":\"0px\"},{\"selector\":\".embedded-msg-time\",\"foreground\":\"rgb(100, 116, 139)\",\"background\":\"rgb(255, 255, 255)\",\"ratio\":4.76,\"outline\":\"none\",\"offset\":\"0px\"},{\"selector\":\".embedded-composer-send-btn\",\"foreground\":\"rgb(255, 255, 255)\",\"background\":\"rgb(15, 118, 110)\",\"ratio\":5.47,\"outline\":\"solid\",\"offset\":\"-4px\"}]",
+            "result": "passed",
+            "observedAt": "2026-11-02T14:21:28.833Z",
+            "artifact": "evidence/sst-final-focus-contrast.png",
+            "viewport": {
+              "width": 320,
+              "height": 800
+            }
+          }
+        ]
+      },
+      {
+        "id": "AC-05",
+        "status": "passed",
+        "method": "manual",
+        "kind": "visual",
+        "observations": [
+          {
+            "name": "agent-layout-320",
+            "actor": "agent",
+            "observer": "Codex / better-interface con Chrome DevTools",
+            "sessionId": "29682fe4-8915-43a9-a8dd-3f8fbb96e69c",
+            "surface": "/agente/apoyo",
+            "environment": "Windows, Chrome156 headless, Vite local; datos técnicos de muestra y transporte interceptado cuando se indica",
+            "steps": [
+              "Revisión integrada tras la última corrección",
+              "Seleccionar radicado y redimensionar a 320×800"
+            ],
+            "expected": "Sin overflow; lista/detalle móvil y ambos escritorio; controles>=44px",
+            "actual": "{\"width\":320,\"clientWidth\":305,\"scrollWidth\":305,\"masterVisible\":false,\"detailVisible\":true,\"inputHeight\":56,\"controls\":[44,44]}",
+            "result": "passed",
+            "observedAt": "2026-11-02T14:28:20.636Z",
+            "artifact": "evidence/agent-final-320.png",
+            "viewport": {
+              "width": 320,
+              "height": 800
+            }
+          },
+          {
+            "name": "agent-layout-768",
+            "actor": "agent",
+            "observer": "Codex / better-interface con Chrome DevTools",
+            "sessionId": "29682fe4-8915-43a9-a8dd-3f8fbb96e69c",
+            "surface": "/agente/apoyo",
+            "environment": "Windows, Chrome156 headless, Vite local; datos técnicos de muestra y transporte interceptado cuando se indica",
+            "steps": [
+              "Revisión integrada tras la última corrección",
+              "Seleccionar radicado y redimensionar a 768×900"
+            ],
+            "expected": "Sin overflow; lista/detalle móvil y ambos escritorio; controles>=44px",
+            "actual": "{\"width\":768,\"clientWidth\":753,\"scrollWidth\":753,\"masterVisible\":false,\"detailVisible\":true,\"inputHeight\":56,\"controls\":[44,44]}",
+            "result": "passed",
+            "observedAt": "2026-11-02T14:28:20.773Z",
+            "artifact": "evidence/agent-final-768.png",
+            "viewport": {
+              "width": 768,
+              "height": 900
+            }
+          },
+          {
+            "name": "agent-layout-1366",
+            "actor": "agent",
+            "observer": "Codex / better-interface con Chrome DevTools",
+            "sessionId": "29682fe4-8915-43a9-a8dd-3f8fbb96e69c",
+            "surface": "/agente/apoyo",
+            "environment": "Windows, Chrome156 headless, Vite local; datos técnicos de muestra y transporte interceptado cuando se indica",
+            "steps": [
+              "Revisión integrada tras la última corrección",
+              "Seleccionar radicado y redimensionar a 1366×768"
+            ],
+            "expected": "Sin overflow; lista/detalle móvil y ambos escritorio; controles>=44px",
+            "actual": "{\"width\":1366,\"clientWidth\":1366,\"scrollWidth\":1366,\"masterVisible\":true,\"detailVisible\":true,\"inputHeight\":56,\"controls\":[44,44]}",
+            "result": "passed",
+            "observedAt": "2026-11-02T14:28:20.951Z",
+            "artifact": "evidence/agent-final-1366.png",
+            "viewport": {
+              "width": 1366,
+              "height": 768
+            }
+          },
+          {
+            "name": "agent-reflow-200",
+            "actor": "agent",
+            "observer": "Codex / better-interface con Chrome DevTools",
+            "sessionId": "29682fe4-8915-43a9-a8dd-3f8fbb96e69c",
+            "surface": "/agente/apoyo",
+            "environment": "Windows, Chrome156 headless, Vite local; datos técnicos de muestra y transporte interceptado cuando se indica",
+            "steps": [
+              "Viewport CSS683×384 DPR2, equivalente de reflow1366×768 al200%",
+              "Tab a Enviar"
+            ],
+            "expected": "Sin desbordamiento horizontal; enviar alcanzable",
+            "actual": "{\"width\":683,\"scrollWidth\":668,\"focus\":\"Enviar mensaje\",\"visible\":true}",
+            "result": "passed",
+            "observedAt": "2026-11-02T14:25:30.485Z",
+            "artifact": "evidence/agent-final-zoom.png",
+            "viewport": {
+              "width": 683,
+              "height": 384,
+              "deviceScaleFactor": 2
+            }
+          },
+          {
+            "name": "agent-empty-history",
+            "actor": "agent",
+            "observer": "Codex / better-interface con Chrome DevTools",
+            "sessionId": "29682fe4-8915-43a9-a8dd-3f8fbb96e69c",
+            "surface": "/agente/apoyo",
+            "environment": "Windows, Chrome156 headless, Vite local; datos técnicos de muestra y transporte interceptado cuando se indica",
+            "steps": [
+              "Abrir sesión activa con cero mensajes de muestra"
+            ],
+            "expected": "Estado vacío explícito, compositor y retorno disponibles",
+            "actual": "{\"emptyText\":\"Esta conversación no tiene mensajes registrados.\",\"composer\":true}",
+            "result": "passed",
+            "observedAt": "2026-11-02T14:26:19.632Z",
+            "artifact": "evidence/agent-final-empty.png",
+            "viewport": {
+              "width": 320,
+              "height": 800
+            }
+          },
+          {
+            "name": "agent-consent-protected",
+            "actor": "agent",
+            "observer": "Codex / better-interface con Chrome DevTools",
+            "sessionId": "29682fe4-8915-43a9-a8dd-3f8fbb96e69c",
+            "surface": "/agente/apoyo",
+            "environment": "Windows, Chrome156 headless, Vite local; datos técnicos de muestra y transporte interceptado cuando se indica",
+            "steps": [
+              "Simular respuesta consentC3=false sin persistirla",
+              "Abrir acompañamiento"
+            ],
+            "expected": "Explica finalidad inactiva y siguiente paso; sin compositor",
+            "actual": "{\"title\":\"Canal de acompañamiento individual no habilitado\",\"composer\":false,\"actions\":[{\"text\":\"Gestionar finalidad C3 en consentimiento\",\"href\":\"/consentimiento\"},{\"text\":\"Ver ruta pública de apoyo y primeros auxilios\",\"href\":\"/apoyo-crisis\"}]}",
+            "result": "passed",
+            "observedAt": "2026-11-02T14:26:20.217Z",
+            "artifact": "evidence/agent-final-protected.png",
+            "viewport": {
+              "width": 320,
+              "height": 800
+            }
+          },
+          {
+            "name": "agent-state-loading",
+            "actor": "agent",
+            "observer": "Codex / better-interface con Chrome DevTools",
+            "sessionId": "29682fe4-8915-43a9-a8dd-3f8fbb96e69c",
+            "surface": "/agente/apoyo",
+            "environment": "Windows, Chrome156 headless, Vite local; datos técnicos de muestra y transporte interceptado cuando se indica",
+            "steps": [
+              "Abrir radicado en estado loading con respuesta local",
+              "Volver a radicados"
+            ],
+            "expected": "Volver disponible, lista sin reselección y foco en disparador",
+            "actual": "{\"opened\":{\"focus\":\"H2\",\"heading\":\"Radicado MUESTRA-UI-001\",\"back\":true,\"width\":320,\"scrollWidth\":320},\"returned\":{\"selected\":0,\"focus\":\"support-case-card \",\"code\":\"MUESTRA-UI-001\"}}",
+            "result": "passed",
+            "observedAt": "2026-11-02T14:24:14.993Z",
+            "artifact": "evidence/agent-final-loading.png",
+            "viewport": {
+              "width": 320,
+              "height": 800
+            }
+          },
+          {
+            "name": "agent-state-error",
+            "actor": "agent",
+            "observer": "Codex / better-interface con Chrome DevTools",
+            "sessionId": "29682fe4-8915-43a9-a8dd-3f8fbb96e69c",
+            "surface": "/agente/apoyo",
+            "environment": "Windows, Chrome156 headless, Vite local; datos técnicos de muestra y transporte interceptado cuando se indica",
+            "steps": [
+              "Abrir radicado en estado error con respuesta local",
+              "Volver a radicados"
+            ],
+            "expected": "Volver disponible, lista sin reselección y foco en disparador",
+            "actual": "{\"opened\":{\"focus\":\"H2\",\"heading\":\"Radicado MUESTRA-UI-001\",\"back\":true,\"width\":320,\"scrollWidth\":320},\"returned\":{\"selected\":0,\"focus\":\"support-case-card \",\"code\":\"MUESTRA-UI-001\"}}",
+            "result": "passed",
+            "observedAt": "2026-11-02T14:24:15.209Z",
+            "artifact": "evidence/agent-final-error.png",
+            "viewport": {
+              "width": 320,
+              "height": 800
+            }
+          },
+          {
+            "name": "agent-state-waiting",
+            "actor": "agent",
+            "observer": "Codex / better-interface con Chrome DevTools",
+            "sessionId": "29682fe4-8915-43a9-a8dd-3f8fbb96e69c",
+            "surface": "/agente/apoyo",
+            "environment": "Windows, Chrome156 headless, Vite local; datos técnicos de muestra y transporte interceptado cuando se indica",
+            "steps": [
+              "Abrir radicado en estado waiting con respuesta local",
+              "Volver a radicados"
+            ],
+            "expected": "Volver disponible, lista sin reselección y foco en disparador",
+            "actual": "{\"opened\":{\"focus\":\"H2\",\"heading\":\"Radicado MUESTRA-UI-003\",\"back\":true,\"width\":320,\"scrollWidth\":320},\"returned\":{\"selected\":0,\"focus\":\"support-case-card \",\"code\":\"MUESTRA-UI-003\"}}",
+            "result": "passed",
+            "observedAt": "2026-11-02T14:24:15.443Z",
+            "artifact": "evidence/agent-final-waiting.png",
+            "viewport": {
+              "width": 320,
+              "height": 800
+            }
+          },
+          {
+            "name": "agent-state-closed",
+            "actor": "agent",
+            "observer": "Codex / better-interface con Chrome DevTools",
+            "sessionId": "29682fe4-8915-43a9-a8dd-3f8fbb96e69c",
+            "surface": "/agente/apoyo",
+            "environment": "Windows, Chrome156 headless, Vite local; datos técnicos de muestra y transporte interceptado cuando se indica",
+            "steps": [
+              "Abrir radicado en estado closed con respuesta local",
+              "Volver a radicados"
+            ],
+            "expected": "Volver disponible, lista sin reselección y foco en disparador",
+            "actual": "{\"opened\":{\"focus\":\"H2\",\"heading\":\"Radicado MUESTRA-UI-002\",\"back\":true,\"width\":320,\"scrollWidth\":305},\"returned\":{\"selected\":0,\"focus\":\"support-case-card \",\"code\":\"MUESTRA-UI-002\"}}",
+            "result": "passed",
+            "observedAt": "2026-11-02T14:24:15.809Z",
+            "artifact": "evidence/agent-final-closed.png",
+            "viewport": {
+              "width": 320,
+              "height": 800
+            }
+          }
+        ]
+      },
+      {
+        "id": "AC-06",
+        "status": "passed",
+        "method": "manual",
+        "kind": "interaction",
+        "observations": [
+          {
+            "name": "sst-scroll-incoming",
+            "actor": "agent",
+            "observer": "Codex / better-interface con Chrome DevTools",
+            "sessionId": "29682fe4-8915-43a9-a8dd-3f8fbb96e69c",
+            "surface": "/sst/buzon",
+            "environment": "Windows, Chrome156 headless, Vite local; datos técnicos de muestra y transporte interceptado cuando se indica",
+            "steps": [
+              "Subir historial con rueda",
+              "Recibir evento local de muestra"
+            ],
+            "expected": "Conservar scroll y ofrecer Ver mensajes nuevos",
+            "actual": "{\"before\":11709,\"top\":11709,\"notice\":true}",
+            "result": "passed",
+            "observedAt": "2026-11-02T14:19:45.157Z",
+            "artifact": "evidence/sst-final-incoming.png",
+            "viewport": {
+              "width": 320,
+              "height": 800
+            }
+          },
+          {
+            "name": "sst-send-confirmed",
+            "actor": "agent",
+            "observer": "Codex / better-interface con Chrome DevTools",
+            "sessionId": "29682fe4-8915-43a9-a8dd-3f8fbb96e69c",
+            "surface": "/sst/buzon",
+            "environment": "Windows, Chrome156 headless, Vite local; datos técnicos de muestra y transporte interceptado cuando se indica",
+            "steps": [
+              "Con borrador escribir respuesta de muestra",
+              "Enviar con acuse local interceptado"
+            ],
+            "expected": "Vaciar borrador, mostrar final y devolver foco al compositor",
+            "actual": "{\"atEnd\":true,\"focus\":\"sst-chat-message\",\"count\":1}",
+            "result": "passed",
+            "observedAt": "2026-11-02T14:19:45.364Z",
+            "artifact": "evidence/sst-final-send.png",
+            "viewport": {
+              "width": 320,
+              "height": 800
+            }
+          },
+          {
+            "name": "sst-send-error",
+            "actor": "agent",
+            "observer": "Codex / better-interface con Chrome DevTools",
+            "sessionId": "29682fe4-8915-43a9-a8dd-3f8fbb96e69c",
+            "surface": "/sst/buzon",
+            "environment": "Windows, Chrome156 headless, Vite local; datos técnicos de muestra y transporte interceptado cuando se indica",
+            "steps": [
+              "Enviar respuesta técnica con acuse local de error"
+            ],
+            "expected": "Texto retenido, error anunciado y foco en compositor",
+            "actual": "{\"focused\":\"sst-chat-message\",\"draft\":\"Muestra técnica: respuesta con error y reintento.\",\"error\":\"Muestra técnica: envío no confirmado. Reintenta.\"}",
+            "result": "passed",
+            "observedAt": "2026-11-02T14:27:28.797Z",
+            "artifact": "evidence/sst-final-send-error.png",
+            "viewport": {
+              "width": 320,
+              "height": 800
+            }
+          },
+          {
+            "name": "agent-scroll-incoming",
+            "actor": "agent",
+            "observer": "Codex / better-interface con Chrome DevTools",
+            "sessionId": "29682fe4-8915-43a9-a8dd-3f8fbb96e69c",
+            "surface": "/agente/apoyo",
+            "environment": "Windows, Chrome156 headless, Vite local; datos técnicos de muestra y transporte interceptado cuando se indica",
+            "steps": [
+              "Desplazar historial arriba con rueda",
+              "Recibir mensaje local de muestra"
+            ],
+            "expected": "Se mantiene la posición y aparece Ver mensajes nuevos",
+            "actual": "{\"before\":11429,\"top\":11429,\"notice\":true}",
+            "result": "passed",
+            "observedAt": "2026-11-02T14:25:07.028Z",
+            "artifact": "evidence/agent-final-incoming.png",
+            "viewport": {
+              "width": 320,
+              "height": 800
+            }
+          },
+          {
+            "name": "agent-own-confirmed",
+            "actor": "agent",
+            "observer": "Codex / better-interface con Chrome DevTools",
+            "sessionId": "29682fe4-8915-43a9-a8dd-3f8fbb96e69c",
+            "surface": "/agente/apoyo",
+            "environment": "Windows, Chrome156 headless, Vite local; datos técnicos de muestra y transporte interceptado cuando se indica",
+            "steps": [
+              "Activar Ver mensajes nuevos",
+              "Enviar respuesta técnica con acuse local"
+            ],
+            "expected": "Aviso lleva al final y enfoca historial; envío confirma, vacía borrador y enfoca compositor",
+            "actual": "{\"notice\":{\"focus\":\"log\",\"atEnd\":true},\"own\":{\"focus\":\"TEXTAREA\",\"atEnd\":true}}",
+            "result": "passed",
+            "observedAt": "2026-11-02T14:25:07.336Z",
+            "artifact": "evidence/agent-final-own-confirmed.png",
+            "viewport": {
+              "width": 320,
+              "height": 800
+            }
+          },
+          {
+            "name": "agent-send-error",
+            "actor": "agent",
+            "observer": "Codex / better-interface con Chrome DevTools",
+            "sessionId": "29682fe4-8915-43a9-a8dd-3f8fbb96e69c",
+            "surface": "/agente/apoyo",
+            "environment": "Windows, Chrome156 headless, Vite local; datos técnicos de muestra y transporte interceptado cuando se indica",
+            "steps": [
+              "Escribir mensaje técnico",
+              "Enviar con acuse local de error"
+            ],
+            "expected": "Error anunciado, borrador retenido y foco al compositor",
+            "actual": "{\"focused\":true,\"draft\":\"Muestra técnica: borrador ante fallo de envío.\",\"error\":\"Muestra técnica: envío no confirmado. Reintenta.\"}",
+            "result": "passed",
+            "observedAt": "2026-11-02T14:22:56.544Z",
+            "artifact": "evidence/agent-final-send-error.png",
+            "viewport": {
+              "width": 320,
+              "height": 800
+            }
+          },
+          {
+            "name": "agent-send-retry",
+            "actor": "agent",
+            "observer": "Codex / better-interface con Chrome DevTools",
+            "sessionId": "29682fe4-8915-43a9-a8dd-3f8fbb96e69c",
+            "surface": "/agente/apoyo",
+            "environment": "Windows, Chrome156 headless, Vite local; datos técnicos de muestra y transporte interceptado cuando se indica",
+            "steps": [
+              "Tras error mantener borrador",
+              "Enter con acuse local correcto"
+            ],
+            "expected": "Se vacía solo al confirmar, foco en textarea y final visible",
+            "actual": "{\"focus\":\"TEXTAREA\",\"count\":2,\"atEnd\":true}",
+            "result": "passed",
+            "observedAt": "2026-11-02T14:23:13.027Z",
+            "artifact": "evidence/agent-final-send-success.png",
+            "viewport": {
+              "width": 320,
+              "height": 800
+            }
+          }
+        ]
+      },
+      {
+        "id": "AC-07",
+        "status": "passed",
+        "method": "inspection",
+        "kind": "functional"
+      },
+      {
+        "id": "AC-08",
+        "status": "passed",
+        "method": "automated",
+        "kind": "functional",
+        "checkIds": [
+          "gate-2"
+        ],
+        "checks": [
+          {
+            "checkId": "gate-2",
+            "command": "cd \"frontend\" && npm test",
+            "cwd": ".",
+            "status": "PASSED"
+          }
+        ],
+        "execution": "PASSED"
+      },
+      {
+        "id": "AC-09",
+        "status": "passed",
+        "method": "automated",
+        "kind": "functional",
+        "checkIds": [
+          "gate-1",
+          "gate-2",
+          "gate-3",
+          "gate-4"
+        ],
+        "checks": [
+          {
+            "checkId": "gate-1",
+            "command": "cd \"backend\" && npm test",
+            "cwd": ".",
+            "status": "PASSED"
+          },
+          {
+            "checkId": "gate-2",
+            "command": "cd \"frontend\" && npm test",
+            "cwd": ".",
+            "status": "PASSED"
+          },
+          {
+            "checkId": "gate-3",
+            "command": "cd \"frontend\" && npm run lint",
+            "cwd": ".",
+            "status": "PASSED"
+          },
+          {
+            "checkId": "gate-4",
+            "command": "cd \"frontend\" && npm run build",
+            "cwd": ".",
+            "status": "PASSED"
+          }
+        ],
+        "execution": "PASSED"
+      }
+    ],
+    "scope": "DECLARED_EVIDENCE_WITH_EXECUTED_CHECK_BINDINGS",
+    "truthOfEvidence": "AGENT_OR_HUMAN_REVIEW_REQUIRED",
+    "automatedChecksPassed": true
+  },
+  "results": [
+    {
+      "command": "cd \"backend\" && npm test",
+      "checkId": "gate-1",
+      "cwd": "C:\\Users\\brahi\\OneDrive\\Escritorio\\TdeA\\4to semestre\\Construccion3\\Pulso360",
+      "checkCwd": ".",
+      "kind": "automated",
+      "timeoutMs": 120000,
+      "processId": 9600,
+      "startedAt": "2026-11-02T14:34:02.419Z",
+      "finishedAt": "2026-11-02T14:34:24.500Z",
+      "durationMs": 22081,
+      "output": "ada vÃ¡lida (9.8867ms)\n    ✔ debe retornar 200 OK con arreglo de bitÃ¡coras del propio usuario autenticado (7.7394ms)\n  ✔ BitÃ¡coras Privadas (GET y POST /api/v1/agent/journal) (27.2657ms)\n  ▶ Control RBAC: RestricciÃ³n de Acceso para SUPERVISOR (403 Forbidden)\n    ✔ debe rechazar con 403 Forbidden y AUTH_FORBIDDEN_ROLE cualquier intento de acceso a /api/v1/agent por SUPERVISOR (28.2012ms)\n  ✔ Control RBAC: RestricciÃ³n de Acceso para SUPERVISOR (403 Forbidden) (28.4465ms)\n✔ Sprint 2 Â· Agent Module & Privacy Contract Tests (588.5523ms)\n◇ injected env (0) from .env\n◇ injected env (0) from .env.test\n▶ P05 · HTTP API Contract Tests (Test Harness)\n  ▶ GET /api/v1/health (RNF-03)\n    ✔ debe responder con HTTP 200 y el esquema canónico de salud (60.5384ms)\n  ✔ GET /api/v1/health (RNF-03) (61.344ms)\n  ▶ Manejo Unificado de Rutas Inexistentes (404 Not Found)\n    ✔ debe retornar HTTP 404 con el estándar de error SDD ante rutas no implementadas (5.3018ms)\n  ✔ Manejo Unificado de Rutas Inexistentes (404 Not Found) (5.5154ms)\n✔ P05 · HTTP API Contract Tests (Test Harness) (67.3641ms)\n◇ injected env (0) from .env\n◇ injected env (0) from .env.test\n▶ Sprint 3 · Auditor Contract Tests\n  ▶ GET /api/v1/auditor/logs\n    ✔ debe retornar 200 OK con lista de logs inmutables (30.4141ms)\n  ✔ GET /api/v1/auditor/logs (31.0917ms)\n  ▶ POST /api/v1/auditor/export\n    ✔ debe retornar 200 OK con metadatos de exportación (350.4532ms)\n  ✔ POST /api/v1/auditor/export (350.7368ms)\n✔ Sprint 3 · Auditor Contract Tests (577.1768ms)\n◇ injected env (0) from .env\n◇ injected env (0) from .env.test\n▶ Sprint 1 · Authentication and Profile Contract Tests\n  ▶ POST /api/v1/auth/login\n    ✔ debe autenticar exitosamente con credenciales validas (200 OK), retornar usuario y token, y omitir contrasena_hash (192.8802ms)\n    ✔ debe rechazar con 401 y AUTH_INVALID_CREDENTIALS ante una contrasena incorrecta (71.3531ms)\n    ✔ debe rechazar con 401 y AUTH_INVALID_CREDENTIALS ante un usuario inexistente (4.3834ms)\n    ✔ debe rechazar con 400 y AUTH_MISSING_FIELDS ante un body vacio o campos incompletos (9.6024ms)\n  ✔ POST /api/v1/auth/login (279.3491ms)\n  ▶ GET /api/v1/auth/me\n    ✔ debe responder con 200 OK y el perfil completo del usuario (usr-1, AGENTE, equipo) con Bearer token valido (16.8834ms)\n    ✔ debe rechazar con 401 y AUTH_TOKEN_MISSING sin cabecera Authorization (3.385ms)\n    ✔ debe rechazar con 401 y AUTH_TOKEN_INVALID con token malformado o invalido (8.1788ms)\n  ✔ GET /api/v1/auth/me (28.9014ms)\n✔ Sprint 1 · Authentication and Profile Contract Tests (311.7746ms)\n◇ injected env (0) from .env\n◇ injected env (0) from .env.test\n✔ activaciones simultáneas crean una sesión, una bienvenida y una auditoría (627.6018ms)\n✔ todos los DTO de chat anónimo omiten identidad, incluida la histórica y el cierre del agente (50.2369ms)\n✔ servicio valida rol real, titularidad y C3 sin depender del socket o botón (75.2856ms)\n✔ reintentos se reconcilian sin duplicar mensaje ni auditoría y rechazan texto distinto (34.1283ms)\n▶ fallos intermedios revierten activación, envío y cierre completos\n  ✔ activación (3.7664ms)\n  ✔ envío (6.5389ms)\n  ✔ cierre (2.9963ms)\n✔ fallos intermedios revierten activación, envío y cierre completos (28.9248ms)\n✔ envío concurrente con cierre no deja mensajes nuevos después del cierre (20.8224ms)\n▶ P08 · Domain Contracts & Invariants (Test Harness)\n  ▶ Regla 1: Invariante de k-Anonimato (k >= 5)\n    ✔ debe suprimir métricas y retornar estado protegido cuando la cohorte es menor al umbral (k < 5) (0.6716ms)\n    ✔ debe permitir la emisión de métricas cuando la cohorte alcanza o supera el umbral (k >= 5) (0.1488ms)\n  ✔ Regla 1: Invariante de k-Anonimato (k >= 5) (1.5341ms)\n  ▶ Regla 3: Validación de las 6 Dimensiones del Check-in\n    ✔ debe aceptar un registro completo con enteros entre 1 y 5 (0.2581ms)\n    ✔ debe rechazar dimensiones fuera del rango 1 a 5 (valores 0 o 6) (0.127ms)\n    ✔ debe rechazar dimensiones fraccionarias (ej. 3.5) (0.1442ms)\n    ✔ debe rechazar cuando falte alguna de las 6 dimensiones obligatorias (0.1513ms)\n  ✔ Regla 3: Validación de las 6 Dimensiones del Check-in (0.967ms)\n  ▶ Regla 4: Verificación de Consentimiento Informado (C1..C5)\n    ✔ debe retornar true solo si la política general fue aceptada y el flag específico está activo (0.2041ms)\n    ✔ debe retornar false si la política general no fue aceptada aunque el flag esté en true (0.1055ms)\n    ✔ debe retornar false para valores nulos o indefinidos (0.1002ms)\n  ✔ Regla 4: Verificación de Consentimiento Informado (C1..C5) (0.6608ms)\n✔ P08 · Domain Contracts & Invariants (Test Harness) (3.75ms)\n◇ injected env (0) from .env\n◇ injected env (0) from .env.test\n✔ findUserById usa el pool y mantiene el identificador fuera del SQL (1.6153ms)\n✔ analítica impide reducir k y suprime dimensiones con menos de cinco personas (0.8342ms)\n✔ socket rechaza rol ajeno y mensajes sin sesión persistida (45.0292ms)\n✔ socket sin sessionId no guarda ni emite un mensaje efímero (7.6677ms)\n✔ socket impide guardar mensajes en la sesión de otro titular (7.6243ms)\n✔ socket deriva destinatario de BD e ignora identidad y receptor del payload (7.7969ms)\n✔ socket exige consentimiento vigente y no filtra errores SQL (8.2668ms)\n✔ socket rechaza JWT revocado al conectar y vuelve a verificar antes de operar (10.3569ms)\n◇ injected env (0) from .env\n◇ injected env (0) from .env.test\n▶ Configuración JWT y errores públicos\n  ✔ rechaza claves ausentes, triviales y el ejemplo público incluso en test (1.0087ms)\n  ✔ rechaza un token fabricado con la clave pública (23.862ms)\n  ✔ health no expone errores internos de PostgreSQL (6.517ms)\n✔ Configuración JWT y errores públicos (32.5863ms)\n▶ P05 · OpenAPI 3.1 Specification Contract Integrity\n  ✔ documenta todas las operaciones montadas y no anuncia rutas inexistentes (11.6985ms)\n  ✔ el archivo openapi.json debe existir y ser un JSON sintácticamente válido (2.0047ms)\n  ✔ debe contener la definición de los 13 endpoints canónicos principales (2.1211ms)\n  ✔ debe definir el esquema estandarizado de error con 'success' y 'error' (1.5845ms)\n  ✔ debe definir el esquema de entrada de Checkin con las 6 dimensiones requeridas (1 a 5) (1.7088ms)\n  ✔ debe requerir autenticación Bearer JWT en los esquemas de seguridad (2.0093ms)\n✔ P05 · OpenAPI 3.1 Specification Contract Integrity (22.4777ms)\n◇ injected env (0) from .env\n◇ injected env (0) from .env.test\n✔ campaña inactiva y equipo con supervisor real se conservan (226.5434ms)\n✔ alta suspendida exige contraseña y asignación inválida no deja filas parciales (138.2203ms)\n✔ rol, equipo y estado persisten juntos y por separado (58.0118ms)\n✔ parámetros sin efecto operativo rechazan modificación remota (9.0281ms)\n✔ Habeas Data conserva titular, creación y vencimiento y recupera respuesta en ambas vistas (116.1249ms)\n✔ catálogo de usuarios no duplica cuentas con varias asignaciones activas (13.0378ms)\n✔ sesión existente aplica rol y suspensión persistidos sin confiar en el rol antiguo del JWT (111.5991ms)\n◇ injected env (0) from .env\n◇ injected env (0) from .env.test\n✔ jornada de Bogotá respeta cambio UTC y comienzo real de turno (375.3766ms)\n✔ perfil recupera asignación y contadores propios completos sin datos administrativos de otros roles (38.9826ms)\n✔ análisis, revisión e historial persisten; editar invalida y rechaza respuesta atrasada (83.571ms)\n✔ C3 y aceptación se verifican por HTTP; preferencias e historial son del servidor (40.8043ms)\n✔ check-in: 119 minutos permite editar, 121 rechaza; fechas y valores persistidos se recuperan (46.4408ms)\n✔ cada finalidad y una política nueva se verifican por petición directa; C5 no bloquea apoyo voluntario (83.879ms)\n[ServerError] { code: 'P0001', method: 'POST', path: '/api/v1/agent/journal' }\n✔ fallo de auditoría revierte la escritura privada; eventos efectivos no guardan su contenido (58.8144ms)\n◇ injected env (0) from .env\n◇ injected env (0) from .env.test\n✔ reglas: propuesta persistente, únicamente ADMIN aprueba, revisión duplicada 409 (584.3221ms)\n✔ léxico: contenido registrado e íntegro, activación y reversión con permisos (48.968ms)\n✔ auditoría: contenido alterado, concurrentes, continuidad entre páginas, exportación >50 (1395.6687ms)\n[ServerError] {\n  code: 'PASSWORD_RESET_UNAVAILABLE',\n  method: 'POST',\n  path: '/api/v1/auth/password-reset/request'\n}\n✔ recuperación sin SMTP devuelve indisponibilidad sin confirmar envío (3.3918ms)\n✔ Nodemailer prepara el correo con transporte local controlado y solo persiste el hash del token (18.9494ms)\n✔ recuperación: SMTP controlado, sin token en respuesta, expiración, fallo y uso único revocan sesión (376.0101ms)\n◇ injected env (0) from .env\n◇ injected env (0) from .env.test\n✔ dos supervisores: corte ajeno se rechaza antes de agregar (307.1104ms)\n✔ periodo, dimensiones y null se conservan en un único snapshot (73.7751ms)\n✔ CSV del servidor incluye solo dimensiones elegidas; periodo vacío no pasa k (25.487ms)\n✔ C4 desactivado excluye al titular del conteo y los promedios del mismo periodo (20.8378ms)\n◇ injected env (0) from .env\n◇ injected env (0) from .env.test\n✔ alerta N=4 protege descripción y evidencia incluso al actualizar (455.2593ms)\n✔ todos los campos de intervención y seguimiento se recuperan; responsable ajeno se rechaza (82.9695ms)\n✔ apoyo identificado conserva canal y franja; descripción opcional y tipo inválido devuelve 400 (38.7549ms)\n✔ apoyo conserva preferencias, omite identidad anónima y audita actor autenticado (27.3431ms)\n◇ injected env (0) from .env\n◇ injected env (0) from .env.test\n▶ Sprint 3 · SST, Supervision & k-Anonymity Analytics Contract Tests\n  ▶ Autenticación y tokens de roles\n    ✔ debe contar con tokens JWT válidos para SST, SUPERVISOR y AGENTE (0.6192ms)\n  ✔ Autenticación y tokens de roles (1.1878ms)\n  ▶ GET /api/v1/sst/metrics — k-Anonimato en Analítica Agregada\n    ✔ con k >= 5: debe retornar 200 OK con { protected: false, cohort_count >= 5, k_threshold: 5, metrics: { ... } } (28.894ms)\n    ✔ con k >= 5 en consulta general sin filtros: debe retornar 200 OK con protected: false y metrics calculadas (8.0379ms)\n    ✔ con k < 5: debe retornar 200 OK con { protected: true, reason, cohort_count < 5, k_threshold: 5, metrics: null } (7.0807ms)\n    ✔ con k < 5 por rango de fechas sin agentes suficientes: debe retornar 200 OK con protected: true y metrics: null (6.2605ms)\n  ✔ GET /api/v1/sst/metrics — k-Anonimato en Analítica Agregada (50.8014ms)\n  ▶ GET /api/v1/sst/alerts — Catálogo de Alertas Tempranas\n    ✔ debe retornar 200 OK con arreglo de alertas tempranas preventivas para rol SST (12.0069ms)\n  ✔ GET /api/v1/sst/alerts — Catálogo de Alertas Tempranas (12.3415ms)\n  ▶ Intervenciones Preventivas (GET y POST /api/v1/sst/interventions)\n    ✔ debe retornar 200 OK con arreglo de intervenciones psicosociales para rol SST (11.3855ms)\n    ✔ debe retornar 201 Created con { id, status: 'Activa', created_at } al crear intervención con datos válidos (28.1037ms)\n    ✔ debe retornar 400 Bad Request con código 'INTERVENTION_MISSING_REQUIRED_FIELDS' cuando faltan campos obligatorios (5.6718ms)\n  ✔ Intervenciones Preventivas (GET y POST /api/v1/sst/interventions) (45.5597ms)\n  ▶ Solicitudes de Apoyo Psicosocial (/api/v1/sst/support-requests)\n    ✔ debe retornar 200 OK en GET con rol SST comprobando estrictamente que mode = 'anonimo' tenga solicitante === null (10.3215ms)\n    ✔ debe retornar 201 Created con { id, code, status: 'Recibida', sla: '24 h habiles' } al radicar solicitud con rol AGENTE (8.5681ms)\n  ✔ Solicitudes de Apoyo Psicosocial (/api/v1/sst/support-requests) (19.1357ms)\n  ▶ Control RBAC: Restricción de Roles No Autorizados (403 Forbidden)\n    ✔ debe rechazar con 403 Forbidden y AUTH_FORBIDDEN_ROLE cuando un AGENTE intenta acceder a GET /api/v1/sst/metrics (4.4286ms)\n    ✔ debe rechazar con 403 Forbidden y AUTH_FORBIDDEN_ROLE cuando un AGENTE intenta acceder a GET /api/v1/sst/alerts (4.7301ms)\n    ✔ debe rechazar con 403 Forbidden y AUTH_FORBIDDEN_ROLE cuando un AGENTE intenta acceder a GET /api/v1/sst/interventions (4.5761ms)\n    ✔ debe rechazar con 403 Forbidden y AUTH_FORBIDDEN_ROLE cuando un AGENTE intenta acceder a GET /api/v1/sst/support-requests (4.0965ms)\n    ✔ debe rechazar con 403 Forbidden y AUTH_FORBIDDEN_ROLE cuando un SUPERVISOR intenta acceder a GET /api/v1/sst/alerts (3.9942ms)\n    ✔ debe rechazar con 403 Forbidden y AUTH_FORBIDDEN_ROLE cuando un SUPERVISOR intenta crear una intervención (5.1613ms)\n  ✔ Control RBAC: Restricción de Roles No Autorizados (403 Forbidden) (27.4771ms)\n✔ Sprint 3 · SST, Supervision & k-Anonymity Analytics Contract Tests (642.1114ms)\n◇ injected env (0) from .env\n◇ injected env (0) from .env.test\n▶ Sprint 3 · Supervisor Contract Tests\n  ▶ GET /api/v1/supervisor/actions\n    ✔ debe retornar 200 OK con arreglo de intervenciones y seguimientos con token de supervisor (24.936ms)\n    ✔ debe retornar 403 Forbidden si un agente intenta acceder (5.2068ms)\n  ✔ GET /api/v1/supervisor/actions (30.8704ms)\n  ▶ POST /api/v1/supervisor/actions/:id/followup\n    ✔ debe retornar 200 OK actualizando avance y agregando seguimiento (35.0809ms)\n    ✔ debe retornar 403 Forbidden cuando supervisor intenta reportar avance sobre intervención ajena (IDOR) (6.1354ms)\n  ✔ POST /api/v1/supervisor/actions/:id/followup (41.5729ms)\n✔ Sprint 3 · Supervisor Contract Tests (345.1902ms)\n◇ injected env (0) from .env\n◇ injected env (0) from .env.test\n✔ Privacidad RBAC: SUPERVISOR es bloqueado con 403 Forbidden al intentar acceder al chat de apoyo (423.6783ms)\n✔ Journey Radicado a Chat: Radicación formal, activación por SST y comunicación en vivo (78.4178ms)\n◇ injected env (0) from .env\n◇ injected env (0) from .env.test\n▶ Sprint 3 Â· Transversal Contract Tests\n  ▶ GET /api/v1/reports\n    ✔ debe retornar 200 OK con reportes del usuario (20.229ms)\n  ✔ GET /api/v1/reports (20.8812ms)\n  ▶ GET /api/v1/notifications\n    ✔ debe retornar 200 OK con notificaciones (7.0138ms)\n  ✔ GET /api/v1/notifications (7.4221ms)\n  ▶ PATCH /api/v1/notifications/read-all\n    ✔ debe retornar 200 OK marcando leÃ­das (6.4225ms)\n  ✔ PATCH /api/v1/notifications/read-all (6.6872ms)\n  ▶ Ciclo de vida de reportes e Integridad (Canonical JSON)\n    ✔ debe retornar 200 OK en la descarga de un reporte intacto (Canonical JSON) (17.2682ms)\n    ✔ debe rechazar con 409 Conflict y REPORT_INTEGRITY_MISMATCH si el reporte fue alterado (6.9075ms)\n  ✔ Ciclo de vida de reportes e Integridad (Canonical JSON) (25.4102ms)\n✔ Sprint 3 Â· Transversal Contract Tests (357.7752ms)\n◇ injected env (0) from .env\n◇ injected env (0) from .env.test\n✔ Bogotá: lunes 05:59 todavía no vence; 06:00 sí, martes y domingo usan el mismo cierre (84.2668ms)\n✔ carga elevada genera snapshot persistente; reintento no duplica ni reabre una alerta descartada (137.7471ms)\n✔ caída relativa: tres descensos requieren cuatro semanas; un rebote rompe la persistencia (67.6818ms)\n✔ N=4, muchas filas de cuatro personas y dimensión omitida nunca generan alerta (111.1341ms)\n✔ C4 revocado o política no vigente, semana ausente y condición incumplida se distinguen sin ceros fabricados (203.0668ms)\n✔ propuesta, regla inactiva o aprobada después del cierre no emiten; Sobrecarga queda sin evaluación (168.6226ms)\n✔ ámbito campaña usa solo sus equipos; equipo inactivo o inexistente no produce alertas (118.2594ms)\n✔ bloqueo entre instancias: un proceso ocupado no escribe; ejecuciones concurrentes conservan una sola alerta (78.348ms)\n✔ auditoría del job y operaciones concurrentes mantienen enlaces y contenido verificables (348.1248ms)\n✔ fallo revierte alerta, auditoría y cursor; el reintento completa y recupera cierres pendientes (132.7653ms)\n✔ planificador: deshabilitado no ejecuta, no solapa ticks, se detiene y reintenta tras error (2.5145ms)\n✔ umbral estricto: igualdad no cumple; una dimensión con null permanece no evaluable (1.3583ms)\n✔ no acepta fecha futura ni una semana todavía sin vencer (1.2284ms)\nℹ tests 132\nℹ suites 44\nℹ pass 132\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 21470.2496\n",
+      "outputTruncated": true,
+      "outputBytes": 19294,
+      "outputTotalBytes": 19294,
+      "outputLimitExceeded": false,
+      "outputLimitBytes": 8388608,
+      "outputLog": "specs/.omni/verification-logs/8a2d69b3-d22a-4b40-a2a8-7898f53fcdd5.log",
+      "timedOut": false,
+      "exitCode": 0,
+      "signal": null,
+      "errorType": null,
+      "outputLogHash": "f384b5cfc91dc6bf307ba8164690b1f8e1ed2555e74eac990f365768000c56f2"
+    },
+    {
+      "command": "cd \"frontend\" && npm test",
+      "checkId": "gate-2",
+      "cwd": "C:\\Users\\brahi\\OneDrive\\Escritorio\\TdeA\\4to semestre\\Construccion3\\Pulso360",
+      "checkCwd": ".",
+      "kind": "automated",
+      "timeoutMs": 120000,
+      "processId": 9164,
+      "startedAt": "2026-11-02T14:34:24.502Z",
+      "finishedAt": "2026-11-02T14:34:27.067Z",
+      "durationMs": 2565,
+      "output": "\n> pulso360@0.0.0 test\n> node --test tests/*.test.mjs\n\n✔ fechas SST: el día de Bogotá y el cierre a 28 días no cambian con medianoche UTC (538.4615ms)\n✔ API real: el perfil conserva contadores completos y asignaciones sin inicializar dominio demo (127.6543ms)\n✔ borradores tras 401: solo RAM, mismo titular, caducidad y limpieza al salir o cambiar cuenta (90.1198ms)\n✔ sesión API: una respuesta atrasada no recupera contadores antiguos ni reabre una sesión cerrada (64.233ms)\n✔ API real: solo mutaciones confirmadas refrescan contadores y un 401 retiene antes de revocar (36.607ms)\n✔ API real: análisis/corrección esperan respuesta, conservan hash y jamás escriben mock (103.5642ms)\n✔ API real: seguimiento normaliza nota, fecha, acción y autor para ambas vistas (81.3677ms)\n✔ API real: avisos esperan sobre del servidor y restablecer demo no accede al mock (79.8518ms)\n✔ API real: Habeas Data propio conserva timestamp de radicación y respuesta (64.875ms)\n✔ API real: consulta fallida no cae a mock y sobre success:false no se anuncia como éxito (78.4117ms)\n✔ API real: parámetros anidados, política publicada, reglas y catálogo de léxico se normalizan (67.5636ms)\n✔ API real: NLP carga el diccionario activo y falla sin autorización sin cambiar algoritmo (57.7138ms)\n✔ API real: exportación e integridad provienen del servidor, paginación mantiene sobre (67.6932ms)\n✔ API real: apoyo confidencial usa modalidad identificada y conserva preferencia/franja (67.4666ms)\n✔ CSV: estructura permitida sin garantías falsas ni pérdida silenciosa de filas (194.9517ms)\n✔ cambiar la identidad desconecta el socket anterior antes del nuevo handshake (638.6539ms)\n✔ el envío espera confirmación y descarta errores/mensajes de otro intento (1.669ms)\n✔ el error de servidor rechaza el intento y limpia listeners, sin una confirmación falsa (1.1181ms)\n✔ acknowledgement confirma el guardado aunque no llegue el evento de difusión (0.5447ms)\n✔ sin conexión no emite a la cola; una desconexión pendiente se informa como no confirmada (0.6005ms)\n✔ timeout y cancelación no retienen suscripciones ni aceptan confirmaciones tardías (17.7514ms)\n▶ iconografía compartida: nombres de todas las vistas, semántica y tamaños\n  ✔ cada nombre estático y catálogo utilizado resuelve a un símbolo real (670.8077ms)\n  ✔ la navegación diferencia registrar y consultar historia; los planes conservan significado entre roles (9.2007ms)\n  ✔ los accesos de chat en ambos roles usan conversación y el envío no usa navegación (402.7482ms)\n  ✔ corregir un factor conserva su símbolo y expresa el ajuste con texto (18.9612ms)\n  ✔ indicadores sin tendencia no sugieren mejora ni alarma mediante el icono (8.8791ms)\n[Pulso360] Icono no registrado: test-missing-icon\n  ✔ un aviso destinado a SST no se presenta como alerta sólo por su destinatario (8.7654ms)\n  ✔ archivo protegido, alta de usuario, escritura y tendencia tienen símbolos específicos (0.6541ms)\n  ✔ Lucide y SVG propios conservan tamaño, trazo y estilos adicionales (0.848ms)\n  ✔ un nombre desconocido produce un marcador detectable en lugar de un punto (0.68ms)\n✔ iconografía compartida: nombres de todas las vistas, semántica y tamaños (1555.7706ms)\n▶ auditoría 001: contratos de datos y representación SSR, sin simular validación de navegador\n  ✔ dotación grande sin respuestas y equipo vacío no afirman publicación de agregados (235.0384ms)\n  ✔ el título identifica el ámbito consultado aunque la cuenta conserve otra campaña (344.5971ms)\n  ✔ integridad inicial pendiente y acción legible en la tabla (29.2158ms)\n  ✔ fechas de Bogotá atraviesan medianoche UTC, conservan segundos y manejan ausencia (0.7465ms)\n  ✔ SST: urgencia registrada conserva baja/media/alta y distingue dato ausente (3.6972ms)\n  ✔ SST: buzón SSR distingue urgencia baja y datos ausentes sin inventar plazo (211.3247ms)\n  ✔ SST: cierre SSR mantiene dos estados existentes, notas obligatorias y ninguna segunda capa modal (1.8554ms)\n  ✔ SST: confirmación pendiente bloquea controles y el error conserva notas para reintentar (2.0053ms)\n✔ auditoría 001: contratos de datos y representación SSR, sin simular validación de navegador (1374.3062ms)\n✔ nlpSanitizer: colapsa elongaciones y limpia parásitos de teclado sin alterar la letra ñ (203.3ms)\n✔ damerauLevenshtein: detecta transposiciones inmediatas y fat-finger typos de distancia <= 1 (1.4714ms)\n✔ spanishStemmer: reduce formas verbales y flexiones de género/número a raíces canónicas (2.4085ms)\n✔ nlpEngine: procesa exitosamente la frase testigo del operador (AC-01) (363.8588ms)\n✔ nlpEngine: negación contextual estilo NegEx anula la tensión (AC-05) (95.572ms)\n✔ nlpEngine (Ronda 1 - Centinela de Crisis): detección de alertas de crisis preventiva y tolerancia a erratas (AC-01) (79.6464ms)\n✔ nlpEngine (Ronda 3 - Desempeño y Cero LLM): latencia local determinista < 50ms (119.6854ms)\n✔ almacenamiento bloqueado: conserva cambios en memoria y comunica modo temporal (191.0181ms)\n✔ cuota agotada: no lanza excepción y conmuta a memoria resiliente (51.9226ms)\n✔ nlpEngine analiza intensificadores, negaciones y límites de ventana (367.0922ms)\nℹ tests 50\nℹ suites 0\nℹ pass 50\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 2093.4702\n",
+      "outputTruncated": false,
+      "outputBytes": 5388,
+      "outputTotalBytes": 5388,
+      "outputLimitExceeded": false,
+      "outputLimitBytes": 8388608,
+      "outputLog": "specs/.omni/verification-logs/bf90bf28-45b4-4287-ae8b-7f2e9c227eb6.log",
+      "timedOut": false,
+      "exitCode": 0,
+      "signal": null,
+      "errorType": null,
+      "outputLogHash": "950123a27306bd642729f9114729f273e2e185f570ab32e755091dfac364f04e"
+    },
+    {
+      "command": "cd \"frontend\" && npm run lint",
+      "checkId": "gate-3",
+      "cwd": "C:\\Users\\brahi\\OneDrive\\Escritorio\\TdeA\\4to semestre\\Construccion3\\Pulso360",
+      "checkCwd": ".",
+      "kind": "automated",
+      "timeoutMs": 120000,
+      "processId": 10932,
+      "startedAt": "2026-11-02T14:34:27.068Z",
+      "finishedAt": "2026-11-02T14:34:30.604Z",
+      "durationMs": 3536,
+      "output": "\n> pulso360@0.0.0 lint\n> eslint .\n\n",
+      "outputTruncated": false,
+      "outputBytes": 35,
+      "outputTotalBytes": 35,
+      "outputLimitExceeded": false,
+      "outputLimitBytes": 8388608,
+      "outputLog": "specs/.omni/verification-logs/31d11664-aee7-4c44-b951-03b046aac1ca.log",
+      "timedOut": false,
+      "exitCode": 0,
+      "signal": null,
+      "errorType": null,
+      "outputLogHash": "02e62610fcddf5b48a5664b25f47a0883fbb8fa925b9251025cf602821db34e5"
+    },
+    {
+      "command": "cd \"frontend\" && npm run build",
+      "checkId": "gate-4",
+      "cwd": "C:\\Users\\brahi\\OneDrive\\Escritorio\\TdeA\\4to semestre\\Construccion3\\Pulso360",
+      "checkCwd": ".",
+      "kind": "automated",
+      "timeoutMs": 120000,
+      "processId": 4928,
+      "startedAt": "2026-11-02T14:34:30.605Z",
+      "finishedAt": "2026-11-02T14:34:35.510Z",
+      "durationMs": 4904,
+      "output": "\n> pulso360@0.0.0 build\n> vite build\n\nvite v6.4.4 building for production...\ntransforming...\n✓ 2228 modules transformed.\nrendering chunks...\ncomputing gzip size...\ndist/index.html                   0.63 kB │ gzip:   0.38 kB\ndist/assets/index-D90ZEaXC.css  420.41 kB │ gzip:  63.62 kB\ndist/assets/index-AzbCcIeu.js   950.10 kB │ gzip: 265.55 kB\n\n(!) Some chunks are larger than 500 kB after minification. Consider:\n- Using dynamic import() to code-split the application\n- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks\n- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.\n✓ built in 4.10s\n",
+      "outputTruncated": false,
+      "outputBytes": 703,
+      "outputTotalBytes": 703,
+      "outputLimitExceeded": false,
+      "outputLimitBytes": 8388608,
+      "outputLog": "specs/.omni/verification-logs/75816ca9-6378-4757-bf2d-c0deb0458c62.log",
+      "timedOut": false,
+      "exitCode": 0,
+      "signal": null,
+      "errorType": null,
+      "outputLogHash": "76b1a05322c9e41f547a60715e9d961b036f7997112470d736fd95d3270527eb"
+    }
+  ]
+}

@@ -1,0 +1,307 @@
+{
+  "schemaVersion": 2,
+  "criteria": [
+    {
+      "id": "AC-01",
+      "kind": "visual",
+      "status": "passed",
+      "method": "manual",
+      "evidence": "9observaciones actuales deapp real a320/1366, entrada/recarga/puntero:headingsenquiet youtline:none, foco conservado; landinginicialscroll0 frente a115 previo. Capturas locales ignoradas,seguardan enartifact. No todoslosroles/flujos repetidos por esteparchecompartido.",
+      "observations": [
+        {
+          "name": "after-0",
+          "actor": "agent",
+          "observer": "Codex / better-interface con revisión de better-accessibility",
+          "sessionId": "1fb7c764-07b1-4655-9ffc-2e32050c84ff",
+          "surface": "/",
+          "environment": "Windows/Chrome156 headless dumpDOM; página real en iframe del mismo origen, perfil temporal; sinCDP. Modalidad e interacciones DOM simuladas cuando se indica; no input físico ni datos enviados.",
+          "steps": [
+            "Abrir ruta realen frame con anchoCSS320.",
+            "Medir foco programático,outline,scroll y geometría tras montaje."
+          ],
+          "expected": "Destino enfocado sin marco; entrada/recarga preservan scroll0 y documento sin overflow.",
+          "actual": "{\"phase\":\"after\",\"startedAt\":\"2026-11-02T20:28:32.576Z\",\"observedAt\":\"2026-11-02T20:28:34.568Z\",\"path\":\"/\",\"viewport\":{\"width\":320,\"height\":768,\"deviceScaleFactor\":1},\"title\":\"Bienestar y apoyo preventivo en Contact Centers.Registra cómo vives el turno y solicita orientación a SST. · Pulso360\",\"active\":{\"tag\":\"H1\",\"text\":\"Bienestar y apoyo preventivo  en Contact Centers.Registra cómo vives el turno y solicita orientación a SST.\",\"focusVisible\":true,\"outline\":\"rgb(17, 38, 35) none 3px\",\"marker\":\"quiet\"},\"heading\":\"Bienestar y apoyo preventivo  en Contact Centers.Registra cómo vives el turno y solicita orientación a SST.\",\"scroll\":{\"x\":0,\"y\":0},\"documentWidth\":305,\"clientWidth\":305,\"artifact\":\"evidence/after-landing-320.png\",\"exitCode\":0}",
+          "result": "passed",
+          "observedAt": "2026-11-02T20:28:34.568Z",
+          "viewport": {
+            "width": 320,
+            "height": 768,
+            "deviceScaleFactor": 1
+          },
+          "artifact": "evidence/after-landing-320.png"
+        },
+        {
+          "name": "after-1",
+          "actor": "agent",
+          "observer": "Codex / better-interface con revisión de better-accessibility",
+          "sessionId": "1fb7c764-07b1-4655-9ffc-2e32050c84ff",
+          "surface": "/",
+          "environment": "Windows/Chrome156 headless dumpDOM; página real en iframe del mismo origen, perfil temporal; sinCDP. Modalidad e interacciones DOM simuladas cuando se indica; no input físico ni datos enviados.",
+          "steps": [
+            "Abrir ruta realen frame con anchoCSS1366.",
+            "Medir foco programático,outline,scroll y geometría tras montaje."
+          ],
+          "expected": "Destino enfocado sin marco; entrada/recarga preservan scroll0 y documento sin overflow.",
+          "actual": "{\"phase\":\"after\",\"startedAt\":\"2026-11-02T20:28:34.629Z\",\"observedAt\":\"2026-11-02T20:28:36.681Z\",\"path\":\"/\",\"viewport\":{\"width\":1366,\"height\":768,\"deviceScaleFactor\":1},\"title\":\"Bienestar y apoyo preventivo en Contact Centers.Registra cómo vives el turno y solicita orientación a SST. · Pulso360\",\"active\":{\"tag\":\"H1\",\"text\":\"Bienestar y apoyo preventivo  en Contact Centers.Registra cómo vives el turno y solicita orientación a SST.\",\"focusVisible\":true,\"outline\":\"rgb(17, 38, 35) none 3px\",\"marker\":\"quiet\"},\"heading\":\"Bienestar y apoyo preventivo  en Contact Centers.Registra cómo vives el turno y solicita orientación a SST.\",\"scroll\":{\"x\":0,\"y\":0},\"documentWidth\":1351,\"clientWidth\":1351,\"artifact\":\"evidence/after-landing-1366.png\",\"exitCode\":0}",
+          "result": "passed",
+          "observedAt": "2026-11-02T20:28:36.681Z",
+          "viewport": {
+            "width": 1366,
+            "height": 768,
+            "deviceScaleFactor": 1
+          },
+          "artifact": "evidence/after-landing-1366.png"
+        },
+        {
+          "name": "after-2",
+          "actor": "agent",
+          "observer": "Codex / better-interface con revisión de better-accessibility",
+          "sessionId": "1fb7c764-07b1-4655-9ffc-2e32050c84ff",
+          "surface": "/403",
+          "environment": "Windows/Chrome156 headless dumpDOM; página real en iframe del mismo origen, perfil temporal; sinCDP. Modalidad e interacciones DOM simuladas cuando se indica; no input físico ni datos enviados.",
+          "steps": [
+            "Abrir ruta realen frame con anchoCSS320.",
+            "Medir foco programático,outline,scroll y geometría tras montaje."
+          ],
+          "expected": "Destino enfocado sin marco; entrada/recarga preservan scroll0 y documento sin overflow.",
+          "actual": "{\"phase\":\"after\",\"startedAt\":\"2026-11-02T20:28:36.738Z\",\"observedAt\":\"2026-11-02T20:28:38.408Z\",\"path\":\"/403\",\"viewport\":{\"width\":320,\"height\":768,\"deviceScaleFactor\":1},\"title\":\"Acceso no autorizado · Pulso360\",\"active\":{\"tag\":\"H1\",\"text\":\"Acceso no autorizado\",\"focusVisible\":true,\"outline\":\"rgb(15, 23, 42) none 3px\",\"marker\":\"quiet\"},\"heading\":\"Acceso no autorizado\",\"scroll\":{\"x\":0,\"y\":0},\"documentWidth\":320,\"clientWidth\":320,\"artifact\":\"evidence/after-403-320.png\",\"exitCode\":0}",
+          "result": "passed",
+          "observedAt": "2026-11-02T20:28:38.408Z",
+          "viewport": {
+            "width": 320,
+            "height": 768,
+            "deviceScaleFactor": 1
+          },
+          "artifact": "evidence/after-403-320.png"
+        },
+        {
+          "name": "after-3",
+          "actor": "agent",
+          "observer": "Codex / better-interface con revisión de better-accessibility",
+          "sessionId": "1fb7c764-07b1-4655-9ffc-2e32050c84ff",
+          "surface": "/403",
+          "environment": "Windows/Chrome156 headless dumpDOM; página real en iframe del mismo origen, perfil temporal; sinCDP. Modalidad e interacciones DOM simuladas cuando se indica; no input físico ni datos enviados.",
+          "steps": [
+            "Abrir ruta realen frame con anchoCSS1366.",
+            "Medir foco programático,outline,scroll y geometría tras montaje."
+          ],
+          "expected": "Destino enfocado sin marco; entrada/recarga preservan scroll0 y documento sin overflow.",
+          "actual": "{\"phase\":\"after\",\"startedAt\":\"2026-11-02T20:28:38.454Z\",\"observedAt\":\"2026-11-02T20:28:40.116Z\",\"path\":\"/403\",\"viewport\":{\"width\":1366,\"height\":768,\"deviceScaleFactor\":1},\"title\":\"Acceso no autorizado · Pulso360\",\"active\":{\"tag\":\"H1\",\"text\":\"Acceso no autorizado\",\"focusVisible\":true,\"outline\":\"rgb(15, 23, 42) none 3px\",\"marker\":\"quiet\"},\"heading\":\"Acceso no autorizado\",\"scroll\":{\"x\":0,\"y\":0},\"documentWidth\":1366,\"clientWidth\":1366,\"artifact\":\"evidence/after-403-1366.png\",\"exitCode\":0}",
+          "result": "passed",
+          "observedAt": "2026-11-02T20:28:40.116Z",
+          "viewport": {
+            "width": 1366,
+            "height": 768,
+            "deviceScaleFactor": 1
+          },
+          "artifact": "evidence/after-403-1366.png"
+        },
+        {
+          "name": "after-4",
+          "actor": "agent",
+          "observer": "Codex / better-interface con revisión de better-accessibility",
+          "sessionId": "1fb7c764-07b1-4655-9ffc-2e32050c84ff",
+          "surface": "/login",
+          "environment": "Windows/Chrome156 headless dumpDOM; página real en iframe del mismo origen, perfil temporal; sinCDP. Modalidad e interacciones DOM simuladas cuando se indica; no input físico ni datos enviados.",
+          "steps": [
+            "Abrir ruta realen frame con anchoCSS320.",
+            "Medir foco programático,outline,scroll y geometría tras montaje."
+          ],
+          "expected": "Destino enfocado sin marco; entrada/recarga preservan scroll0 y documento sin overflow.",
+          "actual": "{\"phase\":\"after\",\"startedAt\":\"2026-11-02T20:28:40.165Z\",\"observedAt\":\"2026-11-02T20:28:42.021Z\",\"path\":\"/login\",\"viewport\":{\"width\":320,\"height\":768,\"deviceScaleFactor\":1},\"title\":\"Iniciar Sesión · Pulso360\",\"active\":{\"tag\":\"H2\",\"text\":\"Iniciar Sesión\",\"focusVisible\":true,\"outline\":\"rgb(8, 47, 40) none 3px\",\"marker\":\"quiet\"},\"heading\":\"Iniciar Sesión\",\"scroll\":{\"x\":0,\"y\":0},\"documentWidth\":305,\"clientWidth\":305,\"artifact\":\"evidence/after-login-320.png\",\"exitCode\":0}",
+          "result": "passed",
+          "observedAt": "2026-11-02T20:28:42.021Z",
+          "viewport": {
+            "width": 320,
+            "height": 768,
+            "deviceScaleFactor": 1
+          },
+          "artifact": "evidence/after-login-320.png"
+        },
+        {
+          "name": "after-5",
+          "actor": "agent",
+          "observer": "Codex / better-interface con revisión de better-accessibility",
+          "sessionId": "1fb7c764-07b1-4655-9ffc-2e32050c84ff",
+          "surface": "/login",
+          "environment": "Windows/Chrome156 headless dumpDOM; página real en iframe del mismo origen, perfil temporal; sinCDP. Modalidad e interacciones DOM simuladas cuando se indica; no input físico ni datos enviados.",
+          "steps": [
+            "Abrir ruta realen frame con anchoCSS1366.",
+            "Medir foco programático,outline,scroll y geometría tras montaje."
+          ],
+          "expected": "Destino enfocado sin marco; entrada/recarga preservan scroll0 y documento sin overflow.",
+          "actual": "{\"phase\":\"after\",\"startedAt\":\"2026-11-02T20:28:42.073Z\",\"observedAt\":\"2026-11-02T20:28:43.916Z\",\"path\":\"/login\",\"viewport\":{\"width\":1366,\"height\":768,\"deviceScaleFactor\":1},\"title\":\"Iniciar Sesión · Pulso360\",\"active\":{\"tag\":\"H2\",\"text\":\"Iniciar Sesión\",\"focusVisible\":true,\"outline\":\"rgb(8, 47, 40) none 3px\",\"marker\":\"quiet\"},\"heading\":\"Iniciar Sesión\",\"scroll\":{\"x\":0,\"y\":0},\"documentWidth\":1366,\"clientWidth\":1366,\"artifact\":\"evidence/after-login-1366.png\",\"exitCode\":0}",
+          "result": "passed",
+          "observedAt": "2026-11-02T20:28:43.916Z",
+          "viewport": {
+            "width": 1366,
+            "height": 768,
+            "deviceScaleFactor": 1
+          },
+          "artifact": "evidence/after-login-1366.png"
+        },
+        {
+          "name": "reload-6",
+          "actor": "agent",
+          "observer": "Codex / better-interface con revisión de better-accessibility",
+          "sessionId": "1fb7c764-07b1-4655-9ffc-2e32050c84ff",
+          "surface": "/",
+          "environment": "Windows/Chrome156 headless dumpDOM; página real en iframe del mismo origen, perfil temporal; sinCDP. Modalidad e interacciones DOM simuladas cuando se indica; no input físico ni datos enviados.",
+          "steps": [
+            "Abrir la ruta real y recargar window.location dentro del frame;load2.",
+            "Medir viewportCSS,foco,outline yscroll tras montaje."
+          ],
+          "expected": "Destino enfocado sin marco; entrada/recarga preservan scroll0 y documento sin overflow.",
+          "actual": "{\"phase\":\"reload\",\"startedAt\":\"2026-11-02T20:31:42.345Z\",\"observedAt\":\"2026-11-02T20:31:44.432Z\",\"path\":\"/\",\"mode\":\"reload\",\"loads\":2,\"viewport\":{\"width\":1366,\"height\":768,\"deviceScaleFactor\":1},\"title\":\"Bienestar y apoyo preventivo en Contact Centers.Registra cómo vives el turno y solicita orientación a SST. · Pulso360\",\"active\":{\"tag\":\"H1\",\"text\":\"Bienestar y apoyo preventivo  en Contact Centers.Registra cómo vives el turno y solicita orientación a SST.\",\"focusVisible\":true,\"outline\":\"rgb(17, 38, 35) none 3px\",\"marker\":\"quiet\"},\"heading\":\"Bienestar y apoyo preventivo  en Contact Centers.Registra cómo vives el turno y solicita orientación a SST.\",\"scroll\":{\"x\":0,\"y\":0},\"documentWidth\":1351,\"clientWidth\":1351,\"artifact\":\"evidence/reload-landing-1366.png\",\"exitCode\":0}",
+          "result": "passed",
+          "observedAt": "2026-11-02T20:31:44.432Z",
+          "viewport": {
+            "width": 1366,
+            "height": 768,
+            "deviceScaleFactor": 1
+          },
+          "artifact": "evidence/reload-landing-1366.png"
+        },
+        {
+          "name": "reload-7",
+          "actor": "agent",
+          "observer": "Codex / better-interface con revisión de better-accessibility",
+          "sessionId": "1fb7c764-07b1-4655-9ffc-2e32050c84ff",
+          "surface": "/403",
+          "environment": "Windows/Chrome156 headless dumpDOM; página real en iframe del mismo origen, perfil temporal; sinCDP. Modalidad e interacciones DOM simuladas cuando se indica; no input físico ni datos enviados.",
+          "steps": [
+            "Abrir la ruta real y recargar window.location dentro del frame;load2.",
+            "Medir viewportCSS,foco,outline yscroll tras montaje."
+          ],
+          "expected": "Destino enfocado sin marco; entrada/recarga preservan scroll0 y documento sin overflow.",
+          "actual": "{\"phase\":\"reload\",\"startedAt\":\"2026-11-02T20:31:44.487Z\",\"observedAt\":\"2026-11-02T20:31:46.247Z\",\"path\":\"/403\",\"mode\":\"reload\",\"loads\":2,\"viewport\":{\"width\":1366,\"height\":768,\"deviceScaleFactor\":1},\"title\":\"Acceso no autorizado · Pulso360\",\"active\":{\"tag\":\"H1\",\"text\":\"Acceso no autorizado\",\"focusVisible\":true,\"outline\":\"rgb(15, 23, 42) none 3px\",\"marker\":\"quiet\"},\"heading\":\"Acceso no autorizado\",\"scroll\":{\"x\":0,\"y\":0},\"documentWidth\":1366,\"clientWidth\":1366,\"artifact\":\"evidence/reload-403-1366.png\",\"exitCode\":0}",
+          "result": "passed",
+          "observedAt": "2026-11-02T20:31:46.247Z",
+          "viewport": {
+            "width": 1366,
+            "height": 768,
+            "deviceScaleFactor": 1
+          },
+          "artifact": "evidence/reload-403-1366.png"
+        },
+        {
+          "name": "pointer-9",
+          "actor": "agent",
+          "observer": "Codex / better-interface con revisión de better-accessibility",
+          "sessionId": "1fb7c764-07b1-4655-9ffc-2e32050c84ff",
+          "surface": "/login",
+          "environment": "Windows/Chrome156 headless dumpDOM; página real en iframe del mismo origen, perfil temporal; sinCDP. Modalidad e interacciones DOM simuladas cuando se indica; no input físico ni datos enviados.",
+          "steps": [
+            "Abrir403,despachar pointerdown y activar botón hacia/login medianteDOM.",
+            "Inspeccionar foco youtline computado enlogin."
+          ],
+          "expected": "Destino enfocado sin marco; entrada/recarga preservan scroll0 y documento sin overflow.",
+          "actual": "{\"phase\":\"pointer\",\"startedAt\":\"2026-11-02T20:31:48.436Z\",\"observedAt\":\"2026-11-02T20:31:50.382Z\",\"path\":\"/login\",\"mode\":\"pointer\",\"loads\":1,\"viewport\":{\"width\":1366,\"height\":768,\"deviceScaleFactor\":1},\"title\":\"Iniciar Sesión · Pulso360\",\"active\":{\"tag\":\"H2\",\"text\":\"Iniciar Sesión\",\"focusVisible\":true,\"outline\":\"rgb(8, 47, 40) none 3px\",\"marker\":\"quiet\"},\"heading\":\"Iniciar Sesión\",\"scroll\":{\"x\":0,\"y\":0},\"documentWidth\":1366,\"clientWidth\":1366,\"artifact\":\"evidence/pointer-403-1366.png\",\"exitCode\":0}",
+          "result": "passed",
+          "observedAt": "2026-11-02T20:31:50.382Z",
+          "viewport": {
+            "width": 1366,
+            "height": 768,
+            "deviceScaleFactor": 1
+          },
+          "artifact": "evidence/pointer-403-1366.png"
+        }
+      ]
+    },
+    {
+      "id": "AC-02",
+      "kind": "accessibility",
+      "status": "passed",
+      "method": "manual",
+      "evidence": "3observaciones de navegación/salto/campo enaplicaciónreal conDOM,eventos de modalidad simulados yestilos computados. No input físiconativo ni lector de pantalla. HarnessChrome13grupos exit0:incluye13gruposyregresión StrictMode que conserva scroll200 ySPA querevela. Elfixturefinaliza transición delinput soloparamedir estadoCSS final.",
+      "observations": [
+        {
+          "name": "keyboard-8",
+          "actor": "agent",
+          "observer": "Codex / better-interface con revisión de better-accessibility",
+          "sessionId": "1fb7c764-07b1-4655-9ffc-2e32050c84ff",
+          "surface": "/login",
+          "environment": "Windows/Chrome156 headless dumpDOM; página real en iframe del mismo origen, perfil temporal; sinCDP. Modalidad e interacciones DOM simuladas cuando se indica; no input físico ni datos enviados.",
+          "steps": [
+            "Abrir403,despachar keydownEnter y activar botón hacia/login medianteDOM.",
+            "Inspeccionar foco de ruta youtline computado después de transición."
+          ],
+          "expected": "Navegación/ salto explícito conservan foco e indicador2px visible.",
+          "actual": "{\"phase\":\"keyboard\",\"startedAt\":\"2026-11-02T20:31:46.357Z\",\"observedAt\":\"2026-11-02T20:31:48.326Z\",\"path\":\"/login\",\"mode\":\"keyboard\",\"loads\":1,\"viewport\":{\"width\":1366,\"height\":768,\"deviceScaleFactor\":1},\"title\":\"Iniciar Sesión · Pulso360\",\"active\":{\"tag\":\"H2\",\"text\":\"Iniciar Sesión\",\"focusVisible\":true,\"outline\":\"rgb(15, 118, 110) solid 2px\",\"marker\":\"keyboard\"},\"heading\":\"Iniciar Sesión\",\"scroll\":{\"x\":0,\"y\":0},\"documentWidth\":1366,\"clientWidth\":1366,\"artifact\":\"evidence/keyboard-403-1366.png\",\"exitCode\":0}",
+          "result": "passed",
+          "observedAt": "2026-11-02T20:31:48.326Z",
+          "viewport": {
+            "width": 1366,
+            "height": 768,
+            "deviceScaleFactor": 1
+          },
+          "artifact": "evidence/keyboard-403-1366.png"
+        },
+        {
+          "name": "skip-10",
+          "actor": "agent",
+          "observer": "Codex / better-interface con revisión de better-accessibility",
+          "sessionId": "1fb7c764-07b1-4655-9ffc-2e32050c84ff",
+          "surface": "/login",
+          "environment": "Windows/Chrome156 headless dumpDOM; página real en iframe del mismo origen, perfil temporal; sinCDP. Modalidad e interacciones DOM simuladas cuando se indica; no input físico ni datos enviados.",
+          "steps": [
+            "Abrir/login y activar el enlace de salto medianteDOM.",
+            "Inspeccionar foco real enmain youtline computado."
+          ],
+          "expected": "Navegación/ salto explícito conservan foco e indicador2px visible.",
+          "actual": "{\"phase\":\"skip\",\"startedAt\":\"2026-11-02T20:31:50.501Z\",\"observedAt\":\"2026-11-02T20:31:52.223Z\",\"path\":\"/login\",\"mode\":\"skip\",\"loads\":1,\"viewport\":{\"width\":1366,\"height\":768,\"deviceScaleFactor\":1},\"title\":\"Iniciar Sesión · Pulso360\",\"active\":{\"tag\":\"MAIN\",\"text\":\"Iniciar SesiónAcceso institucional a tu espacio Pulso360.Probar acceso con Microsoft 365Probar acceso con Google Workspa\",\"focusVisible\":true,\"outline\":\"rgb(15, 118, 110) solid 2px\",\"marker\":\"keyboard\"},\"heading\":\"Iniciar Sesión\",\"scroll\":{\"x\":0,\"y\":0},\"documentWidth\":1366,\"clientWidth\":1366,\"artifact\":\"evidence/skip-login-1366.png\",\"exitCode\":0}",
+          "result": "passed",
+          "observedAt": "2026-11-02T20:31:52.223Z",
+          "viewport": {
+            "width": 1366,
+            "height": 768,
+            "deviceScaleFactor": 1
+          },
+          "artifact": "evidence/skip-login-1366.png"
+        },
+        {
+          "name": "control-11",
+          "actor": "agent",
+          "observer": "Codex / better-interface con revisión de better-accessibility",
+          "sessionId": "1fb7c764-07b1-4655-9ffc-2e32050c84ff",
+          "surface": "/login",
+          "environment": "Windows/Chrome156 headless dumpDOM; página real en iframe del mismo origen, perfil temporal; sinCDP. Modalidad e interacciones DOM simuladas cuando se indica; no input físico ni datos enviados.",
+          "steps": [
+            "Abrir/login y enfocar input real sinintroducir datos.",
+            "Finalizar solo transiciones del campo enfixture porque dumpDOM mantiene currentTime0; medir borde/halo final del CSS real."
+          ],
+          "expected": "Campo conserva borde rgb20,112,90 yhalo3px sin marcador de ruta.",
+          "actual": "{\"phase\":\"control\",\"startedAt\":\"2026-11-02T20:34:22.929Z\",\"observedAt\":\"2026-11-02T20:34:24.629Z\",\"path\":\"/login\",\"mode\":\"control\",\"loads\":1,\"viewport\":{\"width\":1366,\"height\":768,\"deviceScaleFactor\":1},\"title\":\"Iniciar Sesión · Pulso360\",\"active\":{\"tag\":\"INPUT\",\"className\":\"field-input has-left-icon \",\"focused\":true,\"documentHasFocus\":true,\"text\":\"\",\"focusVisible\":true,\"outline\":\"rgb(15, 23, 42) none 3px\",\"border\":\"1px solid rgb(20, 112, 90)\",\"boxShadow\":\"rgba(20, 112, 90, 0.15) 0px 0px 0px 3px\",\"parentBorder\":\"0px none rgb(15, 23, 42)\",\"parentBoxShadow\":\"none\",\"marker\":null,\"animations\":[]},\"heading\":\"Iniciar Sesión\",\"scroll\":{\"x\":0,\"y\":0},\"documentWidth\":1366,\"clientWidth\":1366,\"artifact\":\"evidence/control-login-1366.png\",\"exitCode\":0}",
+          "result": "passed",
+          "observedAt": "2026-11-02T20:34:24.629Z",
+          "viewport": {
+            "width": 1366,
+            "height": 768,
+            "deviceScaleFactor": 1
+          },
+          "artifact": "evidence/control-login-1366.png"
+        }
+      ]
+    },
+    {
+      "id": "AC-03",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": ".gitignore limita patrones aimagenes specs/*/evidence; gitcheck-ignore confirmaPNG028;0imágenes nuevas candidatas y34activos frontend/public versionados.621capturas originales66,466,057bytes conservadas, más las nuevas029. JSON/fuente noignorados. Sin eliminaciones."
+    },
+    {
+      "id": "AC-04",
+      "kind": "functional",
+      "status": "passed",
+      "method": "automated",
+      "evidence": "Cuatrochecks configurados ejecutados/vinculados porverify029. HarnessChrome13grupos ejecutado aparte. Revisiónprepublicación de diffs/archivos/ignore yescaneolimitado sensible. Commit/push autorizado se hace después yse verifica por hash remoto; pasar estoschecks no afirma publicación.",
+      "checkIds": [
+        "gate-1",
+        "gate-2",
+        "gate-3",
+        "gate-4"
+      ]
+    }
+  ]
+}

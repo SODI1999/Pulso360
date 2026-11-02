@@ -25,7 +25,6 @@ export function OrganizationPage() {
     assignModalState,
     setAssignModalState,
     campaigns,
-    minThreshold,
     supervisorsList,
     handleSaveCampaign,
     handleToggleCampaign,
@@ -144,7 +143,6 @@ export function OrganizationPage() {
               setTeamModalState={setTeamModalState}
               setCampaignModalState={setCampaignModalState}
               handleToggleCampaign={handleToggleCampaign}
-              minThreshold={minThreshold}
               setAssignModalState={setAssignModalState}
               handleToggleTeam={handleToggleTeam}
             />

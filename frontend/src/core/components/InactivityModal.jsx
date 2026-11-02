@@ -4,6 +4,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authService } from '../auth/authService';
+import { useModalA11y } from '../hooks/useModalA11y';
 
 const INACTIVITY_MS = 30 * 60 * 1000; // 30 minutos de tiempo máximo de inactividad
 const WARNING_MS = 60 * 1000; // 60 segundos de advertencia previa
@@ -18,6 +19,8 @@ export function InactivityModal() {
   const warningTimerRef = useRef(null);
   const countdownIntervalRef = useRef(null);
   const lastTouchRef = useRef(0);
+  const modalRef = useRef(null);
+  const continueRef = useRef(null);
 
   // Cierre seguro de sesión
   const handleLogout = useCallback(() => {
@@ -81,17 +84,20 @@ export function InactivityModal() {
       }
     };
 
-    events.forEach((evt) => window.addEventListener(evt, onUserActivity, { passive: true }));
+    events.forEach((evt) => window.addEventListener(evt, onUserActivity, { passive: true, capture: true }));
     resetTimer();
 
     // Limpieza de suscripciones al desmontar para evitar memory leaks
     return () => {
-      events.forEach((evt) => window.removeEventListener(evt, onUserActivity));
+      events.forEach((evt) => window.removeEventListener(evt, onUserActivity, true));
       clearTimeout(inactivityTimerRef.current);
       clearTimeout(warningTimerRef.current);
       clearInterval(countdownIntervalRef.current);
     };
   }, [resetTimer]);
+
+  // La advertencia requiere elegir una acción; Escape no prolonga la sesión.
+  useModalA11y({ isOpen: isWarningVisible, onClose: () => undefined, modalRef, initialFocusRef: continueRef });
 
   if (!isWarningVisible) return null;
 
@@ -101,6 +107,8 @@ export function InactivityModal() {
       role="dialog"
       aria-modal="true"
       aria-labelledby="sessionWarningTitle"
+      aria-describedby="sessionWarningDescription"
+      ref={modalRef}
     >
       <div className="modal-box">
         <div className="modal-header">
@@ -108,7 +116,7 @@ export function InactivityModal() {
             <h2 id="sessionWarningTitle" className="modal-title">
               Tu sesión está por expirar
             </h2>
-            <p className="modal-subtitle">
+            <p id="sessionWarningDescription" className="modal-subtitle">
               Por seguridad y confidencialidad en la operación, el sistema cerrará tu sesión tras 30 minutos de inactividad.
             </p>
           </div>
@@ -122,7 +130,7 @@ export function InactivityModal() {
           <button type="button" className="btn btn-secondary" onClick={handleLogout}>
             Cerrar sesión
           </button>
-          <button type="button" className="btn btn-primary" onClick={resetTimer}>
+          <button ref={continueRef} type="button" className="btn btn-primary" onClick={resetTimer}>
             Seguir conectado
           </button>
         </div>

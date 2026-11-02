@@ -1,0 +1,1357 @@
+[
+  {
+    "path": "/login",
+    "role": "public",
+    "kind": "page",
+    "status": "verified",
+    "reviewedRoles": [
+      "public"
+    ],
+    "viewports": [
+      320,
+      768,
+      1366
+    ],
+    "observations": [
+      {
+        "role": "public",
+        "width": 320,
+        "observedAt": "2026-11-02T16:43:18.865Z",
+        "artifact": "evidence/delivered-public-login-320.png",
+        "result": "passed"
+      },
+      {
+        "role": "public",
+        "width": 768,
+        "observedAt": "2026-11-02T16:43:19.408Z",
+        "artifact": "evidence/delivered-public-login-768.png",
+        "result": "passed"
+      },
+      {
+        "role": "public",
+        "width": 1366,
+        "observedAt": "2026-11-02T16:43:20.024Z",
+        "artifact": "evidence/delivered-public-login-1366.png",
+        "result": "passed"
+      }
+    ]
+  },
+  {
+    "path": "/recuperar-clave",
+    "role": "public",
+    "kind": "page",
+    "status": "verified",
+    "reviewedRoles": [
+      "public"
+    ],
+    "viewports": [
+      320,
+      768,
+      1366
+    ],
+    "observations": [
+      {
+        "role": "public",
+        "width": 320,
+        "observedAt": "2026-11-02T16:43:21.056Z",
+        "artifact": "evidence/delivered-public-recuperar-clave-320.png",
+        "result": "passed"
+      },
+      {
+        "role": "public",
+        "width": 768,
+        "observedAt": "2026-11-02T16:43:21.628Z",
+        "artifact": "evidence/delivered-public-recuperar-clave-768.png",
+        "result": "passed"
+      },
+      {
+        "role": "public",
+        "width": 1366,
+        "observedAt": "2026-11-02T16:43:22.257Z",
+        "artifact": "evidence/delivered-public-recuperar-clave-1366.png",
+        "result": "passed"
+      }
+    ]
+  },
+  {
+    "path": "/nueva-clave",
+    "role": "public",
+    "kind": "page",
+    "status": "verified",
+    "reviewedRoles": [
+      "public"
+    ],
+    "viewports": [
+      320,
+      768,
+      1366
+    ],
+    "observations": [
+      {
+        "role": "public",
+        "width": 320,
+        "observedAt": "2026-11-02T16:43:23.282Z",
+        "artifact": "evidence/delivered-public-nueva-clave-320.png",
+        "result": "passed"
+      },
+      {
+        "role": "public",
+        "width": 768,
+        "observedAt": "2026-11-02T16:43:23.860Z",
+        "artifact": "evidence/delivered-public-nueva-clave-768.png",
+        "result": "passed"
+      },
+      {
+        "role": "public",
+        "width": 1366,
+        "observedAt": "2026-11-02T16:43:24.496Z",
+        "artifact": "evidence/delivered-public-nueva-clave-1366.png",
+        "result": "passed"
+      }
+    ]
+  },
+  {
+    "path": "/403",
+    "role": "public",
+    "kind": "page",
+    "status": "verified",
+    "reviewedRoles": [
+      "public"
+    ],
+    "viewports": [
+      320,
+      768,
+      1366
+    ],
+    "observations": [
+      {
+        "role": "public",
+        "width": 320,
+        "observedAt": "2026-11-02T16:43:25.487Z",
+        "artifact": "evidence/delivered-public-403-320.png",
+        "result": "passed"
+      },
+      {
+        "role": "public",
+        "width": 768,
+        "observedAt": "2026-11-02T16:43:25.973Z",
+        "artifact": "evidence/delivered-public-403-768.png",
+        "result": "passed"
+      },
+      {
+        "role": "public",
+        "width": 1366,
+        "observedAt": "2026-11-02T16:43:26.480Z",
+        "artifact": "evidence/delivered-public-403-1366.png",
+        "result": "passed"
+      }
+    ]
+  },
+  {
+    "path": "/contactenos",
+    "role": "public",
+    "kind": "page",
+    "status": "verified",
+    "reviewedRoles": [
+      "public"
+    ],
+    "viewports": [
+      320,
+      768,
+      1366
+    ],
+    "observations": [
+      {
+        "role": "public",
+        "width": 320,
+        "observedAt": "2026-11-02T16:43:27.587Z",
+        "artifact": "evidence/delivered-public-contactenos-320.png",
+        "result": "passed"
+      },
+      {
+        "role": "public",
+        "width": 768,
+        "observedAt": "2026-11-02T16:43:28.081Z",
+        "artifact": "evidence/delivered-public-contactenos-768.png",
+        "result": "passed"
+      },
+      {
+        "role": "public",
+        "width": 1366,
+        "observedAt": "2026-11-02T16:43:28.598Z",
+        "artifact": "evidence/delivered-public-contactenos-1366.png",
+        "result": "passed"
+      }
+    ]
+  },
+  {
+    "path": "/fundamentacion",
+    "role": "public",
+    "kind": "page",
+    "status": "verified",
+    "reviewedRoles": [
+      "public"
+    ],
+    "viewports": [
+      320,
+      768,
+      1366
+    ],
+    "observations": [
+      {
+        "role": "public",
+        "width": 320,
+        "observedAt": "2026-11-02T16:43:29.616Z",
+        "artifact": "evidence/delivered-public-fundamentacion-320.png",
+        "result": "passed"
+      },
+      {
+        "role": "public",
+        "width": 768,
+        "observedAt": "2026-11-02T16:43:30.123Z",
+        "artifact": "evidence/delivered-public-fundamentacion-768.png",
+        "result": "passed"
+      },
+      {
+        "role": "public",
+        "width": 1366,
+        "observedAt": "2026-11-02T16:43:30.633Z",
+        "artifact": "evidence/delivered-public-fundamentacion-1366.png",
+        "result": "passed"
+      }
+    ]
+  },
+  {
+    "path": "/consentimiento",
+    "role": "agente",
+    "kind": "page",
+    "status": "verified",
+    "reviewedRoles": [
+      "agente"
+    ],
+    "viewports": [
+      320,
+      768,
+      1366
+    ],
+    "observations": [
+      {
+        "role": "agente",
+        "width": 320,
+        "observedAt": "2026-11-02T16:41:54.382Z",
+        "artifact": "evidence/delivered-agente-consentimiento-320.png",
+        "result": "passed"
+      },
+      {
+        "role": "agente",
+        "width": 768,
+        "observedAt": "2026-11-02T16:41:54.891Z",
+        "artifact": "evidence/delivered-agente-consentimiento-768.png",
+        "result": "passed"
+      },
+      {
+        "role": "agente",
+        "width": 1366,
+        "observedAt": "2026-11-02T16:41:55.398Z",
+        "artifact": "evidence/delivered-agente-consentimiento-1366.png",
+        "result": "passed"
+      }
+    ]
+  },
+  {
+    "path": "/agente/panel",
+    "role": "agente",
+    "kind": "page",
+    "status": "verified",
+    "reviewedRoles": [
+      "agente"
+    ],
+    "viewports": [
+      320,
+      768,
+      1366
+    ],
+    "observations": [
+      {
+        "role": "agente",
+        "width": 320,
+        "observedAt": "2026-11-02T16:41:56.463Z",
+        "artifact": "evidence/delivered-agente-agente-panel-320.png",
+        "result": "passed"
+      },
+      {
+        "role": "agente",
+        "width": 768,
+        "observedAt": "2026-11-02T16:41:56.989Z",
+        "artifact": "evidence/delivered-agente-agente-panel-768.png",
+        "result": "passed"
+      },
+      {
+        "role": "agente",
+        "width": 1366,
+        "observedAt": "2026-11-02T16:41:57.568Z",
+        "artifact": "evidence/delivered-agente-agente-panel-1366.png",
+        "result": "passed"
+      }
+    ]
+  },
+  {
+    "path": "/agente/checkin",
+    "role": "agente",
+    "kind": "page",
+    "status": "verified",
+    "reviewedRoles": [
+      "agente"
+    ],
+    "viewports": [
+      320,
+      768,
+      1366
+    ],
+    "observations": [
+      {
+        "role": "agente",
+        "width": 320,
+        "observedAt": "2026-11-02T16:41:58.680Z",
+        "artifact": "evidence/delivered-agente-agente-checkin-320.png",
+        "result": "passed"
+      },
+      {
+        "role": "agente",
+        "width": 768,
+        "observedAt": "2026-11-02T16:41:59.225Z",
+        "artifact": "evidence/delivered-agente-agente-checkin-768.png",
+        "result": "passed"
+      },
+      {
+        "role": "agente",
+        "width": 1366,
+        "observedAt": "2026-11-02T16:41:59.762Z",
+        "artifact": "evidence/delivered-agente-agente-checkin-1366.png",
+        "result": "passed"
+      }
+    ]
+  },
+  {
+    "path": "/agente/bitacora",
+    "role": "agente",
+    "kind": "page",
+    "status": "verified",
+    "reviewedRoles": [
+      "agente"
+    ],
+    "viewports": [
+      320,
+      768,
+      1366
+    ],
+    "observations": [
+      {
+        "role": "agente",
+        "width": 320,
+        "observedAt": "2026-11-02T16:42:00.813Z",
+        "artifact": "evidence/delivered-agente-agente-bitacora-320.png",
+        "result": "passed"
+      },
+      {
+        "role": "agente",
+        "width": 768,
+        "observedAt": "2026-11-02T16:42:01.332Z",
+        "artifact": "evidence/delivered-agente-agente-bitacora-768.png",
+        "result": "passed"
+      },
+      {
+        "role": "agente",
+        "width": 1366,
+        "observedAt": "2026-11-02T16:42:01.856Z",
+        "artifact": "evidence/delivered-agente-agente-bitacora-1366.png",
+        "result": "passed"
+      }
+    ]
+  },
+  {
+    "path": "/agente/mi-bienestar",
+    "role": "agente",
+    "kind": "page",
+    "status": "verified",
+    "reviewedRoles": [
+      "agente"
+    ],
+    "viewports": [
+      320,
+      768,
+      1366
+    ],
+    "observations": [
+      {
+        "role": "agente",
+        "width": 320,
+        "observedAt": "2026-11-02T16:42:02.962Z",
+        "artifact": "evidence/delivered-agente-agente-mi-bienestar-320.png",
+        "result": "passed"
+      },
+      {
+        "role": "agente",
+        "width": 768,
+        "observedAt": "2026-11-02T16:42:03.480Z",
+        "artifact": "evidence/delivered-agente-agente-mi-bienestar-768.png",
+        "result": "passed"
+      },
+      {
+        "role": "agente",
+        "width": 1366,
+        "observedAt": "2026-11-02T16:42:04.001Z",
+        "artifact": "evidence/delivered-agente-agente-mi-bienestar-1366.png",
+        "result": "passed"
+      }
+    ]
+  },
+  {
+    "path": "/agente/apoyo",
+    "role": "agente",
+    "kind": "page",
+    "status": "verified",
+    "reviewedRoles": [
+      "agente"
+    ],
+    "viewports": [
+      320,
+      768,
+      1366
+    ],
+    "observations": [
+      {
+        "role": "agente",
+        "width": 320,
+        "observedAt": "2026-11-02T16:42:05.069Z",
+        "artifact": "evidence/delivered-agente-agente-apoyo-320.png",
+        "result": "passed"
+      },
+      {
+        "role": "agente",
+        "width": 768,
+        "observedAt": "2026-11-02T16:42:05.612Z",
+        "artifact": "evidence/delivered-agente-agente-apoyo-768.png",
+        "result": "passed"
+      },
+      {
+        "role": "agente",
+        "width": 1366,
+        "observedAt": "2026-11-02T16:42:06.121Z",
+        "artifact": "evidence/delivered-agente-agente-apoyo-1366.png",
+        "result": "passed"
+      }
+    ]
+  },
+  {
+    "path": "/agente/mis-datos",
+    "role": "agente",
+    "kind": "page",
+    "status": "verified",
+    "reviewedRoles": [
+      "agente"
+    ],
+    "viewports": [
+      320,
+      768,
+      1366
+    ],
+    "observations": [
+      {
+        "role": "agente",
+        "width": 320,
+        "observedAt": "2026-11-02T16:42:07.231Z",
+        "artifact": "evidence/delivered-agente-agente-mis-datos-320.png",
+        "result": "passed"
+      },
+      {
+        "role": "agente",
+        "width": 768,
+        "observedAt": "2026-11-02T16:42:07.774Z",
+        "artifact": "evidence/delivered-agente-agente-mis-datos-768.png",
+        "result": "passed"
+      },
+      {
+        "role": "agente",
+        "width": 1366,
+        "observedAt": "2026-11-02T16:42:08.301Z",
+        "artifact": "evidence/delivered-agente-agente-mis-datos-1366.png",
+        "result": "passed"
+      }
+    ]
+  },
+  {
+    "path": "/supervisor/panel",
+    "role": "supervisor",
+    "kind": "page",
+    "status": "verified",
+    "reviewedRoles": [
+      "supervisor"
+    ],
+    "viewports": [
+      320,
+      768,
+      1366
+    ],
+    "observations": [
+      {
+        "role": "supervisor",
+        "width": 320,
+        "observedAt": "2026-11-02T16:42:42.858Z",
+        "artifact": "evidence/delivered-supervisor-supervisor-panel-320.png",
+        "result": "passed"
+      },
+      {
+        "role": "supervisor",
+        "width": 768,
+        "observedAt": "2026-11-02T16:42:43.362Z",
+        "artifact": "evidence/delivered-supervisor-supervisor-panel-768.png",
+        "result": "passed"
+      },
+      {
+        "role": "supervisor",
+        "width": 1366,
+        "observedAt": "2026-11-02T16:42:43.873Z",
+        "artifact": "evidence/delivered-supervisor-supervisor-panel-1366.png",
+        "result": "passed"
+      }
+    ]
+  },
+  {
+    "path": "/supervisor/acciones",
+    "role": "supervisor",
+    "kind": "page",
+    "status": "verified",
+    "reviewedRoles": [
+      "supervisor"
+    ],
+    "viewports": [
+      320,
+      768,
+      1366
+    ],
+    "observations": [
+      {
+        "role": "supervisor",
+        "width": 320,
+        "observedAt": "2026-11-02T16:42:44.870Z",
+        "artifact": "evidence/delivered-supervisor-supervisor-acciones-320.png",
+        "result": "passed"
+      },
+      {
+        "role": "supervisor",
+        "width": 768,
+        "observedAt": "2026-11-02T16:42:45.381Z",
+        "artifact": "evidence/delivered-supervisor-supervisor-acciones-768.png",
+        "result": "passed"
+      },
+      {
+        "role": "supervisor",
+        "width": 1366,
+        "observedAt": "2026-11-02T16:42:45.890Z",
+        "artifact": "evidence/delivered-supervisor-supervisor-acciones-1366.png",
+        "result": "passed"
+      }
+    ]
+  },
+  {
+    "path": "/sst/panel",
+    "role": "sst",
+    "kind": "page",
+    "status": "verified",
+    "reviewedRoles": [
+      "sst"
+    ],
+    "viewports": [
+      320,
+      768,
+      1366
+    ],
+    "observations": [
+      {
+        "role": "sst",
+        "width": 320,
+        "observedAt": "2026-11-02T16:42:14.625Z",
+        "artifact": "evidence/delivered-sst-sst-panel-320.png",
+        "result": "passed"
+      },
+      {
+        "role": "sst",
+        "width": 768,
+        "observedAt": "2026-11-02T16:42:15.131Z",
+        "artifact": "evidence/delivered-sst-sst-panel-768.png",
+        "result": "passed"
+      },
+      {
+        "role": "sst",
+        "width": 1366,
+        "observedAt": "2026-11-02T16:42:15.622Z",
+        "artifact": "evidence/delivered-sst-sst-panel-1366.png",
+        "result": "passed"
+      }
+    ]
+  },
+  {
+    "path": "/sst/alertas",
+    "role": "sst",
+    "kind": "page",
+    "status": "verified",
+    "reviewedRoles": [
+      "sst"
+    ],
+    "viewports": [
+      320,
+      768,
+      1366
+    ],
+    "observations": [
+      {
+        "role": "sst",
+        "width": 320,
+        "observedAt": "2026-11-02T16:42:16.587Z",
+        "artifact": "evidence/delivered-sst-sst-alertas-320.png",
+        "result": "passed"
+      },
+      {
+        "role": "sst",
+        "width": 768,
+        "observedAt": "2026-11-02T16:42:17.097Z",
+        "artifact": "evidence/delivered-sst-sst-alertas-768.png",
+        "result": "passed"
+      },
+      {
+        "role": "sst",
+        "width": 1366,
+        "observedAt": "2026-11-02T16:42:17.595Z",
+        "artifact": "evidence/delivered-sst-sst-alertas-1366.png",
+        "result": "passed"
+      }
+    ]
+  },
+  {
+    "path": "/sst/reglas-alertas",
+    "role": "sst",
+    "kind": "page",
+    "status": "verified",
+    "reviewedRoles": [
+      "sst"
+    ],
+    "viewports": [
+      320,
+      768,
+      1366
+    ],
+    "observations": [
+      {
+        "role": "sst",
+        "width": 320,
+        "observedAt": "2026-11-02T16:42:18.721Z",
+        "artifact": "evidence/delivered-sst-sst-reglas-alertas-320.png",
+        "result": "passed"
+      },
+      {
+        "role": "sst",
+        "width": 768,
+        "observedAt": "2026-11-02T16:42:19.209Z",
+        "artifact": "evidence/delivered-sst-sst-reglas-alertas-768.png",
+        "result": "passed"
+      },
+      {
+        "role": "sst",
+        "width": 1366,
+        "observedAt": "2026-11-02T16:42:19.739Z",
+        "artifact": "evidence/delivered-sst-sst-reglas-alertas-1366.png",
+        "result": "passed"
+      }
+    ]
+  },
+  {
+    "path": "/sst/intervenciones",
+    "role": "sst",
+    "kind": "page",
+    "status": "verified",
+    "reviewedRoles": [
+      "sst"
+    ],
+    "viewports": [
+      320,
+      768,
+      1366
+    ],
+    "observations": [
+      {
+        "role": "sst",
+        "width": 320,
+        "observedAt": "2026-11-02T16:42:20.748Z",
+        "artifact": "evidence/delivered-sst-sst-intervenciones-320.png",
+        "result": "passed"
+      },
+      {
+        "role": "sst",
+        "width": 768,
+        "observedAt": "2026-11-02T16:42:21.255Z",
+        "artifact": "evidence/delivered-sst-sst-intervenciones-768.png",
+        "result": "passed"
+      },
+      {
+        "role": "sst",
+        "width": 1366,
+        "observedAt": "2026-11-02T16:42:21.766Z",
+        "artifact": "evidence/delivered-sst-sst-intervenciones-1366.png",
+        "result": "passed"
+      }
+    ]
+  },
+  {
+    "path": "/sst/buzon",
+    "role": "sst",
+    "kind": "page",
+    "status": "verified",
+    "reviewedRoles": [
+      "sst"
+    ],
+    "viewports": [
+      320,
+      768,
+      1366
+    ],
+    "observations": [
+      {
+        "role": "sst",
+        "width": 320,
+        "observedAt": "2026-11-02T16:42:22.791Z",
+        "artifact": "evidence/delivered-sst-sst-buzon-320.png",
+        "result": "passed"
+      },
+      {
+        "role": "sst",
+        "width": 768,
+        "observedAt": "2026-11-02T16:42:23.289Z",
+        "artifact": "evidence/delivered-sst-sst-buzon-768.png",
+        "result": "passed"
+      },
+      {
+        "role": "sst",
+        "width": 1366,
+        "observedAt": "2026-11-02T16:42:23.802Z",
+        "artifact": "evidence/delivered-sst-sst-buzon-1366.png",
+        "result": "passed"
+      }
+    ]
+  },
+  {
+    "path": "/auditor/panel",
+    "role": "auditor",
+    "kind": "redirect",
+    "status": "verified",
+    "observations": [
+      {
+        "path": "/auditor/panel",
+        "role": "auditor",
+        "expected": "/auditor/auditoria",
+        "actual": "/auditor/auditoria",
+        "result": "passed",
+        "artifact": "evidence/redirect-auditor--auditor-panel.png",
+        "observedAt": "2026-11-02T16:31:31.429Z"
+      }
+    ]
+  },
+  {
+    "path": "/auditor/auditoria",
+    "role": "auditor",
+    "kind": "page",
+    "status": "verified",
+    "reviewedRoles": [
+      "auditor"
+    ],
+    "viewports": [
+      320,
+      768,
+      1366
+    ],
+    "observations": [
+      {
+        "role": "auditor",
+        "width": 320,
+        "observedAt": "2026-11-02T16:42:51.778Z",
+        "artifact": "evidence/delivered-auditor-auditor-auditoria-320.png",
+        "result": "passed"
+      },
+      {
+        "role": "auditor",
+        "width": 768,
+        "observedAt": "2026-11-02T16:42:52.285Z",
+        "artifact": "evidence/delivered-auditor-auditor-auditoria-768.png",
+        "result": "passed"
+      },
+      {
+        "role": "auditor",
+        "width": 1366,
+        "observedAt": "2026-11-02T16:42:52.790Z",
+        "artifact": "evidence/delivered-auditor-auditor-auditoria-1366.png",
+        "result": "passed"
+      }
+    ]
+  },
+  {
+    "path": "/admin/panel",
+    "role": "admin",
+    "kind": "redirect",
+    "status": "verified",
+    "observations": [
+      {
+        "path": "/admin/panel",
+        "role": "admin",
+        "expected": "/admin/organizacion",
+        "actual": "/admin/organizacion",
+        "result": "passed",
+        "artifact": "evidence/redirect-admin--admin-panel.png",
+        "observedAt": "2026-11-02T16:30:58.750Z"
+      }
+    ]
+  },
+  {
+    "path": "/admin/organizacion",
+    "role": "admin",
+    "kind": "page",
+    "status": "verified",
+    "reviewedRoles": [
+      "admin"
+    ],
+    "viewports": [
+      320,
+      768,
+      1366
+    ],
+    "observations": [
+      {
+        "role": "admin",
+        "width": 320,
+        "observedAt": "2026-11-02T16:42:56.720Z",
+        "artifact": "evidence/delivered-admin-admin-organizacion-320.png",
+        "result": "passed"
+      },
+      {
+        "role": "admin",
+        "width": 768,
+        "observedAt": "2026-11-02T16:42:57.254Z",
+        "artifact": "evidence/delivered-admin-admin-organizacion-768.png",
+        "result": "passed"
+      },
+      {
+        "role": "admin",
+        "width": 1366,
+        "observedAt": "2026-11-02T16:42:57.769Z",
+        "artifact": "evidence/delivered-admin-admin-organizacion-1366.png",
+        "result": "passed"
+      }
+    ]
+  },
+  {
+    "path": "/admin/usuarios-roles",
+    "role": "admin",
+    "kind": "page",
+    "status": "verified",
+    "reviewedRoles": [
+      "admin"
+    ],
+    "viewports": [
+      320,
+      768,
+      1366
+    ],
+    "observations": [
+      {
+        "role": "admin",
+        "width": 320,
+        "observedAt": "2026-11-02T16:42:58.809Z",
+        "artifact": "evidence/delivered-admin-admin-usuarios-roles-320.png",
+        "result": "passed"
+      },
+      {
+        "role": "admin",
+        "width": 768,
+        "observedAt": "2026-11-02T16:42:59.331Z",
+        "artifact": "evidence/delivered-admin-admin-usuarios-roles-768.png",
+        "result": "passed"
+      },
+      {
+        "role": "admin",
+        "width": 1366,
+        "observedAt": "2026-11-02T16:42:59.841Z",
+        "artifact": "evidence/delivered-admin-admin-usuarios-roles-1366.png",
+        "result": "passed"
+      }
+    ]
+  },
+  {
+    "path": "/admin/parametros",
+    "role": "admin",
+    "kind": "page",
+    "status": "verified",
+    "reviewedRoles": [
+      "admin"
+    ],
+    "viewports": [
+      320,
+      768,
+      1366
+    ],
+    "observations": [
+      {
+        "role": "admin",
+        "width": 320,
+        "observedAt": "2026-11-02T16:43:00.932Z",
+        "artifact": "evidence/delivered-admin-admin-parametros-320.png",
+        "result": "passed"
+      },
+      {
+        "role": "admin",
+        "width": 768,
+        "observedAt": "2026-11-02T16:43:01.423Z",
+        "artifact": "evidence/delivered-admin-admin-parametros-768.png",
+        "result": "passed"
+      },
+      {
+        "role": "admin",
+        "width": 1366,
+        "observedAt": "2026-11-02T16:43:01.931Z",
+        "artifact": "evidence/delivered-admin-admin-parametros-1366.png",
+        "result": "passed"
+      }
+    ]
+  },
+  {
+    "path": "/admin/importar",
+    "role": "admin",
+    "kind": "page",
+    "status": "verified",
+    "reviewedRoles": [
+      "admin"
+    ],
+    "viewports": [
+      320,
+      768,
+      1366
+    ],
+    "observations": [
+      {
+        "role": "admin",
+        "width": 320,
+        "observedAt": "2026-11-02T16:43:02.990Z",
+        "artifact": "evidence/delivered-admin-admin-importar-320.png",
+        "result": "passed"
+      },
+      {
+        "role": "admin",
+        "width": 768,
+        "observedAt": "2026-11-02T16:43:03.498Z",
+        "artifact": "evidence/delivered-admin-admin-importar-768.png",
+        "result": "passed"
+      },
+      {
+        "role": "admin",
+        "width": 1366,
+        "observedAt": "2026-11-02T16:43:03.995Z",
+        "artifact": "evidence/delivered-admin-admin-importar-1366.png",
+        "result": "passed"
+      }
+    ]
+  },
+  {
+    "path": "/admin/solicitudes",
+    "role": "admin",
+    "kind": "page",
+    "status": "verified",
+    "reviewedRoles": [
+      "admin"
+    ],
+    "viewports": [
+      320,
+      768,
+      1366
+    ],
+    "observations": [
+      {
+        "role": "admin",
+        "width": 320,
+        "observedAt": "2026-11-02T16:43:04.970Z",
+        "artifact": "evidence/delivered-admin-admin-solicitudes-320.png",
+        "result": "passed"
+      },
+      {
+        "role": "admin",
+        "width": 768,
+        "observedAt": "2026-11-02T16:43:05.461Z",
+        "artifact": "evidence/delivered-admin-admin-solicitudes-768.png",
+        "result": "passed"
+      },
+      {
+        "role": "admin",
+        "width": 1366,
+        "observedAt": "2026-11-02T16:43:05.966Z",
+        "artifact": "evidence/delivered-admin-admin-solicitudes-1366.png",
+        "result": "passed"
+      }
+    ]
+  },
+  {
+    "path": "/reportes",
+    "role": "shared",
+    "kind": "page",
+    "status": "verified",
+    "reviewedRoles": [
+      "sst",
+      "supervisor",
+      "admin"
+    ],
+    "viewports": [
+      320,
+      768,
+      1366
+    ],
+    "observations": [
+      {
+        "role": "sst",
+        "width": 320,
+        "observedAt": "2026-11-02T16:42:24.879Z",
+        "artifact": "evidence/delivered-sst-reportes-320.png",
+        "result": "passed"
+      },
+      {
+        "role": "sst",
+        "width": 768,
+        "observedAt": "2026-11-02T16:42:25.370Z",
+        "artifact": "evidence/delivered-sst-reportes-768.png",
+        "result": "passed"
+      },
+      {
+        "role": "sst",
+        "width": 1366,
+        "observedAt": "2026-11-02T16:42:25.887Z",
+        "artifact": "evidence/delivered-sst-reportes-1366.png",
+        "result": "passed"
+      },
+      {
+        "role": "supervisor",
+        "width": 320,
+        "observedAt": "2026-11-02T16:42:46.875Z",
+        "artifact": "evidence/delivered-supervisor-reportes-320.png",
+        "result": "passed"
+      },
+      {
+        "role": "supervisor",
+        "width": 768,
+        "observedAt": "2026-11-02T16:42:47.378Z",
+        "artifact": "evidence/delivered-supervisor-reportes-768.png",
+        "result": "passed"
+      },
+      {
+        "role": "supervisor",
+        "width": 1366,
+        "observedAt": "2026-11-02T16:42:47.882Z",
+        "artifact": "evidence/delivered-supervisor-reportes-1366.png",
+        "result": "passed"
+      },
+      {
+        "role": "admin",
+        "width": 320,
+        "observedAt": "2026-11-02T16:43:06.955Z",
+        "artifact": "evidence/delivered-admin-reportes-320.png",
+        "result": "passed"
+      },
+      {
+        "role": "admin",
+        "width": 768,
+        "observedAt": "2026-11-02T16:43:07.445Z",
+        "artifact": "evidence/delivered-admin-reportes-768.png",
+        "result": "passed"
+      },
+      {
+        "role": "admin",
+        "width": 1366,
+        "observedAt": "2026-11-02T16:43:07.957Z",
+        "artifact": "evidence/delivered-admin-reportes-1366.png",
+        "result": "passed"
+      }
+    ]
+  },
+  {
+    "path": "/notificaciones",
+    "role": "shared",
+    "kind": "page",
+    "status": "verified",
+    "reviewedRoles": [
+      "agente",
+      "sst",
+      "supervisor",
+      "auditor",
+      "admin"
+    ],
+    "viewports": [
+      320,
+      768,
+      1366
+    ],
+    "observations": [
+      {
+        "role": "agente",
+        "width": 320,
+        "observedAt": "2026-11-02T16:42:11.575Z",
+        "artifact": "evidence/delivered-agente-notificaciones-320.png",
+        "result": "passed"
+      },
+      {
+        "role": "agente",
+        "width": 768,
+        "observedAt": "2026-11-02T16:42:12.100Z",
+        "artifact": "evidence/delivered-agente-notificaciones-768.png",
+        "result": "passed"
+      },
+      {
+        "role": "agente",
+        "width": 1366,
+        "observedAt": "2026-11-02T16:42:12.609Z",
+        "artifact": "evidence/delivered-agente-notificaciones-1366.png",
+        "result": "passed"
+      },
+      {
+        "role": "sst",
+        "width": 320,
+        "observedAt": "2026-11-02T16:42:27.015Z",
+        "artifact": "evidence/delivered-sst-notificaciones-320.png",
+        "result": "passed"
+      },
+      {
+        "role": "sst",
+        "width": 768,
+        "observedAt": "2026-11-02T16:42:27.502Z",
+        "artifact": "evidence/delivered-sst-notificaciones-768.png",
+        "result": "passed"
+      },
+      {
+        "role": "sst",
+        "width": 1366,
+        "observedAt": "2026-11-02T16:42:28.002Z",
+        "artifact": "evidence/delivered-sst-notificaciones-1366.png",
+        "result": "passed"
+      },
+      {
+        "role": "supervisor",
+        "width": 320,
+        "observedAt": "2026-11-02T16:42:48.889Z",
+        "artifact": "evidence/delivered-supervisor-notificaciones-320.png",
+        "result": "passed"
+      },
+      {
+        "role": "supervisor",
+        "width": 768,
+        "observedAt": "2026-11-02T16:42:49.381Z",
+        "artifact": "evidence/delivered-supervisor-notificaciones-768.png",
+        "result": "passed"
+      },
+      {
+        "role": "supervisor",
+        "width": 1366,
+        "observedAt": "2026-11-02T16:42:49.871Z",
+        "artifact": "evidence/delivered-supervisor-notificaciones-1366.png",
+        "result": "passed"
+      },
+      {
+        "role": "auditor",
+        "width": 320,
+        "observedAt": "2026-11-02T16:42:53.813Z",
+        "artifact": "evidence/delivered-auditor-notificaciones-320.png",
+        "result": "passed"
+      },
+      {
+        "role": "auditor",
+        "width": 768,
+        "observedAt": "2026-11-02T16:42:54.300Z",
+        "artifact": "evidence/delivered-auditor-notificaciones-768.png",
+        "result": "passed"
+      },
+      {
+        "role": "auditor",
+        "width": 1366,
+        "observedAt": "2026-11-02T16:42:54.792Z",
+        "artifact": "evidence/delivered-auditor-notificaciones-1366.png",
+        "result": "passed"
+      },
+      {
+        "role": "admin",
+        "width": 320,
+        "observedAt": "2026-11-02T16:43:08.979Z",
+        "artifact": "evidence/delivered-admin-notificaciones-320.png",
+        "result": "passed"
+      },
+      {
+        "role": "admin",
+        "width": 768,
+        "observedAt": "2026-11-02T16:43:09.471Z",
+        "artifact": "evidence/delivered-admin-notificaciones-768.png",
+        "result": "passed"
+      },
+      {
+        "role": "admin",
+        "width": 1366,
+        "observedAt": "2026-11-02T16:43:09.962Z",
+        "artifact": "evidence/delivered-admin-notificaciones-1366.png",
+        "result": "passed"
+      }
+    ]
+  },
+  {
+    "path": "/apoyo-crisis",
+    "role": "agente",
+    "kind": "page",
+    "status": "verified",
+    "reviewedRoles": [
+      "agente"
+    ],
+    "viewports": [
+      320,
+      768,
+      1366
+    ],
+    "observations": [
+      {
+        "role": "agente",
+        "width": 320,
+        "observedAt": "2026-11-02T16:42:09.386Z",
+        "artifact": "evidence/delivered-agente-apoyo-crisis-320.png",
+        "result": "passed"
+      },
+      {
+        "role": "agente",
+        "width": 768,
+        "observedAt": "2026-11-02T16:42:09.973Z",
+        "artifact": "evidence/delivered-agente-apoyo-crisis-768.png",
+        "result": "passed"
+      },
+      {
+        "role": "agente",
+        "width": 1366,
+        "observedAt": "2026-11-02T16:42:10.540Z",
+        "artifact": "evidence/delivered-agente-apoyo-crisis-1366.png",
+        "result": "passed"
+      }
+    ]
+  },
+  {
+    "path": "/panel",
+    "role": "shared",
+    "kind": "redirect",
+    "status": "verified",
+    "observations": [
+      {
+        "path": "/panel",
+        "role": "public",
+        "expected": "/login",
+        "actual": "/login",
+        "result": "passed",
+        "artifact": "evidence/redirect-public--panel.png",
+        "observedAt": "2026-11-02T16:30:56.122Z"
+      },
+      {
+        "path": "/panel",
+        "role": "admin",
+        "expected": "/admin/organizacion",
+        "actual": "/admin/organizacion",
+        "result": "passed",
+        "artifact": "evidence/redirect-admin--panel.png",
+        "observedAt": "2026-11-02T16:30:59.344Z"
+      },
+      {
+        "path": "/panel",
+        "role": "auditor",
+        "expected": "/auditor/auditoria",
+        "actual": "/auditor/auditoria",
+        "result": "passed",
+        "artifact": "evidence/redirect-auditor--panel.png",
+        "observedAt": "2026-11-02T16:31:32.071Z"
+      },
+      {
+        "path": "/panel",
+        "role": "supervisor",
+        "expected": "/supervisor/panel",
+        "actual": "/supervisor/panel",
+        "result": "passed",
+        "artifact": "evidence/redirect-supervisor--panel.png",
+        "observedAt": "2026-11-02T16:31:33.493Z"
+      },
+      {
+        "path": "/panel",
+        "role": "agente",
+        "expected": "/agente/panel",
+        "actual": "/agente/panel",
+        "result": "passed",
+        "artifact": "evidence/redirect-agente--panel.png",
+        "observedAt": "2026-11-02T16:32:14.888Z"
+      },
+      {
+        "path": "/panel",
+        "role": "sst",
+        "expected": "/sst/panel",
+        "actual": "/sst/panel",
+        "result": "passed",
+        "artifact": "evidence/redirect-sst--panel.png",
+        "observedAt": "2026-11-02T16:33:31.275Z"
+      }
+    ]
+  },
+  {
+    "path": "/",
+    "role": "public",
+    "kind": "page",
+    "status": "verified",
+    "reviewedRoles": [
+      "public"
+    ],
+    "viewports": [
+      320,
+      768,
+      1366
+    ],
+    "observations": [
+      {
+        "role": "public",
+        "width": 320,
+        "observedAt": "2026-11-02T16:43:31.942Z",
+        "artifact": "evidence/delivered-public-home-320.png",
+        "result": "passed"
+      },
+      {
+        "role": "public",
+        "width": 768,
+        "observedAt": "2026-11-02T16:43:32.502Z",
+        "artifact": "evidence/delivered-public-home-768.png",
+        "result": "passed"
+      },
+      {
+        "role": "public",
+        "width": 1366,
+        "observedAt": "2026-11-02T16:43:33.068Z",
+        "artifact": "evidence/delivered-public-home-1366.png",
+        "result": "passed"
+      }
+    ]
+  },
+  {
+    "path": "*",
+    "role": "public",
+    "kind": "redirect",
+    "status": "verified",
+    "observations": [
+      {
+        "path": "/ruta-no-existente-muestra",
+        "role": "public",
+        "expected": "/",
+        "actual": "/",
+        "result": "passed",
+        "artifact": "evidence/redirect-public--ruta-no-existente-muestra.png",
+        "observedAt": "2026-11-02T16:30:56.819Z"
+      }
+    ]
+  }
+]

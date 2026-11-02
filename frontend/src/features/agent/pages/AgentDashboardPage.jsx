@@ -105,7 +105,7 @@ export function AgentDashboardPage() {
               <span>Desconexión Laboral Activa</span>
             </h4>
             <p className="calm-disconnect-desc">
-              Tu turno ordinario culminó. Registrar o usar la app es voluntario y no tiene consecuencias.
+              Tu turno ordinario culminó. El registro es voluntario; puedes dejarlo para otro momento.
             </p>
           </div>
           <div className="calm-disconnect-actions">

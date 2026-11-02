@@ -127,15 +127,15 @@ export const GROUNDING_STEPS = [
     number: 1,
     sense: 'Conexión / Presencia',
     verb: '1 afirmación de retorno',
-    title: '1 ancla cognitiva de cierre y seguridad',
+    title: '1 momento para elegir cómo continuar',
     guide:
-      'Sella el ejercicio reconociendo que el episodio de tensión concluyó y que tú conduces tu ritmo de trabajo.',
+      'Observa cómo te encuentras. Puedes detener este ejercicio y consultar las opciones de apoyo si lo necesitas.',
     badge: 'Conecta',
     anchors: [
       {
         id: 'c1',
-        label: '«Esta interacción ya concluyó. Mi puesto es un espacio seguro. Yo conduzco mi ritmo.»',
-        cue: 'Afirmación operativa: el enojo o la prisa de quien llamó no define mi valor personal'
+        label: '«Puedo detener este ejercicio y buscar apoyo.»',
+        cue: 'Elige si quieres continuar, hacer otra pausa o consultar las opciones de apoyo'
       }
     ]
   }
@@ -150,7 +150,7 @@ export const STEP_INTRO_SPEECH = {
   4: 'Paso 4: Tacto. Siente el apoyo físico de tu cuerpo. Libera la tensión en pies, palmas, espalda y hombros.',
   3: 'Paso 3: Oído. Filtra los ecos de la llamada. Enfócate en los sonidos neutros que ocurren ahora en la sala.',
   2: 'Paso 2: Olfato y aire. Inhala suavemente sintiendo la frescura del aire y los aromas cercanos en tu puesto.',
-  1: 'Paso 1: Conexión. Reconoce que esta llamada ya concluyó. Tu puesto es un espacio seguro y tú conduces tu ritmo.'
+  1: 'Paso 1: Conexión. Observa cómo te encuentras. Puedes detener este ejercicio y buscar apoyo si lo necesitas.'
 };
 
 /**
@@ -172,5 +172,5 @@ export const ANCHOR_FEEDBACK_SPEECH = {
   o3: 'Sonido amortiguado de la sala filtrado.',
   ol1: 'Inhalación de aire fresco recibida.',
   ol2: 'Aroma cotidiano registrado.',
-  c1: 'Anclaje completado. Tu puesto es un espacio seguro.'
+  c1: 'Ejercicio completado. Puedes elegir tu siguiente paso.'
 };

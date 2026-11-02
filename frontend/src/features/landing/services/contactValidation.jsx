@@ -29,7 +29,7 @@ export function validateContactForm(formData) {
   }
 
   if (!formData.habeasData) {
-    errors.habeasData = 'Debes aceptar la autorización de tratamiento de datos personales para continuar.';
+    errors.habeasData = 'Confirma que entiendes el alcance local de la demostración para continuar.';
   }
 
   return errors;

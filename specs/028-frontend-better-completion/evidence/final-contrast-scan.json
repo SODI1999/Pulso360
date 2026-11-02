@@ -1,0 +1,367 @@
+[
+  {
+    "path": "/consentimiento",
+    "role": "agente",
+    "candidates": []
+  },
+  {
+    "path": "/agente/panel",
+    "role": "agente",
+    "candidates": []
+  },
+  {
+    "path": "/agente/checkin",
+    "role": "agente",
+    "candidates": []
+  },
+  {
+    "path": "/agente/bitacora",
+    "role": "agente",
+    "candidates": []
+  },
+  {
+    "path": "/agente/mi-bienestar",
+    "role": "agente",
+    "candidates": []
+  },
+  {
+    "path": "/agente/apoyo",
+    "role": "agente",
+    "candidates": []
+  },
+  {
+    "path": "/agente/mis-datos",
+    "role": "agente",
+    "candidates": []
+  },
+  {
+    "path": "/apoyo-crisis",
+    "role": "agente",
+    "candidates": []
+  },
+  {
+    "path": "/notificaciones",
+    "role": "agente",
+    "candidates": [
+      {
+        "tag": "SPAN",
+        "class": "notif-item-dot-sep",
+        "text": "·",
+        "fg": "rgb(203, 213, 225)",
+        "bg": [
+          248,
+          250,
+          252
+        ],
+        "ratio": 1.42,
+        "required": 4.5,
+        "size": "10px"
+      },
+      {
+        "tag": "SPAN",
+        "class": "notif-item-dot-sep",
+        "text": "·",
+        "fg": "rgb(203, 213, 225)",
+        "bg": [
+          255,
+          255,
+          255
+        ],
+        "ratio": 1.48,
+        "required": 4.5,
+        "size": "10px"
+      },
+      {
+        "tag": "SPAN",
+        "class": "notif-item-dot-sep",
+        "text": "·",
+        "fg": "rgb(203, 213, 225)",
+        "bg": [
+          255,
+          255,
+          255
+        ],
+        "ratio": 1.48,
+        "required": 4.5,
+        "size": "10px"
+      },
+      {
+        "tag": "SPAN",
+        "class": "notif-item-dot-sep",
+        "text": "·",
+        "fg": "rgb(203, 213, 225)",
+        "bg": [
+          255,
+          255,
+          255
+        ],
+        "ratio": 1.48,
+        "required": 4.5,
+        "size": "10px"
+      },
+      {
+        "tag": "SPAN",
+        "class": "notif-item-dot-sep",
+        "text": "·",
+        "fg": "rgb(203, 213, 225)",
+        "bg": [
+          255,
+          255,
+          255
+        ],
+        "ratio": 1.48,
+        "required": 4.5,
+        "size": "10px"
+      },
+      {
+        "tag": "SPAN",
+        "class": "notif-item-dot-sep",
+        "text": "·",
+        "fg": "rgb(203, 213, 225)",
+        "bg": [
+          255,
+          255,
+          255
+        ],
+        "ratio": 1.48,
+        "required": 4.5,
+        "size": "10px"
+      },
+      {
+        "tag": "SPAN",
+        "class": "notif-item-dot-sep",
+        "text": "·",
+        "fg": "rgb(203, 213, 225)",
+        "bg": [
+          255,
+          255,
+          255
+        ],
+        "ratio": 1.48,
+        "required": 4.5,
+        "size": "10px"
+      }
+    ]
+  },
+  {
+    "path": "/sst/panel",
+    "role": "sst",
+    "candidates": []
+  },
+  {
+    "path": "/sst/alertas",
+    "role": "sst",
+    "candidates": []
+  },
+  {
+    "path": "/sst/reglas-alertas",
+    "role": "sst",
+    "candidates": []
+  },
+  {
+    "path": "/sst/intervenciones",
+    "role": "sst",
+    "candidates": []
+  },
+  {
+    "path": "/sst/buzon",
+    "role": "sst",
+    "candidates": []
+  },
+  {
+    "path": "/reportes",
+    "role": "sst",
+    "candidates": []
+  },
+  {
+    "path": "/notificaciones",
+    "role": "sst",
+    "candidates": []
+  },
+  {
+    "path": "/supervisor/panel",
+    "role": "supervisor",
+    "candidates": []
+  },
+  {
+    "path": "/supervisor/acciones",
+    "role": "supervisor",
+    "candidates": []
+  },
+  {
+    "path": "/reportes",
+    "role": "supervisor",
+    "candidates": []
+  },
+  {
+    "path": "/notificaciones",
+    "role": "supervisor",
+    "candidates": []
+  },
+  {
+    "path": "/auditor/auditoria",
+    "role": "auditor",
+    "candidates": []
+  },
+  {
+    "path": "/notificaciones",
+    "role": "auditor",
+    "candidates": []
+  },
+  {
+    "path": "/admin/organizacion",
+    "role": "admin",
+    "candidates": []
+  },
+  {
+    "path": "/admin/usuarios-roles",
+    "role": "admin",
+    "candidates": []
+  },
+  {
+    "path": "/admin/parametros",
+    "role": "admin",
+    "candidates": []
+  },
+  {
+    "path": "/admin/importar",
+    "role": "admin",
+    "candidates": []
+  },
+  {
+    "path": "/admin/solicitudes",
+    "role": "admin",
+    "candidates": []
+  },
+  {
+    "path": "/reportes",
+    "role": "admin",
+    "candidates": []
+  },
+  {
+    "path": "/notificaciones",
+    "role": "admin",
+    "candidates": []
+  },
+  {
+    "path": "/login",
+    "role": "public",
+    "candidates": []
+  },
+  {
+    "path": "/recuperar-clave",
+    "role": "public",
+    "candidates": []
+  },
+  {
+    "path": "/nueva-clave",
+    "role": "public",
+    "candidates": []
+  },
+  {
+    "path": "/403",
+    "role": "public",
+    "candidates": []
+  },
+  {
+    "path": "/contactenos",
+    "role": "public",
+    "candidates": []
+  },
+  {
+    "path": "/fundamentacion",
+    "role": "public",
+    "candidates": [
+      {
+        "tag": "SPAN",
+        "class": "breadcrumb-separator",
+        "text": "/",
+        "fg": "rgb(148, 168, 164)",
+        "bg": [
+          245,
+          242,
+          235
+        ],
+        "ratio": 2.24,
+        "required": 4.5,
+        "size": "13.12px"
+      },
+      {
+        "tag": "SPAN",
+        "class": "kicker-separator",
+        "text": "·",
+        "fg": "rgb(164, 182, 178)",
+        "bg": [
+          255,
+          255,
+          255
+        ],
+        "ratio": 2.12,
+        "required": 4.5,
+        "size": "16px"
+      },
+      {
+        "tag": "SPAN",
+        "class": "node-arrow",
+        "text": "↑",
+        "fg": "rgb(22, 163, 74)",
+        "bg": [
+          248,
+          250,
+          249
+        ],
+        "ratio": 3.14,
+        "required": 4.5,
+        "size": "13.76px"
+      }
+    ]
+  },
+  {
+    "path": "/",
+    "role": "public",
+    "candidates": [
+      {
+        "tag": "SPAN",
+        "class": "bullet-neutral",
+        "text": "•",
+        "fg": "rgb(140, 158, 154)",
+        "bg": [
+          245,
+          242,
+          235
+        ],
+        "ratio": 2.51,
+        "required": 4.5,
+        "size": "15.2px"
+      },
+      {
+        "tag": "SPAN",
+        "class": "bullet-neutral",
+        "text": "•",
+        "fg": "rgb(140, 158, 154)",
+        "bg": [
+          245,
+          242,
+          235
+        ],
+        "ratio": 2.51,
+        "required": 4.5,
+        "size": "15.2px"
+      },
+      {
+        "tag": "SPAN",
+        "class": "bullet-neutral",
+        "text": "•",
+        "fg": "rgb(140, 158, 154)",
+        "bg": [
+          245,
+          242,
+          235
+        ],
+        "ratio": 2.51,
+        "required": 4.5,
+        "size": "15.2px"
+      }
+    ]
+  }
+]

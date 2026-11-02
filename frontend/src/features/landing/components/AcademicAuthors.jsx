@@ -3,7 +3,7 @@ import { AUTHORS_MATRIX } from '../data/academicFoundationData';
 
 export function AcademicAuthors() {
   return (
-    <section className="academic-authorship-showcase" id="autores" aria-label="Autoría interdisciplinaria">
+    <section className="academic-authorship-showcase" id="autores" aria-label="Participantes de la actividad de aula y equipo del proyecto">
       {/* Trabajo Social */}
       <article className="authorship-card authorship-social">
         <div className="authorship-card-top">
@@ -12,17 +12,17 @@ export function AcademicAuthors() {
           </div>
           <div className="authorship-meta-headings">
             <span className="authorship-kicker">{AUTHORS_MATRIX.socialResearch.badge}</span>
-            <h2 className="authorship-faculty">{AUTHORS_MATRIX.socialResearch.faculty}</h2>
+            <h2 className="authorship-faculty">{AUTHORS_MATRIX.socialResearch.roleTitle}</h2>
             <span className="authorship-inst">{AUTHORS_MATRIX.socialResearch.institution}</span>
           </div>
         </div>
         <div className="authorship-body">
           <div className="author-lead-item">
-            <span className="author-role-label">Asesoría & Docencia Líder:</span>
+            <span className="author-role-label">{AUTHORS_MATRIX.socialResearch.leadAuthorRole}:</span>
             <p className="author-principal-name">{AUTHORS_MATRIX.socialResearch.leadAuthor}</p>
           </div>
           <div className="author-coauthors-wrap">
-            <span className="author-role-label">Semillero de Investigación en Trabajo Social:</span>
+            <span className="author-role-label">Estudiantes participantes en el trabajo de aula:</span>
             <div className="coauthors-chips">
               {AUTHORS_MATRIX.socialResearch.coauthors.map((author) => (
                 <span key={author} className="coauthor-chip">
@@ -48,7 +48,7 @@ export function AcademicAuthors() {
           </div>
           <div className="authorship-meta-headings">
             <span className="authorship-kicker">{AUTHORS_MATRIX.softwareEngineering.badge}</span>
-            <h2 className="authorship-faculty">{AUTHORS_MATRIX.softwareEngineering.faculty}</h2>
+            <h2 className="authorship-faculty">{AUTHORS_MATRIX.softwareEngineering.roleTitle}</h2>
             <span className="authorship-inst">{AUTHORS_MATRIX.softwareEngineering.institution}</span>
           </div>
         </div>
@@ -56,16 +56,6 @@ export function AcademicAuthors() {
           <div className="author-lead-item">
             <span className="author-role-label">{AUTHORS_MATRIX.softwareEngineering.leadAuthorRole}:</span>
             <p className="author-principal-name">{AUTHORS_MATRIX.softwareEngineering.leadAuthor}</p>
-          </div>
-          <div className="author-coauthors-wrap">
-            <span className="author-role-label">Naturaleza Jurídica & Adscripción:</span>
-            <div className="coauthors-chips">
-              {AUTHORS_MATRIX.softwareEngineering.coauthors.map((dev) => (
-                <span key={dev} className="coauthor-chip tech-chip">
-                  {dev}
-                </span>
-              ))}
-            </div>
           </div>
           <div className="authorship-footer-note">
             <span className="note-dot" aria-hidden="true">

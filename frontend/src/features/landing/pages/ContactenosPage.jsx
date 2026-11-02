@@ -1,5 +1,5 @@
 // src/features/landing/pages/ContactenosPage.jsx
-// Vista de contacto directo y acompañamiento para centros de contacto (BPO) y áreas de SST
+// Contexto académico y demostración local del formulario de contacto, sin envío conectado.
 
 import { useEffect } from 'react';
 import { Navbar } from '../components/Navbar';
@@ -21,22 +21,21 @@ export function ContactenosPage() {
           <div className="contact-editorial-layout">
             {/* Columna Izquierda: Información de contacto y canales */}
             <div className="contact-info-panel">
-              <h1 className="contact-heading">Hablemos sobre el cuidado de tu operación</h1>
+              <h1 className="contact-heading">Contacto de ejemplo para una operación BPO</h1>
               <p className="contact-lead">
-                Pulso360 apoya a centros de contacto y áreas de Seguridad y Salud en el Trabajo (SST)
-                a identificar señales tempranas de desgaste laboral mediante check-ins breves y tendencias
-                colectivas protegidas con k-anonimato.
+                Esta página del proyecto académico muestra cómo preparar una consulta sobre Pulso360.
+                El formulario funciona en esta página: no hay un canal de recepción de mensajes conectado.
               </p>
 
-              <div className="contact-channels-list" role="region" aria-label="Canales de atención">
+              <div className="contact-channels-list" role="region" aria-label="Alcance de la demostración de contacto">
                 <div className="channel-item">
                   <div className="channel-icon-wrap" aria-hidden="true">
                     <Icon name="mail" size={18} />
                   </div>
                   <div className="channel-details">
-                    <strong className="channel-title">Coordinación de Pilotos y Demostraciones</strong>
-                    <a href="mailto:contacto@pulso360.co" className="channel-link">contacto@pulso360.co</a>
-                    <p className="channel-meta">Acompañamiento para operaciones BPO, colas de atención y turnos rotativos.</p>
+                    <strong className="channel-title">Formulario sin envío conectado</strong>
+                    <span className="channel-static-val">Demostración local</span>
+                    <p className="channel-meta">Puedes validar campos y revisar un resumen. No se registra una solicitud de contacto.</p>
                   </div>
                 </div>
 
@@ -45,9 +44,9 @@ export function ContactenosPage() {
                     <Icon name="Scale" size={18} />
                   </div>
                   <div className="channel-details">
-                    <strong className="channel-title">Consultoría Metodológica & SST</strong>
-                    <a href="mailto:sst@pulso360.co" className="channel-link">sst@pulso360.co</a>
-                    <p className="channel-meta">Orientación en agregación de datos (k &ge; 5) y articulación con el SG-SST.</p>
+                    <strong className="channel-title">Datos de ejemplo</strong>
+                    <span className="channel-static-val">Evita información personal o sensible</span>
+                    <p className="channel-meta">El formulario no es un canal de atención de SST. Si tienes una cuenta, utiliza el canal de apoyo dentro de la aplicación.</p>
                   </div>
                 </div>
 
@@ -56,9 +55,9 @@ export function ContactenosPage() {
                     <Icon name="building" size={18} />
                   </div>
                   <div className="channel-details">
-                    <strong className="channel-title">Sede Académica & Investigación</strong>
-                    <span className="channel-static-val">Tecnológico de Antioquia (TdeA)</span>
-                    <p className="channel-meta">Facultad de Ingeniería · Semillero de Software · Medellín, Colombia.</p>
+                    <strong className="channel-title">Equipo estudiantil</strong>
+                    <span className="channel-static-val">Contexto: Tecnológico de Antioquia (TdeA)</span>
+                    <p className="channel-meta">Propuesta de software surgida de una actividad de materia.</p>
                   </div>
                 </div>
               </div>

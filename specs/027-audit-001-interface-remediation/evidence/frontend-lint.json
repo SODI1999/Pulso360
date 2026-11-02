@@ -1,0 +1,7 @@
+﻿{
+    "command":  "npm run lint",
+    "cwd":  "frontend",
+    "startedAt":  "2026-11-02T05:16:59.9038896Z",
+    "finishedAt":  "2026-11-02T05:17:09.6291854Z",
+    "exitCode":  0
+}

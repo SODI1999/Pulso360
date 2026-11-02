@@ -60,14 +60,14 @@ export function HeroSection() {
           <span className="hero-editorial-eyebrow">Salud Ocupacional & Prevención en Contact Centers</span>
 
           <h1 id="hero-main-title" className="hero-editorial-title">
-            Detección temprana del <br /> agotamiento en Contact Centers.
+            Bienestar y apoyo preventivo <br /> en Contact Centers.
             <span className="hero-title-sub">
-              Anticipa la fatiga y la rotación en piso, sin vulnerar la intimidad del agente.
+              Registra cómo vives el turno y solicita orientación a SST.
             </span>
           </h1>
 
           <p className="hero-editorial-lead">
-            Micro-pulsos voluntarios de 60 segundos y analítica agregada para que SST revise tendencias del
+            Check-ins voluntarios y analítica agregada para que SST revise tendencias del
             equipo sin convertir el bienestar en una métrica de desempeño.
           </p>
 
@@ -180,11 +180,11 @@ export function HeroSection() {
             <div className="disconnection-safeguards-grid">
               <div className="safeguard-item">
                 <div className="safeguard-icon-wrap">
-                  <Icon name="timerAht" size={16} />
+                  <Icon name="heartPulse" size={16} />
                 </div>
                 <div className="safeguard-text">
-                  <strong className="safeguard-metric">60 segundos</strong>
-                  <span className="safeguard-label">Tiempo invertido en check-in</span>
+                  <strong className="safeguard-metric">Voluntario</strong>
+                  <span className="safeguard-label">Registro sobre tu turno</span>
                 </div>
               </div>
 

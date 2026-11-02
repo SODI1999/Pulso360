@@ -9,7 +9,6 @@ export function CampaignCard({
   setTeamModalState,
   setCampaignModalState,
   handleToggleCampaign,
-  minThreshold,
   setAssignModalState,
   handleToggleTeam
 }) {
@@ -74,14 +73,13 @@ export function CampaignCard({
               <tr>
                 <th style={{ width: '28%' }}>Equipo</th>
                 <th style={{ width: '26%' }}>Supervisor Asignado</th>
-                <th style={{ width: '24%' }}>Quórum K-Anonimato</th>
+                <th style={{ width: '24%' }}>Dotación</th>
                 <th style={{ width: '22%', textAlign: 'right' }}>Acciones</th>
               </tr>
             </thead>
             <tbody>
               {teams.map((t) => {
                 const isTeamActive = t.active !== false;
-                const isPublicable = (t.n || 0) >= minThreshold;
 
                 return (
                   <tr key={t.id} className={!isTeamActive ? 'org-team-row-inactive' : ''}>
@@ -100,17 +98,7 @@ export function CampaignCard({
                       </span>
                     </td>
                     <td>
-                      <span
-                        className={`badge ${isPublicable ? 'badge-ok' : 'badge-warn'}`}
-                        title={
-                          isPublicable
-                            ? `Cumple umbral de k-anonimato (N=${t.n} ≥ ${minThreshold})`
-                            : `Bajo umbral confidencial (N=${t.n} < ${minThreshold})`
-                        }
-                      >
-                        <Icon name={isPublicable ? 'checkCircle' : 'shield'} size={12} />
-                        <span>{isPublicable ? `N=${t.n} · Publicable` : `N=${t.n} · Protegido`}</span>
-                      </span>
+                      <span>{t.n ?? 0} integrantes</span>
                     </td>
                     <td style={{ textAlign: 'right' }}>
                       <div className="org-team-actions-compact">

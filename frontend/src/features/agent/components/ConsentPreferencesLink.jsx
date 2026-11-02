@@ -3,7 +3,7 @@ import { Icon } from '../../../core/components/Icon';
 
 /**
  * Navigation shortcut card linking to the informed consent preference manager.
- * Reminds agents of their statutory right to grant, modify, or revoke C1-C5 purposes without employment penalties.
+ * Reminds agents that C1-C5 preferences can be reviewed with their functional effects.
  *
  * @returns {import('react').JSX.Element} Consent preferences card.
  */
@@ -13,7 +13,7 @@ export function ConsentPreferencesLink() {
       <div>
         <div className="card-title">Consentimientos y finalidades</div>
         <p style={{ fontSize: '13px', color: 'var(--c-texto-suave)', margin: '8px 0 16px' }}>
-          Puedes revisar o revocar las finalidades C1–C5 en cualquier momento sin consecuencias laborales.
+          Puedes revisar, pausar o revocar las finalidades C1–C5. Consulta cómo cambia cada herramienta antes de guardar tus preferencias.
         </p>
       </div>
       <Link to="/consentimiento" className="btn btn-secondary">

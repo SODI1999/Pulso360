@@ -1,9 +1,13 @@
 import { useEffect, useRef } from 'react';
 import { Icon } from '../../../core/components/Icon';
+import { useModalA11y } from '../../../core/hooks/useModalA11y';
 
 /**
- * Modal Seguro de Confirmación para Solicitudes de Supresión de Datos.
- * Garantiza un flujo reflexivo y seguro para el agente con trampa de foco y cierre accesible.
+ * Confirma y registra una solicitud administrativa de supresión.
+ * Mantiene el resultado visible y bloquea salidas/otro envío mientras espera confirmación.
+ * @param {object} props Estado del formulario, feedback tipado y acciones de la página.
+ * @param {boolean} props.isSuppressing Hay un POST pendiente sin contrato de cancelación.
+ * @returns {JSX.Element|null} Diálogo de confirmación con estados pendiente, error o éxito.
  */
 export function SuppressionConfirmModal({
   isOpen,
@@ -12,29 +16,18 @@ export function SuppressionConfirmModal({
   setSuppressionConfirmText,
   handleSuppressionSubmit,
   suppressionFeedback,
-  isSuppressionConfirmed
+  isSuppressionConfirmed,
+  isSuppressing
 }) {
   const inputRef = useRef(null);
-
+  const modalRef = useRef(null);
+  const feedbackRef = useRef(null);
+  useModalA11y({ isOpen, onClose: () => {
+    if (!isSuppressing) onClose();
+  }, modalRef, initialFocusRef: inputRef });
   useEffect(() => {
-    if (!isOpen) return;
-
-    const handleKeyDown = (e) => {
-      if (e.key === 'Escape') {
-        onClose();
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    const timer = setTimeout(() => {
-      inputRef.current?.focus();
-    }, 50);
-
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-      clearTimeout(timer);
-    };
-  }, [isOpen, onClose]);
+    if (isOpen && suppressionFeedback) feedbackRef.current?.focus();
+  }, [isOpen, suppressionFeedback]);
 
   if (!isOpen) return null;
 
@@ -42,14 +35,16 @@ export function SuppressionConfirmModal({
     <div
       className="privacy-modal-backdrop"
       onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
+        if (e.target === e.currentTarget && !isSuppressing) onClose();
       }}
       role="presentation"
     >
       <div
+        ref={modalRef}
         className="privacy-modal-dialog card"
         role="dialog"
         aria-modal="true"
+        aria-busy={isSuppressing}
         aria-labelledby="suppression-modal-title"
       >
         <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
@@ -68,6 +63,7 @@ export function SuppressionConfirmModal({
             type="button"
             className="btn btn-secondary btn-sm"
             onClick={onClose}
+            disabled={isSuppressing}
             aria-label="Cerrar ventana de confirmación"
             style={{ padding: '6px', flexShrink: 0 }}
           >
@@ -76,7 +72,7 @@ export function SuppressionConfirmModal({
         </div>
 
         <p style={{ fontSize: '13px', color: 'var(--c-texto-suave)', marginBottom: '14px' }}>
-          Esta acción registra una solicitud formal para revisión por el Oficial de Privacidad y el equipo de SG-SST. El registro no ejecuta un borrado inmediato e irrevocable de manera automática.
+          Esta acción registra una solicitud para su gestión administrativa. Crear el trámite no ejecuta un borrado automático; podrás consultar su estado y la respuesta registrada.
         </p>
 
         <div
@@ -104,12 +100,12 @@ export function SuppressionConfirmModal({
 
           <div>
             <strong style={{ fontSize: '12px', color: 'var(--c-texto)' }}>
-              Datos que conserva el radicado por norma:
+              Datos de seguimiento del trámite:
             </strong>
             <ul style={{ fontSize: '11.5px', color: 'var(--c-texto-suave)', paddingLeft: '18px', marginTop: '4px' }}>
               <li>Código y fecha de radicación</li>
               <li>Estado de la gestión administrativa</li>
-              <li>Respuesta oficial emitida (auditoría SG-SST)</li>
+              <li>Respuesta registrada para la solicitud</li>
             </ul>
           </div>
         </div>
@@ -128,30 +124,33 @@ export function SuppressionConfirmModal({
             placeholder="Escribe SUPRIMIR..."
             autoComplete="off"
             value={suppressionConfirmText}
+            readOnly={isSuppressing}
             onChange={(e) => setSuppressionConfirmText(e.target.value)}
             style={{ width: '100%', maxWidth: '280px' }}
           />
         </div>
+        {isSuppressing && <p role="status">Esperando confirmación del registro de la solicitud…</p>}
 
         {suppressionFeedback && (
-          <div className="form-feedback info" style={{ marginBottom: '16px' }}>
-            <Icon name="Info" size={14} />
-            <span>{suppressionFeedback}</span>
+          <div ref={feedbackRef} tabIndex={-1} className={`alert-banner ${suppressionFeedback.type === 'error' ? 'danger' : 'ok'}`}
+            role={suppressionFeedback.type === 'error' ? 'alert' : 'status'} style={{ marginBottom: '16px' }}>
+            <Icon name={suppressionFeedback.type === 'error' ? 'AlertTriangle' : 'CheckCircle2'} size={14} />
+            <span>{suppressionFeedback.message}</span>
           </div>
         )}
 
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
-          <button type="button" className="btn btn-secondary btn-sm" onClick={onClose}>
-            <span>Cancelar</span>
+        <div className="modal-footer suppression-modal-actions">
+          <button type="button" className="btn btn-secondary btn-sm" onClick={onClose} disabled={isSuppressing}>
+            <span>{suppressionFeedback?.type === 'success' ? 'Cerrar' : 'Cancelar'}</span>
           </button>
           <button
             type="button"
             className="btn btn-danger btn-sm"
-            disabled={!isSuppressionConfirmed}
+            disabled={isSuppressing || !isSuppressionConfirmed}
             onClick={handleSuppressionSubmit}
           >
             <Icon name="Scale" size={14} />
-            <span>Crear solicitud de supresión</span>
+            <span>{isSuppressing ? 'Registrando solicitud…' : 'Crear solicitud de supresión'}</span>
           </button>
         </div>
       </div>

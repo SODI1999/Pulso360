@@ -4,22 +4,22 @@ import { FOUNDATION_META } from '../data/academicFoundationData';
 export function AcademicHeader({ handlePrint }) {
   return (
     <header className="academic-hero-header">
-      {/* Membrete formal exclusivo para impresión / exportación a PDF */}
+      {/* El alcance de aula también queda explícito en la impresión. */}
       <div className="print-editorial-header only-print" aria-hidden="true">
         <div className="print-header-top">
           <div className="print-institution-block">
-            <span className="print-header-institution">TECNOLÓGICO DE ANTIOQUIA · INSTITUCIÓN UNIVERSITARIA</span>
-            <span className="print-header-faculty">Facultad de Educación y Ciencias Sociales · Grupo de Investigación</span>
+            <span className="print-header-institution">PULSO360 · ORIGEN DE UNA IDEA ESTUDIANTIL</span>
+            <span className="print-header-faculty">Actividad de aula de una materia · Material no publicado</span>
           </div>
           <div className="print-meta-block">
-            <span className="print-header-code">Radicado: TDEA-SST-P360-2024</span>
+            <span className="print-header-code">Contexto del equipo: estudiantes del TdeA, sin aval institucional</span>
             <span className="print-header-date">
-              Emisión: {new Date().toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' })}
+              Fecha de impresión: {new Date().toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' })}
             </span>
           </div>
         </div>
         <div className="print-header-doc">
-          DOSSIER TÉCNICO DE INVESTIGACIÓN: MODELO CIENTÍFICO DE PREVENCIÓN DEL BURNOUT EN BPO
+          DATOS DE UNA ACTIVIDAD DE AULA Y DECISIONES DE DISEÑO DE PULSO360
         </div>
       </div>
       <div className="academic-kicker-row">
@@ -34,11 +34,11 @@ export function AcademicHeader({ handlePrint }) {
           type="button"
           onClick={handlePrint}
           className="btn-print-dossier no-print"
-          title="Imprimir o exportar ficha metodológica en PDF"
-          aria-label="Imprimir Ficha PDF y Resumen Metodológico del Dossier"
+          title="Imprimir el origen de la idea y los datos atribuidos a la actividad de aula"
+          aria-label="Imprimir origen y datos de la actividad de aula"
         >
           <Icon name="Printer" size={14} />
-          <span>Imprimir Ficha PDF</span>
+          <span>Imprimir página</span>
         </button>
       </div>
 

@@ -10,23 +10,48 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useSocket } from '../../../core/socket/socketClient';
 import { useChatDelivery } from '../../../core/socket/useChatDelivery';
+import { useChatScroll } from '../../../core/hooks/useChatScroll';
 import { authService } from '../../../core/auth/authService';
 import { chatService } from '../../../core/api/chatService';
 import { Icon } from '../../../core/components/Icon';
+import '../../../styles/support-chat.css';
 
-export function SupportChatCard({ requestId, requestCode, isAnonymous, onChatClosed, onBack }) {
+/**
+ * Muestra el canal de un radicado; conserva el borrador cuando el envío falla.
+ * @param {object} props Contexto de la solicitud autorizada.
+ * @param {string} props.requestId Identificador del radicado.
+ * @param {string} [props.requestCode] Código visible del radicado.
+ * @param {boolean} [props.isAnonymous] Nombre oculto a SST según la modalidad del caso.
+ * @param {string} props.inputText Borrador del radicado en memoria de la página.
+ * @param {import('react').Dispatch<import('react').SetStateAction<string>>} props.setInputText Actualiza solo el borrador de este radicado.
+ * @param {Function} [props.onChatClosed] Actualiza el listado al cerrar el canal.
+ * @returns {JSX.Element} Carga, error recuperable, espera o conversación con historial.
+ */
+export function SupportChatCard({ requestId, requestCode, isAnonymous, inputText, setInputText, onChatClosed }) {
   const { socket } = useSocket();
   const currentUser = authService.getCurrentUser();
 
   const [session, setSession] = useState(null);
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [inputText, setInputText] = useState('');
   const { isSending, sendError, sendMessage } = useChatDelivery(socket, session?.id);
   const [errorBanner, setErrorBanner] = useState(null);
 
-  const messagesContainerRef = useRef(null);
+  const { containerRef, onScroll, hasNewMessages, scrollToLatest } = useChatScroll({
+    messages,
+    conversationId: session?.id,
+    enabled: !isLoading && !errorBanner && Boolean(session)
+  });
   const inputRef = useRef(null);
+  const restoreComposerFocusRef = useRef(false);
+
+  useEffect(() => {
+    if (isSending || !restoreComposerFocusRef.current) return;
+    restoreComposerFocusRef.current = false;
+    if (document.activeElement === document.body || document.activeElement?.classList.contains('embedded-composer-send-btn')) {
+      inputRef.current?.focus({ preventScroll: true });
+    }
+  }, [isSending, sendError, messages]);
 
   // 1. Cargar la sesión y mensajes del radicado desde el backend
   const loadChatData = useCallback(async () => {
@@ -100,13 +125,6 @@ export function SupportChatCard({ requestId, requestCode, isAnonymous, onChatClo
     };
   }, [socket, session?.id, requestId, onChatClosed]);
 
-  // 3. Scroll automático al recibir mensajes
-  useEffect(() => {
-    if (messagesContainerRef.current) {
-      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
-    }
-  }, [messages]);
-
   // Ajustar la altura del textarea dinámicamente según el contenido
   const adjustTextareaHeight = () => {
     if (inputRef.current) {
@@ -124,8 +142,10 @@ export function SupportChatCard({ requestId, requestCode, isAnonymous, onChatClo
   const handleSendMessage = async () => {
     const text = inputText.trim();
     if (!text || !session?.id || session.status !== 'activa' || isSending) return;
+    restoreComposerFocusRef.current = true;
     const confirmed = await sendMessage(text);
     if (!confirmed) return;
+    scrollToLatest();
     setMessages(previous => previous.some(message => message.id === confirmed.id)
       ? previous : [...previous, confirmed]);
     setInputText(previous => {
@@ -138,7 +158,7 @@ export function SupportChatCard({ requestId, requestCode, isAnonymous, onChatClo
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) {
       e.preventDefault();
       handleSendMessage();
     }
@@ -176,7 +196,7 @@ export function SupportChatCard({ requestId, requestCode, isAnonymous, onChatClo
 
   if (isLoading) {
     return (
-      <div className="support-embedded-chat-loading" role="status">
+      <div className="support-chat-state" role="status">
         <Icon name="clock" size={16} />
         <span>Cargando canal de conversación del radicado…</span>
       </div>
@@ -185,7 +205,7 @@ export function SupportChatCard({ requestId, requestCode, isAnonymous, onChatClo
 
   if (errorBanner) {
     return (
-      <div className="support-embedded-chat-error alert-banner danger" role="alert">
+      <div className="support-chat-state support-chat-state--error" role="alert">
         <Icon name="alertTriangle" size={16} />
         <span>{errorBanner}</span>
         <button type="button" className="btn btn-secondary btn-sm" onClick={loadChatData}>Reintentar carga</button>
@@ -195,13 +215,13 @@ export function SupportChatCard({ requestId, requestCode, isAnonymous, onChatClo
 
   if (!session) {
     return (
-      <div className="support-embedded-chat-empty">
+      <div className="support-chat-state">
         <Icon name="clock" size={20} />
         <div>
-          <strong>Canal en espera de revisión por SST</strong>
+          <strong>Sin conversación abierta</strong>
           <p>
-            El equipo de Salud Ocupacional evaluará el radicado <strong>{requestCode}</strong>. Cuando un especialista
-            inicie la orientación en vivo, este canal se activará automáticamente.
+            No hay una conversación disponible para el radicado <strong>{requestCode}</strong>.
+            Si SST habilita un canal, podrás consultar el diálogo aquí.
           </p>
         </div>
       </div>
@@ -209,38 +229,26 @@ export function SupportChatCard({ requestId, requestCode, isAnonymous, onChatClo
   }
 
   const isClosed = session.status === 'cerrada';
+  const isActive = session.status === 'activa';
 
   return (
-    <div className={`support-embedded-chat-box ${isClosed ? 'is-closed' : 'is-active'}`}>
+    <div className={`support-embedded-chat-box ${isActive ? 'is-active' : 'is-closed'}`}>
       {/* Cabecera compacta y profesional del Chat */}
       <div className="embedded-chat-header">
-        {onBack && (
-          <button
-            type="button"
-            className="btn-chat-back"
-            onClick={onBack}
-            aria-label="Volver a la lista de radicados"
-            title="Volver a la lista"
-          >
-            <Icon name="arrowLeft" size={16} />
-          </button>
-        )}
         <div className="embedded-chat-user-info">
           <div className="embedded-chat-avatar" aria-hidden="true">
             <Icon name="MessagesSquare" size={18} />
-            {!isClosed && <span className="embedded-avatar-online-dot" title="En vivo" />}
           </div>
           <div className="embedded-chat-titles">
             <div className="embedded-chat-name-row">
-              <strong className="embedded-chat-title">Especialista SST (Salud Ocupacional)</strong>
-              <span className={`chat-status-pill ${isClosed ? 'closed' : 'live'}`}>
-                <span className={`chat-status-dot ${isClosed ? 'closed' : 'live'}`} />
-                <span>{isClosed ? 'Concluido' : 'En vivo'}</span>
+              <strong className="embedded-chat-title">Conversación con SST</strong>
+              <span className={`chat-status-pill ${isActive ? 'live' : 'closed'}`}>
+                <span>{isClosed ? 'Concluido' : isActive ? 'Canal abierto' : 'Canal no disponible'}</span>
               </span>
             </div>
             <span className="embedded-chat-subtitle">
               {requestCode ? `Radicado ${requestCode} · ` : ''}
-              {isAnonymous ? 'Tu nombre no se muestra a SST · Canal Seguro' : 'Orientación de Bienestar con SST'}
+              {isAnonymous ? 'Tu nombre no se muestra a SST' : 'Orientación de bienestar con SST'}
             </span>
           </div>
         </div>
@@ -252,12 +260,15 @@ export function SupportChatCard({ requestId, requestCode, isAnonymous, onChatClo
 
       {/* Lista de Mensajes */}
       <div
-        ref={messagesContainerRef}
+        ref={containerRef}
+        onScroll={onScroll}
+        tabIndex={0}
         className="embedded-chat-messages-area"
         role="log"
         aria-live="polite"
         aria-label={`Mensajes del radicado ${requestCode}`}
       >
+        {messages.length === 0 && <p className="chat-history-empty">Esta conversación no tiene mensajes registrados.</p>}
         {messages.map((msg, index) => {
           const prevMsg = index > 0 ? messages[index - 1] : null;
           const showSeparator = shouldShowDateSeparator(msg, prevMsg);
@@ -299,11 +310,22 @@ export function SupportChatCard({ requestId, requestCode, isAnonymous, onChatClo
         })}
       </div>
 
+      <div className="chat-new-messages" role="status">
+        {hasNewMessages && (
+          <button type="button" className="btn btn-secondary btn-sm" onClick={() => {
+            scrollToLatest();
+            containerRef.current?.focus({ preventScroll: true });
+          }}>
+            Ver mensajes nuevos
+          </button>
+        )}
+      </div>
+
       {/* Compositor de Mensaje o Banner de Cierre */}
-      {isClosed ? (
+      {!isActive ? (
         <div className="embedded-chat-closed-footer">
           <Icon name="checkCircle" size={16} />
-          <span>La conversación ha concluido. Puedes consultar su historial en solo lectura.</span>
+          <span>{isClosed ? 'La conversación ha concluido. Puedes consultar su historial en solo lectura.' : 'Este canal no permite enviar mensajes en su estado actual.'}</span>
         </div>
       ) : (
         <form
@@ -358,6 +380,7 @@ SupportChatCard.propTypes = {
   requestId: PropTypes.string.isRequired,
   requestCode: PropTypes.string,
   isAnonymous: PropTypes.bool,
-  onChatClosed: PropTypes.func,
-  onBack: PropTypes.func
+  inputText: PropTypes.string.isRequired,
+  setInputText: PropTypes.func.isRequired,
+  onChatClosed: PropTypes.func
 };

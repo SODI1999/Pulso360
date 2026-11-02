@@ -1,0 +1,62 @@
+[
+  {
+    "phase": "reload",
+    "startedAt": "2026-11-02T20:31:42.345Z",
+    "observedAt": "2026-11-02T20:31:44.432Z",
+    "path": "/",
+    "mode": "reload",
+    "loads": 2,
+    "viewport": {
+      "width": 1366,
+      "height": 768,
+      "deviceScaleFactor": 1
+    },
+    "title": "Bienestar y apoyo preventivo en Contact Centers.Registra cómo vives el turno y solicita orientación a SST. · Pulso360",
+    "active": {
+      "tag": "H1",
+      "text": "Bienestar y apoyo preventivo  en Contact Centers.Registra cómo vives el turno y solicita orientación a SST.",
+      "focusVisible": true,
+      "outline": "rgb(17, 38, 35) none 3px",
+      "marker": "quiet"
+    },
+    "heading": "Bienestar y apoyo preventivo  en Contact Centers.Registra cómo vives el turno y solicita orientación a SST.",
+    "scroll": {
+      "x": 0,
+      "y": 0
+    },
+    "documentWidth": 1351,
+    "clientWidth": 1351,
+    "artifact": "evidence/reload-landing-1366.png",
+    "exitCode": 0
+  },
+  {
+    "phase": "reload",
+    "startedAt": "2026-11-02T20:31:44.487Z",
+    "observedAt": "2026-11-02T20:31:46.247Z",
+    "path": "/403",
+    "mode": "reload",
+    "loads": 2,
+    "viewport": {
+      "width": 1366,
+      "height": 768,
+      "deviceScaleFactor": 1
+    },
+    "title": "Acceso no autorizado · Pulso360",
+    "active": {
+      "tag": "H1",
+      "text": "Acceso no autorizado",
+      "focusVisible": true,
+      "outline": "rgb(15, 23, 42) none 3px",
+      "marker": "quiet"
+    },
+    "heading": "Acceso no autorizado",
+    "scroll": {
+      "x": 0,
+      "y": 0
+    },
+    "documentWidth": 1366,
+    "clientWidth": 1366,
+    "artifact": "evidence/reload-403-1366.png",
+    "exitCode": 0
+  }
+]

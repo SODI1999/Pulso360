@@ -1,0 +1,21 @@
+{
+  "actor": "agent",
+  "observer": "Codex/better-interface",
+  "sessionId": "41377bbe-f56e-474b-92a1-abdf704609d9",
+  "surface": "http://127.0.0.1:5187/artifact-report.html",
+  "environment": "Chrome156/CDP aislado,servidorloopback temporal",
+  "steps": [
+    "Abrir informeportable",
+    "Viewport320x800",
+    "Comprobarancho e imágenes"
+  ],
+  "expected": "Sin overflow e imágenesde muestra cargadas",
+  "actual": "{\"doc\":305,\"client\":305,\"images\":5}",
+  "result": "passed",
+  "observedAt": "2026-11-02T16:54:10.058Z",
+  "viewport": {
+    "width": 320,
+    "height": 800
+  },
+  "artifact": "evidence/artifact-report-mobile.png"
+}

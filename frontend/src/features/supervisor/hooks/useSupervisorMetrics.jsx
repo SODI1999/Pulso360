@@ -35,39 +35,45 @@ export function useSupervisorMetrics({
   periodFilter
 } = {}) {
   const [version, setVersion] = useState(0);
-  const [data, setData] = useState(() => getCachedSupervisorMetrics(campanaId, equipoId, scopeFilter, periodFilter));
-  const [loading, setLoading] = useState(() => !getCachedSupervisorMetrics(campanaId, equipoId, scopeFilter, periodFilter));
-  const [error, setError] = useState(null);
+  const queryKey = `${campanaId}_${equipoId}_${scopeFilter}_${periodFilter}`;
+  const [result, setResult] = useState(() => {
+    const cached = getCachedSupervisorMetrics(campanaId, equipoId, scopeFilter, periodFilter);
+    return { key: queryKey, data: cached, loading: !cached, error: null };
+  });
+  // Un ámbito nuevo nunca debe mostrar el resultado retenido del ámbito anterior.
+  const current = result.key === queryKey ? result : {
+    data: getCachedSupervisorMetrics(campanaId, equipoId, scopeFilter, periodFilter),
+    loading: true,
+    error: null
+  };
+  const { data, loading, error } = current;
 
   useEffect(() => {
     let active = true;
     const cached = getCachedSupervisorMetrics(campanaId, equipoId, scopeFilter, periodFilter);
-    if (!cached) setLoading(true);
-    setError(null);
+    setResult({ key: queryKey, data: cached, loading: !cached, error: null });
 
     fetchSupervisorMetrics(campanaId, equipoId, scopeFilter,periodFilter)
       .then((res) => {
         if (active) {
-          if (res?.error) { setError(new Error(res.error)); setData(null); return; }
-          setData(res || null);
-          setError(null);
+          setResult({
+            key: queryKey,
+            data: res?.error ? null : res || null,
+            loading: false,
+            error: res?.error ? new Error(res.error) : null
+          });
         }
       })
       .catch((err) => {
         if (active) {
-          setError(err);
-        }
-      })
-      .finally(() => {
-        if (active) {
-          setLoading(false);
+          setResult({ key: queryKey, data: null, loading: false, error: err });
         }
       });
 
     return () => {
       active = false;
     };
-  }, [campanaId, equipoId, scopeFilter, periodFilter, version]);
+  }, [campanaId, equipoId, scopeFilter, periodFilter, version, queryKey]);
 
   const kThreshold = data?.k_threshold ?? 5;
   const cohortCount = data?.cohort_count ?? 0;

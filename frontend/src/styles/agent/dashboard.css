@@ -233,6 +233,7 @@
 /* Tarjeta única principal: check-in rápido del turno (Ergonomía BPO) */
 .calm-card {
   position: relative;
+  min-width: 0;
   background: var(--c-calma-surface);
   border: 1px solid var(--c-calma-border-subtle);
   border-radius: var(--radius-card);
@@ -434,6 +435,10 @@
   grid-template-columns: minmax(0, 1.7fr) minmax(280px, 1fr);
   gap: 16px;
   align-items: start;
+}
+
+.calm-grid > * {
+  min-width: 0;
 }
 
 /* Carril contextual */
@@ -642,7 +647,7 @@
 /* Responsive */
 @media (max-width: 900px) {
   .calm-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
@@ -727,8 +732,9 @@
 
   .calm-energy-emoji-wrap,
   .calm-mood-emoji {
-    width: 48px;
-    height: 48px;
+    width: min(48px, 100%);
+    height: auto;
+    aspect-ratio: 1;
   }
 
   .calm-energy-emoji-wrap .energy-face,

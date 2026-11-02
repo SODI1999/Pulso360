@@ -2,7 +2,7 @@ import { useExpiredFormDraft } from '../../../core/auth/useExpiredFormDraft';
 import { env } from '../../../core/config/env';
 import { fetchAgentRecords, getAgentRecords } from '../services/agentQueries';
 import { createHabeasRequest as registerHabeasRequest } from '../services/myDataPrivacyService';
-import { useState, useMemo, useEffect, useCallback } from 'react';
+import { useState, useMemo, useEffect, useCallback, useRef } from 'react';
 
 import { authService, roleLabels } from '../../../core/auth/authService';
 
@@ -11,7 +11,10 @@ import { authService, roleLabels } from '../../../core/auth/authService';
  * Administra el ejercicio de derechos ARCO (Acceso, Rectificación, Cancelación/Supresión, Oposición),
  * generación de archivos de portabilidad en cliente y navegación por pestañas WAI-ARIA.
  *
- * @returns {Object} Estado del centro de privacidad y manejadores de acción ARCO.
+ * @returns {Object} Estado del centro de privacidad, feedback tipado y acciones de trámite.
+ * isRectifying/isSuppressing indican una operación pendiente; cada guardia evita envíos simultáneos
+ * de la misma operación en esta página, sin atribuir idempotencia al servidor.
+ * hasSnapshot distingue la primera carga de una actualización; reload solo vuelve a consultar registros.
  */
 export function useMyDataPrivacy() {
   const currentUser = authService.getCurrentUser();
@@ -20,10 +23,14 @@ export function useMyDataPrivacy() {
   const [isSuppressionModalOpen, setIsSuppressionModalOpen] = useState(false);
 
   const [rectificationText, setRectificationText] = useState('');
-  const [rectificationFeedback, setRectificationFeedback] = useState('');
+  const [rectificationFeedback, setRectificationFeedback] = useState(null);
+  const [isRectifying, setIsRectifying] = useState(false);
+  const rectificationPendingRef = useRef(false);
 
   const [suppressionConfirmText, setSuppressionConfirmText] = useState('');
-  const [suppressionFeedback, setSuppressionFeedback] = useState('');
+  const [suppressionFeedback, setSuppressionFeedback] = useState(null);
+  const [isSuppressing, setIsSuppressing] = useState(false);
+  const suppressionPendingRef = useRef(false);
 
   useExpiredFormDraft('habeas:new', { rectificationText, suppressionConfirmText }, draft => {
     setRectificationText(draft.rectificationText);
@@ -82,51 +89,21 @@ export function useMyDataPrivacy() {
   });
 
   const [loadError, setLoadError] = useState('');
+  const [hasSnapshot, setHasSnapshot] = useState(() => Boolean(getAgentRecords(currentUser?.id)?.consents?.[currentUser?.id]));
   const [loading, setLoading] = useState(() => {
     if (env.useMockStorage) return false;
     const initial = getAgentRecords(currentUser?.id);
     return !initial?.consents?.[currentUser?.id];
   });
 
-  const reload = useCallback(() => {
-    if (!currentUser?.id) return;
-    setLoading(true);
-    setLoadError('');
-    if (!env.useMockStorage) {
-      fetchAgentRecords(currentUser.id)
-        .then((storeData) => {
-          setSummary({
-            checkins: storeData.checkins || [],
-            journals: storeData.journals || [],
-            support: storeData.supportRequests || [],
-            consent: storeData.consents?.[currentUser.id],
-            requests: storeData.habeasRequests || []
-          });
-        })
-        .catch((error) => {
-          setLoadError(error.message || 'Error al conectar con el servidor.');
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    } else {
-      const initial = getAgentRecords(currentUser.id);
-      setSummary({
-        checkins: initial?.checkins || [],
-        journals: initial?.journals || [],
-        support: initial?.supportRequests || [],
-        consent: initial?.consents?.[currentUser.id] || null,
-        requests: initial?.habeasRequests || []
-      });
-      setLoading(false);
-    }
-  }, [currentUser?.id]);
+  const reload = useCallback(() => setRequestsVersion(previous => previous + 1), []);
 
   useEffect(() => {
     let mounted = true;
+    if (!env.useMockStorage) setLoading(true);
     async function load() {
       if (!currentUser?.id) return;
-      const storeData = await fetchAgentRecords(currentUser.id);
+      const storeData = env.useMockStorage ? getAgentRecords(currentUser.id) : await fetchAgentRecords(currentUser.id);
       if (!mounted) return;
       setSummary({
         checkins: storeData.checkins || [],
@@ -135,6 +112,8 @@ export function useMyDataPrivacy() {
         consent: storeData.consents?.[currentUser.id],
         requests: storeData.habeasRequests || []
       });
+      setHasSnapshot(true);
+      setLoadError('');
     }
     load()
       .catch((error) => {
@@ -242,34 +221,48 @@ export function useMyDataPrivacy() {
   // Solicitar rectificación
   const handleRectificationSubmit = async (e) => {
     if (e && e.preventDefault) e.preventDefault();
-    const detail = rectificationText.trim();
+    if (rectificationPendingRef.current) return;
+    const submittedText = rectificationText;
+    const detail = submittedText.trim();
     if (detail.length < 10) {
-      setRectificationFeedback(
-        'Describe con un poco más de detalle el dato que deseas rectificar (mínimo 10 caracteres).'
-      );
+      setRectificationFeedback({ type: 'error', message: 'Describe el dato que deseas rectificar con al menos 10 caracteres.' });
       return;
     }
 
+    rectificationPendingRef.current = true;
+    setIsRectifying(true);
+    setRectificationFeedback(null);
     try {
       const reqId = await createHabeasRequest('Rectificacion', detail);
-      setRectificationFeedback(`Solicitud ${reqId} radicada exitosamente. Se gestionará administrativamente en un plazo de hasta 15 días hábiles.`);
-      setRectificationText('');
+      setRectificationFeedback({ type: 'success', message: `Solicitud ${reqId} registrada. Consulta su estado y cualquier plazo registrado en el historial de trámites.` });
+      setRectificationText(previous => previous === submittedText ? '' : previous);
     } catch (err) {
-      setRectificationFeedback(`Error: ${err.message}`);
+      setRectificationFeedback({ type: 'error', message: `No se confirmó la solicitud: ${err.message}. El texto se conserva; revisa el historial antes de volver a intentarlo.` });
+    } finally {
+      rectificationPendingRef.current = false;
+      setIsRectifying(false);
     }
   };
 
   // Solicitar supresión
   const handleSuppressionSubmit = async () => {
+    if (suppressionPendingRef.current || suppressionConfirmText.trim() !== 'SUPRIMIR') return;
+    suppressionPendingRef.current = true;
+    setIsSuppressing(true);
+    setSuppressionFeedback(null);
+    const submittedConfirmation = suppressionConfirmText;
     try {
       const reqId = await createHabeasRequest(
         'Supresion',
         'Solicitud formal de supresión de datos personales conforme a la Ley 1581 de 2012.'
       );
-      setSuppressionFeedback(`Solicitud ${reqId} radicada con éxito. Será evaluada administrativamente dentro de los 15 días hábiles siguientes.`);
-      setSuppressionConfirmText('');
+      setSuppressionFeedback({ type: 'success', message: `Solicitud ${reqId} registrada. Consulta su estado y cualquier plazo registrado en el historial de trámites.` });
+      setSuppressionConfirmText(previous => previous === submittedConfirmation ? '' : previous);
     } catch (err) {
-      setSuppressionFeedback(`Error: ${err.message}`);
+      setSuppressionFeedback({ type: 'error', message: `No se confirmó la solicitud: ${err.message}. La confirmación se conserva; revisa el historial antes de volver a intentarlo.` });
+    } finally {
+      suppressionPendingRef.current = false;
+      setIsSuppressing(false);
     }
   };
 
@@ -277,6 +270,8 @@ export function useMyDataPrivacy() {
 
   return {
     loading,
+    hasSnapshot,
+    isRefreshing: loading && hasSnapshot,
     loadError,
     reload,
     currentUser,
@@ -288,9 +283,11 @@ export function useMyDataPrivacy() {
     rectificationText,
     setRectificationText,
     rectificationFeedback,
+    isRectifying,
     suppressionConfirmText,
     setSuppressionConfirmText,
     suppressionFeedback,
+    isSuppressing,
     formatDate,
     formatDateTime,
     calculateDateRange,

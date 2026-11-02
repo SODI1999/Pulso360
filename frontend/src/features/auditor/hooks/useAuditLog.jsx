@@ -18,7 +18,7 @@ export function useAuditLog() {
     checked: false,
     valid: null,
     hasLegacy: false,
-    badgeText: 'Cadena inmutable activa',
+    badgeText: 'Integridad pendiente de comprobar',
     badgeType: 'badge-info',
     message: 'Integridad sin comprobar'
   });

@@ -20,6 +20,7 @@
 
 /* Tarjetas */
 .card {
+  min-width: 0;
   background-color: var(--c-superficie);
   border: 1px solid var(--c-borde-suave);
   border-radius: var(--radius-card, 16px);
@@ -122,6 +123,10 @@
   color: var(--c-critico);
 }
 
+.kpi-delta.neutral {
+  color: var(--c-texto-suave);
+}
+
 /* Botones */
 .btn {
   display: inline-flex;
@@ -211,6 +216,7 @@
 
 /* Formularios y campos de entrada */
 .form-group {
+  min-width: 0;
   margin-bottom: var(--space-4);
   text-align: left;
 }
@@ -227,6 +233,7 @@
 .form-select,
 .form-textarea {
   width: 100%;
+  min-width: 0;
   max-width: 100%;
   box-sizing: border-box;
   padding: 9px 13px;

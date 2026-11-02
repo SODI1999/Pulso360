@@ -66,9 +66,9 @@ export function ReportsPage() {
 
       {/* Mensaje de feedback si aplica */}
       {feedback && (
-        <div className={`alert-banner ${feedback.startsWith('Error') || !isAllowedByPrivacy ? 'danger' : 'ok'}`} role={feedback.startsWith("Error") ? "alert" : "status"}>
-          <Icon name={isAllowedByPrivacy ? 'checkCircle' : 'alertTriangle'} size={18} />
-          <span>{feedback}</span>
+        <div className={`alert-banner ${feedback.type === 'success' ? 'ok' : feedback.type === 'warning' ? 'warn' : 'danger'}`} role={feedback.type === 'error' ? 'alert' : 'status'}>
+          <Icon name={feedback.type === 'success' ? 'checkCircle' : 'alertTriangle'} size={18} />
+          <span>{feedback.message}</span>
         </div>
       )}
 

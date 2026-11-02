@@ -1,0 +1,28 @@
+{
+  "recordedAt": "2026-11-02T14:34:01.625Z",
+  "scope": "CONTEXT_INPUTS_V3",
+  "inputs": {
+    ".github/workflows/ci.yml": "037895a693e4a455bb7dcfcc505e9d06f9393e00a4569ea890a5849a3ab782ab",
+    "CONSTITUTION.md": "3f607334881304b86b11ee5e92e35805a617e406a416cd2432b28b05bd0f350e",
+    "README.md": "7e2574dc16d6e7f1132fa269d41dfb06a420f68e42ba770d03deb3eab4e83051",
+    "backend/.env.example": "41423f35b1ae3f4c96b767f07339de239e32c929c8fa5d1ed766be4436a98304",
+    "backend/Dockerfile": "d0083b0323f2af3883fc9c6d22638306d3dcc1ebd6e8807d5e3d0da8b0c82cb8",
+    "backend/README.md": "3a75a2c219e7500c871fcaac143dff7f75f28f78df9b441f20d1845105df6932",
+    "backend/package.json": "fc6af409d2219152e179ee4d6b162575c5ab5dec767fee2ece9591387f3fa1f8",
+    "backend/src/domain/privacyRules.js": "3efb467c6426cd65082330aeb59187851c6eb3d27264e13daf6b3b80caa8a38a",
+    "backend/src/index.js": "4788110367b53658782e58bed1148d626098f851e5896dd44fc96ed3532aa717",
+    "docker-compose.yml": "355fc1b139c68fc5841a25999638d4d5b71c7772f02c36149937db48ce1bdb41",
+    "frontend/.env.example": "a610b395508e5b99a3c358a2a11bf071ddd0c12ce393bad232e2185141fe140f",
+    "frontend/Dockerfile": "ccf543b2703addd1480f60410fb84faff2e8610a735e73f61972dd05ebd2edbc",
+    "frontend/README.md": "f5f332a71cd00793bdb7bdb50cc4fbd92438f525fa294a419fd7a933b918b6db",
+    "frontend/eslint.config.js": "bfc58f36f77deff76bb7adb334edee8f2ebbaf4b16fd8027cf0bee013f6ca378",
+    "frontend/index.html": "d5c1e41fb4227caa220aca1526fcad75b289c57f55ad4f6dd0abf4b56f5953b7",
+    "frontend/package.json": "40cea1a21ba90586fe6ba86d78a7fd7a353f0dcadbb1b88eeba003d2cd4529b0",
+    "frontend/src/main.jsx": "2770100322f65c4d43229b3371c28c50624b9b189f07e43c2fd4f474c2e760bc",
+    "frontend/vite.config.js": "4d36db3522a7b2dd10e0936e1004373c7ee65f10f7cd7920cd76410459c15a45",
+    "specs/027-audit-001-interface-remediation/verification.md": "6d77dbccdb7837f304dd6320684c88dad00d396c20012ae583f8ad44f55a0a23",
+    "specs/project-context.md": "ef74cad7727ea57cd70d4d9988c6827b3cab96909076698092adde28304dbd4e"
+  },
+  "reviewScope": "EOL_NORMALIZED_BASELINE_AND_STRUCTURAL_LINKS_ONLY",
+  "semanticReview": "AGENT_OR_HUMAN_REQUIRED"
+}

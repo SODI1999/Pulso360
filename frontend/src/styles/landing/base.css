@@ -91,7 +91,7 @@ img {
   outline-offset: 2px;
 }
 
-#contenido:focus {
+#contenido:focus:not([data-route-focus="keyboard"]) {
   outline: none;
 }
 

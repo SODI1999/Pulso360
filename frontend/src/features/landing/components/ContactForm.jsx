@@ -1,5 +1,5 @@
 // src/features/landing/components/ContactForm.jsx
-// Formulario de contacto directo con validación accesible WCAG AA y confirmación de recepción
+// Demostración local de formulario: valida y prepara un resumen sin enviarlo.
 
 import { useContactForm } from '../hooks/useContactForm';
 import { Link } from 'react-router-dom';
@@ -7,10 +7,12 @@ import { Icon } from '../../../core/components/Icon';
 import { CONTACT_SUBJECTS } from '../data/landingData';
 import '../../../styles/contactenos.css';
 
+/** @returns {JSX.Element} Formulario y resumen local con validación y foco de teclado. */
 export function ContactForm() {
   const {
     formData,
     formRef,
+    summaryRef,
     formErrors,
     hasSubmittedOnce,
     submittedData,
@@ -24,9 +26,9 @@ export function ContactForm() {
       {!submittedData ? (
         <>
           <div className="form-panel-header">
-            <h2 className="panel-title">Envíanos un mensaje</h2>
+            <h2 className="panel-title">Probar formulario de contacto</h2>
             <p className="panel-sub">
-              Completa el formulario y nos comunicaremos con tu equipo para coordinar una reunión o demostración.
+              Usa datos de ejemplo. Esta demostración valida los campos y prepara un resumen en esta página; no envía mensajes ni solicita una respuesta del equipo.
             </p>
           </div>
 
@@ -38,7 +40,7 @@ export function ContactForm() {
                   <Icon name="alertTriangle" size={14} />
                 </span>
                 <div className="contact-alert-text">
-                  <strong>Por favor revisa los campos requeridos:</strong> Completa los datos marcados para enviar tu mensaje.
+                  <strong>Revisa los campos requeridos:</strong> Completa los datos marcados para preparar el resumen de ejemplo.
                 </div>
               </div>
             )}
@@ -191,7 +193,7 @@ export function ContactForm() {
               )}
             </div>
 
-            {/* Checkbox Obligatorio de Habeas Data (Ley 1581) */}
+            {/* La aceptación confirma el alcance local de la demostración. */}
             <div className="form-field form-field-checkbox">
               <label className="checkbox-label" htmlFor="contactHabeasData">
                 <input
@@ -205,14 +207,14 @@ export function ContactForm() {
                   aria-describedby={formErrors.habeasData ? 'habeasData-error' : undefined}
                 />
                 <span className="checkbox-text">
-                  Autorizo el tratamiento de mis datos de contacto conforme a la Ley 1581 de 2012 y la{' '}
+                  Entiendo que este formulario es una demostración local y que no enviará un mensaje. Puedo consultar el{' '}
                   <Link
                     to="/fundamentacion#marco-legal"
                     className="checkbox-link"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    Política de Tratamiento de Datos Institucional
+                    marco de privacidad del proyecto
                   </Link>
                   .{' '}
                   <span className="required-star" aria-hidden="true">
@@ -229,21 +231,21 @@ export function ContactForm() {
             </div>
 
             <button className="form-submit" type="submit">
-              <Icon name="send" size={16} />
-              <span>Enviar mensaje</span>
+              <Icon name="fileText" size={16} />
+              <span>Preparar resumen de ejemplo</span>
             </button>
           </form>
         </>
       ) : (
-        /* Estado de Éxito / Confirmación de Recepción */
+        /* Resumen local de la demostración, sin recepción externa. */
         <div className="contact-success-state" role="status" aria-live="polite">
           <div className="success-icon-wrap" aria-hidden="true">
             <Icon name="CheckCircle2" size={32} />
           </div>
-          <h2 className="success-title">Mensaje enviado</h2>
+          <h2 ref={summaryRef} tabIndex={-1} className="success-title">Resumen de ejemplo preparado</h2>
           <p className="success-intro">
-            Gracias por comunicarte, <strong>{submittedData.name}</strong>. Hemos recibido tu consulta para{' '}
-            <strong>{submittedData.company}</strong> y nos pondremos en contacto a través de{' '}
+            Los datos de <strong>{submittedData.name}</strong> para <strong>{submittedData.company}</strong>{' '}
+            se muestran solo en este resumen. No se envió un mensaje a ningún equipo ni al correo{' '}
             <strong>{submittedData.email}</strong>.
           </p>
 
@@ -270,7 +272,7 @@ export function ContactForm() {
             className="btn-reset-form"
           >
             <Icon name="edit" size={15} />
-            <span>Enviar otro mensaje</span>
+            <span>Probar otro ejemplo</span>
           </button>
         </div>
       )}

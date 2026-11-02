@@ -9,7 +9,10 @@ export function useLogin({ initialMode }) {
   const location = useLocation();
   const [searchParams] = useSearchParams();
 
-  const [mode, setMode] = useState('login');
+  const [mode, setMode] = useState(() => initialMode || (
+    location.pathname === '/recuperar-clave' ? 'forgot'
+      : location.pathname === '/nueva-clave' ? 'reset' : 'login'
+  ));
 
   // Determinar el modo segun prop o ruta URL
   useEffect(() => {

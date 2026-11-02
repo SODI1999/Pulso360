@@ -118,6 +118,7 @@ export function UsersRolesPage() {
         {/* Filtros */}
         <div className="audit-filter-bar">
           <input
+            aria-label="Buscar usuarios por nombre, correo o equipo"
             type="search"
             className="form-input audit-filter-input"
             placeholder="Buscar por nombre, correo o equipo..."
@@ -125,6 +126,7 @@ export function UsersRolesPage() {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
           <select
+            aria-label="Filtrar usuarios por rol"
             className="form-select audit-filter-select"
             value={roleFilter}
             onChange={(e) => setRoleFilter(e.target.value)}

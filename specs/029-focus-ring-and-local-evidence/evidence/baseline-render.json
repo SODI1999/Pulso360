@@ -1,0 +1,8 @@
+{
+  "observedAt": "2026-11-02T20:21:51.557Z",
+  "observer": "Codex / better-interface",
+  "source": "Chrome dumpDOM screenshots de rutas reales vistos antes del parche, más captura aportada por usuario.",
+  "reproduced": true,
+  "observed": "Marco verde visible en h1 de landing y403; login h2 también recibiótabindex-1.",
+  "limit": "La medición detallada de viewport/estilos se añadió al renderer después del parche; no se atribuyen esas mediciones al baseline."
+}

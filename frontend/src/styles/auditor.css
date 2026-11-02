@@ -251,7 +251,9 @@
 .audit-date-cell {
   font-size: 12.5px;
   color: var(--c-texto-suave);
-  white-space: nowrap;
+  white-space: normal;
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
 }
 
 .audit-actor-name {
@@ -262,6 +264,9 @@
 .audit-action-badge {
   font-size: 11.5px;
   font-weight: 600;
+  white-space: normal;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
 }
 
 .audit-target-text {
@@ -416,6 +421,7 @@
 .audit-detail-value {
   font-size: 13.5px;
   color: var(--c-texto);
+  overflow-wrap: anywhere;
 }
 
 .audit-detail-target {
@@ -523,4 +529,12 @@
   .audit-integrity-legacy-note {
     margin-left: 0;
   }
+}
+.audit-copy-feedback:not(:empty) {
+  margin: var(--space-3);
+  padding: var(--space-3);
+  color: var(--c-texto);
+  background: var(--c-fondo);
+  border: 1px solid var(--c-borde);
+  line-height: 1.5;
 }

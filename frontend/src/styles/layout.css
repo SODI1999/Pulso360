@@ -179,7 +179,7 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--c-texto-mutado);
+  color: var(--c-texto-suave);
   padding: var(--space-2) 12px 4px;
   line-height: 1.2;
   white-space: nowrap;
@@ -1191,8 +1191,9 @@
     border-top-left-radius: 0;
     background-color: var(--c-superficie);
     border-bottom: 1px solid var(--c-borde-suave);
-    padding: 0 var(--space-4);
-    height: 52px;
+    padding: var(--space-1) var(--space-4);
+    height: auto;
+    min-height: 52px;
     top: auto;
     position: relative;
     z-index: 90;
@@ -1205,6 +1206,10 @@
 
   .topbar-actions {
     margin-left: auto;
+    min-width: 0;
+    max-width: 100%;
+    flex-wrap: wrap;
+    justify-content: flex-end;
   }
 
   .page-container {
@@ -1218,8 +1223,8 @@
 
 @media (max-width: 640px) {
   .app-topbar {
-    padding: 0 var(--space-3);
-    height: 48px;
+    padding: var(--space-1) var(--space-3);
+    min-height: 48px;
   }
 
   .topbar-actions {
@@ -1267,4 +1272,36 @@
     width: 16px;
     height: 16px;
   }
+}
+.app-skip-link {
+  position: fixed;
+  inset-block-start: var(--space-3);
+  inset-inline-start: var(--space-3);
+  z-index: 2000;
+  padding: var(--space-3) var(--space-4);
+  color: var(--c-texto-invertido);
+  background: var(--c-primario);
+  border-radius: var(--radius-sm);
+  transform: translateY(calc(-100% - var(--space-4)));
+}
+
+.app-skip-link:focus-visible {
+  transform: none;
+  outline: 2px solid var(--c-texto);
+  outline-offset: 2px;
+}
+
+/* El encabezado recibe foco para anunciar la ruta; el marco depende de cómo se llegó. */
+:is(h1, h2, main)[data-route-focus="quiet"]:focus {
+  outline: none;
+}
+
+:is(h1, h2, main)[data-route-focus="keyboard"]:focus {
+  outline: 2px solid var(--c-primario);
+  outline-offset: 2px;
+}
+
+.page-container :is(h1, h2),
+.page-container[id] {
+  scroll-margin-block-start: calc(var(--topbar-height, 72px) + var(--space-3));
 }

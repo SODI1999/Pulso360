@@ -1,6 +1,12 @@
 import { CONSENT_PURPOSES } from '../data/consentData';
 import { Icon } from '../../../core/components/Icon';
+import { useEffect, useRef } from 'react';
 
+/**
+ * Editor de finalidades con controles bloqueados durante su guardado.
+ * @param {object} props Preferencias, acciones y feedback tipado del hook useConsent.
+ * @returns {JSX.Element} Formulario con resultado anunciado y foco recuperable tras guardar.
+ */
 export function ConsentPreferences({
   handleSubmit,
   consents,
@@ -12,8 +18,15 @@ export function ConsentPreferences({
   activeCount,
   activeCodes,
   isSaving,
-  statusMessage
+  feedback
 }) {
+  const feedbackRef = useRef(null);
+  useEffect(() => {
+    if (!feedback) return;
+    const focused = document.activeElement;
+    if (focused === document.body || focused?.classList.contains('consent-save-button')) feedbackRef.current?.focus();
+  }, [feedback]);
+
   return (
     <section className="consent-settings-section" aria-labelledby="purposes-heading">
       <div className="consent-section-intro">
@@ -25,7 +38,7 @@ export function ConsentPreferences({
         </p>
       </div>
 
-      <form id="consentForm" onSubmit={handleSubmit}>
+      <form id="consentForm" onSubmit={handleSubmit} aria-busy={isSaving}>
         <div className="consent-purposes-flow" role="group" aria-label="Finalidades del consentimiento">
           {CONSENT_PURPOSES.map((item) => {
             const isChecked = consents[item.key];
@@ -55,6 +68,7 @@ export function ConsentPreferences({
                     aria-labelledby={`title-${item.key}`}
                     aria-describedby={`desc-${item.key} cons-${item.key}`}
                     className={`editorial-switch ${isChecked ? 'is-active' : ''}`}
+                    disabled={isSaving}
                     onClick={() => handleCheckboxChange(item.key)}
                   >
                     <span className="editorial-switch-track">
@@ -79,6 +93,7 @@ export function ConsentPreferences({
                 id="policyAccepted"
                 className="consent-terms-input"
                 checked={policyAccepted}
+                disabled={isSaving}
                 onChange={(e) => setPolicyAccepted(e.target.checked)}
               />
               <span className="consent-terms-caption">
@@ -86,6 +101,7 @@ export function ConsentPreferences({
                 <button
                   type="button"
                   className="consent-terms-inline-link"
+                  disabled={isSaving}
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
@@ -130,10 +146,11 @@ export function ConsentPreferences({
           </div>
 
           {/* Notificación de guardado */}
-          {statusMessage && (
-            <div role="status" aria-live="polite" className="consent-feedback-toast">
-              <Icon name="checkCircle" size={16} />
-              <span>{statusMessage}</span>
+          {feedback && (
+            <div ref={feedbackRef} tabIndex={-1} role={feedback.type === 'error' ? 'alert' : 'status'}
+              className={`consent-feedback-toast alert-banner ${feedback.type === 'success' ? 'ok' : feedback.type === 'warning' ? 'warn' : 'danger'}`}>
+              <Icon name={feedback.type === 'success' ? 'checkCircle' : 'alertTriangle'} size={16} />
+              <span>{feedback.message}</span>
             </div>
           )}
         </div>

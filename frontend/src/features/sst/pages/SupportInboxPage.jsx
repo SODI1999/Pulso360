@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { useSupportInbox } from '../hooks/useSupportInbox';
 import { SstRequestChatDrawer } from '../components/SstRequestChatDrawer';
 import { Icon } from '../../../core/components/Icon';
+import { getSupportUrgency } from '../utils/supportCasePresentation';
 import '../../../styles/sst.css';
 
 export function SupportInboxPage() {
@@ -20,6 +21,8 @@ export function SupportInboxPage() {
   } = useSupportInbox();
 
   const [selectedTicketForChat, setSelectedTicketForChat] = useState(null);
+  const [chatDrafts, setChatDrafts] = useState({});
+  const selectedTicket = requests.find(request => request.id === selectedTicketForChat?.id) || selectedTicketForChat;
 
   if (loading) {
     return (
@@ -28,7 +31,7 @@ export function SupportInboxPage() {
           <div>
             <h1 className="page-title">Buzón de Radicados de Acompañamiento SG-SST</h1>
             <p className="page-subtitle">
-              Gestión institucional de solicitudes formales de apoyo preventivo y canales interactivos de orientación en vivo.
+              Revisa solicitudes, responde por radicado y consulta el seguimiento de cada caso.
             </p>
           </div>
         </div>
@@ -45,14 +48,14 @@ export function SupportInboxPage() {
     );
   }
 
-  if (loadError) {
+  if (loadError && requests.length === 0) {
     return (
       <div role="alert">
         <div className="page-header">
           <div>
             <h1 className="page-title">Buzón de Radicados de Acompañamiento SG-SST</h1>
             <p className="page-subtitle">
-              Gestión institucional de solicitudes formales de apoyo preventivo y canales interactivos de orientación en vivo.
+              Revisa solicitudes, responde por radicado y consulta el seguimiento de cada caso.
             </p>
           </div>
         </div>
@@ -76,12 +79,18 @@ export function SupportInboxPage() {
         <div>
           <h1 className="page-title">Buzón de Radicados de Acompañamiento SG-SST</h1>
           <p className="page-subtitle">
-            Gestión institucional de solicitudes formales de apoyo preventivo y canales interactivos de orientación en vivo.
+            Revisa solicitudes, responde por radicado y consulta el seguimiento de cada caso.
           </p>
         </div>
       </div>
 
       {/* Mensaje de feedback */}
+      {loadError && (
+        <div className="alert-banner danger sst-inbox-refresh-error" role="alert">
+          <span>No se pudo actualizar el buzón: {loadError}. Los casos cargados siguen disponibles.</span>
+          <button type="button" className="btn btn-secondary btn-sm" onClick={reload}>Reintentar actualización</button>
+        </div>
+      )}
       {feedback && (
         <div
           className={`alert-banner ${feedback.startsWith('Error') ? 'danger' : 'ok'}`}
@@ -99,7 +108,7 @@ export function SupportInboxPage() {
           <div>
             <h2 className="card-title">Casos radicados en la organización</h2>
             <p className="card-subtitle">
-              Atención preventiva, seguimiento a acuerdos de nivel de servicio (SLA) y chat en vivo por caso.
+              Consulta el estado y el canal de conversación de cada solicitud.
             </p>
           </div>
           <span className="badge badge-info">{requests.length} radicados</span>
@@ -141,6 +150,7 @@ export function SupportInboxPage() {
                   const isEnGestion = item.status === 'En gestion';
                   const isRecibida = item.status === 'Recibida';
                   const isClosed = item.status === 'Cerrada';
+                  const urgency = getSupportUrgency(item.urgency || item.severity);
 
                   return (
                     <tr key={item.id}>
@@ -178,11 +188,11 @@ export function SupportInboxPage() {
                         )}
                       </td>
                       <td>
-                        <span style={{ color: item.urgency === 'alta' ? 'var(--c-critico)' : 'var(--c-alerta)', fontWeight: '600', fontSize: '12px' }}>
-                          {item.urgency === 'alta' ? 'Alta' : 'Media'}
+                        <span className={`sst-context-badge urgency-${urgency.tone}`}>
+                          {urgency.label}
                         </span>
                       </td>
-                      <td>{item.sla || '24 h hábiles'}</td>
+                      <td>{item.sla || 'Sin plazo registrado'}</td>
                       <td>
                         <span
                           className={`badge badge-${
@@ -209,7 +219,7 @@ export function SupportInboxPage() {
                               style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', whiteSpace: 'nowrap' }}
                             >
                               <Icon name="MessagesSquare" size={14} />
-                              <span>{item.chatStatus === 'activa' ? 'Atender chat en vivo' : 'Iniciar chat preventivo'}</span>
+                              <span>{item.chatStatus === 'activa' ? 'Abrir conversación' : 'Revisar canal de apoyo'}</span>
                             </button>
                           )}
 
@@ -221,7 +231,7 @@ export function SupportInboxPage() {
                               style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', whiteSpace: 'nowrap' }}
                             >
                               <Icon name="MessagesSquare" size={14} />
-                              <span>Iniciar chat preventivo</span>
+                              <span>Revisar canal de apoyo</span>
                             </button>
                           )}
 
@@ -267,9 +277,16 @@ export function SupportInboxPage() {
       </div>
 
       {/* Drawer Lateral de Chat Preventivo para el Radicado Seleccionado */}
-      {selectedTicketForChat && (
+      {selectedTicket && (
         <SstRequestChatDrawer
-          ticket={selectedTicketForChat}
+          key={selectedTicket.id}
+          ticket={selectedTicket}
+          inputText={chatDrafts[selectedTicket.id] || ''}
+          setInputText={update => setChatDrafts(previous => ({
+            ...previous,
+            [selectedTicket.id]: typeof update === 'function'
+              ? update(previous[selectedTicket.id] || '') : update
+          }))}
           onClose={() => setSelectedTicketForChat(null)}
           onSessionChanged={() => {
             reload();

@@ -1,0 +1,30 @@
+[
+  {
+    "path": "/admin/organizacion",
+    "bad": []
+  },
+  {
+    "path": "/admin/usuarios-roles",
+    "bad": []
+  },
+  {
+    "path": "/admin/parametros",
+    "bad": []
+  },
+  {
+    "path": "/admin/importar",
+    "bad": []
+  },
+  {
+    "path": "/admin/solicitudes",
+    "bad": []
+  },
+  {
+    "path": "/reportes",
+    "bad": []
+  },
+  {
+    "path": "/notificaciones",
+    "bad": []
+  }
+]

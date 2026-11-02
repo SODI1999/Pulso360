@@ -60,7 +60,7 @@ export function Footer() {
           ) : (
             <Link to="/fundamentacion">Fundamentación</Link>
           )}
-          <Link to="/contactenos">Contáctenos</Link>
+          <Link to="/contactenos">Contacto de ejemplo</Link>
         </div>
 
         <div className="footer-column">
@@ -77,21 +77,20 @@ export function Footer() {
             center de Medellín»
           </p>
           <p className="footer-credits-authors">
-            Semillero de Trabajo Social · Asesora: I. J. Saldarriaga Roa
+            Trabajo de aula de una materia · Orientación docente: I. J. Saldarriaga Roa
           </p>
           {location.pathname !== '/fundamentacion' && (
             <Link to="/fundamentacion" className="footer-credits-link">
-              Ver fundamentación y marco legal
+              Ver origen y alcance de los datos de aula
             </Link>
           )}
         </div>
       </div>
 
       <div className="landing-container footer-bottom">
-        <p>© 2026 Pulso360 · Tecnológico de Antioquia (TdeA)</p>
+        <p>© 2026 Pulso360 · Proyecto estudiantil · Contexto TdeA, sin aval institucional</p>
         <p>
-          Software preventivo no médico · Complementario a la Batería de Riesgo Psicosocial (Res. 2764/2022) ·
-          Ley 23 de 1982
+          Proyecto estudiantil de apoyo preventivo · No reemplaza una evaluación clínica ni la batería oficial de riesgo psicosocial
         </p>
       </div>
     </footer>
