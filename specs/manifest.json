@@ -7207,6 +7207,142 @@
           "automatedChecksPassed": true
         }
       }
+    },
+    {
+      "id": "030",
+      "type": "debt",
+      "slug": "030-real-e2e-and-route-bundles",
+      "title": "Real E2e And Route Bundles",
+      "status": "COMPLETED",
+      "created_at": "2026-11-02",
+      "branch": "debt/030-real-e2e-and-route-bundles",
+      "updated_at": "2026-11-02T21:20:46.480Z",
+      "completed_at": "2026-11-02T21:20:46.480Z",
+      "verification": {
+        "mode": "automated",
+        "verifiedAt": "2026-11-02T21:20:36.304Z",
+        "fingerprint": "2057231fbfbf15ee5cd5373ebede078f2433541d35ea254c36541f814072fc3a",
+        "acceptance": {
+          "criteria": [
+            {
+              "id": "AC-01",
+              "status": "passed",
+              "method": "inspection",
+              "kind": "functional"
+            },
+            {
+              "id": "AC-02",
+              "status": "passed",
+              "method": "automated",
+              "kind": "interaction",
+              "checkIds": [
+                "e2e-browser"
+              ],
+              "checks": [
+                {
+                  "checkId": "e2e-browser",
+                  "command": "npm run test:e2e",
+                  "cwd": "backend",
+                  "status": "PASSED"
+                }
+              ],
+              "execution": "PASSED"
+            },
+            {
+              "id": "AC-03",
+              "status": "passed",
+              "method": "automated",
+              "kind": "functional",
+              "checkIds": [
+                "e2e-browser"
+              ],
+              "checks": [
+                {
+                  "checkId": "e2e-browser",
+                  "command": "npm run test:e2e",
+                  "cwd": "backend",
+                  "status": "PASSED"
+                }
+              ],
+              "execution": "PASSED"
+            },
+            {
+              "id": "AC-04",
+              "status": "passed",
+              "method": "automated",
+              "kind": "accessibility",
+              "checkIds": [
+                "ui-boundary"
+              ],
+              "checks": [
+                {
+                  "checkId": "ui-boundary",
+                  "command": "node tests/modal-accessibility.browser.mjs",
+                  "cwd": "frontend",
+                  "status": "PASSED"
+                }
+              ],
+              "execution": "PASSED"
+            },
+            {
+              "id": "AC-05",
+              "status": "passed",
+              "method": "automated",
+              "kind": "functional",
+              "checkIds": [
+                "gate-1",
+                "gate-2",
+                "gate-3",
+                "gate-4",
+                "ui-boundary",
+                "e2e-browser"
+              ],
+              "checks": [
+                {
+                  "checkId": "gate-1",
+                  "command": "cd \"backend\" && npm test",
+                  "cwd": ".",
+                  "status": "PASSED"
+                },
+                {
+                  "checkId": "gate-2",
+                  "command": "cd \"frontend\" && npm test",
+                  "cwd": ".",
+                  "status": "PASSED"
+                },
+                {
+                  "checkId": "gate-3",
+                  "command": "cd \"frontend\" && npm run lint",
+                  "cwd": ".",
+                  "status": "PASSED"
+                },
+                {
+                  "checkId": "gate-4",
+                  "command": "cd \"frontend\" && npm run build",
+                  "cwd": ".",
+                  "status": "PASSED"
+                },
+                {
+                  "checkId": "ui-boundary",
+                  "command": "node tests/modal-accessibility.browser.mjs",
+                  "cwd": "frontend",
+                  "status": "PASSED"
+                },
+                {
+                  "checkId": "e2e-browser",
+                  "command": "npm run test:e2e",
+                  "cwd": "backend",
+                  "status": "PASSED"
+                }
+              ],
+              "execution": "PASSED"
+            }
+          ],
+          "scope": "DECLARED_EVIDENCE_WITH_EXECUTED_CHECK_BINDINGS",
+          "truthOfEvidence": "AGENT_OR_HUMAN_REVIEW_REQUIRED",
+          "automatedChecksPassed": true
+        }
+      }
     }
   ]
 }

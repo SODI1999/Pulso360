@@ -82,3 +82,6 @@ scripts/*
 /specs/*/evidence/**/*.webp
 /specs/*/evidence/**/*.gif
 /specs/*/evidence/**/*.svg
+
+# Salidas locales de los recorridos E2E (capturas y resultados temporales).
+/test-results/

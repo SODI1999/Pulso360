@@ -8,6 +8,7 @@ import { preferences } from '../storage/preferences';
 import { Icon } from '../components/Icon';
 import { InactivityModal } from '../components/InactivityModal';
 import { UserProfileModal } from '../components/UserProfileModal';
+import { PageBoundary } from '../components/PageBoundary';
 import { env } from '../config/env';
 
 // Formatea "8" como "08:00" para el bloque de turno del topbar
@@ -425,7 +426,7 @@ export function AppLayout() {
           {countsError && <div className="alert-banner danger" role="alert">
             <span>{countsError}</span><button type="button" className="btn btn-secondary btn-sm" onClick={refreshCounts}>Reintentar</button>
           </div>}
-          <Outlet />
+          <PageBoundary><Outlet /></PageBoundary>
         </main>
       </div>
 

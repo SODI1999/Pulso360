@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
   "context": {
-    "recordedAt": "2026-11-02T20:40:46.422Z",
+    "recordedAt": "2026-11-02T21:18:55.575Z",
     "scope": "CONTEXT_INPUTS_V3",
     "inputs": {
       ".github/workflows/ci.yml": "037895a693e4a455bb7dcfcc505e9d06f9393e00a4569ea890a5849a3ab782ab",
       "CONSTITUTION.md": "3f607334881304b86b11ee5e92e35805a617e406a416cd2432b28b05bd0f350e",
-      "README.md": "7e2574dc16d6e7f1132fa269d41dfb06a420f68e42ba770d03deb3eab4e83051",
+      "README.md": "ae3a02acfcf1ec602359ce70454ead992b72646cd1aabb2826f729ac28e7c718",
       "backend/.env.example": "41423f35b1ae3f4c96b767f07339de239e32c929c8fa5d1ed766be4436a98304",
       "backend/Dockerfile": "d0083b0323f2af3883fc9c6d22638306d3dcc1ebd6e8807d5e3d0da8b0c82cb8",
       "backend/README.md": "3a75a2c219e7500c871fcaac143dff7f75f28f78df9b441f20d1845105df6932",
-      "backend/package.json": "fc6af409d2219152e179ee4d6b162575c5ab5dec767fee2ece9591387f3fa1f8",
+      "backend/package.json": "b9708070ac69dfe56396579ec94bc61b4c5e44b7a00460c1295043faf2fe129f",
       "backend/src/domain/privacyRules.js": "3efb467c6426cd65082330aeb59187851c6eb3d27264e13daf6b3b80caa8a38a",
       "backend/src/index.js": "4788110367b53658782e58bed1148d626098f851e5896dd44fc96ed3532aa717",
       "docker-compose.yml": "355fc1b139c68fc5841a25999638d4d5b71c7772f02c36149937db48ce1bdb41",
@@ -22,42 +22,44 @@
       "frontend/package.json": "40cea1a21ba90586fe6ba86d78a7fd7a353f0dcadbb1b88eeba003d2cd4529b0",
       "frontend/src/main.jsx": "2770100322f65c4d43229b3371c28c50624b9b189f07e43c2fd4f474c2e760bc",
       "frontend/vite.config.js": "4d36db3522a7b2dd10e0936e1004373c7ee65f10f7cd7920cd76410459c15a45",
+      "specs/030-real-e2e-and-route-bundles/verification.md": "ed6a0261a3ea561af27b1980dd34df90bf56f0a01d16615315ac5d6ca79baa19",
+      "specs/030-real-e2e-and-route-bundles/better-review.md": "1a34ece86427b6e284383477426778c21134e8d414d57ba3a8162286a9cf2c4d",
       "specs/029-focus-ring-and-local-evidence/bug.md": "42840189320b357403877165030066749c74bc4ce9e0d232b08f560d9a680a32",
       "specs/029-focus-ring-and-local-evidence/verification.md": "1ee1b6f35265d58e8fafa3f5bf61c713d4e07533e077d183623412e2e50dad1b",
       "specs/028-frontend-better-completion/verification.md": "77f576f7fd446cd4305d5bdef6464a68d185efdb930f91e274ffd0d7c7f26adf",
       "specs/028-frontend-better-completion/route-inventory.json": "77803e14dc0dbf8a940503bb908df45a6aa438a874c440736ef5d1ec93b7033e",
       "specs/028-frontend-better-completion/better-report.md": "3b3548b89dec5ddd0a40cda0183c42391448b12445c3ddeee126346cd3393f73",
       "specs/027-audit-001-interface-remediation/verification.md": "6d77dbccdb7837f304dd6320684c88dad00d396c20012ae583f8ad44f55a0a23",
-      "specs/project-context.md": "d5ec2c84ceb1cb21244730d9e76f05b55c412e9ff044cf7bc8e4d8678ef01eab"
+      "specs/project-context.md": "4358da3860a0e11929fe668ce69ddc1d1758f843cce091ee9336d33826470feb"
     },
     "reviewScope": "EOL_NORMALIZED_BASELINE_AND_STRUCTURAL_LINKS_ONLY",
     "semanticReview": "AGENT_OR_HUMAN_REQUIRED"
   },
   "session": {
-    "id": "1fb7c764-07b1-4655-9ffc-2e32050c84ff",
-    "host": "Codex/Windows/Pulso360",
-    "observedAt": "2026-11-02T20:21:42.936Z",
-    "recordedAt": "2026-11-02T20:21:42.943Z",
+    "id": "d02a3384-b1e8-4b1d-bd2d-41685a7b606f",
+    "host": "Codex/Windows",
+    "observedAt": "2026-11-02T21:10:59.013Z",
+    "recordedAt": "2026-11-02T21:10:59.021Z",
     "capabilities": {
       "questions": {
         "status": "available",
-        "source": "Chat y herramientas nativas; intención y publicación autorizadas por usuario."
+        "source": "Chat y herramientas de preguntas disponibles; autorización existente E2E/bundle."
       },
       "web": {
         "status": "available",
-        "source": "MDN focus-visible yHTMLElement.focus consultados2026-11-02."
+        "source": "Documentación oficial React lazy/Suspense y Vite6 consultada en esta sesión."
       },
       "terminal": {
         "status": "available",
-        "source": "CLI0.8.1 igualmanifest;gitfetch sin divergencia;testsDOMChrome ejecutados."
+        "source": "Node24.22.1, CLI0.8.1 y comandos Git ejecutados."
       },
       "render": {
         "status": "available",
-        "source": "Chrome156 ejecutó harnessDOM11grupos exit0 mediante dump-dom, sin depuración remota. PreviewDeska sin ventana; CUAhost/pipe indisponible; arranqueCDP rechazado por política, no se reintenta."
+        "source": "Chrome156 CLI dump-dom con perfiles temporales; producción real dos cuentas contra HTTP/Socket/PostgreSQL test ejecutó recorrido completo. Sin CDP ni entrada física. Deska preview sin ventana."
       },
       "delegation": {
         "status": "available",
-        "source": "Better-interface dirige al revisor better_accessibility_review para corrección acotada."
+        "source": "Better dirige estados visuales, foco, harness e inspección final; agente existente better_accessibility_review."
       }
     }
   },
@@ -112,6 +114,19 @@
         "029"
       ],
       "recordedAt": "2026-11-02T20:20:08.812Z",
+      "revision": 1
+    },
+    {
+      "id": "e2e-bundle-and-publication-030",
+      "topic": "scope",
+      "status": "approved",
+      "required": true,
+      "value": "E2E real aislado, carga diferida por ruta, correcciones necesarias y commit/push normal a origin/develop; sin deploy ni migraciones.",
+      "basis": "El usuario solicitó recorrido E2E y bundle como continuación de los ajustes con publicación GitHub autorizada. Solo cuentas desechables propias en la base técnica separada existente; better dirige cambios visuales.",
+      "appliesTo": [
+        "030"
+      ],
+      "recordedAt": "2026-11-02T21:10:59.170Z",
       "revision": 1
     }
   ],
@@ -253,6 +268,34 @@
         "delegation": {
           "status": "available",
           "source": "Colaboración disponible; rol instalado omni-auditor para revisión acotada independiente."
+        }
+      }
+    },
+    {
+      "id": "1fb7c764-07b1-4655-9ffc-2e32050c84ff",
+      "host": "Codex/Windows/Pulso360",
+      "observedAt": "2026-11-02T20:21:42.936Z",
+      "recordedAt": "2026-11-02T20:21:42.943Z",
+      "capabilities": {
+        "questions": {
+          "status": "available",
+          "source": "Chat y herramientas nativas; intención y publicación autorizadas por usuario."
+        },
+        "web": {
+          "status": "available",
+          "source": "MDN focus-visible yHTMLElement.focus consultados2026-11-02."
+        },
+        "terminal": {
+          "status": "available",
+          "source": "CLI0.8.1 igualmanifest;gitfetch sin divergencia;testsDOMChrome ejecutados."
+        },
+        "render": {
+          "status": "available",
+          "source": "Chrome156 ejecutó harnessDOM11grupos exit0 mediante dump-dom, sin depuración remota. PreviewDeska sin ventana; CUAhost/pipe indisponible; arranqueCDP rechazado por política, no se reintenta."
+        },
+        "delegation": {
+          "status": "available",
+          "source": "Better-interface dirige al revisor better_accessibility_review para corrección acotada."
         }
       }
     }

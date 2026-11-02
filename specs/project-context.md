@@ -1,5 +1,20 @@
 # Project context
 
+## Actualización vigente — 2026-11-02 / deuda030
+
+El usuario autorizó E2E real y optimización del bundle como continuación del trabajo publicado en58eb868. Se mantienen autorización de commit/push normal a origin/develop y dirección visual de Better. Sin deploy, forcepush, migraciones, datos de personas reales ni cambios globales de agentes.
+
+La app difiere30páginas y AppLayout mediante React.lazy estable, con PageBoundary compartido y foco/títulos adaptados a contenido visible. Se conservan React18/JSX, Router7 existente, Vite6.4.4, autenticación, permisos, servicios, NLP y almacenamiento. Documentación oficial consultada el2026-11-02: https://react.dev/reference/react/lazy y https://v6.vite.dev/guide/build (API existentes; sin upgrade).
+
+Nuevo script backend test:e2e: producción frontend temporal, dos perfiles/orígenes Chrome156, APIExpress/Socket y PostgreSQL técnicos reales. Exige DB_NAME_TEST exacta existente distinta de DB_NAME; crea dos cuentas propias únicas y consentimiento como precondición. Verifica solicitud anónima, activación, dos envíos Socket, recepción en vivo, recarga/persistencia y cierre de solo lectura. Finalmente elimina únicamente sus cuentas y dependencias, con cinco contadores en0 y auditoría conservada. Sin migraciones ni intercepción. README explica requisitos; test-results y capturas de evidencia siguen ignorados, assets del producto preservados.
+
+Medición comparable desde commit58eb868 y misma configuración: landing JS962719→368756bytes (-61,7%), gzip nivel9 estimado267972→117136 (-56,3%); CSS423645→173724 (-59%). Chrome confirmó368757JS/173724CSS;1byte adicional por URL efímera. El entry mayor319917bytes elimina warning>500kB sin aumentar umbral. Suma total de chunks aumenta a979849JS/484976CSS, coste explícito de separación; no se mide rendimiento de hosting.
+
+Preflight ejecutado: backend132/132, frontend55/55, lint/build0; harness16grupos y E2E9+7checks0. specs/checks.json añade ui-boundary y e2e-browser a los cuatro gates vigentes; verify030 ejecuta y liga los seis. [Verificación030](030-real-e2e-and-route-bundles/verification.md) y [Better030](030-real-e2e-and-route-bundles/better-review.md) son evidencia acotada. El registro final y cierre los produce CLI; publicación/artifact se realizan después y se informan con identificadores reales.
+
+Capacidades: CLI0.8.1 igual manifest, Node24.22.1, Chrome156 dump-dom aislado. Sesión d02a3384-b1e8-4b1d-bd2d-41685a7b606f registra render disponible21:10:59Z antes de última corrida e inspección Better. PreviewDeska sigue sin ventana; CDP fue rechazado y no se reintentó. Eventos DOM, sin input físico/lector/hosting. Datos técnicos únicamente. Las actualizaciones siguientes son históricas.
+
+
 ## Actualización vigente — 2026-11-02 / bug029
 
 El usuario pide quitar el marcoverde alentrar/recargar, mantener localesen.gitignore lasimágenes generadas y publicar enGitHub los cambios valiosos de027/028 más029. Mejoras visuales dirigidas porbetter-interface con responsablebetter-accessibility. Se confirmó elmarco enChrome real sobrelanding/403/login. Cambios acotados al focoderuta,CSS yregresiónDOM; no retirar indicadores decontroles ni focosemántico. También se detectó scrollinicial115px enlanding, responsabilidad delscrollIntoView programático, para cierre con misma dirección.

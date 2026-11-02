@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 2,
+  "criteria": [
+    {
+      "id": "AC-01",
+      "kind": "functional",
+      "status": "passed",
+      "method": "inspection",
+      "evidence": "evidence/baseline-bundle.json, after-bundle.json y bundle-comparison.json: misma configuración Vite6, baseline reconstruida en memoria desde58eb868 para3fuentes; landing JS962719→368756bytes, gzip267972→117136, CSS423645→173724. Chrome mide368757JS/173724CSS (1byte por URL API efímera); no descarga chunks de páginas privadas. No aumento de umbral ni dependencias. Totaltodoschunks979849JS/484976CSS, coste explícito frente a monolito."
+    },
+    {
+      "id": "AC-02",
+      "kind": "interaction",
+      "status": "passed",
+      "method": "automated",
+      "checkIds": [
+        "e2e-browser"
+      ],
+      "evidence": "backend/test/e2e-browser.js + frontend/tests/e2e-actor.fixture.js: producción real, dos perfiles/orígenes, login/radicación/activación/envíos/recarga/cierre/sololectura. HTTP real,2eventos support:message:send, persistencia correlacionada PG de solicitud anónima cerrada y1mensaje por actor. Sin intercepción. Ejecución preliminar exit0 guardada evidence/e2e/e2e-result.json (9+7checks); ejecución final vinculada por verify. DOM programático, no entrada física ni hosting desplegado."
+    },
+    {
+      "id": "AC-03",
+      "kind": "functional",
+      "status": "passed",
+      "method": "automated",
+      "checkIds": [
+        "e2e-browser"
+      ],
+      "evidence": "Runner comprueba nombre exacto DB_NAME_TEST técnico y distinto deDB_NAME mediante current_database antes de insertar. IDs únicos, sin migraciones/truncate, finally borra solo dependencias de susIDs; cinco contadores(accounts/requests/sessions/messages/consents) deben ser0. Auditoría conservada. Consentimiento preparado como precondición; no se acredita aceptación medianteUI."
+    },
+    {
+      "id": "AC-04",
+      "kind": "accessibility",
+      "status": "passed",
+      "method": "automated",
+      "checkIds": [
+        "ui-boundary"
+      ],
+      "evidence": "Harness Chrome16grupos: carga status/aria-busy, fallback standalone→main/h1 con título/foco, transición cold, import rechazado/error sin detalles/acción de recarga/enlace inicio, recuperación pathname, main único/shell persistente. RouteAccessibility espera contenido visible sin indicador inicial intrusivo. ProtectedRoute y roles conservados; contratos backend prueban RBAC. No activa recarga nativa del botón en harness ni prueba lector de pantalla/zoom físico; inspección Better en better-review.md."
+    },
+    {
+      "id": "AC-05",
+      "kind": "functional",
+      "status": "passed",
+      "method": "automated",
+      "checkIds": [
+        "gate-1",
+        "gate-2",
+        "gate-3",
+        "gate-4",
+        "ui-boundary",
+        "e2e-browser"
+      ],
+      "evidence": "Preflight ejecutado: backend132/132, frontend55/55, lint0, build0 sin warning>500kB, harness16grupos0 y E2E9+7checks0. verify030 vuelve a ejecutar los6checks y liga resultados a la huella; ese registro es la fuente final. Commit/push normal y mismo artifact son acciones de entrega posteriores autorizadas, no inferidas del estado delCLI."
+    }
+  ]
+}

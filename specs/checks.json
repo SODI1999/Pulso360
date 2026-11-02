@@ -1,4 +1,19 @@
 {
   "schemaVersion": 1,
-  "checks": []
+  "checks": [
+    {
+      "id": "ui-boundary",
+      "command": "node tests/modal-accessibility.browser.mjs",
+      "cwd": "frontend",
+      "kind": "ui",
+      "timeoutMs": 120000
+    },
+    {
+      "id": "e2e-browser",
+      "command": "npm run test:e2e",
+      "cwd": "backend",
+      "kind": "ui",
+      "timeoutMs": 240000
+    }
+  ]
 }

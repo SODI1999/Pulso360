@@ -1,0 +1,324 @@
+{
+  "version": 3,
+  "id": "030",
+  "mode": "automated",
+  "passed": true,
+  "verifiedAt": "2026-11-02T21:20:36.304Z",
+  "fingerprint": "2057231fbfbf15ee5cd5373ebede078f2433541d35ea254c36541f814072fc3a",
+  "attestedFiles": 535,
+  "sourceChangedDuringVerification": false,
+  "changedDuringVerification": [],
+  "changedDuringVerificationCount": 0,
+  "reason": null,
+  "checks": [
+    {
+      "id": "ui-boundary",
+      "command": "node tests/modal-accessibility.browser.mjs",
+      "cwd": "frontend",
+      "timeoutMs": 120000,
+      "kind": "ui"
+    },
+    {
+      "id": "e2e-browser",
+      "command": "npm run test:e2e",
+      "cwd": "backend",
+      "timeoutMs": 240000,
+      "kind": "ui"
+    },
+    {
+      "id": "gate-1",
+      "command": "cd \"backend\" && npm test",
+      "cwd": ".",
+      "timeoutMs": 120000,
+      "kind": "automated"
+    },
+    {
+      "id": "gate-2",
+      "command": "cd \"frontend\" && npm test",
+      "cwd": ".",
+      "timeoutMs": 120000,
+      "kind": "automated"
+    },
+    {
+      "id": "gate-3",
+      "command": "cd \"frontend\" && npm run lint",
+      "cwd": ".",
+      "timeoutMs": 120000,
+      "kind": "automated"
+    },
+    {
+      "id": "gate-4",
+      "command": "cd \"frontend\" && npm run build",
+      "cwd": ".",
+      "timeoutMs": 120000,
+      "kind": "automated"
+    }
+  ],
+  "timeoutOverride": null,
+  "acceptance": {
+    "criteria": [
+      {
+        "id": "AC-01",
+        "status": "passed",
+        "method": "inspection",
+        "kind": "functional"
+      },
+      {
+        "id": "AC-02",
+        "status": "passed",
+        "method": "automated",
+        "kind": "interaction",
+        "checkIds": [
+          "e2e-browser"
+        ],
+        "checks": [
+          {
+            "checkId": "e2e-browser",
+            "command": "npm run test:e2e",
+            "cwd": "backend",
+            "status": "PASSED"
+          }
+        ],
+        "execution": "PASSED"
+      },
+      {
+        "id": "AC-03",
+        "status": "passed",
+        "method": "automated",
+        "kind": "functional",
+        "checkIds": [
+          "e2e-browser"
+        ],
+        "checks": [
+          {
+            "checkId": "e2e-browser",
+            "command": "npm run test:e2e",
+            "cwd": "backend",
+            "status": "PASSED"
+          }
+        ],
+        "execution": "PASSED"
+      },
+      {
+        "id": "AC-04",
+        "status": "passed",
+        "method": "automated",
+        "kind": "accessibility",
+        "checkIds": [
+          "ui-boundary"
+        ],
+        "checks": [
+          {
+            "checkId": "ui-boundary",
+            "command": "node tests/modal-accessibility.browser.mjs",
+            "cwd": "frontend",
+            "status": "PASSED"
+          }
+        ],
+        "execution": "PASSED"
+      },
+      {
+        "id": "AC-05",
+        "status": "passed",
+        "method": "automated",
+        "kind": "functional",
+        "checkIds": [
+          "gate-1",
+          "gate-2",
+          "gate-3",
+          "gate-4",
+          "ui-boundary",
+          "e2e-browser"
+        ],
+        "checks": [
+          {
+            "checkId": "gate-1",
+            "command": "cd \"backend\" && npm test",
+            "cwd": ".",
+            "status": "PASSED"
+          },
+          {
+            "checkId": "gate-2",
+            "command": "cd \"frontend\" && npm test",
+            "cwd": ".",
+            "status": "PASSED"
+          },
+          {
+            "checkId": "gate-3",
+            "command": "cd \"frontend\" && npm run lint",
+            "cwd": ".",
+            "status": "PASSED"
+          },
+          {
+            "checkId": "gate-4",
+            "command": "cd \"frontend\" && npm run build",
+            "cwd": ".",
+            "status": "PASSED"
+          },
+          {
+            "checkId": "ui-boundary",
+            "command": "node tests/modal-accessibility.browser.mjs",
+            "cwd": "frontend",
+            "status": "PASSED"
+          },
+          {
+            "checkId": "e2e-browser",
+            "command": "npm run test:e2e",
+            "cwd": "backend",
+            "status": "PASSED"
+          }
+        ],
+        "execution": "PASSED"
+      }
+    ],
+    "scope": "DECLARED_EVIDENCE_WITH_EXECUTED_CHECK_BINDINGS",
+    "truthOfEvidence": "AGENT_OR_HUMAN_REVIEW_REQUIRED",
+    "automatedChecksPassed": true
+  },
+  "results": [
+    {
+      "command": "node tests/modal-accessibility.browser.mjs",
+      "checkId": "ui-boundary",
+      "cwd": "C:\\Users\\brahi\\OneDrive\\Escritorio\\TdeA\\4to semestre\\Construccion3\\Pulso360\\frontend",
+      "checkCwd": "frontend",
+      "kind": "ui",
+      "timeoutMs": 120000,
+      "processId": 21936,
+      "startedAt": "2026-11-02T21:19:31.822Z",
+      "finishedAt": "2026-11-02T21:19:37.171Z",
+      "durationMs": 5348,
+      "output": "{\n  \"passed\": true,\n  \"checks\": [\n    \"foco inicial y aislamiento nativo del fondo\",\n    \"límites de Tab con controles ocultos y deshabilitados\",\n    \"aislamiento de hermanos añadidos durante la apertura\",\n    \"teclado propio, atajos de fondo aislados y foco estable\",\n    \"apilamiento, Escape único y restauración al diálogo inferior\",\n    \"cambio de superficie, retorno original y restauración de inert/scroll\",\n    \"limpieza de los listeners modales\",\n    \"título, foco de ruta, encabezado asíncrono y enlace de salto\",\n    \"encabezado tardío sin robar foco tras interacción\",\n    \"entrada y puntero discretos, teclado/controles/salto visibles y marcador limpiado\",\n    \"montaje StrictMode conserva scroll nativo; navegación SPA revela el destino\",\n    \"pestañas: flechas con wrap/disabled, Home/End, foco itinerante y panel asociado\",\n    \"guardado pendiente sin controles: foco en superficie, Escape y recuperación\",\n    \"Suspense standalone: carga real y transición de vistas con título/foco correctos\",\n    \"import rechazado: error honesto, acciones explícitas y recuperación por ruta\",\n    \"boundary interior: main único, shell estable y estado conservado tras recuperar\"\n  ]\n}\n",
+      "outputTruncated": false,
+      "outputBytes": 1204,
+      "outputTotalBytes": 1204,
+      "outputLimitExceeded": false,
+      "outputLimitBytes": 8388608,
+      "outputLog": "specs/.omni/verification-logs/697dc784-7221-4a46-99e9-d70461a66778.log",
+      "timedOut": false,
+      "exitCode": 0,
+      "signal": null,
+      "errorType": null,
+      "outputLogHash": "01301eb3cd5d1f6abb3cac6fb67296bd7f075b523f39c890d3bc25cecaf362d5"
+    },
+    {
+      "command": "npm run test:e2e",
+      "checkId": "e2e-browser",
+      "cwd": "C:\\Users\\brahi\\OneDrive\\Escritorio\\TdeA\\4to semestre\\Construccion3\\Pulso360\\backend",
+      "checkCwd": "backend",
+      "kind": "ui",
+      "timeoutMs": 240000,
+      "processId": 23708,
+      "startedAt": "2026-11-02T21:19:37.173Z",
+      "finishedAt": "2026-11-02T21:19:51.284Z",
+      "durationMs": 14111,
+      "output": "\n> pulso360-backend@1.0.0 test:e2e\n> node test/e2e-browser.js\n\n◇ injected env (8) from .env\n◇ injected env (2) from .env.test\n{\n  \"passed\": true,\n  \"cleanup\": {\n    \"remaining\": {\n      \"accounts\": 0,\n      \"requests\": 0,\n      \"sessions\": 0,\n      \"messages\": 0,\n      \"consents\": 0\n    },\n    \"auditPreserved\": true\n  },\n  \"actors\": [\n    {\n      \"role\": \"agent\",\n      \"checks\": 9\n    },\n    {\n      \"role\": \"sst\",\n      \"checks\": 7\n    }\n  ],\n  \"persistence\": {\n    \"status\": \"Cerrada\",\n    \"estado\": \"cerrada\",\n    \"es_anonimo\": true,\n    \"agent_messages\": 1,\n    \"sst_messages\": 1\n  }\n}\n",
+      "outputTruncated": false,
+      "outputBytes": 597,
+      "outputTotalBytes": 597,
+      "outputLimitExceeded": false,
+      "outputLimitBytes": 8388608,
+      "outputLog": "specs/.omni/verification-logs/72d8866c-7982-462d-916d-54d370554043.log",
+      "timedOut": false,
+      "exitCode": 0,
+      "signal": null,
+      "errorType": null,
+      "outputLogHash": "1896d176c5f102b48e34b9ac6323f761537bba83987fb2bbf32807d31a56ebde"
+    },
+    {
+      "command": "cd \"backend\" && npm test",
+      "checkId": "gate-1",
+      "cwd": "C:\\Users\\brahi\\OneDrive\\Escritorio\\TdeA\\4to semestre\\Construccion3\\Pulso360",
+      "checkCwd": ".",
+      "kind": "automated",
+      "timeoutMs": 120000,
+      "processId": 9980,
+      "startedAt": "2026-11-02T21:19:51.287Z",
+      "finishedAt": "2026-11-02T21:20:19.000Z",
+      "durationMs": 27713,
+      "output": "da vÃ¡lida (14.6679ms)\n    ✔ debe retornar 200 OK con arreglo de bitÃ¡coras del propio usuario autenticado (8.8273ms)\n  ✔ BitÃ¡coras Privadas (GET y POST /api/v1/agent/journal) (35.9015ms)\n  ▶ Control RBAC: RestricciÃ³n de Acceso para SUPERVISOR (403 Forbidden)\n    ✔ debe rechazar con 403 Forbidden y AUTH_FORBIDDEN_ROLE cualquier intento de acceso a /api/v1/agent por SUPERVISOR (40.2394ms)\n  ✔ Control RBAC: RestricciÃ³n de Acceso para SUPERVISOR (403 Forbidden) (40.4771ms)\n✔ Sprint 2 Â· Agent Module & Privacy Contract Tests (720.517ms)\n◇ injected env (0) from .env\n◇ injected env (0) from .env.test\n▶ P05 · HTTP API Contract Tests (Test Harness)\n  ▶ GET /api/v1/health (RNF-03)\n    ✔ debe responder con HTTP 200 y el esquema canónico de salud (85.3435ms)\n  ✔ GET /api/v1/health (RNF-03) (86.522ms)\n  ▶ Manejo Unificado de Rutas Inexistentes (404 Not Found)\n    ✔ debe retornar HTTP 404 con el estándar de error SDD ante rutas no implementadas (9.0494ms)\n  ✔ Manejo Unificado de Rutas Inexistentes (404 Not Found) (9.514ms)\n✔ P05 · HTTP API Contract Tests (Test Harness) (96.8761ms)\n◇ injected env (0) from .env\n◇ injected env (0) from .env.test\n▶ Sprint 3 · Auditor Contract Tests\n  ▶ GET /api/v1/auditor/logs\n    ✔ debe retornar 200 OK con lista de logs inmutables (31.4063ms)\n  ✔ GET /api/v1/auditor/logs (32.283ms)\n  ▶ POST /api/v1/auditor/export\n    ✔ debe retornar 200 OK con metadatos de exportación (479.1526ms)\n  ✔ POST /api/v1/auditor/export (479.6857ms)\n✔ Sprint 3 · Auditor Contract Tests (787.5815ms)\n◇ injected env (0) from .env\n◇ injected env (0) from .env.test\n▶ Sprint 1 · Authentication and Profile Contract Tests\n  ▶ POST /api/v1/auth/login\n    ✔ debe autenticar exitosamente con credenciales validas (200 OK), retornar usuario y token, y omitir contrasena_hash (223.8422ms)\n    ✔ debe rechazar con 401 y AUTH_INVALID_CREDENTIALS ante una contrasena incorrecta (85.1812ms)\n    ✔ debe rechazar con 401 y AUTH_INVALID_CREDENTIALS ante un usuario inexistente (5.4365ms)\n    ✔ debe rechazar con 400 y AUTH_MISSING_FIELDS ante un body vacio o campos incompletos (11.1148ms)\n  ✔ POST /api/v1/auth/login (326.8979ms)\n  ▶ GET /api/v1/auth/me\n    ✔ debe responder con 200 OK y el perfil completo del usuario (usr-1, AGENTE, equipo) con Bearer token valido (20.4652ms)\n    ✔ debe rechazar con 401 y AUTH_TOKEN_MISSING sin cabecera Authorization (4.6575ms)\n    ✔ debe rechazar con 401 y AUTH_TOKEN_INVALID con token malformado o invalido (10.817ms)\n  ✔ GET /api/v1/auth/me (36.481ms)\n✔ Sprint 1 · Authentication and Profile Contract Tests (366.6762ms)\n◇ injected env (0) from .env\n◇ injected env (0) from .env.test\n✔ activaciones simultáneas crean una sesión, una bienvenida y una auditoría (678.6716ms)\n✔ todos los DTO de chat anónimo omiten identidad, incluida la histórica y el cierre del agente (46.2648ms)\n✔ servicio valida rol real, titularidad y C3 sin depender del socket o botón (58.296ms)\n✔ reintentos se reconcilian sin duplicar mensaje ni auditoría y rechazan texto distinto (32.1735ms)\n▶ fallos intermedios revierten activación, envío y cierre completos\n  ✔ activación (3.6218ms)\n  ✔ envío (3.0397ms)\n  ✔ cierre (3.5147ms)\n✔ fallos intermedios revierten activación, envío y cierre completos (25.255ms)\n✔ envío concurrente con cierre no deja mensajes nuevos después del cierre (21.1876ms)\n▶ P08 · Domain Contracts & Invariants (Test Harness)\n  ▶ Regla 1: Invariante de k-Anonimato (k >= 5)\n    ✔ debe suprimir métricas y retornar estado protegido cuando la cohorte es menor al umbral (k < 5) (0.7016ms)\n    ✔ debe permitir la emisión de métricas cuando la cohorte alcanza o supera el umbral (k >= 5) (0.1709ms)\n  ✔ Regla 1: Invariante de k-Anonimato (k >= 5) (1.7184ms)\n  ▶ Regla 3: Validación de las 6 Dimensiones del Check-in\n    ✔ debe aceptar un registro completo con enteros entre 1 y 5 (0.2805ms)\n    ✔ debe rechazar dimensiones fuera del rango 1 a 5 (valores 0 o 6) (0.1418ms)\n    ✔ debe rechazar dimensiones fraccionarias (ej. 3.5) (0.1583ms)\n    ✔ debe rechazar cuando falte alguna de las 6 dimensiones obligatorias (0.1592ms)\n  ✔ Regla 3: Validación de las 6 Dimensiones del Check-in (1.0195ms)\n  ▶ Regla 4: Verificación de Consentimiento Informado (C1..C5)\n    ✔ debe retornar true solo si la política general fue aceptada y el flag específico está activo (0.2266ms)\n    ✔ debe retornar false si la política general no fue aceptada aunque el flag esté en true (0.1243ms)\n    ✔ debe retornar false para valores nulos o indefinidos (0.1115ms)\n  ✔ Regla 4: Verificación de Consentimiento Informado (C1..C5) (0.7236ms)\n✔ P08 · Domain Contracts & Invariants (Test Harness) (4.045ms)\n◇ injected env (0) from .env\n◇ injected env (0) from .env.test\n✔ findUserById usa el pool y mantiene el identificador fuera del SQL (1.7092ms)\n✔ analítica impide reducir k y suprime dimensiones con menos de cinco personas (0.8635ms)\n✔ socket rechaza rol ajeno y mensajes sin sesión persistida (43.7673ms)\n✔ socket sin sessionId no guarda ni emite un mensaje efímero (7.6763ms)\n✔ socket impide guardar mensajes en la sesión de otro titular (6.0085ms)\n✔ socket deriva destinatario de BD e ignora identidad y receptor del payload (7.4684ms)\n✔ socket exige consentimiento vigente y no filtra errores SQL (7.3847ms)\n✔ socket rechaza JWT revocado al conectar y vuelve a verificar antes de operar (10.9564ms)\n◇ injected env (0) from .env\n◇ injected env (0) from .env.test\n▶ Configuración JWT y errores públicos\n  ✔ rechaza claves ausentes, triviales y el ejemplo público incluso en test (1.0098ms)\n  ✔ rechaza un token fabricado con la clave pública (23.7902ms)\n  ✔ health no expone errores internos de PostgreSQL (4.8992ms)\n✔ Configuración JWT y errores públicos (30.8556ms)\n▶ P05 · OpenAPI 3.1 Specification Contract Integrity\n  ✔ documenta todas las operaciones montadas y no anuncia rutas inexistentes (6.2254ms)\n  ✔ el archivo openapi.json debe existir y ser un JSON sintácticamente válido (2.2946ms)\n  ✔ debe contener la definición de los 13 endpoints canónicos principales (1.6669ms)\n  ✔ debe definir el esquema estandarizado de error con 'success' y 'error' (1.6746ms)\n  ✔ debe definir el esquema de entrada de Checkin con las 6 dimensiones requeridas (1 a 5) (1.6188ms)\n  ✔ debe requerir autenticación Bearer JWT en los esquemas de seguridad (1.9735ms)\n✔ P05 · OpenAPI 3.1 Specification Contract Integrity (16.7254ms)\n◇ injected env (0) from .env\n◇ injected env (0) from .env.test\n✔ campaña inactiva y equipo con supervisor real se conservan (257.4404ms)\n✔ alta suspendida exige contraseña y asignación inválida no deja filas parciales (164.8294ms)\n✔ rol, equipo y estado persisten juntos y por separado (67.0532ms)\n✔ parámetros sin efecto operativo rechazan modificación remota (11.1284ms)\n✔ Habeas Data conserva titular, creación y vencimiento y recupera respuesta en ambas vistas (112.9729ms)\n✔ catálogo de usuarios no duplica cuentas con varias asignaciones activas (13.0429ms)\n✔ sesión existente aplica rol y suspensión persistidos sin confiar en el rol antiguo del JWT (104.9883ms)\n◇ injected env (0) from .env\n◇ injected env (0) from .env.test\n✔ jornada de Bogotá respeta cambio UTC y comienzo real de turno (275.1815ms)\n✔ perfil recupera asignación y contadores propios completos sin datos administrativos de otros roles (46.8002ms)\n✔ análisis, revisión e historial persisten; editar invalida y rechaza respuesta atrasada (81.0752ms)\n✔ C3 y aceptación se verifican por HTTP; preferencias e historial son del servidor (35.0718ms)\n✔ check-in: 119 minutos permite editar, 121 rechaza; fechas y valores persistidos se recuperan (40.2576ms)\n✔ cada finalidad y una política nueva se verifican por petición directa; C5 no bloquea apoyo voluntario (75.4428ms)\n[ServerError] { code: 'P0001', method: 'POST', path: '/api/v1/agent/journal' }\n✔ fallo de auditoría revierte la escritura privada; eventos efectivos no guardan su contenido (45.7371ms)\n◇ injected env (0) from .env\n◇ injected env (0) from .env.test\n✔ reglas: propuesta persistente, únicamente ADMIN aprueba, revisión duplicada 409 (651.458ms)\n✔ léxico: contenido registrado e íntegro, activación y reversión con permisos (120.7374ms)\n✔ auditoría: contenido alterado, concurrentes, continuidad entre páginas, exportación >50 (1865.0985ms)\n[ServerError] {\n  code: 'PASSWORD_RESET_UNAVAILABLE',\n  method: 'POST',\n  path: '/api/v1/auth/password-reset/request'\n}\n✔ recuperación sin SMTP devuelve indisponibilidad sin confirmar envío (4.3062ms)\n✔ Nodemailer prepara el correo con transporte local controlado y solo persiste el hash del token (23.9275ms)\n✔ recuperación: SMTP controlado, sin token en respuesta, expiración, fallo y uso único revocan sesión (511.8563ms)\n◇ injected env (0) from .env\n◇ injected env (0) from .env.test\n✔ dos supervisores: corte ajeno se rechaza antes de agregar (423.4316ms)\n✔ periodo, dimensiones y null se conservan en un único snapshot (82.4894ms)\n✔ CSV del servidor incluye solo dimensiones elegidas; periodo vacío no pasa k (28.563ms)\n✔ C4 desactivado excluye al titular del conteo y los promedios del mismo periodo (21.5109ms)\n◇ injected env (0) from .env\n◇ injected env (0) from .env.test\n✔ alerta N=4 protege descripción y evidencia incluso al actualizar (655.9598ms)\n✔ todos los campos de intervención y seguimiento se recuperan; responsable ajeno se rechaza (94.5686ms)\n✔ apoyo identificado conserva canal y franja; descripción opcional y tipo inválido devuelve 400 (36.2075ms)\n✔ apoyo conserva preferencias, omite identidad anónima y audita actor autenticado (25.9985ms)\n◇ injected env (0) from .env\n◇ injected env (0) from .env.test\n▶ Sprint 3 · SST, Supervision & k-Anonymity Analytics Contract Tests\n  ▶ Autenticación y tokens de roles\n    ✔ debe contar con tokens JWT válidos para SST, SUPERVISOR y AGENTE (0.6969ms)\n  ✔ Autenticación y tokens de roles (1.2858ms)\n  ▶ GET /api/v1/sst/metrics — k-Anonimato en Analítica Agregada\n    ✔ con k >= 5: debe retornar 200 OK con { protected: false, cohort_count >= 5, k_threshold: 5, metrics: { ... } } (25.5472ms)\n    ✔ con k >= 5 en consulta general sin filtros: debe retornar 200 OK con protected: false y metrics calculadas (7.1204ms)\n    ✔ con k < 5: debe retornar 200 OK con { protected: true, reason, cohort_count < 5, k_threshold: 5, metrics: null } (7.5595ms)\n    ✔ con k < 5 por rango de fechas sin agentes suficientes: debe retornar 200 OK con protected: true y metrics: null (7.4345ms)\n  ✔ GET /api/v1/sst/metrics — k-Anonimato en Analítica Agregada (48.2375ms)\n  ▶ GET /api/v1/sst/alerts — Catálogo de Alertas Tempranas\n    ✔ debe retornar 200 OK con arreglo de alertas tempranas preventivas para rol SST (9.6094ms)\n  ✔ GET /api/v1/sst/alerts — Catálogo de Alertas Tempranas (9.9724ms)\n  ▶ Intervenciones Preventivas (GET y POST /api/v1/sst/interventions)\n    ✔ debe retornar 200 OK con arreglo de intervenciones psicosociales para rol SST (11.5525ms)\n    ✔ debe retornar 201 Created con { id, status: 'Activa', created_at } al crear intervención con datos válidos (32.6189ms)\n    ✔ debe retornar 400 Bad Request con código 'INTERVENTION_MISSING_REQUIRED_FIELDS' cuando faltan campos obligatorios (5.8349ms)\n  ✔ Intervenciones Preventivas (GET y POST /api/v1/sst/interventions) (50.4475ms)\n  ▶ Solicitudes de Apoyo Psicosocial (/api/v1/sst/support-requests)\n    ✔ debe retornar 200 OK en GET con rol SST comprobando estrictamente que mode = 'anonimo' tenga solicitante === null (9.5802ms)\n    ✔ debe retornar 201 Created con { id, code, status: 'Recibida', sla: '24 h habiles' } al radicar solicitud con rol AGENTE (9.4331ms)\n  ✔ Solicitudes de Apoyo Psicosocial (/api/v1/sst/support-requests) (19.3095ms)\n  ▶ Control RBAC: Restricción de Roles No Autorizados (403 Forbidden)\n    ✔ debe rechazar con 403 Forbidden y AUTH_FORBIDDEN_ROLE cuando un AGENTE intenta acceder a GET /api/v1/sst/metrics (6.0463ms)\n    ✔ debe rechazar con 403 Forbidden y AUTH_FORBIDDEN_ROLE cuando un AGENTE intenta acceder a GET /api/v1/sst/alerts (5.0939ms)\n    ✔ debe rechazar con 403 Forbidden y AUTH_FORBIDDEN_ROLE cuando un AGENTE intenta acceder a GET /api/v1/sst/interventions (5.8363ms)\n    ✔ debe rechazar con 403 Forbidden y AUTH_FORBIDDEN_ROLE cuando un AGENTE intenta acceder a GET /api/v1/sst/support-requests (5.1643ms)\n    ✔ debe rechazar con 403 Forbidden y AUTH_FORBIDDEN_ROLE cuando un SUPERVISOR intenta acceder a GET /api/v1/sst/alerts (4.9593ms)\n    ✔ debe rechazar con 403 Forbidden y AUTH_FORBIDDEN_ROLE cuando un SUPERVISOR intenta crear una intervención (6.3971ms)\n  ✔ Control RBAC: Restricción de Roles No Autorizados (403 Forbidden) (34.0967ms)\n✔ Sprint 3 · SST, Supervision & k-Anonymity Analytics Contract Tests (676.302ms)\n◇ injected env (0) from .env\n◇ injected env (0) from .env.test\n▶ Sprint 3 · Supervisor Contract Tests\n  ▶ GET /api/v1/supervisor/actions\n    ✔ debe retornar 200 OK con arreglo de intervenciones y seguimientos con token de supervisor (34.6568ms)\n    ✔ debe retornar 403 Forbidden si un agente intenta acceder (10.8932ms)\n  ✔ GET /api/v1/supervisor/actions (47.1723ms)\n  ▶ POST /api/v1/supervisor/actions/:id/followup\n    ✔ debe retornar 200 OK actualizando avance y agregando seguimiento (48.1498ms)\n    ✔ debe retornar 403 Forbidden cuando supervisor intenta reportar avance sobre intervención ajena (IDOR) (9.7138ms)\n  ✔ POST /api/v1/supervisor/actions/:id/followup (58.5161ms)\n✔ Sprint 3 · Supervisor Contract Tests (655.2392ms)\n◇ injected env (0) from .env\n◇ injected env (0) from .env.test\n✔ Privacidad RBAC: SUPERVISOR es bloqueado con 403 Forbidden al intentar acceder al chat de apoyo (620.2133ms)\n✔ Journey Radicado a Chat: Radicación formal, activación por SST y comunicación en vivo (92.907ms)\n◇ injected env (0) from .env\n◇ injected env (0) from .env.test\n▶ Sprint 3 Â· Transversal Contract Tests\n  ▶ GET /api/v1/reports\n    ✔ debe retornar 200 OK con reportes del usuario (23.8918ms)\n  ✔ GET /api/v1/reports (24.924ms)\n  ▶ GET /api/v1/notifications\n    ✔ debe retornar 200 OK con notificaciones (7.9399ms)\n  ✔ GET /api/v1/notifications (8.3406ms)\n  ▶ PATCH /api/v1/notifications/read-all\n    ✔ debe retornar 200 OK marcando leÃ­das (7.96ms)\n  ✔ PATCH /api/v1/notifications/read-all (8.6585ms)\n  ▶ Ciclo de vida de reportes e Integridad (Canonical JSON)\n    ✔ debe retornar 200 OK en la descarga de un reporte intacto (Canonical JSON) (23.6396ms)\n    ✔ debe rechazar con 409 Conflict y REPORT_INTEGRITY_MISMATCH si el reporte fue alterado (8.929ms)\n  ✔ Ciclo de vida de reportes e Integridad (Canonical JSON) (34.2641ms)\n✔ Sprint 3 Â· Transversal Contract Tests (572.1437ms)\n◇ injected env (0) from .env\n◇ injected env (0) from .env.test\n✔ Bogotá: lunes 05:59 todavía no vence; 06:00 sí, martes y domingo usan el mismo cierre (105.831ms)\n✔ carga elevada genera snapshot persistente; reintento no duplica ni reabre una alerta descartada (209.8067ms)\n✔ caída relativa: tres descensos requieren cuatro semanas; un rebote rompe la persistencia (95.4209ms)\n✔ N=4, muchas filas de cuatro personas y dimensión omitida nunca generan alerta (155.7528ms)\n✔ C4 revocado o política no vigente, semana ausente y condición incumplida se distinguen sin ceros fabricados (303.5945ms)\n✔ propuesta, regla inactiva o aprobada después del cierre no emiten; Sobrecarga queda sin evaluación (213.666ms)\n✔ ámbito campaña usa solo sus equipos; equipo inactivo o inexistente no produce alertas (212.1844ms)\n✔ bloqueo entre instancias: un proceso ocupado no escribe; ejecuciones concurrentes conservan una sola alerta (209.8492ms)\n✔ auditoría del job y operaciones concurrentes mantienen enlaces y contenido verificables (485.8993ms)\n✔ fallo revierte alerta, auditoría y cursor; el reintento completa y recupera cierres pendientes (161.3249ms)\n✔ planificador: deshabilitado no ejecuta, no solapa ticks, se detiene y reintenta tras error (2.3749ms)\n✔ umbral estricto: igualdad no cumple; una dimensión con null permanece no evaluable (1.6627ms)\n✔ no acepta fecha futura ni una semana todavía sin vencer (1.4687ms)\nℹ tests 132\nℹ suites 44\nℹ pass 132\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 26726.5547\n",
+      "outputTruncated": true,
+      "outputBytes": 19303,
+      "outputTotalBytes": 19303,
+      "outputLimitExceeded": false,
+      "outputLimitBytes": 8388608,
+      "outputLog": "specs/.omni/verification-logs/7e1df2d5-6b07-4f24-a786-cbff037d7b8b.log",
+      "timedOut": false,
+      "exitCode": 0,
+      "signal": null,
+      "errorType": null,
+      "outputLogHash": "f863781ae5e11fb84fd3eae0c58984a357542130906069bf4b934f382a0003e2"
+    },
+    {
+      "command": "cd \"frontend\" && npm test",
+      "checkId": "gate-2",
+      "cwd": "C:\\Users\\brahi\\OneDrive\\Escritorio\\TdeA\\4to semestre\\Construccion3\\Pulso360",
+      "checkCwd": ".",
+      "kind": "automated",
+      "timeoutMs": 120000,
+      "processId": 26328,
+      "startedAt": "2026-11-02T21:20:19.003Z",
+      "finishedAt": "2026-11-02T21:20:22.944Z",
+      "durationMs": 3941,
+      "output": "\n> pulso360@0.0.0 test\n> node --test tests/*.test.mjs\n\n✔ fechas SST: el día de Bogotá y el cierre a 28 días no cambian con medianoche UTC (929.5221ms)\n✔ API real: el perfil conserva contadores completos y asignaciones sin inicializar dominio demo (196.313ms)\n✔ borradores tras 401: solo RAM, mismo titular, caducidad y limpieza al salir o cambiar cuenta (160.6826ms)\n✔ sesión API: una respuesta atrasada no recupera contadores antiguos ni reabre una sesión cerrada (104.1276ms)\n✔ API real: solo mutaciones confirmadas refrescan contadores y un 401 retiene antes de revocar (55.7873ms)\n✔ API real: análisis/corrección esperan respuesta, conservan hash y jamás escriben mock (155.2731ms)\n✔ API real: seguimiento normaliza nota, fecha, acción y autor para ambas vistas (113.1142ms)\n✔ API real: avisos esperan sobre del servidor y restablecer demo no accede al mock (115.7442ms)\n✔ API real: Habeas Data propio conserva timestamp de radicación y respuesta (97.2431ms)\n✔ API real: consulta fallida no cae a mock y sobre success:false no se anuncia como éxito (118.7652ms)\n✔ API real: parámetros anidados, política publicada, reglas y catálogo de léxico se normalizan (107.8082ms)\n✔ API real: NLP carga el diccionario activo y falla sin autorización sin cambiar algoritmo (77.092ms)\n✔ API real: exportación e integridad provienen del servidor, paginación mantiene sobre (86.93ms)\n✔ API real: apoyo confidencial usa modalidad identificada y conserva preferencia/franja (101.1724ms)\n✔ CSV: estructura permitida sin garantías falsas ni pérdida silenciosa de filas (301.0328ms)\n✔ cambiar la identidad desconecta el socket anterior antes del nuevo handshake (1008.1112ms)\n✔ el envío espera confirmación y descarta errores/mensajes de otro intento (4.4574ms)\n✔ el error de servidor rechaza el intento y limpia listeners, sin una confirmación falsa (1.4405ms)\n✔ acknowledgement confirma el guardado aunque no llegue el evento de difusión (0.8206ms)\n✔ sin conexión no emite a la cola; una desconexión pendiente se informa como no confirmada (0.8247ms)\n✔ timeout y cancelación no retienen suscripciones ni aceptan confirmaciones tardías (11.4328ms)\n▶ el resumen de consentimiento no convierte ausencia o política vencida en autorización\n  ✔ no hay finalidades activas sin un consentimiento (27.0359ms)\n  ✔ aceptar una política no otorga las finalidades ausentes (6.7089ms)\n  ✔ las preferencias guardadas no están activas bajo una política reemplazada (5.5765ms)\n  ✔ una política vigente muestra solo las finalidades realmente autorizadas (5.8815ms)\n✔ el resumen de consentimiento no convierte ausencia o política vencida en autorización (1399.3352ms)\n▶ iconografía compartida: nombres de todas las vistas, semántica y tamaños\n  ✔ cada nombre estático y catálogo utilizado resuelve a un símbolo real (971.2451ms)\n  ✔ la navegación diferencia registrar y consultar historia; los planes conservan significado entre roles (12.9329ms)\n  ✔ los accesos de chat en ambos roles usan conversación y el envío no usa navegación (491.1797ms)\n  ✔ corregir un factor conserva su símbolo y expresa el ajuste con texto (33.0209ms)\n  ✔ indicadores sin tendencia no sugieren mejora ni alarma mediante el icono (14.8499ms)\n[Pulso360] Icono no registrado: test-missing-icon\n  ✔ un aviso destinado a SST no se presenta como alerta sólo por su destinatario (16.678ms)\n  ✔ archivo protegido, alta de usuario, escritura y tendencia tienen símbolos específicos (0.9822ms)\n  ✔ Lucide y SVG propios conservan tamaño, trazo y estilos adicionales (1.8159ms)\n  ✔ un nombre desconocido produce un marcador detectable en lugar de un punto (1.5552ms)\n✔ iconografía compartida: nombres de todas las vistas, semántica y tamaños (2257.5987ms)\n▶ auditoría 001: contratos de datos y representación SSR, sin simular validación de navegador\n  ✔ dotación grande sin respuestas y equipo vacío no afirman publicación de agregados (401.4745ms)\n  ✔ el título identifica el ámbito consultado aunque la cuenta conserve otra campaña (542.1427ms)\n  ✔ integridad inicial pendiente y acción legible en la tabla (65.0926ms)\n  ✔ fechas de Bogotá atraviesan medianoche UTC, conservan segundos y manejan ausencia (1.2435ms)\n  ✔ SST: urgencia registrada conserva baja/media/alta y distingue dato ausente (6.9501ms)\n  ✔ SST: buzón SSR distingue urgencia baja y datos ausentes sin inventar plazo (286.8817ms)\n  ✔ SST: cierre SSR mantiene dos estados existentes, notas obligatorias y ninguna segunda capa modal (2.4355ms)\n  ✔ SST: confirmación pendiente bloquea controles y el error conserva notas para reintentar (3.7876ms)\n✔ auditoría 001: contratos de datos y representación SSR, sin simular validación de navegador (2169.4245ms)\n✔ nlpSanitizer: colapsa elongaciones y limpia parásitos de teclado sin alterar la letra ñ (298.3018ms)\n✔ damerauLevenshtein: detecta transposiciones inmediatas y fat-finger typos de distancia <= 1 (1.7741ms)\n✔ spanishStemmer: reduce formas verbales y flexiones de género/número a raíces canónicas (2.0994ms)\n✔ nlpEngine: procesa exitosamente la frase testigo del operador (AC-01) (692.356ms)\n✔ nlpEngine: negación contextual estilo NegEx anula la tensión (AC-05) (139.2704ms)\n✔ nlpEngine (Ronda 1 - Centinela de Crisis): detección de alertas de crisis preventiva y tolerancia a erratas (AC-01) (130.4553ms)\n✔ nlpEngine (Ronda 3 - Desempeño y Cero LLM): latencia local determinista < 50ms (199.3693ms)\n✔ almacenamiento bloqueado: conserva cambios en memoria y comunica modo temporal (257.8214ms)\n✔ cuota agotada: no lanza excepción y conmuta a memoria resiliente (70.5489ms)\n✔ nlpEngine analiza intensificadores, negaciones y límites de ventana (649.2729ms)\nℹ tests 55\nℹ suites 0\nℹ pass 55\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 3260.7918\n",
+      "outputTruncated": false,
+      "outputBytes": 5928,
+      "outputTotalBytes": 5928,
+      "outputLimitExceeded": false,
+      "outputLimitBytes": 8388608,
+      "outputLog": "specs/.omni/verification-logs/081f9bde-cc46-43e6-a0b7-cad0893ae5f6.log",
+      "timedOut": false,
+      "exitCode": 0,
+      "signal": null,
+      "errorType": null,
+      "outputLogHash": "a10c3e009395817323a353c3c1a3b99f8cd521bd72543c521137fcf07166e572"
+    },
+    {
+      "command": "cd \"frontend\" && npm run lint",
+      "checkId": "gate-3",
+      "cwd": "C:\\Users\\brahi\\OneDrive\\Escritorio\\TdeA\\4to semestre\\Construccion3\\Pulso360",
+      "checkCwd": ".",
+      "kind": "automated",
+      "timeoutMs": 120000,
+      "processId": 16396,
+      "startedAt": "2026-11-02T21:20:22.946Z",
+      "finishedAt": "2026-11-02T21:20:28.922Z",
+      "durationMs": 5976,
+      "output": "\n> pulso360@0.0.0 lint\n> eslint .\n\n",
+      "outputTruncated": false,
+      "outputBytes": 35,
+      "outputTotalBytes": 35,
+      "outputLimitExceeded": false,
+      "outputLimitBytes": 8388608,
+      "outputLog": "specs/.omni/verification-logs/a16db6ee-1799-4896-b869-79ba7f7563c1.log",
+      "timedOut": false,
+      "exitCode": 0,
+      "signal": null,
+      "errorType": null,
+      "outputLogHash": "02e62610fcddf5b48a5664b25f47a0883fbb8fa925b9251025cf602821db34e5"
+    },
+    {
+      "command": "cd \"frontend\" && npm run build",
+      "checkId": "gate-4",
+      "cwd": "C:\\Users\\brahi\\OneDrive\\Escritorio\\TdeA\\4to semestre\\Construccion3\\Pulso360",
+      "checkCwd": ".",
+      "kind": "automated",
+      "timeoutMs": 120000,
+      "processId": 21096,
+      "startedAt": "2026-11-02T21:20:28.924Z",
+      "finishedAt": "2026-11-02T21:20:35.911Z",
+      "durationMs": 6987,
+      "output": "\n> pulso360@0.0.0 build\n> vite build\n\nvite v6.4.4 building for production...\ntransforming...\n✓ 2232 modules transformed.\nrendering chunks...\ncomputing gzip size...\ndist/index.html                                       0.63 kB │ gzip:   0.38 kB\ndist/assets/umbral-Bi9xb1Zg.css                       5.20 kB │ gzip:   1.25 kB\ndist/assets/supervisor-rvFehP-K.css                   6.27 kB │ gzip:   1.48 kB\ndist/assets/ContactenosPage-Dgk6lVfe.css              6.62 kB │ gzip:   1.65 kB\ndist/assets/NotificationsPage-DoJNtBYe.css            6.78 kB │ gzip:   1.52 kB\ndist/assets/ReportsPage-CED45NoD.css                  6.82 kB │ gzip:   1.57 kB\ndist/assets/admin-BDOVUh3-.css                        7.65 kB │ gzip:   1.73 kB\ndist/assets/AuditLogPage-CMBEhp9N.css                 8.48 kB │ gzip:   1.96 kB\ndist/assets/support-chat-C-2cvQw7.css                 8.93 kB │ gzip:   2.21 kB\ndist/assets/MyWellbeingPage-ijnQzIld.css              9.03 kB │ gzip:   1.66 kB\ndist/assets/AppLayout-BVUrvpah.css                   10.28 kB │ gzip:   2.24 kB\ndist/assets/ConsentPage-CDKxbb_F.css                 10.90 kB │ gzip:   2.22 kB\ndist/assets/JournalPage-SO7hVSGl.css                 15.29 kB │ gzip:   2.91 kB\ndist/assets/sst-DVUFjgAR.css                         24.48 kB │ gzip:   4.29 kB\ndist/assets/crisis-CVQMYTTM.css                      27.38 kB │ gzip:   4.57 kB\ndist/assets/SupportChannelPage-CSDpbDLW.css          41.85 kB │ gzip:   6.29 kB\ndist/assets/agent-Dv79DyfW.css                       43.54 kB │ gzip:   7.48 kB\ndist/assets/LoginPage-CgT6XAaZ.css                   71.77 kB │ gzip:  12.62 kB\ndist/assets/index-DYjliphA.css                      173.72 kB │ gzip:  28.32 kB\ndist/assets/ForbiddenPage-DF9bKfnu.js                 0.13 kB │ gzip:   0.14 kB\ndist/assets/ResetPasswordPage-DG80K5ce.js             0.18 kB │ gzip:   0.16 kB\ndist/assets/ForgotPasswordPage-CVtk0j41.js            0.18 kB │ gzip:   0.16 kB\ndist/assets/calendarDate-CTjx5bHT.js                  0.22 kB │ gzip:   0.19 kB\ndist/assets/useAgentModalAccessibility-x1tH-RBm.js    0.32 kB │ gzip:   0.24 kB\ndist/assets/DownloadLink-BeFad7Co.js                  0.53 kB │ gzip:   0.37 kB\ndist/assets/useExpiredFormDraft-Bh0lvf8K.js           0.53 kB │ gzip:   0.34 kB\ndist/assets/ruleContract-DUGZE2sV.js                  0.53 kB │ gzip:   0.32 kB\ndist/assets/ScrollToTopButton-B7tW6NDu.js             0.58 kB │ gzip:   0.39 kB\ndist/assets/tabNavigation-DkKgA4mE.js                 0.61 kB │ gzip:   0.38 kB\ndist/assets/interventionContract-er7n6e5h.js          0.90 kB │ gzip:   0.45 kB\ndist/assets/EnergyFace-ByBig0M5.js                    0.91 kB │ gzip:   0.43 kB\ndist/assets/crisis-DWgjfUJW.js                        1.55 kB │ gzip:   0.72 kB\ndist/assets/supervisor-8gKto1yK.js                    1.86 kB │ gzip:   0.94 kB\ndist/assets/SomaticBreathingModal-C_mqhMPg.js         2.00 kB │ gzip:   0.95 kB\ndist/assets/sstQueries-Bg2ilkTX.js                    2.65 kB │ gzip:   0.95 kB\ndist/assets/PrivacyBlockedCard-lryl5Hma.js            2.96 kB │ gzip:   1.19 kB\ndist/assets/agentQueries-pp4QIG91.js                  3.03 kB │ gzip:   1.22 kB\ndist/assets/useModalA11y-DcYJrfMk.js                  3.36 kB │ gzip:   1.47 kB\ndist/assets/admin-C43Tyb1N.js                         3.90 kB │ gzip:   1.41 kB\ndist/assets/support-chat-DpdD19jh.js                  4.54 kB │ gzip:   1.99 kB\ndist/assets/Footer-BqBV-sw1.js                        6.02 kB │ gzip:   1.95 kB\ndist/assets/CsvImportPage-C-N5KxVd.js                 9.40 kB │ gzip:   3.47 kB\ndist/assets/HabeasDataPage-CEz57YEk.js                9.60 kB │ gzip:   3.31 kB\ndist/assets/landingData-DsIUhm0f.js                   9.86 kB │ gzip:   3.86 kB\ndist/assets/NotificationsPage-ZyPwS9Jj.js            10.38 kB │ gzip:   3.59 kB\ndist/assets/AlertRulesPage-BvVoWAoP.js               10.61 kB │ gzip:   3.43 kB\ndist/assets/TeamDashboardPage-asgAVh2w.js            10.78 kB │ gzip:   3.45 kB\ndist/assets/ContactenosPage-BKTsSeLb.js              12.24 kB │ gzip:   3.52 kB\ndist/assets/AlertsInboxPage-Cy3T5zi5.js              12.44 kB │ gzip:   4.06 kB\ndist/assets/ActionsPage-Bm5JpH9y.js                  12.46 kB │ gzip:   3.80 kB\ndist/assets/SstDashboardPage-DHd41TkD.js             13.41 kB │ gzip:   3.97 kB\ndist/assets/AgentDashboardPage-CYMejjeb.js           14.62 kB │ gzip:   4.66 kB\ndist/assets/InterventionsPage-BrmHWkWG.js            14.87 kB │ gzip:   4.50 kB\ndist/assets/CrisisSupportPage-BhGk7bJi.js            15.37 kB │ gzip:   5.63 kB\ndist/assets/ConsentPage-BewqgWFL.js                  17.10 kB │ gzip:   5.59 kB\ndist/assets/CheckinWizardPage--KOi1S0Y.js            19.53 kB │ gzip:   6.33 kB\ndist/assets/UsersRolesPage-B_n2euMK.js               20.44 kB │ gzip:   5.63 kB\ndist/assets/ReportsPage-DeAss65y.js                  21.92 kB │ gzip:   6.71 kB\ndist/assets/MyWellbeingPage-Ci1EvqHS.js              22.16 kB │ gzip:   7.32 kB\ndist/assets/OrganizationPage-7HAdxNR8.js             22.92 kB │ gzip:   5.81 kB\ndist/assets/SupportInboxPage-D5xdlQf1.js             23.10 kB │ gzip:   7.02 kB\ndist/assets/AppLayout-DKruEAcm.js                    23.25 kB │ gzip:   7.10 kB\ndist/assets/SystemParamsPage-0pHbTOr8.js             23.28 kB │ gzip:   6.20 kB\ndist/assets/AuditLogPage-DeRLgYI_.js                 23.67 kB │ gzip:   7.44 kB\ndist/assets/LoginPage-Cr3ki5Xn.js                    27.20 kB │ gzip:   8.07 kB\ndist/assets/LandingPage-FkIRzsMA.js                  32.38 kB │ gzip:   8.83 kB\ndist/assets/AcademicFoundationPage-DhuhOpbT.js       32.46 kB │ gzip:   9.28 kB\ndist/assets/SupportChannelPage-DlJpvsIs.js           33.14 kB │ gzip:   9.75 kB\ndist/assets/MyDataPrivacyPage-B2Xiy9Dn.js            38.58 kB │ gzip:  10.84 kB\ndist/assets/socketClient-A_pLaAw_.js                 42.64 kB │ gzip:  13.42 kB\ndist/assets/JournalPage-DrvKKIjA.js                  42.66 kB │ gzip:  12.75 kB\ndist/assets/index-KscQJxZo.js                       319.92 kB │ gzip: 102.36 kB\n✓ built in 5.90s\n",
+      "outputTruncated": false,
+      "outputBytes": 6089,
+      "outputTotalBytes": 6089,
+      "outputLimitExceeded": false,
+      "outputLimitBytes": 8388608,
+      "outputLog": "specs/.omni/verification-logs/86269b72-d0bb-4ba8-ab70-c6eaf8107a44.log",
+      "timedOut": false,
+      "exitCode": 0,
+      "signal": null,
+      "errorType": null,
+      "outputLogHash": "71f7d0368525b29f55394897734e17cefadc077ce82d12b034b39b51b061e83b"
+    }
+  ]
+}

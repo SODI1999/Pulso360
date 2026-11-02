@@ -109,7 +109,7 @@ npm run dev
 De acuerdo con la [CONSTITUTION.md](CONSTITUTION.md), los siguientes comandos constituyen los gates oficiales de verificación obligatorios antes de considerar cualquier cambio o Pull Request como completado:
 
 ```bash
-# 1. Pruebas de integración de backend (110 pruebas de contratos HTTP, RBAC y k-anonimato)
+# 1. Pruebas de integración de backend (contratos HTTP, RBAC y k-anonimato)
 cd backend && npm test
 
 # 2. Pruebas unitarias y de regresión de frontend
@@ -128,8 +128,23 @@ cd frontend && npm run build
 ```bash
 cd backend
 npm run test:db   # Verifica conectividad y credenciales con PostgreSQL
-npm test          # Ejecuta las 110 pruebas de contratos HTTP, RBAC y k-anonimato
+npm test          # Ejecuta los contratos HTTP, RBAC y k-anonimato
 ```
+
+#### E2E real de agente y SST (local):
+
+Con las dependencias de ambas carpetas instaladas, PostgreSQL de pruebas preparado y Chrome instalado:
+
+```bash
+cd backend
+npm run test:e2e
+```
+
+El runner exige la base técnica existente `DB_NAME_TEST=pulso360_plan_test_20261005`, distinta de `DB_NAME`. Usa las credenciales locales de pruebas sin imprimirlas; no ejecuta migraciones. `CHROME_BINARY` permite indicar otra ubicación de Chrome. Compila el frontend en un directorio temporal, abre dos perfiles aislados y ejecuta login, solicitud anónima, activación, mensajes en ambos sentidos, recarga y cierre contra HTTP, Socket.IO y PostgreSQL reales. Comprueba la persistencia y elimina únicamente sus cuentas y registros desechables; conserva auditoría. El consentimiento de la cuenta agente es una precondición técnica preparada por el runner.
+
+El resultado JSON y las dos capturas quedan en `test-results/e2e/`, ignorado por Git. La interacción se automatiza mediante eventos DOM en Chrome headless; no acredita entrada física, lector de pantalla ni configuración de un hosting desplegado.
+
+La regresión de modales, foco y fronteras de carga se puede ejecutar desde `frontend` con `node tests/modal-accessibility.browser.mjs`. Omni030 configura ambos recorridos como checks UI además de los cuatro gates anteriores.
 
 #### Migraciones de Base de Datos (PostgreSQL):
 Para aplicar las migraciones incrementales sobre las 31 tablas canónicas:

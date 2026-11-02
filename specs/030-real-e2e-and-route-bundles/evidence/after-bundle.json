@@ -1,0 +1,2709 @@
+{
+  "phase": "after",
+  "startedAt": "2026-11-02T21:13:29.887Z",
+  "completedAt": "2026-11-02T21:13:34.417Z",
+  "chunks": [
+    {
+      "file": "assets/index-KscQJxZo.js",
+      "entry": true,
+      "dynamicEntry": false,
+      "facade": "index.html",
+      "bytes": 319917,
+      "gzipBytes": 102166,
+      "imports": [],
+      "dynamicImports": [
+        "assets/AppLayout-DKruEAcm.js",
+        "assets/LoginPage-Cr3ki5Xn.js",
+        "assets/ConsentPage-BewqgWFL.js",
+        "assets/ForgotPasswordPage-CVtk0j41.js",
+        "assets/ResetPasswordPage-DG80K5ce.js",
+        "assets/ForbiddenPage-DF9bKfnu.js",
+        "assets/AgentDashboardPage-CYMejjeb.js",
+        "assets/CheckinWizardPage--KOi1S0Y.js",
+        "assets/JournalPage-DrvKKIjA.js",
+        "assets/MyWellbeingPage-Ci1EvqHS.js",
+        "assets/SupportChannelPage-DlJpvsIs.js",
+        "assets/MyDataPrivacyPage-B2Xiy9Dn.js",
+        "assets/CrisisSupportPage-BhGk7bJi.js",
+        "assets/TeamDashboardPage-asgAVh2w.js",
+        "assets/ActionsPage-Bm5JpH9y.js",
+        "assets/SstDashboardPage-DHd41TkD.js",
+        "assets/AlertsInboxPage-Cy3T5zi5.js",
+        "assets/AlertRulesPage-BvVoWAoP.js",
+        "assets/InterventionsPage-BrmHWkWG.js",
+        "assets/SupportInboxPage-D5xdlQf1.js",
+        "assets/AuditLogPage-DeRLgYI_.js",
+        "assets/OrganizationPage-7HAdxNR8.js",
+        "assets/UsersRolesPage-B_n2euMK.js",
+        "assets/SystemParamsPage-0pHbTOr8.js",
+        "assets/CsvImportPage-C-N5KxVd.js",
+        "assets/HabeasDataPage-CEz57YEk.js",
+        "assets/ReportsPage-DeAss65y.js",
+        "assets/NotificationsPage-ZyPwS9Jj.js",
+        "assets/LandingPage-FkIRzsMA.js",
+        "assets/ContactenosPage-BKTsSeLb.js",
+        "assets/AcademicFoundationPage-DhuhOpbT.js"
+      ],
+      "modules": [
+        {
+          "id": "node_modules/react-dom/cjs/react-dom.production.min.js",
+          "renderedLength": 133838
+        },
+        {
+          "id": "node_modules/react-router/dist/development/chunk-BV7QT456.mjs",
+          "renderedLength": 88357
+        },
+        {
+          "id": "node_modules/axios/lib/utils.js",
+          "renderedLength": 31015
+        },
+        {
+          "id": "node_modules/axios/lib/adapters/fetch.js",
+          "renderedLength": 21157
+        },
+        {
+          "id": "src/App.jsx",
+          "renderedLength": 17179
+        },
+        {
+          "id": "src/core/components/Icon.jsx",
+          "renderedLength": 12717
+        },
+        {
+          "id": "src/core/auth/authService.jsx",
+          "renderedLength": 10991
+        },
+        {
+          "id": "node_modules/axios/lib/core/AxiosHeaders.js",
+          "renderedLength": 10222
+        },
+        {
+          "id": "node_modules/axios/lib/adapters/xhr.js",
+          "renderedLength": 9092
+        },
+        {
+          "id": "node_modules/axios/lib/core/Axios.js",
+          "renderedLength": 8539
+        },
+        {
+          "id": "node_modules/react/cjs/react.production.min.js",
+          "renderedLength": 7672
+        },
+        {
+          "id": "node_modules/axios/lib/helpers/toFormData.js",
+          "renderedLength": 7310
+        },
+        {
+          "id": "node_modules/axios/lib/core/AxiosError.js",
+          "renderedLength": 6952
+        },
+        {
+          "id": "node_modules/axios/lib/core/mergeConfig.js",
+          "renderedLength": 5715
+        },
+        {
+          "id": "src/core/components/RouteAccessibility.jsx",
+          "renderedLength": 5535
+        },
+        {
+          "id": "node_modules/scheduler/cjs/scheduler.production.min.js",
+          "renderedLength": 4616
+        },
+        {
+          "id": "node_modules/axios/lib/helpers/estimateDataURLDecodedBytes.js",
+          "renderedLength": 4611
+        },
+        {
+          "id": "node_modules/axios/lib/defaults/index.js",
+          "renderedLength": 4577
+        },
+        {
+          "id": "node_modules/axios/lib/core/InterceptorManager.js",
+          "renderedLength": 4092
+        },
+        {
+          "id": "src/core/auth/AccessDenied.jsx",
+          "renderedLength": 3501
+        },
+        {
+          "id": "node_modules/axios/lib/adapters/adapters.js",
+          "renderedLength": 3325
+        },
+        {
+          "id": "node_modules/axios/lib/helpers/formDataToJSON.js",
+          "renderedLength": 3313
+        },
+        {
+          "id": "src/core/storage/preferences.jsx",
+          "renderedLength": 3246
+        },
+        {
+          "id": "node_modules/axios/lib/helpers/resolveConfig.js",
+          "renderedLength": 3099
+        },
+        {
+          "id": "node_modules/axios/lib/helpers/validator.js",
+          "renderedLength": 3019
+        },
+        {
+          "id": "src/core/auth/ProtectedRoute.jsx",
+          "renderedLength": 2957
+        },
+        {
+          "id": "src/core/auth/roleNavigation.jsx",
+          "renderedLength": 2892
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/shared/src/build/buildLucideIconNode.mjs",
+          "renderedLength": 2795
+        },
+        {
+          "id": "node_modules/axios/lib/cancel/CancelToken.js",
+          "renderedLength": 2725
+        },
+        {
+          "id": "node_modules/axios/lib/core/dispatchRequest.js",
+          "renderedLength": 2645
+        },
+        {
+          "id": "node_modules/axios/lib/core/buildFullPath.js",
+          "renderedLength": 2612
+        },
+        {
+          "id": "src/core/components/PageBoundary.jsx",
+          "renderedLength": 2582
+        },
+        {
+          "id": "\u0000vite/preload-helper.js",
+          "renderedLength": 2206
+        },
+        {
+          "id": "node_modules/axios/lib/helpers/cookies.js",
+          "renderedLength": 2079
+        },
+        {
+          "id": "node_modules/axios/lib/helpers/HttpStatusCode.js",
+          "renderedLength": 2003
+        },
+        {
+          "id": "node_modules/axios/lib/helpers/trackStream.js",
+          "renderedLength": 1728
+        },
+        {
+          "id": "node_modules/axios/lib/axios.js",
+          "renderedLength": 1708
+        },
+        {
+          "id": "node_modules/axios/lib/helpers/buildURL.js",
+          "renderedLength": 1693
+        },
+        {
+          "id": "src/core/api/apiClient.jsx",
+          "renderedLength": 1652
+        },
+        {
+          "id": "node_modules/axios/lib/helpers/sanitizeHeaderValue.js",
+          "renderedLength": 1522
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/Icon.mjs",
+          "renderedLength": 1515
+        },
+        {
+          "id": "node_modules/axios/lib/platform/common/utils.js",
+          "renderedLength": 1476
+        },
+        {
+          "id": "node_modules/axios/lib/helpers/parseHeaders.js",
+          "renderedLength": 1463
+        },
+        {
+          "id": "src/core/storage/browserStorage.jsx",
+          "renderedLength": 1445
+        },
+        {
+          "id": "node_modules/axios/lib/helpers/composeSignals.js",
+          "renderedLength": 1370
+        },
+        {
+          "id": "src/core/auth/consentContract.jsx",
+          "renderedLength": 1334
+        },
+        {
+          "id": "node_modules/axios/lib/helpers/AxiosURLSearchParams.js",
+          "renderedLength": 1327
+        },
+        {
+          "id": "node_modules/axios/lib/helpers/progressEventReducer.js",
+          "renderedLength": 1315
+        },
+        {
+          "id": "\u0000vite/modulepreload-polyfill.js",
+          "renderedLength": 1280
+        },
+        {
+          "id": "node_modules/react/cjs/react-jsx-runtime.production.min.js",
+          "renderedLength": 1201
+        },
+        {
+          "id": "node_modules/axios/lib/helpers/speedometer.js",
+          "renderedLength": 1049
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/user-round-cog.mjs",
+          "renderedLength": 1045
+        },
+        {
+          "id": "src/core/auth/avatarPool.jsx",
+          "renderedLength": 961
+        },
+        {
+          "id": "node_modules/axios/lib/helpers/throttle.js",
+          "renderedLength": 892
+        },
+        {
+          "id": "node_modules/axios/lib/core/setFormDataHeaders.js",
+          "renderedLength": 876
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/sparkles.mjs",
+          "renderedLength": 833
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/notebook-pen.mjs",
+          "renderedLength": 832
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/siren.mjs",
+          "renderedLength": 825
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/eye-off.mjs",
+          "renderedLength": 781
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/sliders-vertical.mjs",
+          "renderedLength": 781
+        },
+        {
+          "id": "node_modules/axios/lib/core/settle.js",
+          "renderedLength": 778
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/file-spreadsheet.mjs",
+          "renderedLength": 770
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/unplug.mjs",
+          "renderedLength": 769
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/clipboard-list.mjs",
+          "renderedLength": 761
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/building-complex.mjs",
+          "renderedLength": 750
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/heart-handshake.mjs",
+          "renderedLength": 744
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/file-lock.mjs",
+          "renderedLength": 731
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/hand.mjs",
+          "renderedLength": 715
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/bell-ring.mjs",
+          "renderedLength": 713
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/file-text.mjs",
+          "renderedLength": 709
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/messages-square.mjs",
+          "renderedLength": 702
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/network.mjs",
+          "renderedLength": 691
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/volume-2.mjs",
+          "renderedLength": 691
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/life-buoy.mjs",
+          "renderedLength": 684
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/bell-off.mjs",
+          "renderedLength": 680
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/createLucideIcon.mjs",
+          "renderedLength": 675
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/layout-dashboard.mjs",
+          "renderedLength": 663
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/shield-alert.mjs",
+          "renderedLength": 658
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/volume-x.mjs",
+          "renderedLength": 658
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/bell-dot.mjs",
+          "renderedLength": 653
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/trash.mjs",
+          "renderedLength": 631
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/printer.mjs",
+          "renderedLength": 628
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/heart-pulse.mjs",
+          "renderedLength": 626
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/save.mjs",
+          "renderedLength": 625
+        },
+        {
+          "id": "node_modules/axios/lib/core/transformData.js",
+          "renderedLength": 618
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/shield-check.mjs",
+          "renderedLength": 614
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/scale.mjs",
+          "renderedLength": 613
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/triangle-alert.mjs",
+          "renderedLength": 603
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/phone.mjs",
+          "renderedLength": 599
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/user-plus.mjs",
+          "renderedLength": 599
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/refresh-cw.mjs",
+          "renderedLength": 595
+        },
+        {
+          "id": "node_modules/axios/lib/helpers/isAbsoluteURL.js",
+          "renderedLength": 586
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/book-open.mjs",
+          "renderedLength": 583
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/bell.mjs",
+          "renderedLength": 580
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/feather.mjs",
+          "renderedLength": 580
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/users.mjs",
+          "renderedLength": 580
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/send.mjs",
+          "renderedLength": 577
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/folder-open.mjs",
+          "renderedLength": 574
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/inbox.mjs",
+          "renderedLength": 574
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/circle-question-mark.mjs",
+          "renderedLength": 570
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/pencil.mjs",
+          "renderedLength": 565
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/chart-column.mjs",
+          "renderedLength": 558
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/shared/src/utils/toCamelCase.mjs",
+          "renderedLength": 551
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/shield.mjs",
+          "renderedLength": 550
+        },
+        {
+          "id": "node_modules/axios/lib/cancel/CanceledError.js",
+          "renderedLength": 549
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/eye.mjs",
+          "renderedLength": 546
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/compass.mjs",
+          "renderedLength": 545
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/panel-left-close.mjs",
+          "renderedLength": 542
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/zap.mjs",
+          "renderedLength": 542
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/calendar.mjs",
+          "renderedLength": 539
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/panel-left-open.mjs",
+          "renderedLength": 538
+        },
+        {
+          "id": "node_modules/axios/lib/helpers/spread.js",
+          "renderedLength": 537
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/heart.mjs",
+          "renderedLength": 535
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/settings-2.mjs",
+          "renderedLength": 534
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/shared/src/build/buildLucideIconForReact.mjs",
+          "renderedLength": 532
+        },
+        {
+          "id": "node_modules/react-dom/index.js",
+          "renderedLength": 524
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/headphones.mjs",
+          "renderedLength": 519
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/message-square.mjs",
+          "renderedLength": 518
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/activity.mjs",
+          "renderedLength": 517
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/bookmark.mjs",
+          "renderedLength": 513
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/wind.mjs",
+          "renderedLength": 504
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/battery-low.mjs",
+          "renderedLength": 502
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/download.mjs",
+          "renderedLength": 494
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/copy.mjs",
+          "renderedLength": 493
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/log-out.mjs",
+          "renderedLength": 490
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/upload.mjs",
+          "renderedLength": 490
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/circle-check.mjs",
+          "renderedLength": 475
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/pause.mjs",
+          "renderedLength": 475
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/shared/src/utils/toLucideIconData.mjs",
+          "renderedLength": 473
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/panel-left.mjs",
+          "renderedLength": 471
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/mail.mjs",
+          "renderedLength": 468
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/chart-line.mjs",
+          "renderedLength": 466
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/info.mjs",
+          "renderedLength": 466
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/play.mjs",
+          "renderedLength": 466
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/lock.mjs",
+          "renderedLength": 463
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/circle-minus.mjs",
+          "renderedLength": 462
+        },
+        {
+          "id": "node_modules/axios/lib/helpers/combineURLs.js",
+          "renderedLength": 461
+        },
+        {
+          "id": "src/core/components/StorageNotice.jsx",
+          "renderedLength": 447
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/user.mjs",
+          "renderedLength": 447
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/circle-dot.mjs",
+          "renderedLength": 445
+        },
+        {
+          "id": "node_modules/axios/lib/helpers/normalizeURLForProtocolCheck.js",
+          "renderedLength": 442
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/trending-up.mjs",
+          "renderedLength": 428
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/search.mjs",
+          "renderedLength": 427
+        },
+        {
+          "id": "node_modules/axios/lib/helpers/isURLSameOrigin.js",
+          "renderedLength": 426
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/arrow-right.mjs",
+          "renderedLength": 421
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/clock.mjs",
+          "renderedLength": 421
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/arrow-left.mjs",
+          "renderedLength": 420
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/arrow-up.mjs",
+          "renderedLength": 415
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/shared/src/build/defaultAttributes.mjs",
+          "renderedLength": 414
+        },
+        {
+          "id": "node_modules/axios/lib/helpers/bind.js",
+          "renderedLength": 413
+        },
+        {
+          "id": "node_modules/axios/index.js",
+          "renderedLength": 411
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/plus.mjs",
+          "renderedLength": 400
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/x.mjs",
+          "renderedLength": 398
+        },
+        {
+          "id": "node_modules/axios/lib/helpers/toURLEncodedForm.js",
+          "renderedLength": 394
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/shared/src/utils/mergeClasses.mjs",
+          "renderedLength": 370
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/chevron-right.mjs",
+          "renderedLength": 369
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/chevron-left.mjs",
+          "renderedLength": 368
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/chevron-down.mjs",
+          "renderedLength": 366
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/chevron-up.mjs",
+          "renderedLength": 364
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/circle.mjs",
+          "renderedLength": 364
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/shared/src/utils/hasA11yProp.mjs",
+          "renderedLength": 358
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/icons/check.mjs",
+          "renderedLength": 356
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/shared/src/utils/toPascalCase.mjs",
+          "renderedLength": 317
+        },
+        {
+          "id": "node_modules/axios/lib/helpers/isAxiosError.js",
+          "renderedLength": 308
+        },
+        {
+          "id": "src/core/config/env.jsx",
+          "renderedLength": 291
+        },
+        {
+          "id": "src/main.jsx",
+          "renderedLength": 268
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/shared/src/utils/toKebabCase.mjs",
+          "renderedLength": 266
+        },
+        {
+          "id": "node_modules/react/jsx-runtime.js",
+          "renderedLength": 243
+        },
+        {
+          "id": "node_modules/react-dom/client.js",
+          "renderedLength": 242
+        },
+        {
+          "id": "node_modules/axios/lib/defaults/transitional.js",
+          "renderedLength": 237
+        },
+        {
+          "id": "node_modules/scheduler/index.js",
+          "renderedLength": 230
+        },
+        {
+          "id": "node_modules/axios/lib/platform/browser/index.js",
+          "renderedLength": 207
+        },
+        {
+          "id": "node_modules/react/index.js",
+          "renderedLength": 198
+        },
+        {
+          "id": "node_modules/axios/lib/core/methodList.js",
+          "renderedLength": 156
+        },
+        {
+          "id": "node_modules/lucide-react/dist/esm/context.mjs",
+          "renderedLength": 124
+        },
+        {
+          "id": "node_modules/axios/lib/helpers/parseProtocol.js",
+          "renderedLength": 122
+        },
+        {
+          "id": "node_modules/axios/lib/platform/browser/classes/URLSearchParams.js",
+          "renderedLength": 106
+        },
+        {
+          "id": "node_modules/axios/lib/cancel/isCancel.js",
+          "renderedLength": 70
+        },
+        {
+          "id": "node_modules/axios/lib/platform/browser/classes/FormData.js",
+          "renderedLength": 69
+        },
+        {
+          "id": "node_modules/axios/lib/helpers/null.js",
+          "renderedLength": 60
+        },
+        {
+          "id": "node_modules/axios/lib/platform/browser/classes/Blob.js",
+          "renderedLength": 57
+        },
+        {
+          "id": "node_modules/axios/lib/platform/index.js",
+          "renderedLength": 50
+        },
+        {
+          "id": "\u0000node_modules/react/jsx-runtime.js?commonjs-es-import",
+          "renderedLength": 44
+        },
+        {
+          "id": "\u0000node_modules/react/cjs/react-jsx-runtime.production.min.js?commonjs-exports",
+          "renderedLength": 40
+        },
+        {
+          "id": "\u0000node_modules/react-dom/client.js?commonjs-es-import",
+          "renderedLength": 36
+        },
+        {
+          "id": "\u0000node_modules/react/index.js?commonjs-es-import",
+          "renderedLength": 34
+        },
+        {
+          "id": "\u0000node_modules/scheduler/cjs/scheduler.production.min.js?commonjs-exports",
+          "renderedLength": 34
+        },
+        {
+          "id": "\u0000node_modules/react-dom/cjs/react-dom.production.min.js?commonjs-exports",
+          "renderedLength": 33
+        },
+        {
+          "id": "\u0000node_modules/react/jsx-runtime.js?commonjs-module",
+          "renderedLength": 31
+        },
+        {
+          "id": "\u0000node_modules/react/cjs/react.production.min.js?commonjs-exports",
+          "renderedLength": 30
+        },
+        {
+          "id": "\u0000node_modules/scheduler/index.js?commonjs-module",
+          "renderedLength": 30
+        },
+        {
+          "id": "\u0000node_modules/react-dom/index.js?commonjs-module",
+          "renderedLength": 29
+        },
+        {
+          "id": "node_modules/axios/lib/env/data.js",
+          "renderedLength": 27
+        },
+        {
+          "id": "\u0000node_modules/react/index.js?commonjs-module",
+          "renderedLength": 26
+        },
+        {
+          "id": "\u0000node_modules/react-dom/client.js?commonjs-exports",
+          "renderedLength": 16
+        },
+        {
+          "id": "src/styles/tokens.css",
+          "renderedLength": 0
+        },
+        {
+          "id": "src/styles/layout.css",
+          "renderedLength": 0
+        },
+        {
+          "id": "src/styles/components.css",
+          "renderedLength": 0
+        },
+        {
+          "id": "src/styles/styles.css",
+          "renderedLength": 0
+        },
+        {
+          "id": "index.html",
+          "renderedLength": 0
+        }
+      ]
+    },
+    {
+      "file": "assets/AppLayout-DKruEAcm.js",
+      "entry": false,
+      "dynamicEntry": true,
+      "facade": "src/core/layout/AppLayout.jsx",
+      "bytes": 23251,
+      "gzipBytes": 7075,
+      "imports": [
+        "assets/index-KscQJxZo.js",
+        "assets/useModalA11y-DcYJrfMk.js"
+      ],
+      "dynamicImports": [],
+      "modules": [
+        {
+          "id": "src/core/components/UserProfileModal.jsx",
+          "renderedLength": 28091
+        },
+        {
+          "id": "src/core/layout/AppLayout.jsx",
+          "renderedLength": 19321
+        },
+        {
+          "id": "src/core/components/InactivityModal.jsx",
+          "renderedLength": 4425
+        },
+        {
+          "id": "src/styles/profile.css",
+          "renderedLength": 0
+        }
+      ]
+    },
+    {
+      "file": "assets/ConsentPage-BewqgWFL.js",
+      "entry": false,
+      "dynamicEntry": true,
+      "facade": "src/features/auth/pages/ConsentPage.jsx",
+      "bytes": 17095,
+      "gzipBytes": 5582,
+      "imports": [
+        "assets/index-KscQJxZo.js",
+        "assets/useExpiredFormDraft-Bh0lvf8K.js",
+        "assets/useModalA11y-DcYJrfMk.js"
+      ],
+      "dynamicImports": [],
+      "modules": [
+        {
+          "id": "src/features/auth/components/ConsentPreferences.jsx",
+          "renderedLength": 7365
+        },
+        {
+          "id": "src/features/auth/hooks/useConsent.jsx",
+          "renderedLength": 6339
+        },
+        {
+          "id": "src/features/auth/components/ConsentHistory.jsx",
+          "renderedLength": 4236
+        },
+        {
+          "id": "src/features/auth/pages/ConsentPage.jsx",
+          "renderedLength": 3762
+        },
+        {
+          "id": "src/features/auth/components/ConsentPolicyModal.jsx",
+          "renderedLength": 3689
+        },
+        {
+          "id": "src/features/auth/data/consentData.jsx",
+          "renderedLength": 1783
+        },
+        {
+          "id": "src/features/auth/services/consentService.jsx",
+          "renderedLength": 1231
+        },
+        {
+          "id": "src/features/auth/services/consentQueries.jsx",
+          "renderedLength": 104
+        },
+        {
+          "id": "src/styles/consentimiento.css",
+          "renderedLength": 0
+        }
+      ]
+    },
+    {
+      "file": "assets/ForgotPasswordPage-CVtk0j41.js",
+      "entry": false,
+      "dynamicEntry": true,
+      "facade": "src/features/auth/pages/ForgotPasswordPage.jsx",
+      "bytes": 177,
+      "gzipBytes": 158,
+      "imports": [
+        "assets/index-KscQJxZo.js",
+        "assets/LoginPage-Cr3ki5Xn.js"
+      ],
+      "dynamicImports": [],
+      "modules": [
+        {
+          "id": "src/features/auth/pages/ForgotPasswordPage.jsx",
+          "renderedLength": 119
+        }
+      ]
+    },
+    {
+      "file": "assets/ResetPasswordPage-DG80K5ce.js",
+      "entry": false,
+      "dynamicEntry": true,
+      "facade": "src/features/auth/pages/ResetPasswordPage.jsx",
+      "bytes": 175,
+      "gzipBytes": 158,
+      "imports": [
+        "assets/index-KscQJxZo.js",
+        "assets/LoginPage-Cr3ki5Xn.js"
+      ],
+      "dynamicImports": [],
+      "modules": [
+        {
+          "id": "src/features/auth/pages/ResetPasswordPage.jsx",
+          "renderedLength": 117
+        }
+      ]
+    },
+    {
+      "file": "assets/LoginPage-Cr3ki5Xn.js",
+      "entry": false,
+      "dynamicEntry": true,
+      "facade": "src/features/auth/pages/LoginPage.jsx",
+      "bytes": 27195,
+      "gzipBytes": 8052,
+      "imports": [
+        "assets/index-KscQJxZo.js"
+      ],
+      "dynamicImports": [],
+      "modules": [
+        {
+          "id": "src/features/auth/components/LoginForm.jsx",
+          "renderedLength": 12219
+        },
+        {
+          "id": "src/features/auth/pages/LoginPage.jsx",
+          "renderedLength": 8376
+        },
+        {
+          "id": "src/features/auth/components/ResetPasswordForm.jsx",
+          "renderedLength": 7877
+        },
+        {
+          "id": "src/features/auth/hooks/usePasswordReset.jsx",
+          "renderedLength": 3524
+        },
+        {
+          "id": "src/features/auth/hooks/useLoginCredentials.jsx",
+          "renderedLength": 2938
+        },
+        {
+          "id": "src/features/auth/components/LoginManifesto.jsx",
+          "renderedLength": 2924
+        },
+        {
+          "id": "src/features/auth/components/DemoAccountsCard.jsx",
+          "renderedLength": 2862
+        },
+        {
+          "id": "src/features/auth/data/authData.jsx",
+          "renderedLength": 2752
+        },
+        {
+          "id": "src/features/auth/components/RecoveryConfirmation.jsx",
+          "renderedLength": 2405
+        },
+        {
+          "id": "src/features/auth/components/ForgotPasswordForm.jsx",
+          "renderedLength": 2357
+        },
+        {
+          "id": "src/features/auth/hooks/usePasswordRecovery.jsx",
+          "renderedLength": 1162
+        },
+        {
+          "id": "src/features/auth/hooks/useLogin.jsx",
+          "renderedLength": 1139
+        },
+        {
+          "id": "src/styles/auth.css",
+          "renderedLength": 0
+        }
+      ]
+    },
+    {
+      "file": "assets/ForbiddenPage-DF9bKfnu.js",
+      "entry": false,
+      "dynamicEntry": true,
+      "facade": "src/features/auth/pages/ForbiddenPage.jsx",
+      "bytes": 126,
+      "gzipBytes": 135,
+      "imports": [
+        "assets/index-KscQJxZo.js"
+      ],
+      "dynamicImports": [],
+      "modules": [
+        {
+          "id": "src/features/auth/pages/ForbiddenPage.jsx",
+          "renderedLength": 127
+        }
+      ]
+    },
+    {
+      "file": "assets/AgentDashboardPage-CYMejjeb.js",
+      "entry": false,
+      "dynamicEntry": true,
+      "facade": "src/features/agent/pages/AgentDashboardPage.jsx",
+      "bytes": 14623,
+      "gzipBytes": 4651,
+      "imports": [
+        "assets/index-KscQJxZo.js",
+        "assets/agentQueries-pp4QIG91.js",
+        "assets/useAgentModalAccessibility-x1tH-RBm.js",
+        "assets/EnergyFace-ByBig0M5.js",
+        "assets/useModalA11y-DcYJrfMk.js"
+      ],
+      "dynamicImports": [],
+      "modules": [
+        {
+          "id": "src/features/agent/pages/AgentDashboardPage.jsx",
+          "renderedLength": 9959
+        },
+        {
+          "id": "src/features/agent/components/PerspectiveSimModal.jsx",
+          "renderedLength": 9950
+        },
+        {
+          "id": "src/features/agent/hooks/useAgentDashboard.jsx",
+          "renderedLength": 5549
+        },
+        {
+          "id": "src/features/agent/services/agentDashboardHelpers.jsx",
+          "renderedLength": 362
+        }
+      ]
+    },
+    {
+      "file": "assets/CheckinWizardPage--KOi1S0Y.js",
+      "entry": false,
+      "dynamicEntry": true,
+      "facade": "src/features/agent/pages/CheckinWizardPage.jsx",
+      "bytes": 19525,
+      "gzipBytes": 6319,
+      "imports": [
+        "assets/index-KscQJxZo.js",
+        "assets/EnergyFace-ByBig0M5.js",
+        "assets/agentQueries-pp4QIG91.js"
+      ],
+      "dynamicImports": [],
+      "modules": [
+        {
+          "id": "src/features/agent/pages/CheckinWizardPage.jsx",
+          "renderedLength": 14177
+        },
+        {
+          "id": "src/features/agent/hooks/useCheckinWizard.jsx",
+          "renderedLength": 6229
+        },
+        {
+          "id": "src/features/agent/components/CheckinStepForm.jsx",
+          "renderedLength": 4266
+        },
+        {
+          "id": "src/features/agent/components/ScaleSelector.jsx",
+          "renderedLength": 3644
+        },
+        {
+          "id": "src/features/agent/components/CheckinConfirmation.jsx",
+          "renderedLength": 2370
+        },
+        {
+          "id": "src/features/agent/data/checkinWizardData.jsx",
+          "renderedLength": 2320
+        },
+        {
+          "id": "src/features/agent/services/checkinWizardService.jsx",
+          "renderedLength": 1115
+        }
+      ]
+    },
+    {
+      "file": "assets/EnergyFace-ByBig0M5.js",
+      "entry": false,
+      "dynamicEntry": false,
+      "bytes": 912,
+      "gzipBytes": 434,
+      "imports": [
+        "assets/index-KscQJxZo.js"
+      ],
+      "dynamicImports": [],
+      "modules": [
+        {
+          "id": "src/features/agent/components/EnergyFace.jsx",
+          "renderedLength": 1138
+        }
+      ]
+    },
+    {
+      "file": "assets/JournalPage-DrvKKIjA.js",
+      "entry": false,
+      "dynamicEntry": true,
+      "facade": "src/features/agent/pages/JournalPage.jsx",
+      "bytes": 42663,
+      "gzipBytes": 12732,
+      "imports": [
+        "assets/index-KscQJxZo.js",
+        "assets/useExpiredFormDraft-Bh0lvf8K.js",
+        "assets/agentQueries-pp4QIG91.js",
+        "assets/useAgentModalAccessibility-x1tH-RBm.js",
+        "assets/SomaticBreathingModal-C_mqhMPg.js",
+        "assets/useModalA11y-DcYJrfMk.js",
+        "assets/crisis-DWgjfUJW.js"
+      ],
+      "dynamicImports": [],
+      "modules": [
+        {
+          "id": "src/features/agent/components/NlpCorrectionModal.jsx",
+          "renderedLength": 13825
+        },
+        {
+          "id": "src/features/agent/hooks/useJournal.jsx",
+          "renderedLength": 12016
+        },
+        {
+          "id": "src/features/agent/components/CrisisSupportModal.jsx",
+          "renderedLength": 9106
+        },
+        {
+          "id": "src/features/agent/pages/JournalPage.jsx",
+          "renderedLength": 7683
+        },
+        {
+          "id": "src/features/agent/components/NlpAnalysisPanel.jsx",
+          "renderedLength": 7269
+        },
+        {
+          "id": "src/features/agent/components/JournalEditor.jsx",
+          "renderedLength": 7112
+        },
+        {
+          "id": "src/core/nlp/nlpEngine.jsx",
+          "renderedLength": 6943
+        },
+        {
+          "id": "src/features/agent/services/journalService.jsx",
+          "renderedLength": 3675
+        },
+        {
+          "id": "src/features/agent/components/JournalEntryList.jsx",
+          "renderedLength": 3629
+        },
+        {
+          "id": "src/core/nlp/spanishStemmer.jsx",
+          "renderedLength": 2363
+        },
+        {
+          "id": "src/features/agent/data/nlpFactorMetadata.jsx",
+          "renderedLength": 1276
+        },
+        {
+          "id": "src/core/nlp/damerauLevenshtein.jsx",
+          "renderedLength": 1085
+        },
+        {
+          "id": "src/core/nlp/nlpSanitizer.jsx",
+          "renderedLength": 952
+        },
+        {
+          "id": "src/styles/bitacora.css",
+          "renderedLength": 0
+        }
+      ]
+    },
+    {
+      "file": "assets/MyWellbeingPage-Ci1EvqHS.js",
+      "entry": false,
+      "dynamicEntry": true,
+      "facade": "src/features/agent/pages/MyWellbeingPage.jsx",
+      "bytes": 22164,
+      "gzipBytes": 7319,
+      "imports": [
+        "assets/index-KscQJxZo.js",
+        "assets/agentQueries-pp4QIG91.js"
+      ],
+      "dynamicImports": [],
+      "modules": [
+        {
+          "id": "src/features/agent/pages/MyWellbeingPage.jsx",
+          "renderedLength": 15361
+        },
+        {
+          "id": "src/features/agent/components/WellbeingTrendChart.jsx",
+          "renderedLength": 8857
+        },
+        {
+          "id": "src/features/agent/services/myWellbeingHelpers.jsx",
+          "renderedLength": 8379
+        },
+        {
+          "id": "src/features/agent/hooks/useMyWellbeing.jsx",
+          "renderedLength": 4021
+        },
+        {
+          "id": "src/features/agent/components/WellbeingHistory.jsx",
+          "renderedLength": 3521
+        },
+        {
+          "id": "src/styles/bienestar.css",
+          "renderedLength": 0
+        }
+      ]
+    },
+    {
+      "file": "assets/SupportChannelPage-DlJpvsIs.js",
+      "entry": false,
+      "dynamicEntry": true,
+      "facade": "src/features/agent/pages/SupportChannelPage.jsx",
+      "bytes": 33144,
+      "gzipBytes": 9735,
+      "imports": [
+        "assets/index-KscQJxZo.js",
+        "assets/useExpiredFormDraft-Bh0lvf8K.js",
+        "assets/agentQueries-pp4QIG91.js",
+        "assets/support-chat-DpdD19jh.js",
+        "assets/socketClient-A_pLaAw_.js",
+        "assets/SomaticBreathingModal-C_mqhMPg.js",
+        "assets/useAgentModalAccessibility-x1tH-RBm.js",
+        "assets/useModalA11y-DcYJrfMk.js",
+        "assets/crisis-DWgjfUJW.js"
+      ],
+      "dynamicImports": [],
+      "modules": [
+        {
+          "id": "src/features/agent/pages/SupportChannelPage.jsx",
+          "renderedLength": 22852
+        },
+        {
+          "id": "src/features/agent/components/SupportRequestForm.jsx",
+          "renderedLength": 16257
+        },
+        {
+          "id": "src/features/agent/components/SupportChatCard.jsx",
+          "renderedLength": 15282
+        },
+        {
+          "id": "src/features/agent/hooks/useSupportChannel.jsx",
+          "renderedLength": 5326
+        },
+        {
+          "id": "src/features/agent/services/supportChannelService.jsx",
+          "renderedLength": 863
+        },
+        {
+          "id": "src/styles/apoyo.css",
+          "renderedLength": 0
+        }
+      ]
+    },
+    {
+      "file": "assets/SomaticBreathingModal-C_mqhMPg.js",
+      "entry": false,
+      "dynamicEntry": false,
+      "bytes": 1996,
+      "gzipBytes": 945,
+      "imports": [
+        "assets/index-KscQJxZo.js",
+        "assets/useAgentModalAccessibility-x1tH-RBm.js",
+        "assets/crisis-DWgjfUJW.js"
+      ],
+      "dynamicImports": [],
+      "modules": [
+        {
+          "id": "src/features/agent/components/SomaticBreathingModal.jsx",
+          "renderedLength": 3445
+        }
+      ]
+    },
+    {
+      "file": "assets/useAgentModalAccessibility-x1tH-RBm.js",
+      "entry": false,
+      "dynamicEntry": false,
+      "bytes": 317,
+      "gzipBytes": 240,
+      "imports": [
+        "assets/index-KscQJxZo.js",
+        "assets/useModalA11y-DcYJrfMk.js"
+      ],
+      "dynamicImports": [],
+      "modules": [
+        {
+          "id": "src/features/agent/hooks/useAgentModalAccessibility.jsx",
+          "renderedLength": 371
+        }
+      ]
+    },
+    {
+      "file": "assets/MyDataPrivacyPage-B2Xiy9Dn.js",
+      "entry": false,
+      "dynamicEntry": true,
+      "facade": "src/features/agent/pages/MyDataPrivacyPage.jsx",
+      "bytes": 38578,
+      "gzipBytes": 10813,
+      "imports": [
+        "assets/index-KscQJxZo.js",
+        "assets/useExpiredFormDraft-Bh0lvf8K.js",
+        "assets/agentQueries-pp4QIG91.js",
+        "assets/DownloadLink-BeFad7Co.js",
+        "assets/useModalA11y-DcYJrfMk.js"
+      ],
+      "dynamicImports": [],
+      "modules": [
+        {
+          "id": "src/features/agent/components/ConsentSummaryCard.jsx",
+          "renderedLength": 10772
+        },
+        {
+          "id": "src/features/agent/hooks/useMyDataPrivacy.jsx",
+          "renderedLength": 10135
+        },
+        {
+          "id": "src/features/agent/pages/MyDataPrivacyPage.jsx",
+          "renderedLength": 9152
+        },
+        {
+          "id": "src/features/agent/components/SuppressionConfirmModal.jsx",
+          "renderedLength": 8769
+        },
+        {
+          "id": "src/features/agent/components/HabeasDataActionCenter.jsx",
+          "renderedLength": 8551
+        },
+        {
+          "id": "src/features/agent/components/AgentRecordsExplorer.jsx",
+          "renderedLength": 7620
+        },
+        {
+          "id": "src/features/agent/components/HabeasRequestsTimeline.jsx",
+          "renderedLength": 5856
+        },
+        {
+          "id": "src/features/agent/components/PrivacyVisibilityMatrix.jsx",
+          "renderedLength": 5384
+        },
+        {
+          "id": "src/features/agent/services/myDataPrivacyService.jsx",
+          "renderedLength": 570
+        }
+      ]
+    },
+    {
+      "file": "assets/CrisisSupportPage-BhGk7bJi.js",
+      "entry": false,
+      "dynamicEntry": true,
+      "facade": "src/features/agent/pages/CrisisSupportPage.jsx",
+      "bytes": 15374,
+      "gzipBytes": 5629,
+      "imports": [
+        "assets/index-KscQJxZo.js",
+        "assets/crisis-DWgjfUJW.js",
+        "assets/agentQueries-pp4QIG91.js"
+      ],
+      "dynamicImports": [],
+      "modules": [
+        {
+          "id": "src/features/agent/hooks/useCrisisSupport.jsx",
+          "renderedLength": 6380
+        },
+        {
+          "id": "src/features/agent/data/crisisSupportData.jsx",
+          "renderedLength": 5744
+        },
+        {
+          "id": "src/features/agent/components/CrisisContactLines.jsx",
+          "renderedLength": 5352
+        },
+        {
+          "id": "src/features/agent/pages/CrisisSupportPage.jsx",
+          "renderedLength": 3820
+        },
+        {
+          "id": "src/features/agent/components/CrisisLegalDetails.jsx",
+          "renderedLength": 3529
+        }
+      ]
+    },
+    {
+      "file": "assets/crisis-DWgjfUJW.js",
+      "entry": false,
+      "dynamicEntry": false,
+      "bytes": 1554,
+      "gzipBytes": 724,
+      "imports": [
+        "assets/index-KscQJxZo.js"
+      ],
+      "dynamicImports": [],
+      "modules": [
+        {
+          "id": "src/features/agent/components/ZenBreathingOrb.jsx",
+          "renderedLength": 2696
+        },
+        {
+          "id": "src/styles/crisis.css",
+          "renderedLength": 0
+        }
+      ]
+    },
+    {
+      "file": "assets/agentQueries-pp4QIG91.js",
+      "entry": false,
+      "dynamicEntry": false,
+      "bytes": 3025,
+      "gzipBytes": 1218,
+      "imports": [
+        "assets/index-KscQJxZo.js"
+      ],
+      "dynamicImports": [],
+      "modules": [
+        {
+          "id": "src/features/agent/services/agentQueries.jsx",
+          "renderedLength": 4339
+        }
+      ]
+    },
+    {
+      "file": "assets/TeamDashboardPage-asgAVh2w.js",
+      "entry": false,
+      "dynamicEntry": true,
+      "facade": "src/features/supervisor/pages/TeamDashboardPage.jsx",
+      "bytes": 10784,
+      "gzipBytes": 3445,
+      "imports": [
+        "assets/index-KscQJxZo.js",
+        "assets/PrivacyBlockedCard-lryl5Hma.js",
+        "assets/supervisor-8gKto1yK.js",
+        "assets/calendarDate-CTjx5bHT.js",
+        "assets/interventionContract-er7n6e5h.js"
+      ],
+      "dynamicImports": [],
+      "modules": [
+        {
+          "id": "src/features/supervisor/pages/TeamDashboardPage.jsx",
+          "renderedLength": 10539
+        },
+        {
+          "id": "src/features/supervisor/hooks/useSupervisorMetrics.jsx",
+          "renderedLength": 3280
+        },
+        {
+          "id": "src/features/supervisor/components/TeamFactorsTable.jsx",
+          "renderedLength": 2831
+        },
+        {
+          "id": "src/features/supervisor/components/TeamKpiGrid.jsx",
+          "renderedLength": 2527
+        }
+      ]
+    },
+    {
+      "file": "assets/ActionsPage-Bm5JpH9y.js",
+      "entry": false,
+      "dynamicEntry": true,
+      "facade": "src/features/supervisor/pages/ActionsPage.jsx",
+      "bytes": 12460,
+      "gzipBytes": 3796,
+      "imports": [
+        "assets/index-KscQJxZo.js",
+        "assets/supervisor-8gKto1yK.js",
+        "assets/useExpiredFormDraft-Bh0lvf8K.js",
+        "assets/useModalA11y-DcYJrfMk.js",
+        "assets/interventionContract-er7n6e5h.js",
+        "assets/calendarDate-CTjx5bHT.js"
+      ],
+      "dynamicImports": [],
+      "modules": [
+        {
+          "id": "src/features/supervisor/pages/ActionsPage.jsx",
+          "renderedLength": 12450
+        },
+        {
+          "id": "src/features/supervisor/components/ActionFollowupModal.jsx",
+          "renderedLength": 7613
+        },
+        {
+          "id": "src/features/supervisor/hooks/useActions.jsx",
+          "renderedLength": 1959
+        },
+        {
+          "id": "src/features/supervisor/services/actionsService.jsx",
+          "renderedLength": 625
+        }
+      ]
+    },
+    {
+      "file": "assets/supervisor-8gKto1yK.js",
+      "entry": false,
+      "dynamicEntry": false,
+      "bytes": 1857,
+      "gzipBytes": 942,
+      "imports": [
+        "assets/index-KscQJxZo.js",
+        "assets/interventionContract-er7n6e5h.js",
+        "assets/calendarDate-CTjx5bHT.js"
+      ],
+      "dynamicImports": [],
+      "modules": [
+        {
+          "id": "src/features/supervisor/services/supervisorQueries.jsx",
+          "renderedLength": 2931
+        },
+        {
+          "id": "src/styles/supervisor.css",
+          "renderedLength": 0
+        }
+      ]
+    },
+    {
+      "file": "assets/SstDashboardPage-DHd41TkD.js",
+      "entry": false,
+      "dynamicEntry": true,
+      "facade": "src/features/sst/pages/SstDashboardPage.jsx",
+      "bytes": 13408,
+      "gzipBytes": 3963,
+      "imports": [
+        "assets/index-KscQJxZo.js",
+        "assets/sstQueries-Bg2ilkTX.js",
+        "assets/socketClient-A_pLaAw_.js",
+        "assets/interventionContract-er7n6e5h.js"
+      ],
+      "dynamicImports": [],
+      "modules": [
+        {
+          "id": "src/features/sst/pages/SstDashboardPage.jsx",
+          "renderedLength": 18070
+        },
+        {
+          "id": "src/features/sst/components/HeatmapGrid.jsx",
+          "renderedLength": 3378
+        },
+        {
+          "id": "src/features/sst/hooks/useSstDashboard.jsx",
+          "renderedLength": 2371
+        }
+      ]
+    },
+    {
+      "file": "assets/AlertsInboxPage-Cy3T5zi5.js",
+      "entry": false,
+      "dynamicEntry": true,
+      "facade": "src/features/sst/pages/AlertsInboxPage.jsx",
+      "bytes": 12436,
+      "gzipBytes": 4054,
+      "imports": [
+        "assets/index-KscQJxZo.js",
+        "assets/sstQueries-Bg2ilkTX.js",
+        "assets/calendarDate-CTjx5bHT.js",
+        "assets/useModalA11y-DcYJrfMk.js",
+        "assets/useExpiredFormDraft-Bh0lvf8K.js",
+        "assets/interventionContract-er7n6e5h.js"
+      ],
+      "dynamicImports": [],
+      "modules": [
+        {
+          "id": "src/features/sst/components/DismissAlertModal.jsx",
+          "renderedLength": 5926
+        },
+        {
+          "id": "src/features/sst/components/AlertCard.jsx",
+          "renderedLength": 5703
+        },
+        {
+          "id": "src/features/sst/pages/AlertsInboxPage.jsx",
+          "renderedLength": 4874
+        },
+        {
+          "id": "src/features/sst/services/alertsInboxService.jsx",
+          "renderedLength": 2720
+        },
+        {
+          "id": "src/features/sst/hooks/useAlertsInbox.jsx",
+          "renderedLength": 2605
+        }
+      ]
+    },
+    {
+      "file": "assets/AlertRulesPage-BvVoWAoP.js",
+      "entry": false,
+      "dynamicEntry": true,
+      "facade": "src/features/sst/pages/AlertRulesPage.jsx",
+      "bytes": 10607,
+      "gzipBytes": 3423,
+      "imports": [
+        "assets/index-KscQJxZo.js",
+        "assets/ruleContract-DUGZE2sV.js",
+        "assets/useExpiredFormDraft-Bh0lvf8K.js"
+      ],
+      "dynamicImports": [],
+      "modules": [
+        {
+          "id": "src/features/sst/components/RuleFormCard.jsx",
+          "renderedLength": 13548
+        },
+        {
+          "id": "src/features/sst/pages/AlertRulesPage.jsx",
+          "renderedLength": 5301
+        },
+        {
+          "id": "src/features/sst/services/alertRulesService.jsx",
+          "renderedLength": 478
+        }
+      ]
+    },
+    {
+      "file": "assets/InterventionsPage-BrmHWkWG.js",
+      "entry": false,
+      "dynamicEntry": true,
+      "facade": "src/features/sst/pages/InterventionsPage.jsx",
+      "bytes": 14869,
+      "gzipBytes": 4494,
+      "imports": [
+        "assets/index-KscQJxZo.js",
+        "assets/sstQueries-Bg2ilkTX.js",
+        "assets/useExpiredFormDraft-Bh0lvf8K.js",
+        "assets/calendarDate-CTjx5bHT.js",
+        "assets/interventionContract-er7n6e5h.js"
+      ],
+      "dynamicImports": [],
+      "modules": [
+        {
+          "id": "src/features/sst/components/NewInterventionForm.jsx",
+          "renderedLength": 14732
+        },
+        {
+          "id": "src/features/sst/pages/InterventionsPage.jsx",
+          "renderedLength": 12627
+        },
+        {
+          "id": "src/features/sst/services/interventionsService.jsx",
+          "renderedLength": 520
+        }
+      ]
+    },
+    {
+      "file": "assets/SupportInboxPage-D5xdlQf1.js",
+      "entry": false,
+      "dynamicEntry": true,
+      "facade": "src/features/sst/pages/SupportInboxPage.jsx",
+      "bytes": 23103,
+      "gzipBytes": 7008,
+      "imports": [
+        "assets/index-KscQJxZo.js",
+        "assets/sstQueries-Bg2ilkTX.js",
+        "assets/support-chat-DpdD19jh.js",
+        "assets/socketClient-A_pLaAw_.js",
+        "assets/useModalA11y-DcYJrfMk.js",
+        "assets/interventionContract-er7n6e5h.js"
+      ],
+      "dynamicImports": [],
+      "modules": [
+        {
+          "id": "src/features/sst/components/SstRequestChatDrawer.jsx",
+          "renderedLength": 22722
+        },
+        {
+          "id": "src/features/sst/pages/SupportInboxPage.jsx",
+          "renderedLength": 13481
+        },
+        {
+          "id": "src/features/sst/components/SstChatCloseForm.jsx",
+          "renderedLength": 5151
+        },
+        {
+          "id": "src/features/sst/hooks/useSupportInbox.jsx",
+          "renderedLength": 1570
+        },
+        {
+          "id": "src/features/sst/services/supportInboxService.jsx",
+          "renderedLength": 682
+        },
+        {
+          "id": "src/features/sst/utils/supportCasePresentation.js",
+          "renderedLength": 583
+        },
+        {
+          "id": "src/features/sst/data/supportInboxData.jsx",
+          "renderedLength": 74
+        }
+      ]
+    },
+    {
+      "file": "assets/support-chat-DpdD19jh.js",
+      "entry": false,
+      "dynamicEntry": false,
+      "bytes": 4542,
+      "gzipBytes": 1993,
+      "imports": [
+        "assets/index-KscQJxZo.js"
+      ],
+      "dynamicImports": [],
+      "modules": [
+        {
+          "id": "src/core/socket/useChatDelivery.jsx",
+          "renderedLength": 3747
+        },
+        {
+          "id": "src/core/hooks/useChatScroll.js",
+          "renderedLength": 2627
+        },
+        {
+          "id": "node_modules/prop-types/factoryWithThrowingShims.js",
+          "renderedLength": 1957
+        },
+        {
+          "id": "src/core/api/chatService.jsx",
+          "renderedLength": 1572
+        },
+        {
+          "id": "node_modules/prop-types/lib/ReactPropTypesSecret.js",
+          "renderedLength": 558
+        },
+        {
+          "id": "node_modules/prop-types/index.js",
+          "renderedLength": 246
+        },
+        {
+          "id": "\u0000commonjsHelpers.js",
+          "renderedLength": 140
+        },
+        {
+          "id": "\u0000node_modules/prop-types/index.js?commonjs-es-import",
+          "renderedLength": 130
+        },
+        {
+          "id": "\u0000node_modules/prop-types/index.js?commonjs-module",
+          "renderedLength": 30
+        },
+        {
+          "id": "src/styles/support-chat.css",
+          "renderedLength": 0
+        }
+      ]
+    },
+    {
+      "file": "assets/socketClient-A_pLaAw_.js",
+      "entry": false,
+      "dynamicEntry": false,
+      "bytes": 42641,
+      "gzipBytes": 13372,
+      "imports": [
+        "assets/index-KscQJxZo.js"
+      ],
+      "dynamicImports": [],
+      "modules": [
+        {
+          "id": "node_modules/socket.io-client/build/esm/socket.js",
+          "renderedLength": 25385
+        },
+        {
+          "id": "node_modules/engine.io-client/build/esm/socket.js",
+          "renderedLength": 22873
+        },
+        {
+          "id": "node_modules/socket.io-client/build/esm/manager.js",
+          "renderedLength": 10243
+        },
+        {
+          "id": "node_modules/socket.io-parser/build/esm/index.js",
+          "renderedLength": 10211
+        },
+        {
+          "id": "node_modules/engine.io-client/build/esm/transports/polling-xhr.js",
+          "renderedLength": 7960
+        },
+        {
+          "id": "node_modules/engine.io-parser/build/esm/index.js",
+          "renderedLength": 6176
+        },
+        {
+          "id": "node_modules/engine.io-client/build/esm/transports/websocket.js",
+          "renderedLength": 4167
+        },
+        {
+          "id": "node_modules/engine.io-client/build/esm/transports/polling.js",
+          "renderedLength": 3755
+        },
+        {
+          "id": "node_modules/@socket.io/component-emitter/lib/esm/index.js",
+          "renderedLength": 3303
+        },
+        {
+          "id": "node_modules/engine.io-client/build/esm/transport.js",
+          "renderedLength": 3226
+        },
+        {
+          "id": "node_modules/socket.io-parser/build/esm/binary.js",
+          "renderedLength": 2847
+        },
+        {
+          "id": "node_modules/engine.io-client/build/esm/transports/webtransport.js",
+          "renderedLength": 2788
+        },
+        {
+          "id": "node_modules/engine.io-client/build/esm/contrib/parseuri.js",
+          "renderedLength": 2503
+        },
+        {
+          "id": "node_modules/engine.io-parser/build/esm/encodePacket.browser.js",
+          "renderedLength": 2202
+        },
+        {
+          "id": "src/core/socket/socketClient.jsx",
+          "renderedLength": 1831
+        },
+        {
+          "id": "node_modules/engine.io-parser/build/esm/decodePacket.browser.js",
+          "renderedLength": 1801
+        },
+        {
+          "id": "node_modules/engine.io-client/build/esm/util.js",
+          "renderedLength": 1782
+        },
+        {
+          "id": "node_modules/socket.io-client/build/esm/url.js",
+          "renderedLength": 1672
+        },
+        {
+          "id": "node_modules/socket.io-parser/build/esm/is-binary.js",
+          "renderedLength": 1561
+        },
+        {
+          "id": "node_modules/socket.io-client/build/esm/contrib/backo2.js",
+          "renderedLength": 1376
+        },
+        {
+          "id": "node_modules/engine.io-parser/build/esm/contrib/base64-arraybuffer.js",
+          "renderedLength": 1213
+        },
+        {
+          "id": "node_modules/socket.io-client/build/esm/index.js",
+          "renderedLength": 1106
+        },
+        {
+          "id": "node_modules/engine.io-client/build/esm/contrib/parseqs.js",
+          "renderedLength": 796
+        },
+        {
+          "id": "node_modules/engine.io-client/build/esm/globals.js",
+          "renderedLength": 606
+        },
+        {
+          "id": "node_modules/engine.io-parser/build/esm/commons.js",
+          "renderedLength": 480
+        },
+        {
+          "id": "node_modules/engine.io-client/build/esm/contrib/has-cors.js",
+          "renderedLength": 316
+        },
+        {
+          "id": "node_modules/socket.io-client/build/esm/on.js",
+          "renderedLength": 115
+        },
+        {
+          "id": "node_modules/engine.io-client/build/esm/transports/index.js",
+          "renderedLength": 82
+        }
+      ]
+    },
+    {
+      "file": "assets/sstQueries-Bg2ilkTX.js",
+      "entry": false,
+      "dynamicEntry": false,
+      "bytes": 2654,
+      "gzipBytes": 950,
+      "imports": [
+        "assets/index-KscQJxZo.js",
+        "assets/interventionContract-er7n6e5h.js"
+      ],
+      "dynamicImports": [],
+      "modules": [
+        {
+          "id": "src/features/sst/services/sstQueries.jsx",
+          "renderedLength": 3476
+        }
+      ]
+    },
+    {
+      "file": "assets/interventionContract-er7n6e5h.js",
+      "entry": false,
+      "dynamicEntry": false,
+      "bytes": 899,
+      "gzipBytes": 447,
+      "imports": [],
+      "dynamicImports": [],
+      "modules": [
+        {
+          "id": "src/core/api/interventionContract.jsx",
+          "renderedLength": 1093
+        }
+      ]
+    },
+    {
+      "file": "assets/AuditLogPage-DeRLgYI_.js",
+      "entry": false,
+      "dynamicEntry": true,
+      "facade": "src/features/auditor/pages/AuditLogPage.jsx",
+      "bytes": 23666,
+      "gzipBytes": 7422,
+      "imports": [
+        "assets/index-KscQJxZo.js",
+        "assets/useModalA11y-DcYJrfMk.js"
+      ],
+      "dynamicImports": [],
+      "modules": [
+        {
+          "id": "src/features/auditor/components/AuditLogTable.jsx",
+          "renderedLength": 26532
+        },
+        {
+          "id": "src/features/auditor/hooks/useAuditLog.jsx",
+          "renderedLength": 6260
+        },
+        {
+          "id": "src/features/auditor/pages/AuditLogPage.jsx",
+          "renderedLength": 6093
+        },
+        {
+          "id": "src/features/auditor/utils/auditDisplay.js",
+          "renderedLength": 2721
+        },
+        {
+          "id": "src/features/auditor/services/auditorQueries.jsx",
+          "renderedLength": 2487
+        },
+        {
+          "id": "src/styles/auditor.css",
+          "renderedLength": 0
+        }
+      ]
+    },
+    {
+      "file": "assets/OrganizationPage-7HAdxNR8.js",
+      "entry": false,
+      "dynamicEntry": true,
+      "facade": "src/features/admin/pages/OrganizationPage.jsx",
+      "bytes": 22920,
+      "gzipBytes": 5793,
+      "imports": [
+        "assets/index-KscQJxZo.js",
+        "assets/admin-C43Tyb1N.js",
+        "assets/useExpiredFormDraft-Bh0lvf8K.js",
+        "assets/useModalA11y-DcYJrfMk.js",
+        "assets/ruleContract-DUGZE2sV.js"
+      ],
+      "dynamicImports": [],
+      "modules": [
+        {
+          "id": "src/features/admin/components/TeamModal.jsx",
+          "renderedLength": 8320
+        },
+        {
+          "id": "src/features/admin/components/CampaignCard.jsx",
+          "renderedLength": 7159
+        },
+        {
+          "id": "src/features/admin/pages/OrganizationPage.jsx",
+          "renderedLength": 7003
+        },
+        {
+          "id": "src/features/admin/hooks/useOrganization.jsx",
+          "renderedLength": 5724
+        },
+        {
+          "id": "src/features/admin/components/CampaignModal.jsx",
+          "renderedLength": 5217
+        },
+        {
+          "id": "src/features/admin/components/AssignSupervisorModal.jsx",
+          "renderedLength": 5201
+        },
+        {
+          "id": "src/features/admin/services/organizationService.jsx",
+          "renderedLength": 3682
+        }
+      ]
+    },
+    {
+      "file": "assets/UsersRolesPage-B_n2euMK.js",
+      "entry": false,
+      "dynamicEntry": true,
+      "facade": "src/features/admin/pages/UsersRolesPage.jsx",
+      "bytes": 20441,
+      "gzipBytes": 5622,
+      "imports": [
+        "assets/index-KscQJxZo.js",
+        "assets/admin-C43Tyb1N.js",
+        "assets/useExpiredFormDraft-Bh0lvf8K.js",
+        "assets/useModalA11y-DcYJrfMk.js",
+        "assets/ruleContract-DUGZE2sV.js"
+      ],
+      "dynamicImports": [],
+      "modules": [
+        {
+          "id": "src/features/admin/components/CreateUserModal.jsx",
+          "renderedLength": 10434
+        },
+        {
+          "id": "src/features/admin/components/ManageUserModal.jsx",
+          "renderedLength": 10018
+        },
+        {
+          "id": "src/features/admin/pages/UsersRolesPage.jsx",
+          "renderedLength": 9909
+        },
+        {
+          "id": "src/features/admin/hooks/useUsersRoles.jsx",
+          "renderedLength": 5070
+        },
+        {
+          "id": "src/features/admin/services/usersRolesService.jsx",
+          "renderedLength": 2076
+        },
+        {
+          "id": "src/features/admin/data/usersRolesData.jsx",
+          "renderedLength": 145
+        }
+      ]
+    },
+    {
+      "file": "assets/SystemParamsPage-0pHbTOr8.js",
+      "entry": false,
+      "dynamicEntry": true,
+      "facade": "src/features/admin/pages/SystemParamsPage.jsx",
+      "bytes": 23281,
+      "gzipBytes": 6187,
+      "imports": [
+        "assets/index-KscQJxZo.js",
+        "assets/ruleContract-DUGZE2sV.js",
+        "assets/useExpiredFormDraft-Bh0lvf8K.js",
+        "assets/admin-C43Tyb1N.js",
+        "assets/tabNavigation-DkKgA4mE.js"
+      ],
+      "dynamicImports": [],
+      "modules": [
+        {
+          "id": "src/features/admin/pages/SystemParamsPage.jsx",
+          "renderedLength": 14991
+        },
+        {
+          "id": "src/features/admin/hooks/useSystemParams.jsx",
+          "renderedLength": 8188
+        },
+        {
+          "id": "src/features/admin/components/PolicyAndNlpSettings.jsx",
+          "renderedLength": 7296
+        },
+        {
+          "id": "src/features/admin/components/PrivacyParameters.jsx",
+          "renderedLength": 3549
+        },
+        {
+          "id": "src/features/admin/components/SupportParameters.jsx",
+          "renderedLength": 2935
+        },
+        {
+          "id": "src/features/admin/components/PendingAlertRules.jsx",
+          "renderedLength": 2584
+        },
+        {
+          "id": "src/features/admin/services/systemParamsService.jsx",
+          "renderedLength": 1677
+        }
+      ]
+    },
+    {
+      "file": "assets/CsvImportPage-C-N5KxVd.js",
+      "entry": false,
+      "dynamicEntry": true,
+      "facade": "src/features/admin/pages/CsvImportPage.jsx",
+      "bytes": 9404,
+      "gzipBytes": 3460,
+      "imports": [
+        "assets/index-KscQJxZo.js",
+        "assets/admin-C43Tyb1N.js",
+        "assets/DownloadLink-BeFad7Co.js",
+        "assets/ruleContract-DUGZE2sV.js"
+      ],
+      "dynamicImports": [],
+      "modules": [
+        {
+          "id": "src/features/admin/pages/CsvImportPage.jsx",
+          "renderedLength": 11367
+        },
+        {
+          "id": "src/features/admin/services/csvValidation.jsx",
+          "renderedLength": 3364
+        },
+        {
+          "id": "src/features/admin/hooks/useCsvImport.jsx",
+          "renderedLength": 2181
+        },
+        {
+          "id": "src/features/admin/data/csvImportData.jsx",
+          "renderedLength": 260
+        }
+      ]
+    },
+    {
+      "file": "assets/HabeasDataPage-CEz57YEk.js",
+      "entry": false,
+      "dynamicEntry": true,
+      "facade": "src/features/admin/pages/HabeasDataPage.jsx",
+      "bytes": 9603,
+      "gzipBytes": 3308,
+      "imports": [
+        "assets/index-KscQJxZo.js",
+        "assets/admin-C43Tyb1N.js",
+        "assets/useExpiredFormDraft-Bh0lvf8K.js",
+        "assets/useModalA11y-DcYJrfMk.js",
+        "assets/ruleContract-DUGZE2sV.js"
+      ],
+      "dynamicImports": [],
+      "modules": [
+        {
+          "id": "src/features/admin/pages/HabeasDataPage.jsx",
+          "renderedLength": 9447
+        },
+        {
+          "id": "src/features/admin/components/HabeasAdvanceModal.jsx",
+          "renderedLength": 4623
+        },
+        {
+          "id": "src/features/admin/hooks/useHabeasData.jsx",
+          "renderedLength": 3263
+        },
+        {
+          "id": "src/features/admin/services/habeasDataService.jsx",
+          "renderedLength": 488
+        },
+        {
+          "id": "src/features/admin/data/habeasDataData.jsx",
+          "renderedLength": 66
+        }
+      ]
+    },
+    {
+      "file": "assets/useModalA11y-DcYJrfMk.js",
+      "entry": false,
+      "dynamicEntry": false,
+      "bytes": 3363,
+      "gzipBytes": 1473,
+      "imports": [
+        "assets/index-KscQJxZo.js"
+      ],
+      "dynamicImports": [],
+      "modules": [
+        {
+          "id": "src/core/hooks/useModalA11y.jsx",
+          "renderedLength": 5816
+        },
+        {
+          "id": "src/core/hooks/useBodyScrollLock.jsx",
+          "renderedLength": 518
+        }
+      ]
+    },
+    {
+      "file": "assets/admin-C43Tyb1N.js",
+      "entry": false,
+      "dynamicEntry": false,
+      "bytes": 3898,
+      "gzipBytes": 1411,
+      "imports": [
+        "assets/index-KscQJxZo.js",
+        "assets/ruleContract-DUGZE2sV.js"
+      ],
+      "dynamicImports": [],
+      "modules": [
+        {
+          "id": "src/features/admin/services/adminQueries.jsx",
+          "renderedLength": 5409
+        },
+        {
+          "id": "src/styles/admin.css",
+          "renderedLength": 0
+        }
+      ]
+    },
+    {
+      "file": "assets/ruleContract-DUGZE2sV.js",
+      "entry": false,
+      "dynamicEntry": false,
+      "bytes": 531,
+      "gzipBytes": 319,
+      "imports": [],
+      "dynamicImports": [],
+      "modules": [
+        {
+          "id": "src/core/api/ruleContract.jsx",
+          "renderedLength": 732
+        }
+      ]
+    },
+    {
+      "file": "assets/ReportsPage-DeAss65y.js",
+      "entry": false,
+      "dynamicEntry": true,
+      "facade": "src/features/reports/pages/ReportsPage.jsx",
+      "bytes": 21915,
+      "gzipBytes": 6700,
+      "imports": [
+        "assets/index-KscQJxZo.js",
+        "assets/DownloadLink-BeFad7Co.js",
+        "assets/useExpiredFormDraft-Bh0lvf8K.js",
+        "assets/calendarDate-CTjx5bHT.js",
+        "assets/PrivacyBlockedCard-lryl5Hma.js"
+      ],
+      "dynamicImports": [],
+      "modules": [
+        {
+          "id": "src/features/reports/hooks/useReports.jsx",
+          "renderedLength": 10046
+        },
+        {
+          "id": "src/features/reports/components/ReportConfiguration.jsx",
+          "renderedLength": 9105
+        },
+        {
+          "id": "src/features/reports/components/ReportPreviewCard.jsx",
+          "renderedLength": 6115
+        },
+        {
+          "id": "src/features/reports/components/ReportHistoryTable.jsx",
+          "renderedLength": 4697
+        },
+        {
+          "id": "src/features/reports/pages/ReportsPage.jsx",
+          "renderedLength": 4314
+        },
+        {
+          "id": "src/features/reports/components/ReportResult.jsx",
+          "renderedLength": 2643
+        },
+        {
+          "id": "src/features/reports/services/reportsQueries.jsx",
+          "renderedLength": 1419
+        },
+        {
+          "id": "src/features/reports/services/reportsService.jsx",
+          "renderedLength": 447
+        },
+        {
+          "id": "src/styles/reports.css",
+          "renderedLength": 0
+        }
+      ]
+    },
+    {
+      "file": "assets/PrivacyBlockedCard-lryl5Hma.js",
+      "entry": false,
+      "dynamicEntry": false,
+      "bytes": 2955,
+      "gzipBytes": 1186,
+      "imports": [
+        "assets/index-KscQJxZo.js"
+      ],
+      "dynamicImports": [],
+      "modules": [
+        {
+          "id": "src/core/components/PrivacyBlockedCard.jsx",
+          "renderedLength": 5085
+        }
+      ]
+    },
+    {
+      "file": "assets/calendarDate-CTjx5bHT.js",
+      "entry": false,
+      "dynamicEntry": false,
+      "bytes": 215,
+      "gzipBytes": 186,
+      "imports": [],
+      "dynamicImports": [],
+      "modules": [
+        {
+          "id": "src/core/time/calendarDate.jsx",
+          "renderedLength": 327
+        }
+      ]
+    },
+    {
+      "file": "assets/DownloadLink-BeFad7Co.js",
+      "entry": false,
+      "dynamicEntry": false,
+      "bytes": 529,
+      "gzipBytes": 365,
+      "imports": [
+        "assets/index-KscQJxZo.js"
+      ],
+      "dynamicImports": [],
+      "modules": [
+        {
+          "id": "src/core/components/DownloadLink.jsx",
+          "renderedLength": 820
+        }
+      ]
+    },
+    {
+      "file": "assets/useExpiredFormDraft-Bh0lvf8K.js",
+      "entry": false,
+      "dynamicEntry": false,
+      "bytes": 529,
+      "gzipBytes": 338,
+      "imports": [
+        "assets/index-KscQJxZo.js"
+      ],
+      "dynamicImports": [],
+      "modules": [
+        {
+          "id": "src/core/auth/useExpiredFormDraft.jsx",
+          "renderedLength": 918
+        }
+      ]
+    },
+    {
+      "file": "assets/NotificationsPage-ZyPwS9Jj.js",
+      "entry": false,
+      "dynamicEntry": true,
+      "facade": "src/features/notifications/pages/NotificationsPage.jsx",
+      "bytes": 10381,
+      "gzipBytes": 3579,
+      "imports": [
+        "assets/index-KscQJxZo.js",
+        "assets/tabNavigation-DkKgA4mE.js"
+      ],
+      "dynamicImports": [],
+      "modules": [
+        {
+          "id": "src/features/notifications/pages/NotificationsPage.jsx",
+          "renderedLength": 7828
+        },
+        {
+          "id": "src/features/notifications/hooks/useNotifications.jsx",
+          "renderedLength": 3720
+        },
+        {
+          "id": "src/features/notifications/components/NotificationItem.jsx",
+          "renderedLength": 3647
+        },
+        {
+          "id": "src/features/notifications/components/ReminderPreferencesCard.jsx",
+          "renderedLength": 1687
+        },
+        {
+          "id": "src/features/notifications/services/notificationsQueries.jsx",
+          "renderedLength": 785
+        },
+        {
+          "id": "src/features/notifications/services/notificationsService.jsx",
+          "renderedLength": 630
+        },
+        {
+          "id": "src/styles/notifications.css",
+          "renderedLength": 0
+        }
+      ]
+    },
+    {
+      "file": "assets/tabNavigation-DkKgA4mE.js",
+      "entry": false,
+      "dynamicEntry": false,
+      "bytes": 610,
+      "gzipBytes": 379,
+      "imports": [],
+      "dynamicImports": [],
+      "modules": [
+        {
+          "id": "src/core/components/tabNavigation.js",
+          "renderedLength": 1259
+        }
+      ]
+    },
+    {
+      "file": "assets/LandingPage-FkIRzsMA.js",
+      "entry": false,
+      "dynamicEntry": true,
+      "facade": "src/features/landing/pages/LandingPage.jsx",
+      "bytes": 32383,
+      "gzipBytes": 8785,
+      "imports": [
+        "assets/index-KscQJxZo.js",
+        "assets/Footer-BqBV-sw1.js",
+        "assets/landingData-DsIUhm0f.js",
+        "assets/ScrollToTopButton-B7tW6NDu.js"
+      ],
+      "dynamicImports": [],
+      "modules": [
+        {
+          "id": "src/features/landing/components/ProblemSection.jsx",
+          "renderedLength": 11760
+        },
+        {
+          "id": "src/features/landing/components/HeroSection.jsx",
+          "renderedLength": 10424
+        },
+        {
+          "id": "src/features/landing/components/PrivacyDemoPanel.jsx",
+          "renderedLength": 9827
+        },
+        {
+          "id": "src/features/landing/components/AgentDemoPanel.jsx",
+          "renderedLength": 7771
+        },
+        {
+          "id": "src/features/landing/components/RolesVisibilitySection.jsx",
+          "renderedLength": 5715
+        },
+        {
+          "id": "src/features/landing/components/ThreeActsSection.jsx",
+          "renderedLength": 4428
+        },
+        {
+          "id": "src/features/landing/components/SstDemoPanel.jsx",
+          "renderedLength": 3667
+        },
+        {
+          "id": "src/features/landing/components/AcademicBackingSection.jsx",
+          "renderedLength": 3074
+        },
+        {
+          "id": "src/features/landing/pages/LandingPage.jsx",
+          "renderedLength": 1581
+        },
+        {
+          "id": "src/features/landing/components/ContactCtaSection.jsx",
+          "renderedLength": 1348
+        }
+      ]
+    },
+    {
+      "file": "assets/ContactenosPage-BKTsSeLb.js",
+      "entry": false,
+      "dynamicEntry": true,
+      "facade": "src/features/landing/pages/ContactenosPage.jsx",
+      "bytes": 12238,
+      "gzipBytes": 3518,
+      "imports": [
+        "assets/index-KscQJxZo.js",
+        "assets/Footer-BqBV-sw1.js",
+        "assets/landingData-DsIUhm0f.js"
+      ],
+      "dynamicImports": [],
+      "modules": [
+        {
+          "id": "src/features/landing/components/ContactForm.jsx",
+          "renderedLength": 14461
+        },
+        {
+          "id": "src/features/landing/pages/ContactenosPage.jsx",
+          "renderedLength": 4242
+        },
+        {
+          "id": "src/features/landing/hooks/useContactForm.jsx",
+          "renderedLength": 2662
+        },
+        {
+          "id": "src/features/landing/services/contactValidation.jsx",
+          "renderedLength": 1164
+        },
+        {
+          "id": "src/styles/contactenos.css",
+          "renderedLength": 0
+        }
+      ]
+    },
+    {
+      "file": "assets/landingData-DsIUhm0f.js",
+      "entry": false,
+      "dynamicEntry": false,
+      "bytes": 9857,
+      "gzipBytes": 3859,
+      "imports": [],
+      "dynamicImports": [],
+      "modules": [
+        {
+          "id": "src/features/landing/data/landingData.jsx",
+          "renderedLength": 11221
+        }
+      ]
+    },
+    {
+      "file": "assets/AcademicFoundationPage-DhuhOpbT.js",
+      "entry": false,
+      "dynamicEntry": true,
+      "facade": "src/features/landing/pages/AcademicFoundationPage.jsx",
+      "bytes": 32460,
+      "gzipBytes": 9247,
+      "imports": [
+        "assets/index-KscQJxZo.js",
+        "assets/Footer-BqBV-sw1.js",
+        "assets/ScrollToTopButton-B7tW6NDu.js"
+      ],
+      "dynamicImports": [],
+      "modules": [
+        {
+          "id": "src/features/landing/data/academicFoundationData.jsx",
+          "renderedLength": 13373
+        },
+        {
+          "id": "src/features/landing/components/AcademicEvidence.jsx",
+          "renderedLength": 8613
+        },
+        {
+          "id": "src/features/landing/pages/AcademicFoundationPage.jsx",
+          "renderedLength": 7341
+        },
+        {
+          "id": "src/features/landing/components/AcademicTransfer.jsx",
+          "renderedLength": 4893
+        },
+        {
+          "id": "src/features/landing/components/AcademicAuthors.jsx",
+          "renderedLength": 4612
+        },
+        {
+          "id": "src/features/landing/components/AcademicCitation.jsx",
+          "renderedLength": 4263
+        },
+        {
+          "id": "src/features/landing/components/AcademicHeader.jsx",
+          "renderedLength": 3003
+        },
+        {
+          "id": "src/features/landing/components/AcademicLegalFramework.jsx",
+          "renderedLength": 2700
+        },
+        {
+          "id": "src/features/landing/components/AcademicSidebarToc.jsx",
+          "renderedLength": 1791
+        }
+      ]
+    },
+    {
+      "file": "assets/ScrollToTopButton-B7tW6NDu.js",
+      "entry": false,
+      "dynamicEntry": false,
+      "bytes": 576,
+      "gzipBytes": 386,
+      "imports": [
+        "assets/index-KscQJxZo.js"
+      ],
+      "dynamicImports": [],
+      "modules": [
+        {
+          "id": "src/features/landing/components/ScrollToTopButton.jsx",
+          "renderedLength": 905
+        }
+      ]
+    },
+    {
+      "file": "assets/Footer-BqBV-sw1.js",
+      "entry": false,
+      "dynamicEntry": false,
+      "bytes": 6023,
+      "gzipBytes": 1940,
+      "imports": [
+        "assets/index-KscQJxZo.js"
+      ],
+      "dynamicImports": [],
+      "modules": [
+        {
+          "id": "src/features/landing/components/Navbar.jsx",
+          "renderedLength": 7415
+        },
+        {
+          "id": "src/features/landing/components/Footer.jsx",
+          "renderedLength": 4335
+        }
+      ]
+    }
+  ],
+  "assets": [
+    {
+      "file": "assets/index-DYjliphA.css",
+      "bytes": 173724
+    },
+    {
+      "file": "assets/AppLayout-BVUrvpah.css",
+      "bytes": 10280
+    },
+    {
+      "file": "assets/ConsentPage-CDKxbb_F.css",
+      "bytes": 10899
+    },
+    {
+      "file": "assets/LoginPage-CgT6XAaZ.css",
+      "bytes": 71767
+    },
+    {
+      "file": "assets/JournalPage-SO7hVSGl.css",
+      "bytes": 15292
+    },
+    {
+      "file": "assets/MyWellbeingPage-ijnQzIld.css",
+      "bytes": 9027
+    },
+    {
+      "file": "assets/SupportChannelPage-CSDpbDLW.css",
+      "bytes": 41852
+    },
+    {
+      "file": "assets/crisis-CVQMYTTM.css",
+      "bytes": 27377
+    },
+    {
+      "file": "assets/supervisor-rvFehP-K.css",
+      "bytes": 6268
+    },
+    {
+      "file": "assets/umbral-Bi9xb1Zg.css",
+      "bytes": 5197
+    },
+    {
+      "file": "assets/support-chat-C-2cvQw7.css",
+      "bytes": 8925
+    },
+    {
+      "file": "assets/sst-DVUFjgAR.css",
+      "bytes": 24480
+    },
+    {
+      "file": "assets/AuditLogPage-CMBEhp9N.css",
+      "bytes": 8475
+    },
+    {
+      "file": "assets/admin-BDOVUh3-.css",
+      "bytes": 7653
+    },
+    {
+      "file": "assets/ReportsPage-CED45NoD.css",
+      "bytes": 6819
+    },
+    {
+      "file": "assets/NotificationsPage-DoJNtBYe.css",
+      "bytes": 6775
+    },
+    {
+      "file": "assets/agent-Dv79DyfW.css",
+      "bytes": 43542
+    },
+    {
+      "file": "assets/ContactenosPage-Dgk6lVfe.css",
+      "bytes": 6624
+    },
+    {
+      "file": "index.html",
+      "bytes": 625
+    }
+  ]
+}

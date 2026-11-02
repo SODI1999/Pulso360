@@ -1,9 +1,10 @@
-import { StrictMode, useEffect, useRef, useState } from 'react';
+import { StrictMode, lazy, useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { MemoryRouter, Route, Routes, useNavigate } from 'react-router-dom';
 import { useModalA11y } from '../src/core/hooks/useModalA11y';
 import { RouteAccessibility } from '../src/core/components/RouteAccessibility';
 import { handleTabNavigation } from '../src/core/components/tabNavigation';
+import { PageBoundary } from '../src/core/components/PageBoundary';
 import '../src/styles/tokens.css';
 import '../src/styles/layout.css';
 import '../src/styles/landing/base.css';
@@ -66,6 +67,14 @@ export function ModalFixture() {
 
 const check = (condition, message) => { if (!condition) throw new Error(message); };
 const settle = () => new Promise(resolve => setTimeout(resolve, 40));
+const waitFor = async condition => {
+  const deadline = Date.now() + 1500;
+  while (!condition()) {
+    if (Date.now() >= deadline) throw new Error(`La condición DOM no se alcanzó: ${condition.toString()}; ${document.body.innerText.slice(-500)}`);
+    await settle();
+  }
+  await settle();
+};
 const key = value => {
   const event = new KeyboardEvent('keydown', { key: value, bubbles: true, cancelable: true });
   document.activeElement.dispatchEvent(event);
@@ -319,9 +328,122 @@ async function runPendingCheck(root) {
   return ['guardado pendiente sin controles: foco en superficie, Escape y recuperación'];
 }
 
+let resolveStandalonePage;
+let resolveSecondPage;
+let resolveInteriorPage;
+const StandaloneLazyPage = lazy(() => new Promise(resolve => {
+  resolveStandalonePage = () => resolve({ default: StandaloneReadyPage });
+}));
+const SecondLazyPage = lazy(() => new Promise(resolve => {
+  resolveSecondPage = () => resolve({ default: SecondReadyPage });
+}));
+const InteriorLazyPage = lazy(() => new Promise(resolve => {
+  resolveInteriorPage = () => resolve({ default: InteriorReadyPage });
+}));
+const RejectedLazyPage = lazy(() => Promise.reject(new Error('Fallo técnico deliberado de muestra')));
+
+export function StandaloneReadyPage() {
+  return <main><h1 id="standalone-ready">Vista técnica disponible</h1></main>;
+}
+
+export function SecondReadyPage() {
+  return <main><h1 id="second-ready">Segunda vista disponible</h1></main>;
+}
+
+export function InteriorReadyPage() {
+  return <section><h1 id="interior-ready">Vista interior disponible</h1></section>;
+}
+
+export function StandaloneBoundaryFixture() {
+  const navigate = useNavigate();
+  return <>
+    <RouteAccessibility />
+    <nav aria-label="Vistas técnicas">
+      <button id="boundary-next" onClick={() => navigate('/boundary-next')}>Otra vista diferida</button>
+      <button id="boundary-fail" onClick={() => navigate('/boundary-fail')}>Vista con fallo de muestra</button>
+    </nav>
+    <PageBoundary standalone><Routes>
+      <Route path="/boundary-load" element={<StandaloneLazyPage />} />
+      <Route path="/boundary-next" element={<SecondLazyPage />} />
+      <Route path="/boundary-fail" element={<RejectedLazyPage />} />
+      <Route path="/" element={<StandaloneReadyPage />} />
+    </Routes></PageBoundary>
+  </>;
+}
+
+export function InteriorBoundaryFixture() {
+  const navigate = useNavigate();
+  const [shellCount, setShellCount] = useState(0);
+  return <>
+    <RouteAccessibility />
+    <nav aria-label="Shell técnico">
+      <button id="shell-count" onClick={() => setShellCount(value => value + 1)}>Actualizar shell</button>
+      <output id="shell-value">{shellCount}</output>
+      <button id="shell-fail" onClick={() => navigate('/shell-fail')}>Vista con fallo de muestra</button>
+    </nav>
+    <main id="persistent-main"><PageBoundary><Routes>
+      <Route path="/shell-load" element={<InteriorLazyPage />} />
+      <Route path="/shell-fail" element={<RejectedLazyPage />} />
+      <Route path="/" element={<InteriorReadyPage />} />
+    </Routes></PageBoundary></main>
+  </>;
+}
+
+const visibleMains = () => [...document.querySelectorAll('main')].filter(element => element.getClientRects().length);
+
+async function runPageBoundaryChecks(root) {
+  const passed = [];
+  root.render(<MemoryRouter initialEntries={['/boundary-load']}><StandaloneBoundaryFixture /></MemoryRouter>);
+  await settle();
+  const fallback = document.querySelector('[data-page-boundary="loading"]');
+  check(fallback?.tagName === 'MAIN' && fallback.getAttribute('aria-busy') === 'true', 'La carga standalone debe ofrecer un main ocupado');
+  check(Boolean(fallback.querySelector('[role="status"]')) && visibleMains().length === 1, 'La carga debe anunciarse y conservar un main visible');
+  resolveStandalonePage();
+  await waitFor(() => document.getElementById('standalone-ready'));
+  check(document.activeElement.id === 'standalone-ready', 'El encabezado del nuevo main debe recibir el foco pendiente');
+  check(document.title === 'Vista técnica disponible · Pulso360', 'El título debe completarse al resolver la página');
+  click('boundary-next');
+  await waitFor(() => typeof resolveSecondPage === 'function');
+  check(visibleMains().length === 1, 'La transición pendiente debe conservar un solo main visible');
+  resolveSecondPage();
+  await waitFor(() => document.getElementById('second-ready'));
+  check(document.activeElement.id === 'second-ready' && visibleMains().length === 1, 'La siguiente vista debe reemplazar su fallback y recibir foco');
+  check(document.title === 'Segunda vista disponible · Pulso360', 'El título debe corresponder a la siguiente vista resuelta');
+  passed.push('Suspense standalone: carga real y transición de vistas con título/foco correctos');
+
+  click('boundary-fail');
+  await waitFor(() => document.querySelector('[data-page-boundary="error"]'));
+  check(Boolean(document.querySelector('[data-page-boundary="error"] [role="alert"]')), 'Un import rechazado debe mostrar un error anunciado');
+  check(!document.body.textContent.includes('Fallo técnico deliberado'), 'El error no debe exponer detalles internos');
+  check([...document.querySelectorAll('button')].some(button => button.textContent === 'Recargar página'), 'El error debe ofrecer recarga explícita');
+  document.querySelector('[data-page-boundary="error"] a[href="/"]').click();
+  await waitFor(() => document.getElementById('standalone-ready'));
+  check(Boolean(document.getElementById('standalone-ready')) && !document.querySelector('[data-page-boundary="error"]'), 'Cambiar de pathname debe recuperar la vista');
+  passed.push('import rechazado: error honesto, acciones explícitas y recuperación por ruta');
+
+  root.render(null);
+  await settle();
+  root.render(<MemoryRouter initialEntries={['/shell-load']}><InteriorBoundaryFixture /></MemoryRouter>);
+  await settle();
+  const persistentMain = document.getElementById('persistent-main');
+  check(document.querySelector('[data-page-boundary="loading"]').tagName === 'DIV' && visibleMains().length === 1, 'La carga interior debe conservar un único main del shell');
+  resolveInteriorPage();
+  await waitFor(() => document.getElementById('interior-ready'));
+  check(document.activeElement.id === 'interior-ready' && document.getElementById('persistent-main') === persistentMain, 'La carga interior debe mantener main y completar foco');
+  click('shell-count');
+  click('shell-fail');
+  await waitFor(() => document.querySelector('[data-page-boundary="error"]'));
+  check(document.querySelector('[data-page-boundary="error"]').tagName === 'DIV' && visibleMains().length === 1, 'El error interior no debe añadir otro main');
+  document.querySelector('[data-page-boundary="error"] a[href="/"]').click();
+  await waitFor(() => document.getElementById('interior-ready'));
+  check(document.getElementById('shell-value').textContent === '1' && document.getElementById('persistent-main') === persistentMain, 'La recuperación no debe remontar ni reiniciar el shell');
+  passed.push('boundary interior: main único, shell estable y estado conservado tras recuperar');
+  return passed;
+}
+
 const fixtureRoot = createRoot(document.getElementById('root'));
 fixtureRoot.render(<ModalFixture />);
-(async () => [...await runChecks(), ...await runRouteChecks(fixtureRoot), ...await runTabChecks(fixtureRoot), ...await runPendingCheck(fixtureRoot)])().then(checks => {
+(async () => [...await runChecks(), ...await runRouteChecks(fixtureRoot), ...await runTabChecks(fixtureRoot), ...await runPendingCheck(fixtureRoot), ...await runPageBoundaryChecks(fixtureRoot)])().then(checks => {
   document.body.dataset.modalTestResult = encodeURIComponent(JSON.stringify({ passed: true, checks }));
 }).catch(error => {
   document.body.dataset.modalTestResult = encodeURIComponent(JSON.stringify({ passed: false, error: error.message }));

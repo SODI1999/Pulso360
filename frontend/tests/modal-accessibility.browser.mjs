@@ -25,7 +25,7 @@ try {
   await server.listen();
   const port = server.httpServer.address().port;
   const args = ['--headless=new', '--no-first-run', '--no-default-browser-check',
-    '--disable-background-networking', '--dump-dom', '--virtual-time-budget=3000',
+    '--disable-background-networking', '--dump-dom', '--virtual-time-budget=5000',
     `--user-data-dir=${join(temporary, 'chrome')}`,
     `http://127.0.0.1:${port}/tests/modal-accessibility.fixture.html`];
   const html = await new Promise((resolveOutput, reject) => {

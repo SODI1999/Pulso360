@@ -28,6 +28,15 @@ function focusContent(element, showIndicator = true, reveal = true) {
   if (reveal) element.scrollIntoView({ block: 'start', behavior: 'instant' });
 }
 
+function isRendered(element) {
+  return Boolean(element.getClientRects().length &&
+    !['hidden', 'collapse'].includes(getComputedStyle(element).visibility));
+}
+
+function getVisibleMain() {
+  return [...document.querySelectorAll('main')].find(isRendered);
+}
+
 /**
  * Anuncia cada cambio de ruta mediante título y foco, y permite saltar la navegación.
  * Espera de forma acotada un encabezado asíncrono; una interacción cancela ese foco pendiente.
@@ -71,9 +80,9 @@ export function RouteAccessibility() {
       document.removeEventListener('pointerdown', cancelPendingFocus, true);
     };
     const updateContent = (initial = false) => {
-      const main = document.querySelector('main');
-      const heading = main?.querySelector('h1') || main?.querySelector('h2') ||
-        (!main ? document.querySelector('h1') : null);
+      const main = getVisibleMain();
+      const heading = [...(main || document).querySelectorAll('h1')].find(isRendered) ||
+        (main ? [...main.querySelectorAll('h2')].find(isRendered) : null);
       const content = main || heading;
       const title = heading?.textContent.trim() || routeTitles[pathname] || 'Pulso360';
       document.title = title === 'Pulso360' ? title : `${title} · Pulso360`;
@@ -93,7 +102,9 @@ export function RouteAccessibility() {
     };
 
     if (updateContent(true)) return undefined;
-    const container = document.querySelector('main') || document.getElementById('root');
+    const main = getVisibleMain();
+    const container = main?.dataset.pageBoundary === 'loading'
+      ? main.parentElement : main || document.getElementById('root');
     if (!container) return undefined;
     observer = new MutationObserver(() => {
       if (updateContent()) stopWaiting();

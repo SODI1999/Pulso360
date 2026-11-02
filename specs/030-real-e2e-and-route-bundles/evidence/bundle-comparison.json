@@ -1,0 +1,43 @@
+{
+  "measuredAt": "2026-11-02T21:14:08.983Z",
+  "baselineCommit": "58eb868d6f4ec6ce9190110f038bfcedc9760d84",
+  "method": "Misma configuración Vite6 y fuentes; baseline sustituye solo App/AppLayout/RouteAccessibility por git show del commit indicado mediante load de Vite, sin modificar checkout. Medición final tras hooks de Rollup. Gzip nivel9 estimado por recurso, sin cabeceras HTTP.",
+  "before": {
+    "entryJsBytes": 962719,
+    "landingJsBytes": 962719,
+    "landingGzipBytes": 267972,
+    "initialCssBytes": 423645,
+    "allJsBytes": 962719,
+    "allCssBytes": 423645
+  },
+  "after": {
+    "entryJsBytes": 319917,
+    "landingJsBytes": 368756,
+    "landingGzipBytes": 117136,
+    "initialCssBytes": 173724,
+    "allJsBytes": 979849,
+    "allCssBytes": 484976,
+    "largestChunkBytes": 319917,
+    "jsChunks": 53,
+    "landingChunks": [
+      "assets/index-KscQJxZo.js",
+      "assets/LandingPage-FkIRzsMA.js",
+      "assets/Footer-BqBV-sw1.js",
+      "assets/landingData-DsIUhm0f.js",
+      "assets/ScrollToTopButton-B7tW6NDu.js"
+    ]
+  },
+  "browser": {
+    "observedAt": "2026-11-02T21:13:06.991Z",
+    "landingJsBytes": 368757,
+    "landingCssBytes": 173724,
+    "privatePageChunksDownloaded": false,
+    "environment": "Chrome156 CLI headless, producción local, dos perfiles sin caché, API de puerto efímero; diferencia de1byte en URL compilada respecto build normal."
+  },
+  "limits": "No mide tiempo de carga en red corporativa, TLS, CDN, caché de hosting ni memoria. Cargar todas las rutas acaba transfiriendo más JS/CSS por separación; beneficio medido es carga inicial por ruta.",
+  "reduction": {
+    "landingJsPercent": 61.69640362348723,
+    "landingGzipPercent": 56.28797038496559,
+    "initialCssPercent": 58.99302482030946
+  }
+}

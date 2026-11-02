@@ -1,0 +1,1346 @@
+{
+  "startedAt": "2026-11-02T21:12:56.062Z",
+  "passed": true,
+  "isolation": {
+    "separateTestDatabase": true,
+    "uniqueFixtureAccounts": 2,
+    "schedulerDisabled": true,
+    "interceptedProductRequests": 0
+  },
+  "network": [
+    {
+      "method": "GET",
+      "path": "/api/v1",
+      "status": 200,
+      "durationMs": 6
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1",
+      "status": 200,
+      "durationMs": 2
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1",
+      "status": 304,
+      "durationMs": 2
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1",
+      "status": 304,
+      "durationMs": 1
+    },
+    {
+      "method": "OPTIONS",
+      "path": "/api/v1/auth/login",
+      "status": 204,
+      "durationMs": 1
+    },
+    {
+      "method": "OPTIONS",
+      "path": "/api/v1/auth/login",
+      "status": 204,
+      "durationMs": 1
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/login",
+      "status": 200,
+      "durationMs": 340
+    },
+    {
+      "method": "OPTIONS",
+      "path": "/api/v1/agent/consent",
+      "status": 204,
+      "durationMs": 1
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/agent/consent",
+      "status": 200,
+      "durationMs": 108
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/login",
+      "status": 200,
+      "durationMs": 355
+    },
+    {
+      "method": "OPTIONS",
+      "path": "/api/v1/auth/me",
+      "status": 204,
+      "durationMs": 1
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/auth/me",
+      "status": 200,
+      "durationMs": 34
+    },
+    {
+      "method": "OPTIONS",
+      "path": "/api/v1/agent/checkin/history",
+      "status": 204,
+      "durationMs": 1
+    },
+    {
+      "method": "OPTIONS",
+      "path": "/api/v1/agent/journal",
+      "status": 204,
+      "durationMs": 1
+    },
+    {
+      "method": "OPTIONS",
+      "path": "/api/v1/agent/support-requests",
+      "status": 204,
+      "durationMs": 1
+    },
+    {
+      "method": "OPTIONS",
+      "path": "/api/v1/agent/habeas-data",
+      "status": 204,
+      "durationMs": 1
+    },
+    {
+      "method": "OPTIONS",
+      "path": "/api/v1/auth/me",
+      "status": 204,
+      "durationMs": 1
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/agent/journal",
+      "status": 200,
+      "durationMs": 19
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/agent/habeas-data",
+      "status": 200,
+      "durationMs": 20
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/auth/me",
+      "status": 304,
+      "durationMs": 36
+    },
+    {
+      "method": "OPTIONS",
+      "path": "/api/v1/sst/alerts",
+      "status": 204,
+      "durationMs": 1
+    },
+    {
+      "method": "OPTIONS",
+      "path": "/api/v1/sst/support-requests",
+      "status": 204,
+      "durationMs": 0
+    },
+    {
+      "method": "OPTIONS",
+      "path": "/api/v1/sst/metrics",
+      "status": 204,
+      "durationMs": 1
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/agent/checkin/history",
+      "status": 200,
+      "durationMs": 79
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/agent/support-requests",
+      "status": 200,
+      "durationMs": 84
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sst/alerts",
+      "status": 200,
+      "durationMs": 34
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sst/support-requests",
+      "status": 200,
+      "durationMs": 54
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sst/metrics",
+      "status": 200,
+      "durationMs": 56
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1",
+      "status": 304,
+      "durationMs": 2
+    },
+    {
+      "method": "OPTIONS",
+      "path": "/api/v1/chat/agent-active-map",
+      "status": 204,
+      "durationMs": 2
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/agent/checkin/history",
+      "status": 200,
+      "durationMs": 23
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/auth/me",
+      "status": 200,
+      "durationMs": 283
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/agent/journal",
+      "status": 304,
+      "durationMs": 25
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/agent/support-requests",
+      "status": 200,
+      "durationMs": 29
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/agent/habeas-data",
+      "status": 304,
+      "durationMs": 21
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/auth/me",
+      "status": 304,
+      "durationMs": 22
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/auth/me",
+      "status": 304,
+      "durationMs": 12
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/chat/agent-active-map",
+      "status": 200,
+      "durationMs": 31
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/auth/me",
+      "status": 304,
+      "durationMs": 12
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/agent/consent",
+      "status": 200,
+      "durationMs": 192
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/agent/consent",
+      "status": 304,
+      "durationMs": 35
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/agent/consent",
+      "status": 304,
+      "durationMs": 7
+    },
+    {
+      "method": "OPTIONS",
+      "path": "/api/v1/sst/support-requests",
+      "status": 204,
+      "durationMs": 1
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sst/support-requests",
+      "status": 201,
+      "durationMs": 27
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/auth/me",
+      "status": 304,
+      "durationMs": 14
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/agent/support-requests",
+      "status": 200,
+      "durationMs": 9
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/agent/habeas-data",
+      "status": 304,
+      "durationMs": 8
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/agent/journal",
+      "status": 304,
+      "durationMs": 13
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/agent/checkin/history",
+      "status": 304,
+      "durationMs": 17
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1",
+      "status": 304,
+      "durationMs": 1
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/agent/consent",
+      "status": 304,
+      "durationMs": 115
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/agent/consent",
+      "status": 304,
+      "durationMs": 31
+    },
+    {
+      "method": "OPTIONS",
+      "path": "/api/v1/chat/requests/sup-3ae590d3-1df2-4c61-ade6-649e513794cc",
+      "status": 204,
+      "durationMs": 1
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sst/support-requests",
+      "status": 200,
+      "durationMs": 25
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/chat/requests/sup-3ae590d3-1df2-4c61-ade6-649e513794cc",
+      "status": 200,
+      "durationMs": 13
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/auth/me",
+      "status": 200,
+      "durationMs": 39
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/auth/me",
+      "status": 304,
+      "durationMs": 35
+    },
+    {
+      "method": "OPTIONS",
+      "path": "/api/v1/chat/requests/sup-3ae590d3-1df2-4c61-ade6-649e513794cc",
+      "status": 204,
+      "durationMs": 1
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/chat/requests/sup-3ae590d3-1df2-4c61-ade6-649e513794cc",
+      "status": 200,
+      "durationMs": 28
+    },
+    {
+      "method": "OPTIONS",
+      "path": "/api/v1/chat/requests/sup-3ae590d3-1df2-4c61-ade6-649e513794cc/activate",
+      "status": 204,
+      "durationMs": 1
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/chat/requests/sup-3ae590d3-1df2-4c61-ade6-649e513794cc/activate",
+      "status": 200,
+      "durationMs": 49
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/agent/support-requests",
+      "status": 200,
+      "durationMs": 12
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/agent/consent",
+      "status": 304,
+      "durationMs": 10
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/agent/journal",
+      "status": 304,
+      "durationMs": 19
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/agent/habeas-data",
+      "status": 304,
+      "durationMs": 16
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/agent/checkin/history",
+      "status": 304,
+      "durationMs": 22
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/auth/me",
+      "status": 304,
+      "durationMs": 23
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sst/support-requests",
+      "status": 200,
+      "durationMs": 8
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1",
+      "status": 304,
+      "durationMs": 2
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/agent/journal",
+      "status": 304,
+      "durationMs": 13
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/agent/support-requests",
+      "status": 304,
+      "durationMs": 13
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/agent/habeas-data",
+      "status": 304,
+      "durationMs": 12
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/agent/checkin/history",
+      "status": 304,
+      "durationMs": 24
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/agent/consent",
+      "status": 304,
+      "durationMs": 19
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/chat/agent-active-map",
+      "status": 200,
+      "durationMs": 19
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/auth/me",
+      "status": 304,
+      "durationMs": 17
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/auth/me",
+      "status": 304,
+      "durationMs": 10
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/agent/consent",
+      "status": 304,
+      "durationMs": 7
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/agent/consent",
+      "status": 304,
+      "durationMs": 6
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/chat/requests/sup-3ae590d3-1df2-4c61-ade6-649e513794cc",
+      "status": 200,
+      "durationMs": 18
+    },
+    {
+      "method": "OPTIONS",
+      "path": "/api/v1/chat/sessions/chs-6052ea1a-048f-44cc-84e7-e2988eb54b6d/close",
+      "status": 204,
+      "durationMs": 0
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/chat/sessions/chs-6052ea1a-048f-44cc-84e7-e2988eb54b6d/close",
+      "status": 200,
+      "durationMs": 21
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/agent/journal",
+      "status": 304,
+      "durationMs": 14
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sst/support-requests",
+      "status": 200,
+      "durationMs": 11
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/agent/habeas-data",
+      "status": 304,
+      "durationMs": 14
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/agent/checkin/history",
+      "status": 304,
+      "durationMs": 18
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/agent/support-requests",
+      "status": 200,
+      "durationMs": 17
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/auth/me",
+      "status": 200,
+      "durationMs": 14
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sst/support-requests",
+      "status": 304,
+      "durationMs": 8
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/chat/agent-active-map",
+      "status": 200,
+      "durationMs": 28
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1",
+      "status": 304,
+      "durationMs": 1
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/agent/journal",
+      "status": 304,
+      "durationMs": 10
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/agent/support-requests",
+      "status": 304,
+      "durationMs": 11
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/agent/consent",
+      "status": 200,
+      "durationMs": 11
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/agent/habeas-data",
+      "status": 304,
+      "durationMs": 14
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/auth/me",
+      "status": 304,
+      "durationMs": 10
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/chat/agent-active-map",
+      "status": 304,
+      "durationMs": 25
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/agent/consent",
+      "status": 304,
+      "durationMs": 4
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/auth/me",
+      "status": 304,
+      "durationMs": 7
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/agent/checkin/history",
+      "status": 304,
+      "durationMs": 35
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/agent/consent",
+      "status": 304,
+      "durationMs": 6
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/chat/requests/sup-3ae590d3-1df2-4c61-ade6-649e513794cc",
+      "status": 200,
+      "durationMs": 7
+    }
+  ],
+  "socket": {
+    "connections": 5,
+    "messageSendEvents": 2
+  },
+  "environment": {
+    "frontend": "production build",
+    "backendOrigin": "http://127.0.0.1:53311",
+    "frontendOrigins": [
+      "http://127.0.0.1:53306",
+      "http://127.0.0.1:53307"
+    ]
+  },
+  "actors": [
+    {
+      "role": "agent",
+      "passed": true,
+      "checks": [
+        {
+          "name": "agent-landing-cold",
+          "actual": {
+            "resources": 6
+          },
+          "observedAt": "2026-11-02T21:13:02.809Z"
+        },
+        {
+          "name": "agent-logged-in",
+          "actual": {
+            "path": "/agente/panel"
+          },
+          "observedAt": "2026-11-02T21:13:03.930Z"
+        },
+        {
+          "name": "request-created",
+          "actual": {
+            "confirmedInUI": true
+          },
+          "observedAt": "2026-11-02T21:13:04.731Z"
+        },
+        {
+          "name": "agent-activation-live",
+          "actual": {
+            "withoutReload": true
+          },
+          "observedAt": "2026-11-02T21:13:05.206Z"
+        },
+        {
+          "name": "agent-sent",
+          "actual": {
+            "clearedAfterAck": true
+          },
+          "observedAt": "2026-11-02T21:13:05.339Z"
+        },
+        {
+          "name": "agent-received-live",
+          "actual": {
+            "withoutReload": true
+          },
+          "observedAt": "2026-11-02T21:13:05.488Z"
+        },
+        {
+          "name": "agent-reloaded",
+          "actual": {
+            "bothMessagesInUI": true
+          },
+          "observedAt": "2026-11-02T21:13:05.732Z"
+        },
+        {
+          "name": "agent-closed-live",
+          "actual": {
+            "readOnly": true
+          },
+          "observedAt": "2026-11-02T21:13:05.917Z"
+        },
+        {
+          "name": "agent-closed-persisted",
+          "actual": {
+            "readOnly": true,
+            "noComposer": true
+          },
+          "observedAt": "2026-11-02T21:13:06.141Z"
+        }
+      ],
+      "landingResources": [
+        {
+          "file": "/assets/index-4ar-6GJH.js",
+          "bytes": 319918,
+          "transferBytes": 320218
+        },
+        {
+          "file": "/assets/index-DYjliphA.css",
+          "bytes": 173724,
+          "transferBytes": 174024
+        },
+        {
+          "file": "/assets/LandingPage-DSuiIuPM.js",
+          "bytes": 32383,
+          "transferBytes": 32683
+        },
+        {
+          "file": "/assets/Footer-C8hfHteW.js",
+          "bytes": 6023,
+          "transferBytes": 6323
+        },
+        {
+          "file": "/assets/landingData-DsIUhm0f.js",
+          "bytes": 9857,
+          "transferBytes": 10157
+        },
+        {
+          "file": "/assets/ScrollToTopButton-aatObN1B.js",
+          "bytes": 576,
+          "transferBytes": 876
+        }
+      ],
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "resources": [
+        {
+          "file": "/assets/index-4ar-6GJH.js",
+          "bytes": 319918,
+          "transferBytes": 320218
+        },
+        {
+          "file": "/assets/index-DYjliphA.css",
+          "bytes": 173724,
+          "transferBytes": 174024
+        },
+        {
+          "file": "/assets/useModalA11y-D-g04Lz1.js",
+          "bytes": 3363,
+          "transferBytes": 3663
+        },
+        {
+          "file": "/assets/AppLayout-uMLbFLK4.js",
+          "bytes": 23251,
+          "transferBytes": 23551
+        },
+        {
+          "file": "/assets/AppLayout-BVUrvpah.css",
+          "bytes": 10280,
+          "transferBytes": 10580
+        },
+        {
+          "file": "/assets/SupportChannelPage-DTyX9_Ir.js",
+          "bytes": 33144,
+          "transferBytes": 33444
+        },
+        {
+          "file": "/assets/useExpiredFormDraft-CwLac4Sq.js",
+          "bytes": 529,
+          "transferBytes": 829
+        },
+        {
+          "file": "/assets/agentQueries-BduS_i2V.js",
+          "bytes": 3025,
+          "transferBytes": 3325
+        },
+        {
+          "file": "/assets/support-chat-B-07OTHR.js",
+          "bytes": 4542,
+          "transferBytes": 4842
+        },
+        {
+          "file": "/assets/support-chat-C-2cvQw7.css",
+          "bytes": 8925,
+          "transferBytes": 9225
+        },
+        {
+          "file": "/assets/socketClient-C6u-GUlQ.js",
+          "bytes": 42641,
+          "transferBytes": 42941
+        },
+        {
+          "file": "/assets/SomaticBreathingModal-GuKMWzuj.js",
+          "bytes": 1996,
+          "transferBytes": 2296
+        },
+        {
+          "file": "/assets/useAgentModalAccessibility-D84NHLEC.js",
+          "bytes": 317,
+          "transferBytes": 617
+        },
+        {
+          "file": "/assets/crisis-J_49G_JE.js",
+          "bytes": 1554,
+          "transferBytes": 1854
+        },
+        {
+          "file": "/assets/crisis-CVQMYTTM.css",
+          "bytes": 27377,
+          "transferBytes": 27677
+        },
+        {
+          "file": "/assets/SupportChannelPage-CSDpbDLW.css",
+          "bytes": 41852,
+          "transferBytes": 42152
+        }
+      ],
+      "screenshot": "agent.png"
+    },
+    {
+      "role": "sst",
+      "passed": true,
+      "checks": [
+        {
+          "name": "sst-landing-cold",
+          "actual": {
+            "resources": 6
+          },
+          "observedAt": "2026-11-02T21:13:02.785Z"
+        },
+        {
+          "name": "sst-logged-in",
+          "actual": {
+            "path": "/sst/panel"
+          },
+          "observedAt": "2026-11-02T21:13:03.923Z"
+        },
+        {
+          "name": "sst-anonymous-case",
+          "actual": {
+            "identityAbsentInRow": true
+          },
+          "observedAt": "2026-11-02T21:13:04.958Z"
+        },
+        {
+          "name": "activated",
+          "actual": {
+            "activeComposer": true
+          },
+          "observedAt": "2026-11-02T21:13:05.202Z"
+        },
+        {
+          "name": "sst-received-live",
+          "actual": {
+            "withoutReload": true,
+            "anonymousIdentityAbsent": true
+          },
+          "observedAt": "2026-11-02T21:13:05.345Z"
+        },
+        {
+          "name": "sst-sent",
+          "actual": {
+            "clearedAfterAck": true
+          },
+          "observedAt": "2026-11-02T21:13:05.483Z"
+        },
+        {
+          "name": "case-closed",
+          "actual": {
+            "closedInUI": true,
+            "noComposer": true
+          },
+          "observedAt": "2026-11-02T21:13:05.910Z"
+        }
+      ],
+      "landingResources": [
+        {
+          "file": "/assets/index-4ar-6GJH.js",
+          "bytes": 319918,
+          "transferBytes": 320218
+        },
+        {
+          "file": "/assets/index-DYjliphA.css",
+          "bytes": 173724,
+          "transferBytes": 174024
+        },
+        {
+          "file": "/assets/LandingPage-DSuiIuPM.js",
+          "bytes": 32383,
+          "transferBytes": 32683
+        },
+        {
+          "file": "/assets/Footer-C8hfHteW.js",
+          "bytes": 6023,
+          "transferBytes": 6323
+        },
+        {
+          "file": "/assets/landingData-DsIUhm0f.js",
+          "bytes": 9857,
+          "transferBytes": 10157
+        },
+        {
+          "file": "/assets/ScrollToTopButton-aatObN1B.js",
+          "bytes": 576,
+          "transferBytes": 876
+        }
+      ],
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "resources": [
+        {
+          "file": "/assets/index-4ar-6GJH.js",
+          "bytes": 319918,
+          "transferBytes": 320218
+        },
+        {
+          "file": "/assets/index-DYjliphA.css",
+          "bytes": 173724,
+          "transferBytes": 174024
+        },
+        {
+          "file": "/assets/AppLayout-uMLbFLK4.js",
+          "bytes": 23251,
+          "transferBytes": 23551
+        },
+        {
+          "file": "/assets/useModalA11y-D-g04Lz1.js",
+          "bytes": 3363,
+          "transferBytes": 3663
+        },
+        {
+          "file": "/assets/AppLayout-BVUrvpah.css",
+          "bytes": 10280,
+          "transferBytes": 10580
+        },
+        {
+          "file": "/assets/SupportInboxPage-DST3MrPa.js",
+          "bytes": 23103,
+          "transferBytes": 23403
+        },
+        {
+          "file": "/assets/sstQueries-DhULUyra.js",
+          "bytes": 2654,
+          "transferBytes": 2954
+        },
+        {
+          "file": "/assets/interventionContract-er7n6e5h.js",
+          "bytes": 899,
+          "transferBytes": 1199
+        },
+        {
+          "file": "/assets/support-chat-B-07OTHR.js",
+          "bytes": 4542,
+          "transferBytes": 4842
+        },
+        {
+          "file": "/assets/support-chat-C-2cvQw7.css",
+          "bytes": 8925,
+          "transferBytes": 9225
+        },
+        {
+          "file": "/assets/socketClient-C6u-GUlQ.js",
+          "bytes": 42641,
+          "transferBytes": 42941
+        },
+        {
+          "file": "/assets/sst-DVUFjgAR.css",
+          "bytes": 24480,
+          "transferBytes": 24780
+        }
+      ],
+      "screenshot": "sst.png"
+    }
+  ],
+  "persistence": {
+    "status": "Cerrada",
+    "estado": "cerrada",
+    "es_anonimo": true,
+    "agent_messages": 1,
+    "sst_messages": 1
+  },
+  "cleanup": {
+    "remaining": {
+      "accounts": 0,
+      "requests": 0,
+      "sessions": 0,
+      "messages": 0,
+      "consents": 0
+    },
+    "auditPreserved": true
+  },
+  "completedAt": "2026-11-02T21:13:06.991Z",
+  "actorOutcomes": {
+    "agent": {
+      "role": "agent",
+      "passed": true,
+      "checks": [
+        {
+          "name": "agent-landing-cold",
+          "actual": {
+            "resources": 6
+          },
+          "observedAt": "2026-11-02T21:13:02.809Z"
+        },
+        {
+          "name": "agent-logged-in",
+          "actual": {
+            "path": "/agente/panel"
+          },
+          "observedAt": "2026-11-02T21:13:03.930Z"
+        },
+        {
+          "name": "request-created",
+          "actual": {
+            "confirmedInUI": true
+          },
+          "observedAt": "2026-11-02T21:13:04.731Z"
+        },
+        {
+          "name": "agent-activation-live",
+          "actual": {
+            "withoutReload": true
+          },
+          "observedAt": "2026-11-02T21:13:05.206Z"
+        },
+        {
+          "name": "agent-sent",
+          "actual": {
+            "clearedAfterAck": true
+          },
+          "observedAt": "2026-11-02T21:13:05.339Z"
+        },
+        {
+          "name": "agent-received-live",
+          "actual": {
+            "withoutReload": true
+          },
+          "observedAt": "2026-11-02T21:13:05.488Z"
+        },
+        {
+          "name": "agent-reloaded",
+          "actual": {
+            "bothMessagesInUI": true
+          },
+          "observedAt": "2026-11-02T21:13:05.732Z"
+        },
+        {
+          "name": "agent-closed-live",
+          "actual": {
+            "readOnly": true
+          },
+          "observedAt": "2026-11-02T21:13:05.917Z"
+        },
+        {
+          "name": "agent-closed-persisted",
+          "actual": {
+            "readOnly": true,
+            "noComposer": true
+          },
+          "observedAt": "2026-11-02T21:13:06.141Z"
+        }
+      ],
+      "landingResources": [
+        {
+          "file": "/assets/index-4ar-6GJH.js",
+          "bytes": 319918,
+          "transferBytes": 320218
+        },
+        {
+          "file": "/assets/index-DYjliphA.css",
+          "bytes": 173724,
+          "transferBytes": 174024
+        },
+        {
+          "file": "/assets/LandingPage-DSuiIuPM.js",
+          "bytes": 32383,
+          "transferBytes": 32683
+        },
+        {
+          "file": "/assets/Footer-C8hfHteW.js",
+          "bytes": 6023,
+          "transferBytes": 6323
+        },
+        {
+          "file": "/assets/landingData-DsIUhm0f.js",
+          "bytes": 9857,
+          "transferBytes": 10157
+        },
+        {
+          "file": "/assets/ScrollToTopButton-aatObN1B.js",
+          "bytes": 576,
+          "transferBytes": 876
+        }
+      ],
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "resources": [
+        {
+          "file": "/assets/index-4ar-6GJH.js",
+          "bytes": 319918,
+          "transferBytes": 320218
+        },
+        {
+          "file": "/assets/index-DYjliphA.css",
+          "bytes": 173724,
+          "transferBytes": 174024
+        },
+        {
+          "file": "/assets/useModalA11y-D-g04Lz1.js",
+          "bytes": 3363,
+          "transferBytes": 3663
+        },
+        {
+          "file": "/assets/AppLayout-uMLbFLK4.js",
+          "bytes": 23251,
+          "transferBytes": 23551
+        },
+        {
+          "file": "/assets/AppLayout-BVUrvpah.css",
+          "bytes": 10280,
+          "transferBytes": 10580
+        },
+        {
+          "file": "/assets/SupportChannelPage-DTyX9_Ir.js",
+          "bytes": 33144,
+          "transferBytes": 33444
+        },
+        {
+          "file": "/assets/useExpiredFormDraft-CwLac4Sq.js",
+          "bytes": 529,
+          "transferBytes": 829
+        },
+        {
+          "file": "/assets/agentQueries-BduS_i2V.js",
+          "bytes": 3025,
+          "transferBytes": 3325
+        },
+        {
+          "file": "/assets/support-chat-B-07OTHR.js",
+          "bytes": 4542,
+          "transferBytes": 4842
+        },
+        {
+          "file": "/assets/support-chat-C-2cvQw7.css",
+          "bytes": 8925,
+          "transferBytes": 9225
+        },
+        {
+          "file": "/assets/socketClient-C6u-GUlQ.js",
+          "bytes": 42641,
+          "transferBytes": 42941
+        },
+        {
+          "file": "/assets/SomaticBreathingModal-GuKMWzuj.js",
+          "bytes": 1996,
+          "transferBytes": 2296
+        },
+        {
+          "file": "/assets/useAgentModalAccessibility-D84NHLEC.js",
+          "bytes": 317,
+          "transferBytes": 617
+        },
+        {
+          "file": "/assets/crisis-J_49G_JE.js",
+          "bytes": 1554,
+          "transferBytes": 1854
+        },
+        {
+          "file": "/assets/crisis-CVQMYTTM.css",
+          "bytes": 27377,
+          "transferBytes": 27677
+        },
+        {
+          "file": "/assets/SupportChannelPage-CSDpbDLW.css",
+          "bytes": 41852,
+          "transferBytes": 42152
+        }
+      ]
+    },
+    "sst": {
+      "role": "sst",
+      "passed": true,
+      "checks": [
+        {
+          "name": "sst-landing-cold",
+          "actual": {
+            "resources": 6
+          },
+          "observedAt": "2026-11-02T21:13:02.785Z"
+        },
+        {
+          "name": "sst-logged-in",
+          "actual": {
+            "path": "/sst/panel"
+          },
+          "observedAt": "2026-11-02T21:13:03.923Z"
+        },
+        {
+          "name": "sst-anonymous-case",
+          "actual": {
+            "identityAbsentInRow": true
+          },
+          "observedAt": "2026-11-02T21:13:04.958Z"
+        },
+        {
+          "name": "activated",
+          "actual": {
+            "activeComposer": true
+          },
+          "observedAt": "2026-11-02T21:13:05.202Z"
+        },
+        {
+          "name": "sst-received-live",
+          "actual": {
+            "withoutReload": true,
+            "anonymousIdentityAbsent": true
+          },
+          "observedAt": "2026-11-02T21:13:05.345Z"
+        },
+        {
+          "name": "sst-sent",
+          "actual": {
+            "clearedAfterAck": true
+          },
+          "observedAt": "2026-11-02T21:13:05.483Z"
+        },
+        {
+          "name": "case-closed",
+          "actual": {
+            "closedInUI": true,
+            "noComposer": true
+          },
+          "observedAt": "2026-11-02T21:13:05.910Z"
+        }
+      ],
+      "landingResources": [
+        {
+          "file": "/assets/index-4ar-6GJH.js",
+          "bytes": 319918,
+          "transferBytes": 320218
+        },
+        {
+          "file": "/assets/index-DYjliphA.css",
+          "bytes": 173724,
+          "transferBytes": 174024
+        },
+        {
+          "file": "/assets/LandingPage-DSuiIuPM.js",
+          "bytes": 32383,
+          "transferBytes": 32683
+        },
+        {
+          "file": "/assets/Footer-C8hfHteW.js",
+          "bytes": 6023,
+          "transferBytes": 6323
+        },
+        {
+          "file": "/assets/landingData-DsIUhm0f.js",
+          "bytes": 9857,
+          "transferBytes": 10157
+        },
+        {
+          "file": "/assets/ScrollToTopButton-aatObN1B.js",
+          "bytes": 576,
+          "transferBytes": 876
+        }
+      ],
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "resources": [
+        {
+          "file": "/assets/index-4ar-6GJH.js",
+          "bytes": 319918,
+          "transferBytes": 320218
+        },
+        {
+          "file": "/assets/index-DYjliphA.css",
+          "bytes": 173724,
+          "transferBytes": 174024
+        },
+        {
+          "file": "/assets/AppLayout-uMLbFLK4.js",
+          "bytes": 23251,
+          "transferBytes": 23551
+        },
+        {
+          "file": "/assets/useModalA11y-D-g04Lz1.js",
+          "bytes": 3363,
+          "transferBytes": 3663
+        },
+        {
+          "file": "/assets/AppLayout-BVUrvpah.css",
+          "bytes": 10280,
+          "transferBytes": 10580
+        },
+        {
+          "file": "/assets/SupportInboxPage-DST3MrPa.js",
+          "bytes": 23103,
+          "transferBytes": 23403
+        },
+        {
+          "file": "/assets/sstQueries-DhULUyra.js",
+          "bytes": 2654,
+          "transferBytes": 2954
+        },
+        {
+          "file": "/assets/interventionContract-er7n6e5h.js",
+          "bytes": 899,
+          "transferBytes": 1199
+        },
+        {
+          "file": "/assets/support-chat-B-07OTHR.js",
+          "bytes": 4542,
+          "transferBytes": 4842
+        },
+        {
+          "file": "/assets/support-chat-C-2cvQw7.css",
+          "bytes": 8925,
+          "transferBytes": 9225
+        },
+        {
+          "file": "/assets/socketClient-C6u-GUlQ.js",
+          "bytes": 42641,
+          "transferBytes": 42941
+        },
+        {
+          "file": "/assets/sst-DVUFjgAR.css",
+          "bytes": 24480,
+          "transferBytes": 24780
+        }
+      ]
+    }
+  }
+}
