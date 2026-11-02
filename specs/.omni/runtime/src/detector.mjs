@@ -40,10 +40,56 @@ const markers = new Set([
 ]);
 const stripBom = s => s.replace(/^\uFEFF/, '');
 
+export const UI_FRAMEWORKS = [
+  'next',
+  'react',
+  'vue',
+  'nuxt',
+  'svelte',
+  '@sveltejs/kit',
+  '@angular/core',
+  'astro',
+  'solid-js',
+  'preact',
+];
+
+export const UI_COMPONENT_KITS = ['shadcn', 'radix', 'headlessui', 'preline', 'flyonui'];
+
 /**
  * Inspect bounded project metadata without running application commands or selecting versions.
  * @param {string} baseDir Project directory to inspect.
- * @returns {Promise<object>} Heuristic module inventory with declared commands and unresolved compatibility.
+ * @returns {Promise<{
+ *   isGreenfield: boolean,
+ *   type: 'greenfield'|'brownfield',
+ *   detectedStack: string|null,
+ *   framework: string|null,
+ *   ui: {
+ *     signal: boolean,
+ *     frameworks: string[],
+ *     styling: string[],
+ *     declaredComponents: string[],
+ *     modules: string[],
+ *   },
+ *   docStandard: string,
+ *   qualityGates: string,
+ *   projectName: string|null,
+ *   evidence: string[],
+ *   modules: Array<{
+ *     directory: string,
+ *     source: string,
+ *     stack: string,
+ *     framework: string|null,
+ *     ui: { frameworks: string[], styling: string[], declaredComponents: string[], evidence: string[] }|null,
+ *     docStandard: string,
+ *     commands: string[],
+ *     projectName: string|null,
+ *     declaredRuntime: object|null,
+ *     commandCandidates: object[],
+ *   }>,
+ *   warnings: string[],
+ *   assessment: object,
+ *   limits: string,
+ * }>} Heuristic module inventory with declared commands, UI stack signals and unresolved compatibility.
  */
 export async function detectProjectEnvironment(baseDir) {
   const warnings = [],
@@ -68,6 +114,7 @@ export async function detectProjectEnvironment(baseDir) {
       return;
     }
     const names = entries.map(e => e.name);
+    const hasComponentsConfig = entries.some(entry => entry.name === 'components.json' && entry.isFile());
     const detected = names.filter(n => markers.has(n) || /\.(sln|csproj|fsproj)$/.test(n));
     for (const marker of detected) {
       const source = relative ? `${relative}/${marker}` : marker;
@@ -81,6 +128,14 @@ export async function detectProjectEnvironment(baseDir) {
       evidence.push(source);
       let stack,
         framework = null,
+        moduleUi = hasComponentsConfig
+          ? {
+              frameworks: [],
+              styling: [],
+              declaredComponents: ['shadcn'],
+              evidence: [relative ? `${relative}/components.json` : 'components.json'],
+            }
+          : null,
         doc = 'Project conventions (review required)',
         commands = [],
         projectName = null;
@@ -103,11 +158,17 @@ export async function detectProjectEnvironment(baseDir) {
             ? 'React'
             : deps.vue
               ? 'Vue.js'
-              : deps.express
-                ? 'Express'
-                : deps['@nestjs/core']
-                  ? 'NestJS'
-                  : null;
+              : deps.astro
+                ? 'Astro'
+                : deps['@sveltejs/kit'] || deps.svelte
+                  ? 'Svelte'
+                  : deps.nuxt
+                    ? 'Nuxt'
+                    : deps.express
+                      ? 'Express'
+                      : deps['@nestjs/core']
+                        ? 'NestJS'
+                        : null;
         stack = framework
           ? `${framework} / ${ts ? 'TypeScript' : 'JavaScript'}`
           : `Node.js / ${ts ? 'TypeScript' : pkg.type === 'module' ? 'JavaScript ESM' : 'JavaScript'}`;
@@ -126,7 +187,7 @@ export async function detectProjectEnvironment(baseDir) {
             ? 'pnpm'
             : /^yarn@/.test(pkg.packageManager || '') || names.includes('yarn.lock')
               ? 'yarn'
-              : /^bun@/.test(pkg.packageManager || '') || names.includes('bun.lock')
+              : /^bun@/.test(pkg.packageManager || '') || names.includes('bun.lock') || names.includes('bun.lockb')
                 ? 'bun'
                 : 'npm';
         for (const name of ['test', 'lint', 'build', 'typecheck', 'check']) {
@@ -135,6 +196,53 @@ export async function detectProjectEnvironment(baseDir) {
             commands.push(command);
             scriptDefinitions[command] = pkg.scripts[name];
           }
+        }
+        const moduleFrameworks = UI_FRAMEWORKS.filter(fw => Object.hasOwn(deps, fw));
+        const moduleStyling =
+          Object.hasOwn(deps, 'tailwindcss') || Object.keys(deps).some(d => d.startsWith('@tailwindcss/'))
+            ? ['tailwindcss']
+            : [];
+        const moduleComponents = [];
+        if (hasComponentsConfig) moduleComponents.push('shadcn');
+        if (Object.hasOwn(deps, 'radix-ui') || Object.keys(deps).some(d => d.startsWith('@radix-ui/')))
+          moduleComponents.push('radix');
+        if (Object.keys(deps).some(d => d.startsWith('@headlessui/'))) moduleComponents.push('headlessui');
+        if (Object.hasOwn(deps, 'preline') || Object.keys(deps).some(d => d.startsWith('@preline/')))
+          moduleComponents.push('preline');
+        if (Object.hasOwn(deps, 'flyonui')) moduleComponents.push('flyonui');
+
+        if (moduleFrameworks.length || moduleStyling.length || moduleComponents.length) {
+          const moduleEvidence = [
+            ...moduleFrameworks,
+            ...(moduleStyling.length
+              ? [
+                  Object.hasOwn(deps, 'tailwindcss')
+                    ? 'tailwindcss'
+                    : Object.keys(deps).find(d => d.startsWith('@tailwindcss/')),
+                ]
+              : []),
+            ...(hasComponentsConfig ? [relative ? `${relative}/components.json` : 'components.json'] : []),
+            ...(Object.hasOwn(deps, 'radix-ui')
+              ? ['radix-ui']
+              : Object.keys(deps).some(d => d.startsWith('@radix-ui/'))
+                ? [Object.keys(deps).find(d => d.startsWith('@radix-ui/'))]
+                : []),
+            ...(Object.keys(deps).some(d => d.startsWith('@headlessui/'))
+              ? [Object.keys(deps).find(d => d.startsWith('@headlessui/'))]
+              : []),
+            ...(Object.hasOwn(deps, 'preline')
+              ? ['preline']
+              : Object.keys(deps).some(d => d.startsWith('@preline/'))
+                ? [Object.keys(deps).find(d => d.startsWith('@preline/'))]
+                : []),
+            ...(Object.hasOwn(deps, 'flyonui') ? ['flyonui'] : []),
+          ].filter(Boolean);
+          moduleUi = {
+            frameworks: moduleFrameworks,
+            styling: moduleStyling,
+            declaredComponents: moduleComponents,
+            evidence: moduleEvidence,
+          };
         }
       } else if (['pyproject.toml', 'requirements.txt', 'Pipfile'].includes(marker)) {
         framework = /fastapi/i.test(raw)
@@ -146,8 +254,9 @@ export async function detectProjectEnvironment(baseDir) {
               : 'Python';
         stack = framework;
         doc = 'Python Docstrings (PEP 257)';
-        if (/\bpytest\b/i.test(raw)) commands.push('python -m pytest');
-        if (/\bruff\b/i.test(raw)) commands.push('ruff check .');
+        const usesUv = names.includes('uv.lock');
+        if (/\bpytest\b/i.test(raw) || usesUv) commands.push(usesUv ? 'uv run pytest' : 'python -m pytest');
+        if (/\bruff\b/i.test(raw)) commands.push(usesUv ? 'uv run ruff check .' : 'ruff check .');
       } else if (marker === 'pom.xml') {
         stack = 'Java / Maven';
         doc = 'JavaDoc';
@@ -189,6 +298,7 @@ export async function detectProjectEnvironment(baseDir) {
         source,
         stack,
         framework,
+        ui: moduleUi,
         docStandard: doc,
         commands,
         projectName,
@@ -231,6 +341,14 @@ export async function detectProjectEnvironment(baseDir) {
       'No quality-gate commands detected. Configure reviewed commands or document manual verification; no test runner is assumed.',
     );
   const docs = [...new Set(modules.map(m => m.docStandard))];
+  const uiModules = modules.filter(m => m.ui);
+  const ui = {
+    signal: uiModules.length > 0,
+    frameworks: UI_FRAMEWORKS.filter(fw => uiModules.some(m => m.ui.frameworks.includes(fw))),
+    styling: ['tailwindcss'].filter(st => uiModules.some(m => m.ui.styling.includes(st))),
+    declaredComponents: UI_COMPONENT_KITS.filter(kit => uiModules.some(m => m.ui.declaredComponents.includes(kit))),
+    modules: [...new Set(uiModules.map(m => m.directory))],
+  };
   return {
     isGreenfield,
     type: isGreenfield ? 'greenfield' : 'brownfield',
@@ -240,6 +358,7 @@ export async function detectProjectEnvironment(baseDir) {
         ? null
         : 'Unknown / existing project',
     framework: modules.find(m => m.framework)?.framework || null,
+    ui,
     docStandard: docs.join(' / ') || 'Project conventions (review required)',
     qualityGates: [...new Set(gates)].join('\n'),
     projectName: modules.find(m => m.directory === '.')?.projectName || null,

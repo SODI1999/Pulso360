@@ -2,7 +2,7 @@
   "$schema": "./.omni/runtime/schema/manifest.schema.json",
   "schemaVersion": 1,
   "project": "Pulso360",
-  "version": "0.7.0-preview.2",
+  "version": "0.8.1",
   "profile": "general",
   "stack": "Monorepo: Express / JavaScript + React / JavaScript",
   "documentationStandard": "JSDoc",

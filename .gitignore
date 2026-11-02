@@ -71,3 +71,5 @@ docs/audits/
 *.tar.gz
 *.rar
 backend/CODING_STANDARDS.md
+
+scripts/*

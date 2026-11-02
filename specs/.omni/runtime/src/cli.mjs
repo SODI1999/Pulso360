@@ -1,6 +1,6 @@
 import { readFile, access } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
-import { scaffoldProject, createSpec } from './generator.mjs';
+import { scaffoldProject, createSpec, scaffoldMissingRouteArtifacts } from './generator.mjs';
 import { runWizard } from './wizard.mjs';
 import { loadManifest, saveManifest, withManifestLock, updateSpecStatus, focusSpec, listSpecs } from './manifest.mjs';
 import { auditSpec } from './auditor.mjs';
@@ -10,7 +10,7 @@ import { installPlugin, updatePlugin, getPluginStatus, cleanProject } from './pl
 import { installAgentIntegrations, normalizeAgents, agentInstructions, AGENTS } from './integrations.mjs';
 import { detectProjectEnvironment } from './detector.mjs';
 import { auditProjectContext } from './context-auditor.mjs';
-import { fitQuestionnaire, specRoute } from './fit.mjs';
+import { fitQuestionnaire, specRoute, applyFitPreset, saveFit, readFit } from './fit.mjs';
 import { projectStatus, recordContext, recordSession, recordDecision } from './project-state.mjs';
 import { loadChecks, validateChecks } from './checks.mjs';
 import { safePath } from './managed.mjs';
@@ -54,6 +54,16 @@ const valueFlags = new Set([
   'timeout',
   'from',
   'lang',
+  'ui-components',
+  'preset',
+  'route',
+  'files',
+  'modules',
+  'risk',
+  'uncertainty',
+  'ambiguity',
+  'reversibility',
+  'reasoning',
 ]);
 const booleanFlags = new Set([
   'yes',
@@ -65,6 +75,11 @@ const booleanFlags = new Set([
   'plain',
   'all',
   'active',
+  'light',
+  'standard',
+  'full',
+  'crosses-contract',
+  'existing-tests',
 ]);
 
 function acceptanceSummary(acceptance) {
@@ -102,6 +117,9 @@ function parse(args) {
   flags.dryRun = flags['dry-run'];
   flags.acceptUpdates = flags['accept-updates'];
   flags.allowDowngrade = flags['allow-downgrade'];
+  flags.uiComponents = flags['ui-components'];
+  flags.crossesContract = flags['crosses-contract'];
+  flags.existingTests = flags['existing-tests'];
   if (flags.timeout !== undefined) {
     flags.timeout = Number(flags.timeout);
     if (!Number.isSafeInteger(flags.timeout) || flags.timeout < 100 || flags.timeout > 3600000)
@@ -181,11 +199,11 @@ omni-spec <command> [arguments] [options]
   setup-agent <name[,name]>      Select/persist adapters; keep other existing files
   help | version
 
-init options: --name --stack --doc --profile --gates --agent (alias --ai)
+init options: --name --stack --doc --profile --gates --agent (alias --ai) --ui-components
   --lang en|es sets the installation language; one workflow for every experience level.
   --plain disables terminal UI; pipes, TERM=dumb, CI and JSON retain plain output.
   Interactive UI: arrows to move, Space to select tools, Ctrl+A for all, Enter to continue, Esc/Ctrl+C to cancel.
-  init asks only language, AI tool and destination confirmation; engineering decisions follow in chat.
+  init asks language, AI tool, UI choices when detected, and destination confirmation; engineering decisions follow in chat.
   For automation: init --yes --agent <name> --lang en (generic when no tool is selected).
   npx --yes omni-spec@latest init still opens OmniSpec's installer; npx owns that --yes.
   --force explicitly replaces constitution/templates; existing specs are preserved.
@@ -223,9 +241,20 @@ export async function runCli(args = process.argv.slice(2), workingDir = process.
     if (json && command === 'init' && !flags.yes) throw new Error('init --json requires --yes.');
     if (flags.lang !== undefined && command !== 'init') throw new Error('--lang is supported only by init.');
     if (flags.plain && command !== 'init') throw new Error('--plain is supported only by init.');
+    if (flags.uiComponents !== undefined && command !== 'init')
+      throw new Error('--ui-components is supported only by init.');
     if (flags.all && command !== 'status') throw new Error('--all is supported only by status.');
     if (flags.active && (command !== 'contracts' || positionals.length))
       throw new Error('--active is supported only by contracts without an ID.');
+    if (flags.preset !== undefined && command !== 'fit') throw new Error('--preset is supported only by fit.');
+    if (flags.preset !== undefined && !['light', 'standard', 'full'].includes(flags.preset.toLowerCase()))
+      throw new Error('--preset must be light, standard or full.');
+    if (flags.route !== undefined && !['create', 'fit'].includes(command))
+      throw new Error('--route is supported only by create and fit.');
+    if (flags.route !== undefined && !['light', 'standard', 'full'].includes(flags.route.toLowerCase()))
+      throw new Error('--route must be light, standard or full.');
+    if ((flags.light || flags.standard || flags.full) && !['create', 'fit'].includes(command))
+      throw new Error('--light, --standard and --full are supported only by create and fit.');
     const maxPositionals =
       {
         create: 2,
@@ -292,9 +321,13 @@ export async function runCli(args = process.argv.slice(2), workingDir = process.
       case 'context-check': {
         if (!root) throw new Error('No OmniSpec project found. Run init first.');
         const result = await auditProjectContext(workingDir);
+        const budget =
+          result.characters != null
+            ? ` (${result.characters.toLocaleString('en-US')} / ${result.characterLimit.toLocaleString('en-US')} chars, ~${result.tokensEstimated.toLocaleString('en-US')} tokens)`
+            : '';
         emit(
           result,
-          `[CONTEXT ${result.valid ? 'STRUCTURE PASSED' : 'BLOCKED'}] Structure and local links only; source-claim review required.\n${result.errors.join('\n')}\n${result.warnings.join('\n')}`,
+          `[CONTEXT ${result.valid ? 'STRUCTURE PASSED' : 'BLOCKED'}]${budget} Structure and local links only; source-claim review required.\n${result.errors.join('\n')}\n${result.warnings.join('\n')}`,
         );
         return result.valid ? 0 : 1;
       }
@@ -353,10 +386,11 @@ export async function runCli(args = process.argv.slice(2), workingDir = process.
       case 'create': {
         if (positionals.length !== 2)
           throw new Error('Usage: create <feature|bugfix|debt|rfc> <name> (quote names containing spaces).');
-        const spec = await createSpec(workingDir, ...positionals);
+        const spec = await createSpec(workingDir, positionals[0], positionals[1], flags);
+        const routeMsg = spec.route ? ` [Route: ${spec.route.toUpperCase()}]` : '';
         emit(
           spec,
-          `[OK] Created specs/${spec.slug} (${spec.archetype}).\nSuggested branch: ${spec.branch} (not created).\nClarify requirements, then plan the change; no implementation is verified yet.`,
+          `[OK] Created specs/${spec.slug} (${spec.archetype})${routeMsg}.\nSuggested branch: ${spec.branch} (not created).\nClarify requirements, then plan the change; no implementation is verified yet.`,
         );
         return 0;
       }
@@ -417,6 +451,75 @@ export async function runCli(args = process.argv.slice(2), workingDir = process.
           positionals[0] ? s.id === positionals[0] || s.slug === positionals[0] : s.slug === manifest.active_spec,
         );
         if (!spec) throw new Error('Specification not found. Use list and an exact ID.');
+
+        const hasMutation =
+          flags.preset !== undefined ||
+          flags.route !== undefined ||
+          flags.light ||
+          flags.standard ||
+          flags.full ||
+          flags.files !== undefined ||
+          flags.modules !== undefined ||
+          flags.crossesContract !== undefined ||
+          flags.existingTests !== undefined ||
+          flags.risk !== undefined ||
+          flags.uncertainty !== undefined ||
+          flags.ambiguity !== undefined ||
+          flags.reversibility !== undefined ||
+          flags.reasoning !== undefined;
+
+        if (hasMutation) {
+          const presetName =
+            flags.preset ||
+            flags.route ||
+            (flags.light ? 'light' : flags.standard ? 'standard' : flags.full ? 'full' : null);
+          const existingFit = await readFit(workingDir, spec);
+          const overrides = {};
+          if (flags.files !== undefined) overrides.files = parseInt(flags.files, 10);
+          if (flags.modules !== undefined) overrides.modules = parseInt(flags.modules, 10);
+          if (flags.crossesContract !== undefined) overrides.crossesContract = true;
+          if (flags.existingTests !== undefined) overrides.existingTests = true;
+          if (flags.risk !== undefined) overrides.risk = flags.risk;
+          if (flags.uncertainty !== undefined) overrides.uncertainty = flags.uncertainty;
+          if (flags.ambiguity !== undefined) overrides.ambiguity = flags.ambiguity;
+          if (flags.reversibility !== undefined) overrides.reversibility = flags.reversibility;
+          if (flags.reasoning !== undefined) overrides.reasoning = flags.reasoning;
+
+          const newAnswers = applyFitPreset(existingFit?.answers, presetName, overrides);
+          await saveFit(workingDir, spec, newAnswers);
+          const updatedRoute = await specRoute(workingDir, spec);
+          if (updatedRoute.route === 'invalid') {
+            emit(
+              { spec: spec.slug, type: spec.type, classified: true, route: 'invalid', errors: updatedRoute.errors },
+              `[FIT] ${spec.slug} has an invalid fit.json.\n${updatedRoute.errors.join('\n')}`,
+            );
+            return 1;
+          }
+          let scaffolded = [];
+          if (updatedRoute && ['standard', 'full'].includes(updatedRoute.route)) {
+            scaffolded = await scaffoldMissingRouteArtifacts(workingDir, spec, updatedRoute.route);
+          }
+          emit(
+            {
+              spec: spec.slug,
+              type: spec.type,
+              classified: true,
+              route: updatedRoute.route,
+              reasons: updatedRoute.reasons,
+              artifacts: updatedRoute.artifacts,
+              summary: updatedRoute.summary,
+              scaffolded,
+            },
+            `[FIT] ${spec.slug}: ${updatedRoute.route.toUpperCase()} — ${updatedRoute.summary}\n${updatedRoute.reasons.map(r => '- ' + r).join('\n')}\nRequired artifacts: ${
+              Object.entries(updatedRoute.artifacts)
+                .filter(([, needed]) => needed)
+                .map(([name]) => name)
+                .join(', ') || 'primary artifact only'
+            }.${scaffolded.length ? `\nScaffolded missing artifacts: ${scaffolded.join(', ')}.` : ''}`,
+          );
+          return 0;
+        }
+
         const route = await specRoute(workingDir, spec);
         if (!route) {
           const questionnaire = { ...fitQuestionnaire(2), file: `specs/${spec.slug}/fit.json` };
@@ -488,9 +591,12 @@ export async function runCli(args = process.argv.slice(2), workingDir = process.
           (check.runtime.status === 'MISSING'
             ? `[RUNTIME MISSING] specs/.omni/runtime/ is missing. Restore it: ${check.runtime.restore}`
             : `[RUNTIME VERSION] Local runtime ${check.runtime.version ?? 'unknown'} differs from project ${check.projectVersion}. Restore it: ${check.runtime.restore}`);
+        const coexistence = check.pluginCoexistence
+          ? `[WARN] Coexistencia de plugin: ${check.pluginCoexistence.message}`
+          : null;
         emit(
           check,
-          `[${!check.isInstalled ? 'NOT INITIALIZED' : check.healthy ? 'FILES SYNCHRONIZED' : 'NEEDS REVIEW'}] ${check.message}\n${[runtime, ...(check.integrity?.changed || [])].filter(Boolean).join('\n')}`,
+          `[${!check.isInstalled ? 'NOT INITIALIZED' : check.healthy ? 'FILES SYNCHRONIZED' : 'NEEDS REVIEW'}] ${check.message}\n${[runtime, coexistence, ...(check.integrity?.changed || [])].filter(Boolean).join('\n')}`,
         );
         return check.healthy ? 0 : 1;
       }
@@ -521,17 +627,23 @@ export async function runCli(args = process.argv.slice(2), workingDir = process.
       case 'plugin': {
         const sub = positionals[0] || 'status';
         if (sub === 'install') {
-          const res = await installPlugin(flags);
+          const res = await installPlugin({ ...flags, projectDir: root || undefined });
+          const coexistence = res.pluginCoexistence
+            ? `\n[WARN] Coexistencia de plugin: ${res.pluginCoexistence.message}`
+            : '';
           emit(
             res,
-            `[PLUGIN INSTALLED] OmniSpec plugin v${res.version} installed at:\n${res.targetDir}\nFiles copied: ${res.copied.join(', ')}\nReload the host if needed and confirm skill discovery; file installation does not establish host behavior.`,
+            `[PLUGIN INSTALLED] OmniSpec plugin v${res.version} installed at:\n${res.targetDir}\nFiles copied: ${res.copied.join(', ')}\nReload the host if needed and confirm skill discovery; file installation does not establish host behavior.${coexistence}`,
           );
           return 0;
         } else if (sub === 'update' || sub === 'upgrade') {
-          const res = await updatePlugin(flags);
+          const res = await updatePlugin({ ...flags, projectDir: root || undefined });
+          const coexistence = res.pluginCoexistence
+            ? `\n[WARN] Coexistencia de plugin: ${res.pluginCoexistence.message}`
+            : '';
           emit(
             res,
-            `[PLUGIN UPDATED] OmniSpec plugin v${res.version} updated at:\n${res.targetDir}\nFiles updated: ${res.copied.join(', ')}`,
+            `[PLUGIN UPDATED] OmniSpec plugin v${res.version} updated at:\n${res.targetDir}\nFiles updated: ${res.copied.join(', ')}${coexistence}`,
           );
           return 0;
         } else if (sub === 'status') {

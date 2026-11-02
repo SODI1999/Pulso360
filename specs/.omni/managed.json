@@ -2,11 +2,11 @@
   "version": 1,
   "files": {
     "specs/_templates/01-feature/plan.md": {
-      "hash": "c26f836528cc5f9fb1b72caa37aa14104ce395936f5b5d6092e215c557099734",
+      "hash": "bdb6a32d578aa3fe6b109c75cf61abc9e17298d5777ea5be511a4cb0533288d4",
       "section": false
     },
     "specs/_templates/01-feature/spec.md": {
-      "hash": "48696b269e404a183b4d9474d45e33db9668a9afb5db636c933a18592ad12280",
+      "hash": "2082eb3a4db23ff56f7493aa1fdeecc5ada36e6dfc13e11715538b5161855b38",
       "section": false
     },
     "specs/_templates/01-feature/tasks.md": {
@@ -14,11 +14,11 @@
       "section": false
     },
     "specs/_templates/02-bugfix/bug.md": {
-      "hash": "61aa30938a17db3632987800163e689a287d9995d74324924b34b092b95f530d",
+      "hash": "d1bf6b500f4e1711fe7d172e2a4f2545fea5a9c5f505ecc1c1b7c5e95f603d62",
       "section": false
     },
     "specs/_templates/02-bugfix/fix.md": {
-      "hash": "ab9a8d6b6778a5c9df10e45fb68a4311ffa3a81eb1cc36540e7c79e268867301",
+      "hash": "43ec599114bb19faf1cbb176e843d4b106a0396ad085c73185901fdc20f0f156",
       "section": false
     },
     "specs/_templates/02-bugfix/rca.md": {
@@ -26,7 +26,7 @@
       "section": false
     },
     "specs/_templates/03-tech-debt/audit.md": {
-      "hash": "08fcc5ce799091c24881b1bf3a2b04b48a42086d10133ff7fd323a0fbc28b7f2",
+      "hash": "1d81831ea86f6b3f17d2d99d00cd23bd359cb2222517e58433f4d6940b7207bc",
       "section": false
     },
     "specs/_templates/03-tech-debt/migration-plan.md": {
@@ -38,7 +38,7 @@
       "section": false
     },
     "specs/_templates/04-rfc-idea/rfc.md": {
-      "hash": "1879e1e4269410e0608edfa2ac8eef899c3d3241dab1fea44b1b89a91a1c24c9",
+      "hash": "b24f6fb8310ee09964cbfa6677c1275f4ea741629471d51cdab5ca16ac206fbe",
       "section": false
     },
     "specs/.omni/runtime/src/assets.mjs": {
@@ -46,35 +46,35 @@
       "section": false
     },
     "specs/.omni/runtime/src/auditor.mjs": {
-      "hash": "e33516d53f5b3ba04ae373e84b8d30d0e3385d692b6878aecef71d684fb328af",
+      "hash": "e70140c807c14eeccd63e88d8ebac08b0468f6df6d7af02c9eeba514827f423a",
       "section": false
     },
     "specs/.omni/runtime/src/cli.mjs": {
-      "hash": "b77fa0cc8863094a807c7a2ce1b9886812647a8304a5676a9901abdd771f6d26",
+      "hash": "dbd6d8140ce8e956cdbcddccab8295f3bd89321d9902705b0546326dfdf1aeb0",
       "section": false
     },
     "specs/.omni/runtime/src/context-auditor.mjs": {
-      "hash": "6be5081a7ad402c89c227b86414d59571f6830f45f03e9783fa18dd97317c960",
+      "hash": "89501d4f4d2f86f261ada545344bc4eb1d1f65ec30cbc37574d2719236245d8c",
       "section": false
     },
     "specs/.omni/runtime/src/detector.mjs": {
-      "hash": "46ccfa1bec80b9dd2d1f59cc206f86d5dd2a045564df1a98598656a5ef7bc6d9",
+      "hash": "6a8ef293ee7e926d1a977710ed36a58fa8bafd1013179363424405a8b45301be",
       "section": false
     },
     "specs/.omni/runtime/src/generator.mjs": {
-      "hash": "c336155d48202a6a6bdad855692955bb46e4f3758c8c4a1b86e1c5b86fa77ff9",
+      "hash": "11dea82ae37a43c985bebeffab3f89a5c7f9b9f4f7f565661aad7c9d2b519890",
       "section": false
     },
     "specs/.omni/runtime/src/integrations.mjs": {
-      "hash": "6c19cd0df1b1b1f5e1f1211ef87fd36433740fcc6c3ac32cc3343f3f2a80c74d",
+      "hash": "5fceb213c4ba1b2fc47e9791e90af609cf81c6ce178a197391f1bca8c57b1bfd",
       "section": false
     },
     "specs/.omni/runtime/src/managed.mjs": {
-      "hash": "b365e266049a5c7af3630c1ff83c8d620a4b9fedda3c3a667db52d9fe143e4a9",
+      "hash": "d89c59b96c861e27249eb515d2f3364aaca2993f12e91544397ddf74d7627a30",
       "section": false
     },
     "specs/.omni/runtime/src/manifest.mjs": {
-      "hash": "dc03da61d95df0f0f62b55f3d0d7e9662758a9397c3422faef754516095cfccb",
+      "hash": "6d75dc99884a95e3ebc7494840c00bfb954955995c666ab576e9a08af18f50d7",
       "section": false
     },
     "specs/.omni/runtime/src/profiles/bpo.mjs": {
@@ -102,11 +102,11 @@
       "section": false
     },
     "specs/.omni/runtime/src/templates/01-feature/plan.md": {
-      "hash": "c26f836528cc5f9fb1b72caa37aa14104ce395936f5b5d6092e215c557099734",
+      "hash": "bdb6a32d578aa3fe6b109c75cf61abc9e17298d5777ea5be511a4cb0533288d4",
       "section": false
     },
     "specs/.omni/runtime/src/templates/01-feature/spec.md": {
-      "hash": "48696b269e404a183b4d9474d45e33db9668a9afb5db636c933a18592ad12280",
+      "hash": "2082eb3a4db23ff56f7493aa1fdeecc5ada36e6dfc13e11715538b5161855b38",
       "section": false
     },
     "specs/.omni/runtime/src/templates/01-feature/tasks.md": {
@@ -114,11 +114,11 @@
       "section": false
     },
     "specs/.omni/runtime/src/templates/02-bugfix/bug.md": {
-      "hash": "61aa30938a17db3632987800163e689a287d9995d74324924b34b092b95f530d",
+      "hash": "d1bf6b500f4e1711fe7d172e2a4f2545fea5a9c5f505ecc1c1b7c5e95f603d62",
       "section": false
     },
     "specs/.omni/runtime/src/templates/02-bugfix/fix.md": {
-      "hash": "ab9a8d6b6778a5c9df10e45fb68a4311ffa3a81eb1cc36540e7c79e268867301",
+      "hash": "43ec599114bb19faf1cbb176e843d4b106a0396ad085c73185901fdc20f0f156",
       "section": false
     },
     "specs/.omni/runtime/src/templates/02-bugfix/rca.md": {
@@ -126,7 +126,7 @@
       "section": false
     },
     "specs/.omni/runtime/src/templates/03-tech-debt/audit.md": {
-      "hash": "08fcc5ce799091c24881b1bf3a2b04b48a42086d10133ff7fd323a0fbc28b7f2",
+      "hash": "1d81831ea86f6b3f17d2d99d00cd23bd359cb2222517e58433f4d6940b7207bc",
       "section": false
     },
     "specs/.omni/runtime/src/templates/03-tech-debt/migration-plan.md": {
@@ -138,11 +138,11 @@
       "section": false
     },
     "specs/.omni/runtime/src/templates/04-rfc-idea/rfc.md": {
-      "hash": "1879e1e4269410e0608edfa2ac8eef899c3d3241dab1fea44b1b89a91a1c24c9",
+      "hash": "b24f6fb8310ee09964cbfa6677c1275f4ea741629471d51cdab5ca16ac206fbe",
       "section": false
     },
     "specs/.omni/runtime/src/updater.mjs": {
-      "hash": "42d609b616f7b57509c9d50f4585b3a0e1590deba8a5737ba5ffc555fed0e68e",
+      "hash": "c88e10b3881cf4e8f6554e163de39e9c94cdb778cf8c5603e6662f1e0a10df11",
       "section": false
     },
     "specs/.omni/runtime/src/verification.mjs": {
@@ -150,11 +150,11 @@
       "section": false
     },
     "specs/.omni/runtime/src/wizard.mjs": {
-      "hash": "79a79cf88a5f10461ab9e3ddc2da68d23740d6529f4367e01a2dec74c2de94de",
+      "hash": "9c6ceadbe38d0a538f49a7e6cad6b9bc9386bfe13e232bb041277babf4355815",
       "section": false
     },
     "specs/.omni/runtime/src/workflows.mjs": {
-      "hash": "bb06dc1ac1a776e70763cae776d9edace393f3c2cc9c3a609e0da0afcdc04a1b",
+      "hash": "569f6070ac26dcd137225475f28fcb41bc8fd0cc8a432df467ff6ac072855f1b",
       "section": false
     },
     "specs/.omni/runtime/bin/omni-spec.mjs": {
@@ -162,11 +162,11 @@
       "section": false
     },
     "specs/.omni/runtime/schema/manifest.schema.json": {
-      "hash": "e2a6b38a6c0f609c2942fdb1b23dc186db6ad87c52b08d9c589987b017b6b974",
+      "hash": "d9362c4790caa04719208f1207c012b9e88bb01bcd8aecf364ecfc3512b9d516",
       "section": false
     },
     "specs/.omni/runtime/package.json": {
-      "hash": "f2477722b50a4ddedb78ed950012c6460f1020914547ceb7d69f25d46f02cedd",
+      "hash": "39eb56ef082b8775c4e84432094f99af1ee092c34c5ba3ab8236a317d198ed98",
       "section": false
     },
     "specs/.omni/runtime/LICENSE": {
@@ -174,39 +174,39 @@
       "section": false
     },
     ".agents/skills/omni-init/SKILL.md": {
-      "hash": "7e0c95afe86de96be9ff6a849f520f4c1dcd41732890c7f068831fc517861725",
+      "hash": "cf8ffd887703f2a6e15c8bd37530f8730a0cd2c83b3fedfd1f4a1db891200dc1",
       "section": false
     },
     ".agents/skills/omni-discuss/SKILL.md": {
-      "hash": "20a7765d76c8fbe863861e7aa9836ad7392a2cf19d16dcfff6fa39b2e0d7038e",
+      "hash": "98a83cd195bd9d4097282ddbb465a795098720718415f9c2216db129d37c5758",
       "section": false
     },
     ".agents/skills/omni-specify/SKILL.md": {
-      "hash": "ba2a8901d2520e04f6154731457588bac051467ff992da42e549a5152d09d682",
+      "hash": "dc4d94ed73efd0e0e7ab3db23f94e83c3408f4361837fb319752501e227f9d4d",
       "section": false
     },
     ".agents/skills/omni-clarify/SKILL.md": {
-      "hash": "d6bac2f72a99d29eee3342ae4ce035c6922cf082919f9974687545e2dbb6621f",
+      "hash": "0d15949d6686cbcfc2640bc99fdbe7147663e80dcdc12940fe74630b8c179266",
       "section": false
     },
     ".agents/skills/omni-plan/SKILL.md": {
-      "hash": "39e3d50976b219cefbbdbec4ce374cfe78d6e845b08ac8e7c533ff5d1c5ef33d",
+      "hash": "2d735c4ffb3a82ad157b7705d3e850432180d0ba032171e0dbf758d26142d327",
       "section": false
     },
     ".agents/skills/omni-tasks/SKILL.md": {
-      "hash": "59236cbe8c97b35c88480ceaea586a485a9b5ff2eccf9b5cfd7dceafe3047941",
+      "hash": "e6d3d403fef7380687b150e6fa77bcabbbc6a842cce0464060d6b3898fc9f50c",
       "section": false
     },
     ".agents/skills/omni-audit/SKILL.md": {
-      "hash": "39f1f2356ef2f95f46bf5e7885baf667060d2d08fd54c78e6a3c285b5364c304",
+      "hash": "4665d2491b1bef033d5d079ee3b3f4548288e83e4e1680ef150b98514811312d",
       "section": false
     },
     ".agents/skills/omni-implement/SKILL.md": {
-      "hash": "0f22ddf34062892cd6c5c2582d519a4e14870c33cf34a36f23b79e85b03eb78a",
+      "hash": "0ecd06e52a38d5ab29f4d6d8b9d3f3fa127c020f28cdc51295c6b81ee9e7b948",
       "section": false
     },
     ".agents/skills/omni-converge/SKILL.md": {
-      "hash": "b9b798a894108039f6bebadaccdb351b73959d92b818fe65950e047fa2aa7428",
+      "hash": "8bc45b1afe9703d0301d77a2e149c93644bfa543a8046cfd84ff259cc0b8b717",
       "section": false
     },
     "specs/.omni/runtime/src/acceptance.mjs": {
@@ -230,7 +230,7 @@
       "section": false
     },
     "specs/.omni/runtime/src/fit.mjs": {
-      "hash": "ebf0bd7c4edf619c5a97821272d1d68c4f3920f692b52ac61ab33976b3de4559",
+      "hash": "ee931dca058c08629d7043d51f3b175fe650b5344f0ee36361f7da3b0ad33348",
       "section": false
     },
     "specs/.omni/runtime/src/fs-retry.mjs": {
@@ -238,15 +238,15 @@
       "section": false
     },
     "specs/.omni/runtime/src/installation.mjs": {
-      "hash": "2167d29c0ecaeeec5ed3b5d2b250cc1e8945c6ba8d57510ebbdb6cc01f1f54c3",
+      "hash": "1d9b5a1b680c7741a8308403e9d75dfc0a94db00c568fb5ecf7f28168b1f3983",
       "section": false
     },
     "specs/.omni/runtime/src/plugin-manager.mjs": {
-      "hash": "dda6b8a1a4cd0e13c63e94e49d9468ea8cb7c8ce87e4e308f653a394d7e20121",
+      "hash": "5f316f9955cb8868b19922ab0747f0469ba9ee0d92ef4c0f1132af7af2782aa7",
       "section": false
     },
     "specs/.omni/runtime/src/project-state.mjs": {
-      "hash": "12cee0642c28e2c2db597fa0e00874db7c72478ea7c0d5a3b8f5bf6c81453391",
+      "hash": "6474b5b1f767cea579032e5ca3ba6e36dd632afcb5ff31540c100e4b108c4cdf",
       "section": false
     },
     "specs/.omni/runtime/src/protocols.mjs": {
@@ -254,7 +254,7 @@
       "section": false
     },
     "specs/.omni/runtime/src/resources/design.md": {
-      "hash": "3980eeaf342479b07613290400394e4e9416fef38d9e5ce5fd69a5bf2a70629e",
+      "hash": "935765230341bf342c5a54a537b968df45a2acbacd2ff050c1a3139c586237b6",
       "section": false
     },
     "specs/.omni/runtime/src/resources/evidence.md": {
@@ -266,11 +266,11 @@
       "section": false
     },
     "specs/.omni/runtime/src/snapshot.mjs": {
-      "hash": "568d4f10777b0ae1c87fe9e2906b7d000c53a6312ca3a69953bc971ccab32f39",
+      "hash": "367ea1de51803e75411847a59a5ac90da8835062b14b0910aeabf83c9088197f",
       "section": false
     },
     "specs/.omni/runtime/src/terminal-ui.mjs": {
-      "hash": "b95f97f528545a694bfb27f7a528a6236e7a0edf5e21d17d05c7c275019879b7",
+      "hash": "47fa6e049fab8dfa36c1c26342072d5232ec16efd02eadabd9ee41cb07ea1699",
       "section": false
     },
     "specs/.omni/runtime/schema/checks.schema.json": {
@@ -302,7 +302,7 @@
       "section": false
     },
     "AGENTS.md": {
-      "hash": "752992bdd2684c07088f7a14eded71c8345417f54de112c91215e21719490373",
+      "hash": "ca07c1712e4cd6ee2d318d1789ef215c9357c4478b02a8d22da63717d35e5b1a",
       "section": true
     },
     "specs/commands/omni-init.md": {
